@@ -5,21 +5,86 @@
 	<artifactId>turbine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.3.RELEASE</version>
+	</parent>
+
 	<properties>
-		<spring.version>4.1.6.RELEASE</spring.version>
+		<java.version>1.8</java.version>
+		<spring.boot.version>1.2.3.RELEASE</spring.boot.version>
+		<camel.version>2.15.1</camel.version>
+		<!-- <spring.version>4.1.6.RELEASE</spring.version> -->
+		<!-- <slf4j.version>1.7.7</slf4j.version> -->
+		<!-- <log4j.version>1.2.17</log4j.version> -->
 	</properties>
-	
-		<dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				<configuration> <source>1.8</source> <target>1.8</target> </configuration> 
+				</plugin> -->
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework</groupId> -->
+<!-- 			<artifactId>spring-core</artifactId> -->
+<!-- 		</dependency> -->
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework</groupId> -->
+<!-- 			<artifactId>spring-context</artifactId> -->
+<!-- 		</dependency> -->
+
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>${camel.version}</version>
 		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.camel</groupId> -->
+		<!-- <artifactId>camel-spring</artifactId> -->
+		<!-- <version>${camel.version}</version> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring-javaconfig</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.slf4j</groupId> -->
+<!-- 			<artifactId>slf4j-api</artifactId> -->
+<!-- 		</dependency> -->
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.slf4j</groupId> -->
+<!-- 			<artifactId>slf4j-log4j12</artifactId> -->
+<!-- 		</dependency> -->
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>log4j</groupId> -->
+<!-- 			<artifactId>log4j</artifactId> -->
+<!-- 		</dependency> -->
+
 	</dependencies>
- 
+
 </project>
