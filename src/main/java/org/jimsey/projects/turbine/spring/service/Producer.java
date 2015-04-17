@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile("producer")
-@PropertySource("classpath:turbine.producer.properties")
-@PropertySource("classpath:${environment}/turbine.producer.properties")
+@PropertySource("classpath:conf/turbine.producer.properties")
+@PropertySource("classpath:conf/${environment}/turbine.producer.properties")
 public class Producer extends BaseService {
 
 	@Autowired

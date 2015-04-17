@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile("consumer")
-@PropertySource("classpath:turbine.consumer.properties")
-@PropertySource("classpath:${environment}/turbine.consumer.properties")
+@PropertySource("classpath:conf/turbine.consumer.properties")
+@PropertySource("classpath:conf/${environment}/turbine.consumer.properties")
 public class Consumer extends BaseService {
 		
 	@PostConstruct
