@@ -15,6 +15,8 @@
 		<java.version>1.8</java.version>
 		<spring.boot.version>1.2.3.RELEASE</spring.boot.version>
 		<camel.version>2.15.1</camel.version>
+		<activemq.version>5.11.1</activemq.version>
+		<rabbitmq.version>3.5.1</rabbitmq.version>
 		<!-- <spring.version>4.1.6.RELEASE</spring.version> -->
 		<!-- <slf4j.version>1.7.7</slf4j.version> -->
 		<!-- <log4j.version>1.2.17</log4j.version> -->
@@ -43,6 +45,28 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.activemq</groupId> -->
+<!-- 			<artifactId>activemq-all</artifactId> -->
+<!-- 			<version>${activemq.version}</version> -->
+<!-- 		</dependency> -->
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.rabbitmq</groupId> -->
+<!-- 			<artifactId>amqp-client</artifactId> -->
+<!-- 			<version>${rabbitmq.version}</version> -->
+<!-- 		</dependency> -->
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework.amqp</groupId> -->
+<!-- 			<artifactId>spring-rabbit</artifactId> -->
+<!-- 		</dependency> -->
+
+		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-core</artifactId>
 			<version>${camel.version}</version>
@@ -60,11 +84,39 @@
 			<version>${camel.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring-boot</artifactId>
+			<version>${camel.version}</version> <!-- use the same version as your Camel core version -->
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.data</groupId> -->
+		<!-- <artifactId>spring-data-elasticsearch</artifactId> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	<!-- <dependency> -->
+	<!-- <groupId>org.scala-lang</groupId> -->
+	<!-- <artifactId>scala-library</artifactId> -->
+	<!-- <version>2.10.4</version> -->
+	<!-- </dependency> -->
 
 	</dependencies>
 

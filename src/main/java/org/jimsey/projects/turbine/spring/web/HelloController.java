@@ -1,4 +1,4 @@
-package org.jimsey.projects.turbine.spring.controller;
+package org.jimsey.projects.turbine.spring.web;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
