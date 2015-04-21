@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<!-- ==================================== -->
-    <!-- TODO -->
+	<!-- TODO -->
 	<!-- DONE 1. camel rabbitmq dependencies -->
 	<!-- 2. ObjetMapper for json output -->
 	<!-- DONE 3. typesafe properties via YAML & @ConfigurationProperties -->
@@ -14,7 +14,7 @@
 	<!-- 5. guava depedency -->
 	<!-- 6. sort out jquantlib -->
 	<!-- ==================================== -->
-    
+
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -28,7 +28,7 @@
 		<camel.version>2.15.1</camel.version>
 		<activemq.version>5.11.1</activemq.version>
 		<rabbitmq.version>3.5.1</rabbitmq.version>
-<!-- 		<jackson.version>2.5.2</jackson.version> -->
+		<!-- <jackson.version>2.5.2</jackson.version> -->
 		<!-- <spring.version>4.1.6.RELEASE</spring.version> -->
 		<!-- <slf4j.version>1.7.7</slf4j.version> -->
 		<!-- <log4j.version>1.2.17</log4j.version> -->
@@ -61,22 +61,27 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.activemq</groupId> -->
-<!-- 			<artifactId>activemq-all</artifactId> -->
-<!-- 			<version>${activemq.version}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.rabbitmq</groupId> -->
-<!-- 			<artifactId>amqp-client</artifactId> -->
-<!-- 			<version>${rabbitmq.version}</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.activemq</groupId> -->
+		<!-- <artifactId>activemq-all</artifactId> -->
+		<!-- <version>${activemq.version}</version> -->
+		<!-- </dependency> -->
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework.amqp</groupId> -->
-<!-- 			<artifactId>spring-rabbit</artifactId> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.rabbitmq</groupId> -->
+		<!-- <artifactId>amqp-client</artifactId> -->
+		<!-- <version>${rabbitmq.version}</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.amqp</groupId> -->
+		<!-- <artifactId>spring-rabbit</artifactId> -->
+		<!-- </dependency> -->
 
 		<dependency>
 			<groupId>org.apache.camel</groupId>
@@ -103,14 +108,14 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.apache.camel</groupId>
-		    <artifactId>camel-rabbitmq</artifactId>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-rabbitmq</artifactId>
 			<version>${camel.version}</version>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.apache.camel</groupId>
-		    <artifactId>camel-amqp</artifactId>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-amqp</artifactId>
 			<version>${camel.version}</version>
 		</dependency>
 
@@ -120,6 +125,31 @@
 			<version>${camel.version}</version> <!-- use the same version as your Camel core version -->
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jquantlib</groupId>
+			<artifactId>jquantlib</artifactId>
+			<version>0.2.4</version>
+		</dependency>
+
+
 		<!-- <dependency> -->
 		<!-- <groupId>org.springframework.data</groupId> -->
 		<!-- <artifactId>spring-data-elasticsearch</artifactId> -->
@@ -127,20 +157,15 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
-	<!-- <dependency> -->
-	<!-- <groupId>org.scala-lang</groupId> -->
-	<!-- <artifactId>scala-library</artifactId> -->
-	<!-- <version>2.10.4</version> -->
-	<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.scala-lang</groupId> -->
+		<!-- <artifactId>scala-library</artifactId> -->
+		<!-- <version>2.10.4</version> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 
