@@ -11,20 +11,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile("producer")
-@PropertySource("classpath:conf/turbine.producer.properties")
-@PropertySource("classpath:conf/${environment}/turbine.producer.properties")
+//@PropertySource("classpath:conf/turbine.producer.properties")
+//@PropertySource("classpath:conf/${environment}/turbine.producer.properties")
 public class Producer extends BaseService {
-
-	@Autowired
-	Environment environment;
-		
 	
 	@PostConstruct
 	public void init() {
 		super.init();
 		logger.info(String.format("direct default.property=%s", environment.getProperty("default.property")));
 		logger.info(String.format("@Value default.property=%s", defaultProperty));
-		logger.info(String.format("service.producer.hello=%s", environment.getProperty("service.producer.hello")));
+		logger.info(String.format("producer.property=%s", environment.getProperty("producer.property")));
 		logger.info("producer initialised");
 	}
 	

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 @SpringBootApplication
-@PropertySource("classpath:conf/turbine.properties")
+//@PropertySource("classpath:conf/turbine.properties")
 // @ComponentScan(basePackages =
 // "org.jimsey.projects.turbine.spring.service, org.jimsey.projects.turbine.spring.web, org.jimsey.projects.turbine.camel.routes")
 public class Application extends CamelConfiguration {

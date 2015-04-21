@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-@PropertySource("classpath:conf/${environment}/turbine.properties")
+//@PropertySource("classpath:conf/${environment}/turbine.properties")
 public class BaseService {
 	
 	@Autowired
@@ -18,11 +18,15 @@ public class BaseService {
 	@Value("${default.property}")
 	protected String defaultProperty;
 
+	@Value("${what.environment}")
+	protected String whatEnvironment;
+
 	final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 	@PostConstruct
 	public void init() {
-		logger.info(String.format("what.environment=%s", environment.getProperty("what.environment")));
+		logger.info(String.format("what.environment=%s", whatEnvironment));
+		logger.info(String.format("defaultProperty=%s", defaultProperty));
 		logger.info("BaseService init completed");
 	}
 

@@ -12,15 +12,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile("consumer")
-@PropertySource("classpath:conf/turbine.consumer.properties")
-@PropertySource("classpath:conf/${environment}/turbine.consumer.properties")
+//@PropertySource("classpath:conf/turbine.consumer.properties")
+//@PropertySource("classpath:conf/${environment}/turbine.consumer.properties")
 public class Consumer extends BaseService {
 		
 	@PostConstruct
 	public void init() {
 		super.init();
 		logger.info(String.format("default.property=%s", environment.getProperty("default.property")));
-		logger.info(String.format("service.consumer.hello=%s", environment.getProperty("service.consumer.hello")));
+		logger.info(String.format("consumer what.environment=%s", environment.getProperty("what.environment")));
+		logger.info(String.format("@Value default.property=%s", defaultProperty));
+		logger.info(String.format("consumer.property=%s", environment.getProperty("consumer.property")));
 		logger.info("consumer initialised");
 	}
 	
