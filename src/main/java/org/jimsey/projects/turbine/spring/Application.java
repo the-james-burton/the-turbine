@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication
 //@PropertySource("classpath:conf/turbine.properties")
@@ -33,6 +34,9 @@ public class Application extends CamelConfiguration {
 		Ping ping = (Ping) spring.getBean("ping");
 		long message = ping.ping();
 		logger.info(String.format("ping=%s", message));
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		//objectMapper.writeValue(resultFile, value);
 
 	}
 

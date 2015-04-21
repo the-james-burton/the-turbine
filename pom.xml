@@ -7,9 +7,12 @@
 
 	<!-- ==================================== -->
     <!-- TODO -->
-	<!-- 1. camel rabbitmq dependencies -->
+	<!-- DONE 1. camel rabbitmq dependencies -->
 	<!-- 2. ObjetMapper for json output -->
-	<!-- 3. typesafe properties via YAML & @ConfigurationProperties -->
+	<!-- DONE 3. typesafe properties via YAML & @ConfigurationProperties -->
+	<!-- 4. apache commons dependencies -->
+	<!-- 5. guava depedency -->
+	<!-- 6. sort out jquantlib -->
 	<!-- ==================================== -->
     
 
@@ -25,6 +28,7 @@
 		<camel.version>2.15.1</camel.version>
 		<activemq.version>5.11.1</activemq.version>
 		<rabbitmq.version>3.5.1</rabbitmq.version>
+<!-- 		<jackson.version>2.5.2</jackson.version> -->
 		<!-- <spring.version>4.1.6.RELEASE</spring.version> -->
 		<!-- <slf4j.version>1.7.7</slf4j.version> -->
 		<!-- <log4j.version>1.2.17</log4j.version> -->
@@ -98,10 +102,17 @@
 			<version>${camel.version}</version>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.apache.camel</groupId> -->
-<!-- 		    <artifactId>camel-rabbitmq</artifactId> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.apache.camel</groupId>
+		    <artifactId>camel-rabbitmq</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.apache.camel</groupId>
+		    <artifactId>camel-amqp</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.camel</groupId>

@@ -1,2 +1,2 @@
 infrastructure:
-  amqpDestination: amqp:queue:destinationName
+  commonProperty: something cross-environment
