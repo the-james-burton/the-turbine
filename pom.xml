@@ -5,6 +5,14 @@
 	<artifactId>turbine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<!-- ==================================== -->
+    <!-- TODO -->
+	<!-- 1. camel rabbitmq dependencies -->
+	<!-- 2. ObjetMapper for json output -->
+	<!-- 3. typesafe properties via YAML & @ConfigurationProperties -->
+	<!-- ==================================== -->
+    
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -89,6 +97,11 @@
 			<artifactId>camel-jms</artifactId>
 			<version>${camel.version}</version>
 		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 		    <groupId>org.apache.camel</groupId> -->
+<!-- 		    <artifactId>camel-rabbitmq</artifactId> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.apache.camel</groupId>
