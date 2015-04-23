@@ -144,6 +144,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>eu.verdelhan</groupId>
+			<artifactId>ta4j</artifactId>
+			<version>0.6</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.jquantlib</groupId>
 			<artifactId>jquantlib</artifactId>
 			<version>0.2.4</version>
