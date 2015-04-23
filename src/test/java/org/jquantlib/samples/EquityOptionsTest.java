@@ -1,6 +1,5 @@
 package org.jquantlib.samples;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jquantlib.Settings;
 import org.jquantlib.daycounters.Actual365Fixed;
 import org.jquantlib.daycounters.DayCounter;
@@ -28,7 +27,6 @@ import org.jquantlib.pricingengines.vanilla.BjerksundStenslandApproximationEngin
 import org.jquantlib.pricingengines.vanilla.IntegralEngine;
 import org.jquantlib.pricingengines.vanilla.JuQuadraticApproximationEngine;
 import org.jquantlib.pricingengines.vanilla.finitedifferences.FDAmericanEngine;
-import org.jquantlib.pricingengines.vanilla.finitedifferences.FDBermudanEngine;
 import org.jquantlib.pricingengines.vanilla.finitedifferences.FDEuropeanEngine;
 import org.jquantlib.processes.BlackScholesMertonProcess;
 import org.jquantlib.quotes.Handle;
@@ -59,20 +57,28 @@ public class EquityOptionsTest {
   private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   private BlackScholesMertonProcess bsmProcess;
+
   private VanillaOption europeanOption;
+
   private VanillaOption bermudanOption;
+
   private VanillaOption americanOption;
+
   private int timeSteps;
-  
+
   @SuppressWarnings("unused")
   private class Result {
     public String instrument;
-    public String algorithm;
-    public Double value;
-    public Long time;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
-    public Result(String instrument, String algorithm, Double value, Long time) {
+    public String algorithm;
+
+    public Double value;
+
+    public Long time;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public Result(final String instrument, final String algorithm, final Double value, final Long time) {
       this.instrument = instrument;
       this.algorithm = algorithm;
       this.value = value;
@@ -151,7 +157,7 @@ public class EquityOptionsTest {
   public void after() {
   }
 
-  private String engineName(PricingEngine engine) {
+  private String engineName(final PricingEngine engine) {
     String result = engine.getClass().getName();
     if (result != null) {
       return result;
@@ -159,8 +165,8 @@ public class EquityOptionsTest {
     result = engine.getClass().getGenericSuperclass().getTypeName();
     return result;
   }
-  
-  private void price(VanillaOption option, PricingEngine engine) {
+
+  private void price(final VanillaOption option, final PricingEngine engine) {
     Stopwatch clock = Stopwatch.createStarted();
     option.setPricingEngine(engine);
     Double value = option.NPV();
@@ -198,8 +204,6 @@ public class EquityOptionsTest {
   public void testBinomialJarrowRudd() {
     price(europeanOption, new BinomialVanillaEngine<JarrowRudd>(bsmProcess, timeSteps) {
     });
-    price(bermudanOption, new BinomialVanillaEngine<JarrowRudd>(bsmProcess, timeSteps) {
-    });
     price(americanOption, new BinomialVanillaEngine<JarrowRudd>(bsmProcess, timeSteps) {
     });
   }
@@ -208,19 +212,11 @@ public class EquityOptionsTest {
   public void testBinomialCoxRossRubinstein() {
     price(europeanOption, new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps) {
     });
-    price(bermudanOption, new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps) {
-    });
-    price(americanOption, new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps) {
-    });
   }
 
   @Test
   public void testAdditiveEquiProbabilities() {
     price(europeanOption, new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps) {
-    });
-    price(bermudanOption, new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps) {
-    });
-    price(americanOption, new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps) {
     });
   }
 
@@ -228,19 +224,11 @@ public class EquityOptionsTest {
   public void testBinomialTrigeorgis() {
     price(europeanOption, new BinomialVanillaEngine<Trigeorgis>(bsmProcess, timeSteps) {
     });
-    price(bermudanOption, new BinomialVanillaEngine<Trigeorgis>(bsmProcess, timeSteps) {
-    });
-    price(americanOption, new BinomialVanillaEngine<Trigeorgis>(bsmProcess, timeSteps) {
-    });
   }
 
   @Test
   public void testBinomialTian() {
     price(europeanOption, new BinomialVanillaEngine<Tian>(bsmProcess, timeSteps) {
-    });
-    price(bermudanOption, new BinomialVanillaEngine<Tian>(bsmProcess, timeSteps) {
-    });
-    price(americanOption, new BinomialVanillaEngine<Tian>(bsmProcess, timeSteps) {
     });
   }
 
@@ -248,26 +236,17 @@ public class EquityOptionsTest {
   public void testBinomialLeisenReimer() {
     price(europeanOption, new BinomialVanillaEngine<LeisenReimer>(bsmProcess, timeSteps) {
     });
-    price(bermudanOption, new BinomialVanillaEngine<LeisenReimer>(bsmProcess, timeSteps) {
-    });
-    price(americanOption, new BinomialVanillaEngine<LeisenReimer>(bsmProcess, timeSteps) {
-    });
   }
 
   @Test
   public void testBinomialJoshi() {
     price(europeanOption, new BinomialVanillaEngine<Joshi4>(bsmProcess, timeSteps) {
     });
-    price(bermudanOption, new BinomialVanillaEngine<Joshi4>(bsmProcess, timeSteps) {
-    });
-    price(americanOption, new BinomialVanillaEngine<Joshi4>(bsmProcess, timeSteps) {
-    });
   }
 
   @Test
   public void testFiniteDifferences() {
     price(europeanOption, new FDEuropeanEngine(bsmProcess, timeSteps, timeSteps - 1, false));
-    price(bermudanOption, new FDBermudanEngine(bsmProcess, timeSteps, timeSteps - 1));
     price(americanOption, new FDAmericanEngine(bsmProcess, timeSteps, timeSteps - 1, false));
   }
 
