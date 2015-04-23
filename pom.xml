@@ -143,6 +143,7 @@
 			<version>18.0</version>
 		</dependency>
 		
+		<!-- I can't find JQuantLib in any public repo, so let's reference it directly to allow travis-ci to work -->
 		<dependency>
 			<groupId>eu.verdelhan</groupId>
 			<artifactId>ta4j</artifactId>
