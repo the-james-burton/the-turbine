@@ -63,13 +63,14 @@ public class EquityOptionsTest {
   private VanillaOption bermudanOption;
   private VanillaOption americanOption;
   private int timeSteps;
-
+  
+  @SuppressWarnings("unused")
   private class Result {
     public String instrument;
     public String algorithm;
     public Double value;
     public Long time;
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public Result(String instrument, String algorithm, Double value, Long time) {
       this.instrument = instrument;
@@ -142,7 +143,7 @@ public class EquityOptionsTest {
 
     americanOption = new VanillaOption(payoff, americanExercise);
 
-    timeSteps = 500;
+    timeSteps = 801;
 
   }
 
@@ -150,12 +151,12 @@ public class EquityOptionsTest {
   public void after() {
   }
 
-  private String objectName(Object engine) {
+  private String engineName(PricingEngine engine) {
     String result = engine.getClass().getName();
-    if (result != null && !"".equals(result)) {
+    if (result != null) {
       return result;
     }
-    result = engine.getClass().getGenericSuperclass().getClass().getTypeName();
+    result = engine.getClass().getGenericSuperclass().getTypeName();
     return result;
   }
   
@@ -164,7 +165,7 @@ public class EquityOptionsTest {
     option.setPricingEngine(engine);
     Double value = option.NPV();
     long elapsed = clock.elapsed(java.util.concurrent.TimeUnit.MILLISECONDS);
-    Result result = new Result(objectName(option), objectName(engine), value, elapsed);
+    Result result = new Result(option.getClass().getSimpleName(), engineName(engine), value, elapsed);
     logger.info(result.toString());
   }
 
