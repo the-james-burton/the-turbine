@@ -1,3 +1,6 @@
 /target/
 /.settings/
 /.project
+.project
+.settings
+/turbine/.classpath
