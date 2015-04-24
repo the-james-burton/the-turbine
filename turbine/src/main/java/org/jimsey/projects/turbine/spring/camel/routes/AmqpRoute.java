@@ -1,7 +1,5 @@
 package org.jimsey.projects.turbine.spring.camel.routes;
 
-import org.apache.camel.builder.RouteBuilder;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

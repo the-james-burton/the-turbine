@@ -15,9 +15,6 @@ import org.springframework.core.env.Environment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication
-//@PropertySource("classpath:conf/turbine.properties")
-// @ComponentScan(basePackages =
-// "org.jimsey.projects.turbine.spring.service, org.jimsey.projects.turbine.spring.web, org.jimsey.projects.turbine.camel.routes")
 public class Application extends CamelConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);

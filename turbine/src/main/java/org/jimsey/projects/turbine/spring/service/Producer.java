@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("producer")
 @ManagedResource()
-//@PropertySource("classpath:conf/turbine.producer.properties")
-//@PropertySource("classpath:conf/${environment}/turbine.producer.properties")
 public class Producer extends BaseService {
 	
     @Autowired
@@ -31,9 +29,6 @@ public class Producer extends BaseService {
 	@PostConstruct
 	public void init() {
 		super.init();
-		logger.info(String.format("direct default.property=%s", environment.getProperty("default.property")));
-		logger.info(String.format("@Value default.property=%s", defaultProperty));
-		logger.info(String.format("producer.property=%s", environment.getProperty("producer.property")));
         logger.info(String.format("camel=%s", camel.getName()));
         logger.info(String.format("amqp=%s", infrastructureProperties.getAmqpExchange()));
 		logger.info("producer initialised");
