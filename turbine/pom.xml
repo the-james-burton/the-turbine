@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>turbine</artifactId>
+
+	<!-- ==================================== -->
+	<!-- TODO -->
+	<!-- ==================================== -->
+
+	<parent>
+		<groupId>org.jimsey.projects</groupId>
+		<artifactId>turbine-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<build>
+		<plugins>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.activemq</groupId> -->
+		<!-- <artifactId>activemq-all</artifactId> -->
+		<!-- <version>${activemq.version}</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>com.rabbitmq</groupId> -->
+		<!-- <artifactId>amqp-client</artifactId> -->
+		<!-- <version>${rabbitmq.version}</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.amqp</groupId> -->
+		<!-- <artifactId>spring-rabbit</artifactId> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.camel</groupId> -->
+		<!-- <artifactId>camel-spring</artifactId> -->
+		<!-- <version>${camel.version}</version> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring-javaconfig</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-rabbitmq</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-amqp</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring-boot</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.verdelhan</groupId>
+			<artifactId>ta4j</artifactId>
+		</dependency>
+		
+		<!-- I can't find JQuantLib in any public repo, so let's reference it directly to allow travis-ci to work -->
+		<dependency>
+			<groupId>org.jquantlib</groupId>
+			<artifactId>jquantlib</artifactId>
+			<scope>system</scope>
+			<systemPath>${basedir}/../lib/jquantlib/jquantlib-0.2.4.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jquantlib</groupId>
+			<artifactId>jquantlib-helpers</artifactId>
+			<scope>system</scope>
+			<systemPath>${basedir}/../lib/jquantlib/jquantlib-helpers-0.2.4.jar</systemPath>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.data</groupId> -->
+		<!-- <artifactId>spring-data-elasticsearch</artifactId> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.scala-lang</groupId> -->
+		<!-- <artifactId>scala-library</artifactId> -->
+		<!-- <version>2.10.4</version> -->
+		<!-- </dependency> -->
+
+	</dependencies>
+
+</project>
