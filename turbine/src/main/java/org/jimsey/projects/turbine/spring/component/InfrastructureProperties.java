@@ -1,6 +1,7 @@
 package org.jimsey.projects.turbine.spring.component;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConfigurationProperties(prefix="infrastructure")
 public class InfrastructureProperties {
 
-	private final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
+	private static final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
 
-	private String amqpDestination;
+	@NotNull
+	private String amqpExchange;
 	
 	private String commonProperty;
 
@@ -35,12 +37,12 @@ public class InfrastructureProperties {
 	}
 
 	// ------------------------------------------
-	public String getAmqpDestination() {
-		return amqpDestination;
+	public String getAmqpExchange() {
+		return amqpExchange;
 	}
 
-	public void setAmqpDestination(String amqpDestination) {
-		this.amqpDestination = amqpDestination;
+	public void setAmqpExchange(String amqpExchange) {
+		this.amqpExchange = amqpExchange;
 	}
 	
 }

@@ -92,7 +92,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
@@ -102,13 +102,19 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>eu.verdelhan</groupId>
 			<artifactId>ta4j</artifactId>
 		</dependency>
-		
-		<!-- I can't find JQuantLib in any public repo, so let's reference it directly to allow travis-ci to work -->
+
+		<dependency>
+			<groupId>org.jolokia</groupId>
+			<artifactId>jolokia-core</artifactId>
+		</dependency>
+
+		<!-- I can't find JQuantLib in any public repo, so let's reference it directly 
+			to allow travis-ci to work -->
 		<dependency>
 			<groupId>org.jquantlib</groupId>
 			<artifactId>jquantlib</artifactId>

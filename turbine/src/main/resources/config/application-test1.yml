@@ -1,2 +1,2 @@
 infrastructure:
-  amqpDestination: amqp:queue:test1DestinationName
+  amqpExchange: rabbitmq://localhost:5672/:turbine.test1.topic
