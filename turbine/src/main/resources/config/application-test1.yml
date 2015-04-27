@@ -1,2 +1,3 @@
 infrastructure:
+#  amqpExchange: direct:amqp.route.in
   amqpExchange: rabbitmq://localhost:5672/:turbine.test1.topic

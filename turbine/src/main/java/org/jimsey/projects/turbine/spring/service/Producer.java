@@ -40,7 +40,7 @@ public class Producer extends BaseService {
 	  
 	  Map<String, Object> headers = new HashMap<String, Object>();
 	  headers.put("test.header.1", "testing.header.one");
-	  producer.sendBodyAndHeaders(AmqpRoute.IN, "test.body", headers);
+	  producer.sendBodyAndHeaders(infrastructureProperties.getAmqpExchange(), "test.body", headers);
 	}
 
 }
