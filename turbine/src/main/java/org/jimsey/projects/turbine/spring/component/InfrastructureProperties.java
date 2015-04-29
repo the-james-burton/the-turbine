@@ -12,37 +12,38 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-@ConfigurationProperties(prefix="infrastructure")
+@ConfigurationProperties(prefix = "infrastructure")
 public class InfrastructureProperties {
 
-	private static final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
+  private static final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
 
-	@NotNull
-	private String amqpExchange;
-	
-	private String commonProperty;
+  @NotNull
+  private String mAmqpExchange;
 
-	@PostConstruct
-	public void init() throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		logger.info(objectMapper.writeValueAsString(this));
-	}
-	
-	public String getCommonProperty() {
-		return commonProperty;
-	}
+  @NotNull
+  private String mCommonProperty;
 
-	public void setCommonProperty(String commonProperty) {
-		this.commonProperty = commonProperty;
-	}
+  @PostConstruct
+  public void init() throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    logger.info(objectMapper.writeValueAsString(this));
+  }
 
-	// ------------------------------------------
-	public String getAmqpExchange() {
-		return amqpExchange;
-	}
+  public String getCommonProperty() {
+    return mCommonProperty;
+  }
 
-	public void setAmqpExchange(String amqpExchange) {
-		this.amqpExchange = amqpExchange;
-	}
-	
+  public void setCommonProperty(final String commonProperty) {
+    this.mCommonProperty = commonProperty;
+  }
+
+  // ------------------------------------------
+  public String getAmqpExchange() {
+    return mAmqpExchange;
+  }
+
+  public void setAmqpExchange(final String amqpExchange) {
+    this.mAmqpExchange = amqpExchange;
+  }
+
 }

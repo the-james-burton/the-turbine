@@ -1,5 +1,7 @@
 package org.jimsey.projects.turbine.spring.camel.routes;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.slf4j.Logger;
@@ -15,18 +17,20 @@ public class ConsumerRoute extends BaseRoute {
   private static final Logger logger = LoggerFactory.getLogger(ConsumerRoute.class);
 
   @Autowired
-  private InfrastructureProperties infrastructureProperties;
+  @NotNull
+  private InfrastructureProperties mInfrastructureProperties;
 
   @Autowired
-  Processor consumerProcessor;
-  
+  @NotNull
+  private Processor mConsumerProcessor;
+
   @Override
   public void configure() throws Exception {
 
-    from(infrastructureProperties.getAmqpExchange()).id("test route")
-        .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
-        .process(consumerProcessor)
-        .end();
+    from(mInfrastructureProperties.getAmqpExchange()).id("test route")
+    .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
+    .process(mConsumerProcessor)
+    .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
   }

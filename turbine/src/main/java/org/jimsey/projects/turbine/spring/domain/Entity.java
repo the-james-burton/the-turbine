@@ -2,15 +2,15 @@ package org.jimsey.projects.turbine.spring.domain;
 
 public abstract class Entity {
 
-	private Long id;
+	private Long mId;
 
 	// -------------------------------
 	public Long getId() {
-		return id;
+		return mId;
 	}
 
 	public void setId(Long id) {
-		this.id = id;
+		this.mId = id;
 	}
 	
 }

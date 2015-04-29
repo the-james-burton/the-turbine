@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 public class BaseService {
-	
-	@Autowired
-	protected Environment environment;
 
-	final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
-	@PostConstruct
-	public void init() {
-		logger.info("BaseService init completed");
-	}
+  @Autowired
+  protected Environment environment;
+
+  @PostConstruct
+  public void init() {
+    logger.info("BaseService init completed");
+  }
 
 }

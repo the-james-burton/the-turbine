@@ -2,8 +2,6 @@ package org.jimsey.projects.turbine.spring.service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
@@ -11,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
@@ -25,43 +25,49 @@ import org.springframework.stereotype.Service;
 @ManagedResource()
 public class Producer extends BaseService {
 
-  @Autowired
-  private CamelContext camel;
+  private static final Logger logger = LoggerFactory.getLogger(Producer.class);
 
   @Autowired
-  private InfrastructureProperties infrastructureProperties;
+  @NotNull
+  private CamelContext mCamel;
+
+  @Autowired
+  @NotNull
+  private InfrastructureProperties mInfrastructureProperties;
 
   @NotNull
-  private Long period;
+  private Long mPeriod;
 
+  @Override
   @PostConstruct
   public void init() {
     super.init();
-    logger.info(String.format("camel=%s", camel.getName()));
-    logger.info(String.format("amqp=%s", infrastructureProperties.getAmqpExchange()));
+
+    logger.info(String.format("camel=%s", mCamel.getName()));
+    logger.info(String.format("amqp=%s", mInfrastructureProperties.getAmqpExchange()));
 
     logger.info("producer initialised");
   }
 
   @ManagedOperation
-  @Scheduled(fixedDelay=2000)
+  @Scheduled(fixedDelay = 2000)
   public void produce() {
-    ProducerTemplate producer = camel.createProducerTemplate();
+    ProducerTemplate producer = mCamel.createProducerTemplate();
 
     Map<String, Object> headers = new HashMap<String, Object>();
     String message = Double.toString(Math.random());
     headers.put("test.header.1", "testing.header.one");
-    producer.sendBodyAndHeaders(infrastructureProperties.getAmqpExchange(), message, headers);
+    producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpExchange(), message, headers);
     logger.info("produced: [{}]", message);
   }
 
   // -----------------------------------------
   public Long getPeriod() {
-    return period;
+    return mPeriod;
   }
 
-  public void setPeriod(Long period) {
-    this.period = period;
+  public void setPeriod(final Long period) {
+    this.mPeriod = period;
   }
 
 }

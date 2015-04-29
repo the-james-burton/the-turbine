@@ -1,5 +1,7 @@
 package org.jimsey.projects.turbine.spring.web;
 
+import javax.validation.constraints.NotNull;
+
 import org.jimsey.projects.turbine.spring.service.Ping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
   @Autowired
+  @NotNull
   Ping ping;
 
   @RequestMapping("/ping")
