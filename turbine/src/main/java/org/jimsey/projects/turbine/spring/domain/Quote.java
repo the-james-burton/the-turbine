@@ -24,6 +24,8 @@ package org.jimsey.projects.turbine.spring.domain;
 
 public class Quote extends Entity {
 
+  private static final long serialVersionUID = 1L;
+
   private Instrument mInstrument;
 
   private Trader mTrader;
@@ -31,5 +33,38 @@ public class Quote extends Entity {
   private Double mBid;
 
   private Double mOffer;
+
+  // -------------------------------------------
+  public Instrument getInstrument() {
+    return mInstrument;
+  }
+
+  public void setInstrument(Instrument instrument) {
+    mInstrument = instrument;
+  }
+
+  public Trader getTrader() {
+    return mTrader;
+  }
+
+  public void setTrader(Trader trader) {
+    mTrader = trader;
+  }
+
+  public Double getBid() {
+    return mBid;
+  }
+
+  public void setBid(Double bid) {
+    mBid = bid;
+  }
+
+  public Double getOffer() {
+    return mOffer;
+  }
+
+  public void setOffer(Double offer) {
+    mOffer = offer;
+  }
 
 }

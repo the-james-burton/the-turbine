@@ -24,6 +24,8 @@ package org.jimsey.projects.turbine.spring.domain;
 
 public class Trade extends Entity {
 
+  private static final long serialVersionUID = 1L;
+
   private Quote mQuote;
 
   private Trader mSeller;
@@ -31,4 +33,38 @@ public class Trade extends Entity {
   private Trader mBuyer;
 
   private Long mSize;
+
+  // -------------------------------------------
+  public Quote getQuote() {
+    return mQuote;
+  }
+
+  public void setQuote(Quote quote) {
+    mQuote = quote;
+  }
+
+  public Trader getSeller() {
+    return mSeller;
+  }
+
+  public void setSeller(Trader seller) {
+    mSeller = seller;
+  }
+
+  public Trader getBuyer() {
+    return mBuyer;
+  }
+
+  public void setBuyer(Trader buyer) {
+    mBuyer = buyer;
+  }
+
+  public Long getSize() {
+    return mSize;
+  }
+
+  public void setSize(Long size) {
+    mSize = size;
+  }
+  
 }

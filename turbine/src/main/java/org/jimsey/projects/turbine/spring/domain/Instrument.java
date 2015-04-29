@@ -24,6 +24,17 @@ package org.jimsey.projects.turbine.spring.domain;
 
 public class Instrument extends Entity {
 
+  private static final long serialVersionUID = 1L;
+  
   private String mCode;
 
+  public String getCode() {
+    return mCode;
+  }
+
+  public void setCode(String code) {
+    mCode = code;
+  }
+
+  
 }

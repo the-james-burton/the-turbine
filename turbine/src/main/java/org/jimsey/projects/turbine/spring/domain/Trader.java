@@ -24,6 +24,17 @@ package org.jimsey.projects.turbine.spring.domain;
 
 public class Trader extends Entity {
 
+  private static final long serialVersionUID = 1L;
+  
   private String mUsername;
+
+  // -------------------------------------------
+  public String getUsername() {
+    return mUsername;
+  }
+
+  public void setUsername(String username) {
+    mUsername = username;
+  }
 
 }
