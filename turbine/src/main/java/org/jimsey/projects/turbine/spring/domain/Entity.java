@@ -30,13 +30,13 @@ public abstract class Entity implements Serializable {
 
   private Long mId;
 
+  public Entity(Long id) {
+    this.mId = id;
+  }
+  
   // -------------------------------
   public Long getId() {
     return mId;
-  }
-
-  public void setId(Long id) {
-    this.mId = id;
   }
 
 }

@@ -34,6 +34,10 @@ public class Quote extends Entity {
 
   private Double mOffer;
 
+  public Quote(Long id) {
+    super(id);
+  }
+
   // -------------------------------------------
   public Instrument getInstrument() {
     return mInstrument;

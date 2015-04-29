@@ -34,6 +34,10 @@ public class Trade extends Entity {
 
   private Long mSize;
 
+  public Trade(Long id) {
+    super(id);
+  }
+
   // -------------------------------------------
   public Quote getQuote() {
     return mQuote;

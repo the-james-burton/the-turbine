@@ -28,6 +28,11 @@ public class Instrument extends Entity {
   
   private String mCode;
 
+  public Instrument(Long id) {
+    super(id);
+  }
+
+  // -----------------------------------
   public String getCode() {
     return mCode;
   }

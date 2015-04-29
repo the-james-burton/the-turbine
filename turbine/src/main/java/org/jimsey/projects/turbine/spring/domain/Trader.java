@@ -28,6 +28,10 @@ public class Trader extends Entity {
   
   private String mUsername;
 
+  public Trader(Long id) {
+    super(id);
+  }
+
   // -------------------------------------------
   public String getUsername() {
     return mUsername;
