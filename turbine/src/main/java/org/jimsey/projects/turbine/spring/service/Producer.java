@@ -16,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,27 +34,17 @@ public class Producer extends BaseService {
   @NotNull
   private Long period;
 
-  private Timer timer = new Timer();
-
-  private TimerTask producerTask = new TimerTask() {
-    @Override
-    public void run() {
-      produce();
-    }
-  };
-
   @PostConstruct
   public void init() {
     super.init();
     logger.info(String.format("camel=%s", camel.getName()));
     logger.info(String.format("amqp=%s", infrastructureProperties.getAmqpExchange()));
 
-    timer.schedule(producerTask, period, period);
-
     logger.info("producer initialised");
   }
 
   @ManagedOperation
+  @Scheduled(fixedDelay=2000)
   public void produce() {
     ProducerTemplate producer = camel.createProducerTemplate();
 
