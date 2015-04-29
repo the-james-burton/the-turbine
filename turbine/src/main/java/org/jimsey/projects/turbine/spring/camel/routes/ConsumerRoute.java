@@ -28,9 +28,9 @@ public class ConsumerRoute extends BaseRoute {
   public void configure() throws Exception {
 
     from(mInfrastructureProperties.getAmqpExchange()).id("test route")
-    .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
-    .process(mConsumerProcessor)
-    .end();
+        .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
+        .process(mConsumerProcessor)
+        .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
   }
