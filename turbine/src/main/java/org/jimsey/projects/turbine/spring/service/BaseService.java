@@ -12,7 +12,7 @@ public class BaseService {
   private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
   @Autowired
-  protected Environment environment;
+  protected Environment mEnvironment;
 
   @PostConstruct
   public void init() {

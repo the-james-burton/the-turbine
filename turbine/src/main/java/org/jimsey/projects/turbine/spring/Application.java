@@ -23,7 +23,7 @@ public class Application extends CamelConfiguration {
 
   @Autowired
   @NotNull
-  Environment environment;
+  Environment mEnvironment;
 
   public static void main(final String[] args) {
     ConfigurableApplicationContext spring = SpringApplication.run(
