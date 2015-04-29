@@ -8,15 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AmqpProcessor implements Processor {
+public class ConsumerProcessor implements Processor {
 
-  private static final Logger logger = LoggerFactory.getLogger(AmqpProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ConsumerProcessor.class);
 
   @Override
   public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     String body = message.getMandatoryBody(String.class);
-    logger.info("received: [{}]", body);
+    logger.info("consumed: [{}]", body);
   }
 
 }

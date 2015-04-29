@@ -19,7 +19,6 @@ public class Ping {
 	@PostConstruct
 	public void init() {
 		logger.info("ping intialised");
-		logger.info(String.format("hello=%s", environment.getProperty("hello")));
 	}
 	
 	public long ping() {

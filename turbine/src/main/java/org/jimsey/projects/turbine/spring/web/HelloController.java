@@ -1,5 +1,7 @@
 package org.jimsey.projects.turbine.spring.web;
 
+import org.jimsey.projects.turbine.spring.service.Ping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,9 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableAutoConfiguration
 public class HelloController {
 
-    @RequestMapping("/")
-    public String index() {
-        return "Greetings from Spring Boot!";
-    }
+  @Autowired
+  Ping ping;
+
+  @RequestMapping("/ping")
+  public Long ping() {
+    return ping.ping();
+  }
 
 }
