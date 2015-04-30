@@ -20,33 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.component;
+package org.jimsey.projects.turbine.spring.camel.formatters;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.component.log.LogComponent;
-import org.jimsey.projects.turbine.spring.camel.formatters.ToStringLogFormatter;
+import org.apache.camel.Exchange;
+import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.spi.ExchangeFormatter;
+import org.jimsey.projects.turbine.spring.camel.routes.ConsumerRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-public class CamelSetup {
+public class ToStringLogFormatter implements ExchangeFormatter {
 
-  private static final Logger logger = LoggerFactory.getLogger(CamelSetup.class);
+  private static final Logger logger = LoggerFactory.getLogger(ToStringLogFormatter.class);
 
-  @Autowired
-  CamelContext mCamel;
-  
-  @PostConstruct
-  public void init() {
-    logger.info("setting up camel...");
-    LogComponent slog = new LogComponent();
-    slog.setExchangeFormatter(new ToStringLogFormatter());
-    mCamel.addComponent("slog", slog);
-    logger.info("camel setup complete");
+  @Override
+  public String format(Exchange exchange) {
+    String result = null;
+    try {
+      result = exchange.getIn().getMandatoryBody(Object.class).toString();
+    } catch (InvalidPayloadException e) {
+      logger.error("unable to cast body as Object");
+    }
+    return result;
   }
-  
+
 }

@@ -1,2 +1,5 @@
+spring:
+  jmx:
+    port: 49002
 server:
   port: 48002
