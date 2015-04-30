@@ -20,43 +20,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.routes;
+package org.jimsey.project.turbine.spring.domain;
 
-import javax.validation.constraints.NotNull;
-
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.jimsey.projects.turbine.spring.service.Producer;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
-@Component
-@Profile("consumer")
-public class ConsumerRoute extends BaseRoute {
+public class QuoteTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(ConsumerRoute.class);
+  private static final Logger logger = LoggerFactory.getLogger(QuoteTest.class);
 
-  @Autowired
-  @NotNull
-  private InfrastructureProperties mInfrastructureProperties;
-
-  @Autowired
-  @NotNull
-  private Processor mConsumerProcessor;
-
-  @Override
-  public void configure() throws Exception {
-
-    from(mInfrastructureProperties.getAmqpExchange()).id("test route")
-        .convertBodyTo(Quote.class)
-        .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
-        .process(mConsumerProcessor)
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  private Quote quote;
+  
+  @Before
+  public void before() {
+    Instrument instrument = new Instrument(1l);
+    instrument.setCode("abc");
+    
+    Trader trader = new Trader(1l);
+    trader.setUsername("test trader");
+    
+    quote = new Quote(1l);
+    quote.setBid(50.0d);
+    quote.setOffer(51.0d);
+    quote.setInstrument(instrument);
+    quote.setTrader(trader);
+  }
+  
+  @Test
+  public void testQuote() {
+    logger.info(quote.toString());
   }
 
 }

@@ -20,43 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.routes;
+package org.jimsey.projects.turbine.spring.component;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.PostConstruct;
 
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.apache.camel.CamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("consumer")
-public class ConsumerRoute extends BaseRoute {
+public class CamelSetup {
 
-  private static final Logger logger = LoggerFactory.getLogger(ConsumerRoute.class);
-
-  @Autowired
-  @NotNull
-  private InfrastructureProperties mInfrastructureProperties;
+  private static final Logger logger = LoggerFactory.getLogger(CamelSetup.class);
 
   @Autowired
-  @NotNull
-  private Processor mConsumerProcessor;
-
-  @Override
-  public void configure() throws Exception {
-
-    from(mInfrastructureProperties.getAmqpExchange()).id("test route")
-        .convertBodyTo(Quote.class)
-        .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
-        .process(mConsumerProcessor)
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  CamelContext mCamel;
+  
+  @PostConstruct
+  public void init() {
+    logger.info("setting up camel...");
   }
-
+  
 }

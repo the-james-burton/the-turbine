@@ -20,43 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.routes;
+package org.jimsey.projects.turbine.spring.camel.typeconverters;
 
-import javax.validation.constraints.NotNull;
-
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.apache.camel.Converter;
+import org.apache.camel.Exchange;
+import org.jimsey.projects.turbine.spring.domain.Entity;
 import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import org.springframework.util.SerializationUtils;
 
-@Component
-@Profile("consumer")
-public class ConsumerRoute extends BaseRoute {
+@Converter
+public class DomainConverter {
 
-  private static final Logger logger = LoggerFactory.getLogger(ConsumerRoute.class);
 
-  @Autowired
-  @NotNull
-  private InfrastructureProperties mInfrastructureProperties;
-
-  @Autowired
-  @NotNull
-  private Processor mConsumerProcessor;
-
-  @Override
-  public void configure() throws Exception {
-
-    from(mInfrastructureProperties.getAmqpExchange()).id("test route")
-        .convertBodyTo(Quote.class)
-        .to(String.format("log:%s?showAll=true&multiline=true", this.getClass().getName()))
-        .process(mConsumerProcessor)
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  @Converter
+  public static byte[] toBytes(Entity entity, Exchange exchnge) {
+    return SerializationUtils.serialize(entity);
   }
 
+  @Converter
+  public static byte[] toBytes(Quote quote, Exchange exchnge) {
+    return SerializationUtils.serialize(quote);
+  }
+
+  // --------------------------------------------
+  @Converter
+  public static Entity toEntity(byte[] bytes, Exchange exchnge) {
+    return (Entity) SerializationUtils.deserialize(bytes);
+  }
+  
+  @Converter
+  public static Quote toQuote(byte[] bytes, Exchange exchnge) {
+    return (Quote) SerializationUtils.deserialize(bytes);
+  }
+ 
 }

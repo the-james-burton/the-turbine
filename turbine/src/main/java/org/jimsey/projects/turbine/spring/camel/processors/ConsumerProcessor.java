@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.camel.processors;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -37,8 +38,10 @@ public class ConsumerProcessor implements Processor {
   @Override
   public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
-    String body = message.getMandatoryBody(String.class);
-    logger.info("consumed: [{}]", body);
+    // byte[] bytes = (byte[]) message.getBody();
+    // Quote quote = (Quote) SerializationUtils.deserialize(bytes);
+    Quote quote = message.getMandatoryBody(Quote.class);
+    logger.info("consumed: [quoteId={}]", quote.getId());
   }
 
 }

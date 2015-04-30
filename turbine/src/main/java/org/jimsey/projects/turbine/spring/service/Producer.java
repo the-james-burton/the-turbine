@@ -31,6 +31,9 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.domain.Instrument;
+import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,10 +80,26 @@ public class Producer extends BaseService {
     ProducerTemplate producer = mCamel.createProducerTemplate();
 
     Map<String, Object> headers = new HashMap<String, Object>();
-    String message = Double.toString(Math.random());
+    
+    // let's use Quote for now to test binary objects over rabbit...
+    //String message = Double.toString(Math.random());
+    Instrument instrument = new Instrument(1l);
+    instrument.setCode("abc");
+    
+    Trader trader = new Trader(1l);
+    trader.setUsername("test trader");
+    
+    Quote quote = new Quote(1l);
+    quote.setBid(50.0d);
+    quote.setOffer(51.0d);
+    quote.setInstrument(instrument);
+    quote.setTrader(trader);
+    
     headers.put("test.header.1", "testing.header.one");
-    producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpExchange(), message, headers);
-    logger.info("produced: [{}]", message);
+    //byte[] body = DomainConverter.toBytes(quote, null);
+    byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, quote);
+    producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpExchange(), body, headers);
+    logger.info("produced: [quoteId={}]", quote.getId());
   }
 
   // -----------------------------------------

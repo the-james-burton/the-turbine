@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+
 public class Quote extends Entity {
 
   private static final long serialVersionUID = 1L;
@@ -37,7 +38,7 @@ public class Quote extends Entity {
   public Quote(Long id) {
     super(id);
   }
-
+  
   // -------------------------------------------
   public Instrument getInstrument() {
     return mInstrument;

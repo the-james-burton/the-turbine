@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+
 public class Instrument extends Entity {
 
   private static final long serialVersionUID = 1L;

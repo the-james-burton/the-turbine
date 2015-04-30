@@ -24,6 +24,9 @@ package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public abstract class Entity implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -34,6 +37,11 @@ public abstract class Entity implements Serializable {
     this.mId = id;
   }
   
+  @Override
+  public String toString() {
+    return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
+  }
+
   // -------------------------------
   public Long getId() {
     return mId;
