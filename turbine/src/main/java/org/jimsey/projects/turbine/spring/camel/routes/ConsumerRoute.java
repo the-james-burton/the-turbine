@@ -52,7 +52,7 @@ public class ConsumerRoute extends BaseRoute {
 
     from(mInfrastructureProperties.getAmqpExchange()).id("test route")
         .convertBodyTo(Quote.class)
-        .to(String.format("slog:%s", this.getClass().getName()))
+        .to("slog:raw")
         .process(mConsumerProcessor)
         .end();
 
