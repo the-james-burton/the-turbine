@@ -22,23 +22,27 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Trader extends Entity {
 
   private static final long serialVersionUID = 1L;
   
-  private String mUsername;
+  private String username;
 
-  public Trader(Long id) {
+  @JsonCreator
+  public Trader(@JsonProperty("id") Long id) {
     super(id);
   }
 
   // -------------------------------------------
   public String getUsername() {
-    return mUsername;
+    return username;
   }
 
   public void setUsername(String username) {
-    mUsername = username;
+    this.username = username;
   }
 
 }

@@ -22,24 +22,28 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 public class Instrument extends Entity {
 
   private static final long serialVersionUID = 1L;
   
-  private String mCode;
-
-  public Instrument(Long id) {
+  private String code;
+  
+  @JsonCreator
+  public Instrument(@JsonProperty("id") Long id) {
     super(id);
   }
 
   // -----------------------------------
   public String getCode() {
-    return mCode;
+    return code;
   }
 
   public void setCode(String code) {
-    mCode = code;
+    this.code = code;
   }
 
   

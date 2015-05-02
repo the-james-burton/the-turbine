@@ -22,53 +22,57 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Trade extends Entity {
 
   private static final long serialVersionUID = 1L;
 
-  private Quote mQuote;
+  private Quote quote;
 
-  private Trader mSeller;
+  private Trader seller;
 
-  private Trader mBuyer;
+  private Trader buyer;
 
-  private Long mSize;
+  private Long size;
 
-  public Trade(Long id) {
+  @JsonCreator
+  public Trade(@JsonProperty("id") Long id) {
     super(id);
   }
 
   // -------------------------------------------
   public Quote getQuote() {
-    return mQuote;
+    return quote;
   }
 
   public void setQuote(Quote quote) {
-    mQuote = quote;
+    this.quote = quote;
   }
 
   public Trader getSeller() {
-    return mSeller;
+    return seller;
   }
 
   public void setSeller(Trader seller) {
-    mSeller = seller;
+    this.seller = seller;
   }
 
   public Trader getBuyer() {
-    return mBuyer;
+    return buyer;
   }
 
   public void setBuyer(Trader buyer) {
-    mBuyer = buyer;
+    this.buyer = buyer;
   }
 
   public Long getSize() {
-    return mSize;
+    return size;
   }
 
   public void setSize(Long size) {
-    mSize = size;
+    this.size = size;
   }
   
 }

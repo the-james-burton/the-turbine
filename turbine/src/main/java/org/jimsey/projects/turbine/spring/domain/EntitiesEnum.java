@@ -22,58 +22,6 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-
-public class Quote extends Entity {
-
-  private static final long serialVersionUID = 1L;
-
-  private Instrument instrument;
-
-  private Trader trader;
-
-  private Double bid;
-
-  private Double offer;
-
-  @JsonCreator
-  public Quote(@JsonProperty("id") Long id) {
-    super(id);
-  }
-
-  // -------------------------------------------
-  public Instrument getInstrument() {
-    return instrument;
-  }
-
-  public void setInstrument(Instrument instrument) {
-    this.instrument = instrument;
-  }
-
-  public Trader getTrader() {
-    return trader;
-  }
-
-  public void setTrader(Trader trader) {
-    this.trader = trader;
-  }
-
-  public Double getBid() {
-    return bid;
-  }
-
-  public void setBid(Double bid) {
-    this.bid = bid;
-  }
-
-  public Double getOffer() {
-    return offer;
-  }
-
-  public void setOffer(Double offer) {
-    this.offer = offer;
-  }
-
+public enum EntitiesEnum {
+  Instrument, Quote, Trade, Trader;
 }
