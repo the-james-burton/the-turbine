@@ -40,10 +40,16 @@ public class InfrastructureProperties {
   private static final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
 
   @NotNull
-  private String mAmqpExchange;
+  private String amqpInstruments;
 
   @NotNull
-  private String mCommonProperty;
+  private String amqpQuotes;
+
+  @NotNull
+  private String amqpTrades;
+
+  @NotNull
+  private String amqpTraders;
 
   @PostConstruct
   public void init() throws JsonProcessingException {
@@ -51,21 +57,37 @@ public class InfrastructureProperties {
     logger.info(objectMapper.writeValueAsString(this));
   }
 
-  public String getCommonProperty() {
-    return mCommonProperty;
-  }
-
-  public void setCommonProperty(final String commonProperty) {
-    this.mCommonProperty = commonProperty;
-  }
-
   // ------------------------------------------
-  public String getAmqpExchange() {
-    return mAmqpExchange;
+  public String getAmqpInstruments() {
+    return amqpInstruments;
   }
 
-  public void setAmqpExchange(final String amqpExchange) {
-    this.mAmqpExchange = amqpExchange;
+  public void setAmqpInstruments(String amqpInstruments) {
+    this.amqpInstruments = amqpInstruments;
+  }
+
+  public String getAmqpQuotes() {
+    return amqpQuotes;
+  }
+
+  public void setAmqpQuotes(String amqpQuotes) {
+    this.amqpQuotes = amqpQuotes;
+  }
+
+  public String getAmqpTrades() {
+    return amqpTrades;
+  }
+
+  public void setAmqpTrades(String amqpTrades) {
+    this.amqpTrades = amqpTrades;
+  }
+
+  public String getAmqpTraders() {
+    return amqpTraders;
+  }
+
+  public void setAmqpTraders(String amqpTraders) {
+    this.amqpTraders = amqpTraders;
   }
 
 }

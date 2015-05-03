@@ -5,6 +5,4 @@ spring:
     port: 49001
 server:
   port: 48001
-producer:
-  period: 1999
   

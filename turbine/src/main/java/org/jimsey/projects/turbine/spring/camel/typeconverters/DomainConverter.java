@@ -25,7 +25,10 @@ package org.jimsey.projects.turbine.spring.camel.typeconverters;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.jimsey.projects.turbine.spring.domain.Entity;
+import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.Trade;
+import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.springframework.util.SerializationUtils;
 
 @Converter
@@ -38,8 +41,23 @@ public class DomainConverter {
   }
 
   @Converter
+  public static byte[] toBytes(Instrument instrument, Exchange exchnge) {
+    return SerializationUtils.serialize(instrument);
+  }
+
+  @Converter
   public static byte[] toBytes(Quote quote, Exchange exchnge) {
     return SerializationUtils.serialize(quote);
+  }
+
+  @Converter
+  public static byte[] toBytes(Trade trade, Exchange exchnge) {
+    return SerializationUtils.serialize(trade);
+  }
+
+  @Converter
+  public static byte[] toBytes(Trader trader, Exchange exchnge) {
+    return SerializationUtils.serialize(trader);
   }
 
   // --------------------------------------------
@@ -49,8 +67,23 @@ public class DomainConverter {
   }
   
   @Converter
+  public static Instrument toInstrument(byte[] bytes, Exchange exchnge) {
+    return (Instrument) SerializationUtils.deserialize(bytes);
+  }
+ 
+  @Converter
   public static Quote toQuote(byte[] bytes, Exchange exchnge) {
     return (Quote) SerializationUtils.deserialize(bytes);
+  }
+ 
+  @Converter
+  public static Trade toTrade(byte[] bytes, Exchange exchnge) {
+    return (Trade) SerializationUtils.deserialize(bytes);
+  }
+ 
+  @Converter
+  public static Trader toTrader(byte[] bytes, Exchange exchnge) {
+    return (Trader) SerializationUtils.deserialize(bytes);
   }
  
 }

@@ -24,7 +24,7 @@
     value="%m%n" />
   <property
     name="LOG_FILE"
-    value="logs/default.log}" />
+    value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
   <property
     name="RAW_FILE"
     value="logs/raw.log}" />
@@ -116,8 +116,10 @@
     <appender-ref ref="DEBUG_LEVEL_REMAPPER" />
   </logger>
 
-  <logger name="raw" additivity="false">
-  <appender-ref ref="RAW" />
+  <logger
+    name="raw"
+    additivity="false">
+    <appender-ref ref="RAW" />
   </logger>
 
   <!-- ================================================================ -->

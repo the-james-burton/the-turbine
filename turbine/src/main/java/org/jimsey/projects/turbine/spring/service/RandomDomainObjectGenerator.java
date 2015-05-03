@@ -1,0 +1,81 @@
+/**
+ * The MIT License
+ * Copyright (c) 2015 the-james-burton
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package org.jimsey.projects.turbine.spring.service;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.jimsey.projects.turbine.spring.domain.Instrument;
+import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.Trade;
+import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RandomDomainObjectGenerator implements DomainObjectGenerator {
+
+  /* (non-Javadoc)
+   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newInstrument()
+   */
+  @Override
+  public Instrument newInstrument() {
+    Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999));
+    instrument.setCode(RandomStringUtils.randomAlphanumeric(10));
+    return instrument;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newTrader()
+   */
+  @Override
+  public Trader newTrader() {
+    Trader trader = new Trader(RandomUtils.nextLong(1, 999));
+    trader.setUsername(RandomStringUtils.randomAlphanumeric(10));
+    return trader;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newQuote()
+   */
+  @Override
+  public Quote newQuote() {
+    Quote quote = new Quote(RandomUtils.nextLong(1, 999));
+    quote.setInstrument(newInstrument());
+    quote.setTrader(newTrader());
+    quote.setBid(RandomUtils.nextDouble(10d, 99d));
+    quote.setOffer(RandomUtils.nextDouble(10d, 99d));
+    return quote;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newTrade()
+   */
+  @Override
+  public Trade newTrade() {
+    Trade trade = new Trade(RandomUtils.nextLong(1, 999));
+    trade.setQuote(newQuote());
+    trade.setBuyer(newTrader());
+    trade.setSeller(newTrader());
+    trade.setSize(RandomUtils.nextLong(1000, 9999));
+    return trade;
+  }
+}

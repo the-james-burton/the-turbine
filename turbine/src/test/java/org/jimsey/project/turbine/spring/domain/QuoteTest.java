@@ -77,6 +77,10 @@ public class QuoteTest {
       Quote quote = json.treeToValue(node.elements().next(), Quote.class);
       System.out.println(quote.toString());
       break;
+    case Instrument:
+      Instrument instrument = json.treeToValue(node.elements().next(), Instrument.class);
+      System.out.println(instrument.toString());
+      break;
     default:
     }
   }

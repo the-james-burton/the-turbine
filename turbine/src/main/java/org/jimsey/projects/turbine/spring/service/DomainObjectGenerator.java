@@ -20,43 +20,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.routes;
+package org.jimsey.projects.turbine.spring.service;
 
-import javax.validation.constraints.NotNull;
-
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import org.jimsey.projects.turbine.spring.domain.Trade;
+import org.jimsey.projects.turbine.spring.domain.Trader;
 
-@Component
-@Profile("consumer")
-public class ConsumerRoute extends BaseRoute {
+public interface DomainObjectGenerator {
 
-  private static final Logger logger = LoggerFactory.getLogger(ConsumerRoute.class);
+  public abstract Instrument newInstrument();
 
-  @Autowired
-  @NotNull
-  private InfrastructureProperties mInfrastructureProperties;
+  public abstract Trader newTrader();
 
-  @Autowired
-  @NotNull
-  private Processor mConsumerProcessor;
+  public abstract Quote newQuote();
 
-  @Override
-  public void configure() throws Exception {
-
-    from(mInfrastructureProperties.getAmqpQuotes()).id("test route")
-        .convertBodyTo(Quote.class)
-        .to("slog:raw")
-        .process(mConsumerProcessor)
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
-  }
+  public abstract Trade newTrade();
 
 }

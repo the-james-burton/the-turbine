@@ -1,3 +1,6 @@
 infrastructure:
-#  amqpExchange: direct:amqp.route.in
-  amqpExchange: rabbitmq://localhost:5672/turbine.test1.exchange?queue=test.queue.name
+  amqpInstruments: rabbitmq://localhost:5672/turbine.test1.exchange.instruments?queue=turbine.test1.queue.instruments
+  amqpQuotes: rabbitmq://localhost:5672/turbine.test1.exchange.quotes?queue=turbine.test1.queue.quotes
+  amqpTrades: rabbitmq://localhost:5672/turbine.test1.exchange.trades?queue=turbine.test1.queue.trades
+  amqpTraders: rabbitmq://localhost:5672/turbine.test1.exchange.traders?queue=turbine.test1.queue.traders
+  
