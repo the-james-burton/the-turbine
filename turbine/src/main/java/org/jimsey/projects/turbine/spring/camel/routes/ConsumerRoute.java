@@ -51,7 +51,8 @@ public class ConsumerRoute extends BaseRoute {
   public void configure() throws Exception {
 
     from(mInfrastructureProperties.getAmqpQuotes()).id("test route")
-        //.convertBodyTo(TurbineObject.class)
+        .convertBodyTo(String.class)
+        .convertBodyTo(TurbineObject.class)
         .to("slog:raw")
         .process(mConsumerProcessor)
         .end();

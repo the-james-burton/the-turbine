@@ -22,7 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +34,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,13 +84,16 @@ public class QuoteProducer extends BaseService {
     
     // let's use Quote for now to test binary objects over rabbit...
     TurbineObject object = new TurbineObject();
-    object.setQuote(rdog.newQuote());
+    List<Quote> quotes = new ArrayList<Quote>();
+    quotes.add(rdog.newQuote());
+    object.setQuotes(quotes);
     
     headers.put("test.header.1", "testing.header.one");
     //byte[] body = DomainConverter.toBytes(quote, null);
-    byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
+    //byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
+    String body = mCamel.getTypeConverter().convertTo(String.class, object);
     producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpQuotes(), body, headers);
-    logger.info("produced: [quoteId={}]", object.getQuote().getId());
+    logger.info("produced: [quoteId={}]", object.getQuotes().get(0).getId());
   }
 
 

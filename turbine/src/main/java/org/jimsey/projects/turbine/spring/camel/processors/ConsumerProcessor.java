@@ -42,7 +42,7 @@ public class ConsumerProcessor implements Processor {
     // byte[] bytes = (byte[]) message.getBody();
     // Quote quote = (Quote) SerializationUtils.deserialize(bytes);
     TurbineObject object = message.getMandatoryBody(TurbineObject.class);
-    logger.info("consumed: [quoteId={}]", object.getQuote().getId());
+    logger.info("consumed: [quoteId={}]", object.getQuotes().get(0).getId());
   }
 
 }

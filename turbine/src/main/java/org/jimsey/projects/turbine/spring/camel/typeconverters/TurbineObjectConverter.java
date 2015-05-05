@@ -22,23 +22,44 @@
  */
 package org.jimsey.projects.turbine.spring.camel.typeconverters;
 
+import java.io.IOException;
+
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.springframework.util.SerializationUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Converter
 public class TurbineObjectConverter {
+
+  private static ObjectMapper json = new ObjectMapper();
 
   @Converter
   public static byte[] toBytes(TurbineObject object, Exchange exchange) {
     return SerializationUtils.serialize(object);
+  }
+  @Converter
+  public static String toString(TurbineObject object, Exchange exchange) {
+    return object.toString();
   }
 
   // --------------------------------------------
   @Converter
   public static TurbineObject toEntity(byte[] bytes, Exchange exchange) {
     return (TurbineObject) SerializationUtils.deserialize(bytes);
+  }
+
+  @Converter
+  public static TurbineObject toEntity(String text, Exchange exchange) {
+    TurbineObject object = null;
+    try {
+      object = json.readValue(text, TurbineObject.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return object;
   }
 
 }

@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +34,13 @@ public class TurbineObject implements Serializable {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private Quote quote;
+  private List<Quote> quotes;
   
-  private Instrument instrument;
+  private List<Instrument> instruments;
   
-  private Trade trade;
+  private List<Trade> trades;
   
-  private Trader trader;
+  private List<Trader> traders;
 
   // ------------------------------------
   @Override
@@ -59,38 +60,36 @@ public class TurbineObject implements Serializable {
   }
 
   // ------------------------------------
-  public Quote getQuote() {
-    return quote;
+  public List<Quote> getQuotes() {
+    return quotes;
   }
 
-  public void setQuote(Quote quote) {
-    this.quote = quote;
+  public void setQuotes(List<Quote> quotes) {
+    this.quotes = quotes;
   }
 
-  public Instrument getInstrument() {
-    return instrument;
+  public List<Instrument> getInstruments() {
+    return instruments;
   }
 
-  public void setInstrument(Instrument instrument) {
-    this.instrument = instrument;
+  public void setInstruments(List<Instrument> instruments) {
+    this.instruments = instruments;
   }
 
-  public Trade getTrade() {
-    return trade;
+  public List<Trade> getTrades() {
+    return trades;
   }
 
-  public void setTrade(Trade trade) {
-    this.trade = trade;
+  public void setTrades(List<Trade> trades) {
+    this.trades = trades;
   }
 
-  public Trader getTrader() {
-    return trader;
+  public List<Trader> getTraders() {
+    return traders;
   }
 
-  public void setTrader(Trader trader) {
-    this.trader = trader;
+  public void setTraders(List<Trader> traders) {
+    this.traders = traders;
   }
-  
-  
-  
+
 }

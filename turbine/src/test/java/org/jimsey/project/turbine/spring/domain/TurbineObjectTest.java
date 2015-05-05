@@ -23,10 +23,10 @@
 package org.jimsey.project.turbine.spring.domain;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
@@ -55,7 +55,9 @@ public class TurbineObjectTest {
     rdog = new RandomDomainObjectGenerator();
     
     object = new TurbineObject();
-    object.setQuote(rdog.newQuote());
+    List<Quote> quotes = new ArrayList<Quote>();
+    quotes.add(rdog.newQuote());
+    object.setQuotes(quotes);
 
   }
 
