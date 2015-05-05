@@ -23,55 +23,74 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class Entity implements Serializable {
+public class TurbineObject implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private final Long id;
+  private static ObjectMapper json = new ObjectMapper();
 
-  private LocalDateTime timestamp = LocalDateTime.now();
+  private Quote quote;
+  
+  private Instrument instrument;
+  
+  private Trade trade;
+  
+  private Trader trader;
 
-  public Entity(Long id) {
-    this.id = id;
-    this.timestamp = LocalDateTime.now();
+  // ------------------------------------
+  @Override
+  public String toString() {
+    String result = null;
+    try {
+      // result = String.format("{\"%s\":%s}", this.getClass().getSimpleName(), json.writeValueAsString(this));
+      result = json.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return result;
+    // return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
+    // return String.format("{\"%s\":%s}",
+    //     this.getClass().getSimpleName(),
+    //     ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE));
   }
 
-
-  // -------------------------------
-  public Long getId() {
-    return id;
+  // ------------------------------------
+  public Quote getQuote() {
+    return quote;
   }
 
-  // public void setId(Long id) {
-  // this.id = id;
-  // }
-
-  @JsonIgnore
-  public LocalDateTime getTimestamp() {
-    return timestamp;
+  public void setQuote(Quote quote) {
+    this.quote = quote;
   }
 
-  @JsonIgnore
-  public void setTimestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
+  public Instrument getInstrument() {
+    return instrument;
   }
 
-  @JsonProperty("timestamp")
-  public String getTimestampAsString() {
-    return timestamp.toString();
+  public void setInstrument(Instrument instrument) {
+    this.instrument = instrument;
   }
 
-  @JsonProperty("timestamp")
-  public void setTimestampFromString(String timestamp) {
-    this.timestamp = LocalDateTime.parse(timestamp);
+  public Trade getTrade() {
+    return trade;
   }
 
+  public void setTrade(Trade trade) {
+    this.trade = trade;
+  }
+
+  public Trader getTrader() {
+    return trader;
+  }
+
+  public void setTrader(Trader trader) {
+    this.trader = trader;
+  }
+  
+  
+  
 }

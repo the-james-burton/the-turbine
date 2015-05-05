@@ -20,8 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring.camel.typeconverters;
 
-public enum EntitiesEnum {
-  Instrument, Quote, Trade, Trader;
+import org.apache.camel.Converter;
+import org.apache.camel.Exchange;
+import org.jimsey.projects.turbine.spring.domain.TurbineObject;
+import org.springframework.util.SerializationUtils;
+
+@Converter
+public class TurbineObjectConverter {
+
+  @Converter
+  public static byte[] toBytes(TurbineObject object, Exchange exchange) {
+    return SerializationUtils.serialize(object);
+  }
+
+  // --------------------------------------------
+  @Converter
+  public static TurbineObject toEntity(byte[] bytes, Exchange exchange) {
+    return (TurbineObject) SerializationUtils.deserialize(bytes);
+  }
+
 }

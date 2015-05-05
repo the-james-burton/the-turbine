@@ -24,19 +24,15 @@ package org.jimsey.projects.turbine.spring.service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
-import org.apache.commons.lang3.RandomUtils;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +57,7 @@ public class QuoteProducer extends BaseService {
 
   @Autowired
   @NotNull
-  private DomainObjectGenerator randomDomainObjectGenerator;  
+  private DomainObjectGenerator rdog;  
   
   @Autowired
   @NotNull
@@ -84,13 +80,14 @@ public class QuoteProducer extends BaseService {
     Map<String, Object> headers = new HashMap<String, Object>();
     
     // let's use Quote for now to test binary objects over rabbit...
-    Quote quote = randomDomainObjectGenerator.newQuote();
+    TurbineObject object = new TurbineObject();
+    object.setQuote(rdog.newQuote());
     
     headers.put("test.header.1", "testing.header.one");
     //byte[] body = DomainConverter.toBytes(quote, null);
-    byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, quote);
+    byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
     producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpQuotes(), body, headers);
-    logger.info("produced: [quoteId={}]", quote.getId());
+    logger.info("produced: [quoteId={}]", object.getQuote().getId());
   }
 
 
