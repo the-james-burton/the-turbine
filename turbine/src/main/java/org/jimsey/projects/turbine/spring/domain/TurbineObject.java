@@ -28,7 +28,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TurbineObject implements Serializable {
+public class TurbineObject extends Timestamped implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

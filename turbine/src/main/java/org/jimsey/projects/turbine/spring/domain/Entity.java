@@ -23,25 +23,16 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public abstract class Entity implements Serializable {
+public abstract class Entity extends Timestamped implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private final Long id;
 
-  private LocalDateTime timestamp = LocalDateTime.now();
 
   public Entity(Long id) {
     this.id = id;
-    this.timestamp = LocalDateTime.now();
   }
 
 
@@ -54,24 +45,5 @@ public abstract class Entity implements Serializable {
   // this.id = id;
   // }
 
-  @JsonIgnore
-  public LocalDateTime getTimestamp() {
-    return timestamp;
-  }
-
-  @JsonIgnore
-  public void setTimestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  @JsonProperty("timestamp")
-  public String getTimestampAsString() {
-    return timestamp.toString();
-  }
-
-  @JsonProperty("timestamp")
-  public void setTimestampFromString(String timestamp) {
-    this.timestamp = LocalDateTime.parse(timestamp);
-  }
 
 }
