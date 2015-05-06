@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.log.LogComponent;
+import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicyFactory;
 import org.jimsey.projects.turbine.spring.camel.formatters.ToStringLogFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +40,16 @@ public class CamelSetup {
 
   @Autowired
   CamelContext mCamel;
-  
+
   @PostConstruct
   public void init() {
     logger.info("setting up camel...");
     LogComponent slog = new LogComponent();
     slog.setExchangeFormatter(new ToStringLogFormatter());
+    mCamel.setUseMDCLogging(true);
     mCamel.addComponent("slog", slog);
+    mCamel.addRoutePolicyFactory(new MetricsRoutePolicyFactory());
     logger.info("camel setup complete");
   }
-  
+
 }

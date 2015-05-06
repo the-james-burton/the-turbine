@@ -24,17 +24,37 @@ package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public abstract class Entity extends Timestamped implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  private static ObjectMapper json = new ObjectMapper();
+
   private final Long id;
 
-
-  public Entity(Long id) {
+  public Entity(final Long id) {
     this.id = id;
   }
 
+  // ------------------------------------
+  @Override
+  public String toString() {
+    String result = null;
+    try {
+      // result = String.format("{\"%s\":%s}", this.getClass().getSimpleName(), json.writeValueAsString(this));
+      result = json.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return result;
+    // return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
+    // return String.format("{\"%s\":%s}",
+    // this.getClass().getSimpleName(),
+    // ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE));
+  }
 
   // -------------------------------
   public Long getId() {
@@ -44,6 +64,5 @@ public abstract class Entity extends Timestamped implements Serializable {
   // public void setId(Long id) {
   // this.id = id;
   // }
-
 
 }

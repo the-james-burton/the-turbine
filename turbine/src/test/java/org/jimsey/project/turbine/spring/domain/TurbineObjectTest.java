@@ -23,11 +23,8 @@
 package org.jimsey.project.turbine.spring.domain;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
 import org.junit.Before;
@@ -43,43 +40,22 @@ public class TurbineObjectTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
-  private TurbineObject object;
-
   private ObjectMapper json;
-  
+
   private DomainObjectGenerator rdog;
 
   @Before
   public void before() {
     json = new ObjectMapper();
     rdog = new RandomDomainObjectGenerator();
-    
-    object = new TurbineObject();
-    List<Quote> quotes = new ArrayList<Quote>();
-    quotes.add(rdog.newQuote());
-    object.setQuotes(quotes);
-
   }
 
   @Test
-  public void testTurbineObject() throws JsonParseException, JsonMappingException, IOException {
-    String text = object.toString();
+  public void testQuote() throws JsonParseException, JsonMappingException, IOException {
+    Quote quote = rdog.newQuote();
+    String text = quote.toString();
     System.out.println(text);
-    TurbineObject object = json.readValue(text, TurbineObject.class);
+    Quote object = json.readValue(text, Quote.class);
     System.out.println(object.toString());
-    /*
-    JsonNode node = json.readTree(text);
-    switch (EntitiesEnum.valueOf(node.fieldNames().next())) {
-    case Quote:
-      Quote quote = json.treeToValue(node.elements().next(), Quote.class);
-      System.out.println(quote.toString());
-      break;
-    case Instrument:
-      Instrument instrument = json.treeToValue(node.elements().next(), Instrument.class);
-      System.out.println(instrument.toString());
-      break;
-    default:
-    }
-    */
   }
 }

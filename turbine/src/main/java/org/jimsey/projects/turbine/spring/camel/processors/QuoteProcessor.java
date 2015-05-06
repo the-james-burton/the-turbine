@@ -26,23 +26,22 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConsumerProcessor implements Processor {
+public class QuoteProcessor implements Processor {
 
-  private static final Logger logger = LoggerFactory.getLogger(ConsumerProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(QuoteProcessor.class);
 
   @Override
-  public void process(Exchange exchange) throws Exception {
+  public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     // byte[] bytes = (byte[]) message.getBody();
     // Quote quote = (Quote) SerializationUtils.deserialize(bytes);
-    TurbineObject object = message.getMandatoryBody(TurbineObject.class);
-    logger.info("consumed: [quoteId={}]", object.getQuotes().get(0).getId());
+    Quote quote = message.getMandatoryBody(Quote.class);
+    logger.info("consumed: [quoteId={}]", quote.getId());
   }
 
 }

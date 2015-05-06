@@ -22,9 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +33,6 @@ import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +57,8 @@ public class QuoteProducer extends BaseService {
 
   @Autowired
   @NotNull
-  private DomainObjectGenerator rdog;  
-  
+  private DomainObjectGenerator rdog;
+
   @Autowired
   @NotNull
   private InfrastructureProperties mInfrastructureProperties;
@@ -81,20 +78,16 @@ public class QuoteProducer extends BaseService {
     ProducerTemplate producer = mCamel.createProducerTemplate();
 
     Map<String, Object> headers = new HashMap<String, Object>();
-    
-    // let's use Quote for now to test binary objects over rabbit...
-    TurbineObject object = new TurbineObject();
-    List<Quote> quotes = new ArrayList<Quote>();
-    quotes.add(rdog.newQuote());
-    object.setQuotes(quotes);
-    
-    headers.put("test.header.1", "testing.header.one");
-    //byte[] body = DomainConverter.toBytes(quote, null);
-    //byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
-    String body = mCamel.getTypeConverter().convertTo(String.class, object);
-    producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpQuotes(), body, headers);
-    logger.info("produced: [quoteId={}]", object.getQuotes().get(0).getId());
-  }
 
+    // let's use Quote for now to test binary objects over rabbit...
+    Quote quote = rdog.newQuote();
+
+    headers.put("test.header.1", "testing.header.one");
+    // byte[] body = DomainConverter.toBytes(quote, null);
+    // byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
+    String body = mCamel.getTypeConverter().convertTo(String.class, quote);
+    producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpQuotes(), body, headers);
+    logger.info("produced: [quoteId={}]", quote.getId());
+  }
 
 }

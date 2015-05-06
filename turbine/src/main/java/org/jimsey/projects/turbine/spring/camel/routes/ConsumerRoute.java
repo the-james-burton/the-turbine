@@ -26,7 +26,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.spring.domain.TurbineObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +49,9 @@ public class ConsumerRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
 
-    from(mInfrastructureProperties.getAmqpQuotes()).id("test route")
+    from(mInfrastructureProperties.getAmqpQuotes()).id("quotes")
         .convertBodyTo(String.class)
-        .convertBodyTo(TurbineObject.class)
-        .to("slog:raw")
+        .to("slog:json")
         .process(mConsumerProcessor)
         .end();
 

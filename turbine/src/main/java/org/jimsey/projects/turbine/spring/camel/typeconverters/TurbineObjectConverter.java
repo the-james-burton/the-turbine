@@ -26,7 +26,11 @@ import java.io.IOException;
 
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
-import org.jimsey.projects.turbine.spring.domain.TurbineObject;
+import org.jimsey.projects.turbine.spring.domain.Entity;
+import org.jimsey.projects.turbine.spring.domain.Instrument;
+import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.Trade;
+import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.springframework.util.SerializationUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,30 +40,97 @@ public class TurbineObjectConverter {
 
   private static ObjectMapper json = new ObjectMapper();
 
+  // --------------------------------------------
   @Converter
-  public static byte[] toBytes(TurbineObject object, Exchange exchange) {
-    return SerializationUtils.serialize(object);
-  }
-  @Converter
-  public static String toString(TurbineObject object, Exchange exchange) {
-    return object.toString();
+  public static byte[] toBytes(final Entity entity, final Exchange exchange) {
+    return SerializationUtils.serialize(entity);
   }
 
   // --------------------------------------------
   @Converter
-  public static TurbineObject toEntity(byte[] bytes, Exchange exchange) {
-    return (TurbineObject) SerializationUtils.deserialize(bytes);
+  public static Quote toQuote(final byte[] bytes, final Exchange exchange) {
+    return (Quote) SerializationUtils.deserialize(bytes);
   }
 
   @Converter
-  public static TurbineObject toEntity(String text, Exchange exchange) {
-    TurbineObject object = null;
+  public static Instrument toInstrument(final byte[] bytes, final Exchange exchange) {
+    return (Instrument) SerializationUtils.deserialize(bytes);
+  }
+
+  @Converter
+  public static Trade toTrade(final byte[] bytes, final Exchange exchange) {
+    return (Trade) SerializationUtils.deserialize(bytes);
+  }
+
+  @Converter
+  public static Trader toTrader(final byte[] bytes, final Exchange exchange) {
+    return (Trader) SerializationUtils.deserialize(bytes);
+  }
+
+  // --------------------------------------------
+  @Converter
+  public static String toString(final Quote quote, final Exchange exchange) {
+    return quote.toString();
+  }
+
+  @Converter
+  public static String toString(final Instrument instrument, final Exchange exchange) {
+    return instrument.toString();
+  }
+
+  @Converter
+  public static String toString(final Trade trade, final Exchange exchange) {
+    return trade.toString();
+  }
+
+  @Converter
+  public static String toString(final Trader trader, final Exchange exchange) {
+    return trader.toString();
+  }
+
+  // --------------------------------------------
+  @Converter
+  public static Quote toQuote(final String text, final Exchange exchange) {
+    Quote quote = null;
     try {
-      object = json.readValue(text, TurbineObject.class);
+      quote = json.readValue(text, Quote.class);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return object;
+    return quote;
+  }
+
+  @Converter
+  public static Instrument toInstrument(final String text, final Exchange exchange) {
+    Instrument instrument = null;
+    try {
+      instrument = json.readValue(text, Instrument.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return instrument;
+  }
+
+  @Converter
+  public static Trade toTrade(final String text, final Exchange exchange) {
+    Trade trade = null;
+    try {
+      trade = json.readValue(text, Trade.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return trade;
+  }
+
+  @Converter
+  public static Trader toTrader(final String text, final Exchange exchange) {
+    Trader trader = null;
+    try {
+      trader = json.readValue(text, Trader.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return trader;
   }
 
 }

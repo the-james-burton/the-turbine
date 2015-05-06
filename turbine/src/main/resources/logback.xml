@@ -27,7 +27,7 @@
     value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
   <property
     name="RAW_FILE"
-    value="logs/raw.log}" />
+    value="logs/raw}" />
 
   <!-- ================================================================ -->
   <appender
@@ -36,6 +36,28 @@
     <encoder>
       <pattern>${CONSOLE_LOG_PATTERN}</pattern>
     </encoder>
+  </appender>
+
+  <appender name="JSON" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>camel.routeId</key>
+      <defaultValue>unknown</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="RAW" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+          <pattern>${RAW_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${RAW_FILE}-${camel.routeId}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+          <fileNamePattern>${RAW_FILE}-${camel.routeId}.log.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+          <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+      </appender>
+      <!-- <appender name="FILE-${logid}" class="ch.qos.logback.core.FileAppender"> <file>logs/sift-${logid}.log</file> <append>false</append> </appender> -->
+    </sift>
   </appender>
 
   <appender
@@ -47,21 +69,6 @@
     <file>${LOG_FILE}</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <fileNamePattern>${LOG_FILE}.%i</fileNamePattern>
-    </rollingPolicy>
-    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>10MB</maxFileSize>
-    </triggeringPolicy>
-  </appender>
-
-  <appender
-    name="RAW"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <encoder>
-      <pattern>${RAW_LOG_PATTERN}</pattern>
-    </encoder>
-    <file>${RAW_FILE}</file>
-    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>${RAW_FILE}.%i</fileNamePattern>
     </rollingPolicy>
     <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
       <maxFileSize>10MB</maxFileSize>
@@ -117,9 +124,9 @@
   </logger>
 
   <logger
-    name="raw"
+    name="json"
     additivity="false">
-    <appender-ref ref="RAW" />
+    <appender-ref ref="JSON" />
   </logger>
 
   <!-- ================================================================ -->
