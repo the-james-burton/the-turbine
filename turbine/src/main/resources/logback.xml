@@ -27,7 +27,7 @@
     value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
   <property
     name="RAW_FILE"
-    value="logs/raw}" />
+    value="logs/json}" />
 
   <!-- ================================================================ -->
   <appender
