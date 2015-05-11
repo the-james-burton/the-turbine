@@ -22,9 +22,17 @@
  */
 package org.jimsey.projects.turbine.spring.camel.routes;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.camel.builder.RouteBuilder;
+import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class BaseRoute extends RouteBuilder {
+
+  @Autowired
+  @NotNull
+  protected InfrastructureProperties infrastructureProperties;
 
   @Override
   public void configure() throws Exception {

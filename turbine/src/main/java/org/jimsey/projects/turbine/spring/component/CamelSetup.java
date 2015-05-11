@@ -39,16 +39,16 @@ public class CamelSetup {
   private static final Logger logger = LoggerFactory.getLogger(CamelSetup.class);
 
   @Autowired
-  CamelContext mCamel;
+  CamelContext camel;
 
   @PostConstruct
   public void init() {
     logger.info("setting up camel...");
     LogComponent slog = new LogComponent();
     slog.setExchangeFormatter(new ToStringLogFormatter());
-    mCamel.setUseMDCLogging(true);
-    mCamel.addComponent("slog", slog);
-    mCamel.addRoutePolicyFactory(new MetricsRoutePolicyFactory());
+    camel.setUseMDCLogging(true);
+    camel.addComponent("slog", slog);
+    camel.addRoutePolicyFactory(new MetricsRoutePolicyFactory());
     logger.info("camel setup complete");
   }
 

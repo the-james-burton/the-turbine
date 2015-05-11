@@ -26,4 +26,6 @@ public class TurbineConstants {
 
   public static final long PRODUCER_PERIOD = 2000;
   
+  public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
+  
 }

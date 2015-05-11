@@ -34,7 +34,7 @@ public class BaseService {
   private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
   @Autowired
-  protected Environment mEnvironment;
+  protected Environment environment;
 
   @PostConstruct
   public void init() {

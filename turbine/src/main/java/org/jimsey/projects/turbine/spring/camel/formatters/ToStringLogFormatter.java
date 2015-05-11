@@ -25,7 +25,7 @@ package org.jimsey.projects.turbine.spring.camel.formatters;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
 import org.apache.camel.spi.ExchangeFormatter;
-import org.jimsey.projects.turbine.spring.camel.routes.ConsumerRoute;
+import org.jimsey.projects.turbine.spring.camel.routes.QuoteConsumerRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

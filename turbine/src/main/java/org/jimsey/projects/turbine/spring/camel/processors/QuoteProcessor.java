@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.camel.processors;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,9 @@ public class QuoteProcessor implements Processor {
     // byte[] bytes = (byte[]) message.getBody();
     // Quote quote = (Quote) SerializationUtils.deserialize(bytes);
     Quote quote = message.getMandatoryBody(Quote.class);
-    logger.info("consumed: [quoteId={}]", quote.getId());
+    String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
+    
+    logger.info("consumed: [{}={}, quoteId={}]",TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, quote.getId());
   }
 
 }

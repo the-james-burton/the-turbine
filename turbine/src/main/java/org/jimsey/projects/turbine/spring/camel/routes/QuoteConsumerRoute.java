@@ -25,7 +25,6 @@ package org.jimsey.projects.turbine.spring.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,25 +33,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("consumer")
-public class ConsumerRoute extends BaseRoute {
+public class QuoteConsumerRoute extends BaseRoute {
 
-  private static final Logger logger = LoggerFactory.getLogger(ConsumerRoute.class);
-
-  @Autowired
-  @NotNull
-  private InfrastructureProperties mInfrastructureProperties;
+  private static final Logger logger = LoggerFactory.getLogger(QuoteConsumerRoute.class);
 
   @Autowired
   @NotNull
-  private Processor mConsumerProcessor;
+  private Processor quoteProcessor;
 
   @Override
   public void configure() throws Exception {
 
-    from(mInfrastructureProperties.getAmqpQuotes()).id("quotes")
+    from(infrastructureProperties.getAmqpQuotes()).id("quotes")
         .convertBodyTo(String.class)
         .to("slog:json")
-        .process(mConsumerProcessor)
+        .process(quoteProcessor)
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));

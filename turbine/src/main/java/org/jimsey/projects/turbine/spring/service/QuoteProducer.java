@@ -22,72 +22,41 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 @Profile("producer")
 @ConfigurationProperties(prefix = "producer")
 @ManagedResource
-public class QuoteProducer extends BaseService {
+public class QuoteProducer extends AbstractBaseProducer {
 
   private static final Logger logger = LoggerFactory.getLogger(QuoteProducer.class);
-
-  @Autowired
-  @NotNull
-  private CamelContext mCamel;
-
-  @Autowired
-  @NotNull
-  private DomainObjectGenerator rdog;
-
-  @Autowired
-  @NotNull
-  private InfrastructureProperties mInfrastructureProperties;
 
   @Override
   @PostConstruct
   public void init() {
     super.init();
 
-    logger.info(String.format("camel=%s", mCamel.getName()));
+    logger.info(String.format("camel=%s", camel.getName()));
     logger.info("producer initialised");
   }
 
-  @ManagedOperation
-  @Scheduled(fixedDelay = TurbineConstants.PRODUCER_PERIOD)
-  public void produce() {
-    ProducerTemplate producer = mCamel.createProducerTemplate();
-
-    Map<String, Object> headers = new HashMap<String, Object>();
-
-    // let's use Quote for now to test binary objects over rabbit...
+  
+  @Override
+  public Object createBody() {
     Quote quote = rdog.newQuote();
-
-    headers.put("test.header.1", "testing.header.one");
-    // byte[] body = DomainConverter.toBytes(quote, null);
-    // byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
-    String body = mCamel.getTypeConverter().convertTo(String.class, quote);
-    producer.sendBodyAndHeaders(mInfrastructureProperties.getAmqpQuotes(), body, headers);
     logger.info("produced: [quoteId={}]", quote.getId());
+    return quote;
   }
+
 
 }
