@@ -24,7 +24,6 @@ package org.jimsey.projects.turbine.spring.service;
 
 import javax.annotation.PostConstruct;
 
-import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,6 @@ public class QuoteProducer extends AbstractBaseProducer {
     logger.info("producer initialised");
   }
 
-  
   @Override
   public Object createBody() {
     Quote quote = rdog.newQuote();
@@ -58,5 +56,9 @@ public class QuoteProducer extends AbstractBaseProducer {
     return quote;
   }
 
+  @Override
+  public String getEndpointUri() {
+    return infrastructureProperties.getAmqpQuotes();
+  }
 
 }

@@ -20,29 +20,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.processors;
+package org.jimsey.projects.turbine.spring.service;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
+import javax.annotation.PostConstruct;
+
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.stereotype.Service;
 
-@Component
-public class InstrumentProcessor implements Processor {
+@Service
+@Profile("producer")
+@ConfigurationProperties(prefix = "producer")
+@ManagedResource
+public class InstrumentProducer extends AbstractBaseProducer {
 
-  private static final Logger logger = LoggerFactory.getLogger(InstrumentProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(InstrumentProducer.class);
 
   @Override
-  public void process(final Exchange exchange) throws Exception {
-    Message message = exchange.getIn();
-    Instrument instrument = message.getMandatoryBody(Instrument.class);
-    String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-   
-    logger.info("consumed: [{}={}, instrumentId={}]",TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, instrument.getId());
+  @PostConstruct
+  public void init() {
+    super.init();
+
+    logger.info(String.format("camel=%s", camel.getName()));
+    logger.info("producer initialised");
+  }
+
+  @Override
+  public Object createBody() {
+    Instrument instrument = rdog.newInstrument();
+    logger.info("produced: [instrumentId={}]", instrument.getId());
+    return instrument;
+  }
+
+  @Override
+  public String getEndpointUri() {
+    return infrastructureProperties.getAmqpInstruments();
   }
 
 }

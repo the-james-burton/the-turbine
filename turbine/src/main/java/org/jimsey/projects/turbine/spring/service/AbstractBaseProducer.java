@@ -70,9 +70,11 @@ public abstract class AbstractBaseProducer extends BaseService {
     headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, body.getClass().getName());
 
     String text = camel.getTypeConverter().convertTo(String.class, body);
-    producer.sendBodyAndHeaders(infrastructureProperties.getAmqpQuotes(), text, headers);
+    producer.sendBodyAndHeaders(getEndpointUri(), text, headers);
   }
 
   public abstract Object createBody();
+  
+  public abstract String getEndpointUri();
   
 }
