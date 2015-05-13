@@ -22,16 +22,18 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+@Document(indexName = "instrument", type = "instrument")
 public class Instrument extends Entity {
 
   private static final long serialVersionUID = 1L;
-  
+
   private String code;
-  
+
   @JsonCreator
   public Instrument(@JsonProperty("id") Long id) {
     super(id);
@@ -46,5 +48,4 @@ public class Instrument extends Entity {
     this.code = code;
   }
 
-  
 }

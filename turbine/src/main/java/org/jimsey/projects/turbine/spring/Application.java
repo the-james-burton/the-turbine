@@ -35,10 +35,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableElasticsearchRepositories(basePackages="org.jimsey.projects.turbine.spring.elasticsearch.repositories")
 public class Application extends CamelConfiguration {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);

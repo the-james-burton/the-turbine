@@ -24,6 +24,8 @@ package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
 
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,6 +35,7 @@ public abstract class Entity extends Timestamped implements Serializable {
 
   private static ObjectMapper json = new ObjectMapper();
 
+  @Id
   private final Long id;
 
   public Entity(final Long id) {
