@@ -23,10 +23,12 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@Document(indexName = "trade", type = "trade")
 public class Trade extends Entity {
 
   private static final long serialVersionUID = 1L;

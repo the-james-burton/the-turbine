@@ -37,10 +37,9 @@ public class Timestamped implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @Field
   private final LocalDateTime timestamp;
 
-  public Timestamped(@JsonProperty("timestamp") String timestamp) {
+  public Timestamped(String timestamp) {
     if (timestamp == null) {
       this.timestamp = LocalDateTime.now();
     } else {
