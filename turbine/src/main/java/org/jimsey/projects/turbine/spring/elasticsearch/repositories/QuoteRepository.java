@@ -20,45 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.elasticsearch.annotations.Field;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class Timestamped implements Serializable {
-
-  private static final long serialVersionUID = 1L;
-
-  @Field
-  private final LocalDateTime timestamp;
-
-  public Timestamped(@JsonProperty("timestamp") String timestamp) {
-    if (timestamp == null) {
-      this.timestamp = LocalDateTime.now();
-    } else {
-      this.timestamp = LocalDateTime.parse(timestamp);
-    }
-  }
-
-  // ------------------------------
-  @Transient
-  @JsonIgnore
-  public LocalDateTime getTimestamp() {
-    return timestamp;
-  }
-
-  @Transient
-  @JsonProperty("timestamp")
-  public String getTimestampAsString() {
-    return timestamp.toString();
-  }
+public interface QuoteRepository extends ElasticsearchRepository<Quote, Long> {
 
 }

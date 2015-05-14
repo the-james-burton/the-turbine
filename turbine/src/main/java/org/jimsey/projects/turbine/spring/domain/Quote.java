@@ -22,10 +22,13 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+@Document(indexName = "quote", type = "quote")
 public class Quote extends Entity {
 
   private static final long serialVersionUID = 1L;
@@ -38,9 +41,10 @@ public class Quote extends Entity {
 
   private Double offer;
 
+  @PersistenceConstructor
   @JsonCreator
-  public Quote(@JsonProperty("id") Long id) {
-    super(id);
+  public Quote(@JsonProperty("id") Long id, @JsonProperty("timestamp") String timestamp) {
+    super(id, timestamp);
   }
 
   // -------------------------------------------

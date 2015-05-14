@@ -38,7 +38,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
    */
   @Override
   public Instrument newInstrument() {
-    Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999));
+    Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999), null);
     instrument.setCode(RandomStringUtils.randomAlphanumeric(10));
     return instrument;
   }
@@ -48,7 +48,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
    */
   @Override
   public Trader newTrader() {
-    Trader trader = new Trader(RandomUtils.nextLong(1, 999));
+    Trader trader = new Trader(RandomUtils.nextLong(1, 999), null);
     trader.setUsername(RandomStringUtils.randomAlphanumeric(10));
     return trader;
   }
@@ -58,7 +58,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
    */
   @Override
   public Quote newQuote() {
-    Quote quote = new Quote(RandomUtils.nextLong(1, 999));
+    Quote quote = new Quote(RandomUtils.nextLong(1, 999), null);
     quote.setInstrument(newInstrument());
     quote.setTrader(newTrader());
     quote.setBid(RandomUtils.nextDouble(10d, 99d));
@@ -71,7 +71,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
    */
   @Override
   public Trade newTrade() {
-    Trade trade = new Trade(RandomUtils.nextLong(1, 999));
+    Trade trade = new Trade(RandomUtils.nextLong(1, 999), null);
     trade.setQuote(newQuote());
     trade.setBuyer(newTrader());
     trade.setSeller(newTrader());

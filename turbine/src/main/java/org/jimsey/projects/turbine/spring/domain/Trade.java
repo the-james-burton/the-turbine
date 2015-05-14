@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import org.springframework.data.annotation.PersistenceConstructor;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -37,9 +39,10 @@ public class Trade extends Entity {
 
   private Long size;
 
+  @PersistenceConstructor
   @JsonCreator
-  public Trade(@JsonProperty("id") Long id) {
-    super(id);
+  public Trade(@JsonProperty("id") Long id, @JsonProperty("timestamp") String timestamp) {
+    super(id, timestamp);
   }
 
   // -------------------------------------------

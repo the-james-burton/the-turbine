@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -34,9 +35,10 @@ public class Instrument extends Entity {
 
   private String code;
 
+  @PersistenceConstructor
   @JsonCreator
-  public Instrument(@JsonProperty("id") Long id) {
-    super(id);
+  public Instrument(@JsonProperty("id") Long id, @JsonProperty("timestamp") String timestamp) {
+    super(id, timestamp);
   }
 
   // -----------------------------------

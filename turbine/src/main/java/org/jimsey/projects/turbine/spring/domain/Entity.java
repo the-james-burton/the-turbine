@@ -38,7 +38,8 @@ public abstract class Entity extends Timestamped implements Serializable {
   @Id
   private final Long id;
 
-  public Entity(final Long id) {
+  public Entity(final Long id, final String timestamp) {
+    super(timestamp);
     this.id = id;
   }
 
