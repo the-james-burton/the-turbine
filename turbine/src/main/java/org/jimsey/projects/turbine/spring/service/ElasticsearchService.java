@@ -25,17 +25,28 @@ package org.jimsey.projects.turbine.spring.service;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.InstrumentRepository;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.QuoteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 
 @Service
 public class ElasticsearchService {
+  
+  private static final Logger logger = LoggerFactory.getLogger(ElasticsearchService.class);
+
+  @Autowired
+  @NotNull
+  private ElasticsearchTemplate elasticsearch;
 
   @Autowired
   @NotNull
@@ -51,15 +62,24 @@ public class ElasticsearchService {
   
   @PostConstruct
   public void test() {
-    System.out.println("TEST");
-    Instrument instrument = rdog.newInstrument();
-    instrumentRepository.save(instrument);
-    System.out.println(Iterables.toString(instrumentRepository.findAll()));
+    //Instrument instrument = rdog.newInstrument();
+    //instrumentRepository.save(instrument);
+    //logger.info(Iterables.toString(instrumentRepository.findAll()));
     
-    Quote quote = rdog.newQuote();
-    quoteRepository.save(quote);
-    System.out.println(Iterables.toString(quoteRepository.findAll()));
+    logger.info("getAllQuotes() : [{}]", getAllQuotes());
 
+  }
+
+  public String getAllQuotes() {
+    NativeSearchQuery query = new NativeSearchQueryBuilder()
+    .withIndices("logstash-*")
+    .withTypes("quote")
+    .build();
+    
+    Iterable<Quote> quotes = quoteRepository.search(query);
+    
+    return Joiner.on(',').join(quotes);
+    
   }
   
 }
