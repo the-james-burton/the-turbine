@@ -23,8 +23,9 @@
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
 import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom.EntityRepositoryCustom;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface QuoteRepository extends ElasticsearchRepository<Quote, Long> {
+public interface QuoteRepository extends ElasticsearchRepository<Quote, Long>, EntityRepositoryCustom<Quote> {
 
 }

@@ -20,38 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.routes;
+package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
-import javax.validation.constraints.NotNull;
+import org.jimsey.projects.turbine.spring.domain.Entity;
 
-import org.apache.camel.Processor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+public interface EntityRepositoryCustom<T extends Entity> {
 
-@Component
-@Profile("consumer")
-public class QuoteConsumerRoute extends BaseRoute {
-
-  private static final Logger logger = LoggerFactory.getLogger(QuoteConsumerRoute.class);
-
-  @Autowired
-  //@Qualifier("quoteProcessor")
-  @NotNull
-  private Processor quoteProcessor;
-
-  @Override
-  public void configure() throws Exception {
-
-    from(infrastructureProperties.getAmqpQuotes()).id("quotes")
-        .convertBodyTo(String.class)
-        .to("slog:json")
-        .process(quoteProcessor)
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
-  }
-
+  public void saveToIndex(T entity);
+  
 }

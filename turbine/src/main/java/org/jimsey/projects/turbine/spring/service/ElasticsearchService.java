@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.service;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.InstrumentRepository;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.QuoteRepository;
@@ -37,7 +38,6 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 
 @Service
 public class ElasticsearchService {
@@ -62,9 +62,14 @@ public class ElasticsearchService {
   
   @PostConstruct
   public void test() {
-    //Instrument instrument = rdog.newInstrument();
+    Instrument instrument = rdog.newInstrument();
     //instrumentRepository.save(instrument);
     //logger.info(Iterables.toString(instrumentRepository.findAll()));
+    
+    instrumentRepository.saveToIndex(instrument);
+
+    Quote quote = rdog.newQuote();
+    quoteRepository.saveToIndex(quote);
     
     logger.info("getAllQuotes() : [{}]", getAllQuotes());
 

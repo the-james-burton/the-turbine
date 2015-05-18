@@ -40,7 +40,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableElasticsearchRepositories(basePackages="org.jimsey.projects.turbine.spring.elasticsearch.repositories")
+@EnableElasticsearchRepositories(basePackages = "org.jimsey.projects.turbine.spring.elasticsearch.repositories")
 public class Application extends CamelConfiguration {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -64,6 +64,7 @@ public class Application extends CamelConfiguration {
 
   }
 
+  @SuppressWarnings("unused")
   private static void logBeanNames(final ConfigurableApplicationContext spring) {
     logger.info("Let's inspect the beans provided by Spring Boot:");
     String[] beanNames = spring.getBeanDefinitionNames();

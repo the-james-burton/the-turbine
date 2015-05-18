@@ -25,11 +25,8 @@ package org.jimsey.projects.turbine.spring.domain;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.elasticsearch.annotations.Field;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -23,8 +23,9 @@
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
 import org.jimsey.projects.turbine.spring.domain.Instrument;
+import org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom.EntityRepositoryCustom;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface InstrumentRepository extends ElasticsearchRepository<Instrument, Long> {
+public interface InstrumentRepository extends ElasticsearchRepository<Instrument, Long>, EntityRepositoryCustom<Instrument> {
 
 }
