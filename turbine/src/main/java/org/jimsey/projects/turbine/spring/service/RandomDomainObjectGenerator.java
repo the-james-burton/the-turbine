@@ -33,9 +33,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
-  /* (non-Javadoc)
-   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newInstrument()
-   */
   @Override
   public Instrument newInstrument() {
     Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999), null);
@@ -43,9 +40,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     return instrument;
   }
   
-  /* (non-Javadoc)
-   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newTrader()
-   */
   @Override
   public Trader newTrader() {
     Trader trader = new Trader(RandomUtils.nextLong(1, 999), null);
@@ -53,9 +47,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     return trader;
   }
   
-  /* (non-Javadoc)
-   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newQuote()
-   */
   @Override
   public Quote newQuote() {
     Quote quote = new Quote(RandomUtils.nextLong(1, 999), null);
@@ -66,9 +57,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     return quote;
   }
   
-  /* (non-Javadoc)
-   * @see org.jimsey.projects.turbine.spring.service.DomainObjectGenerator#newTrade()
-   */
   @Override
   public Trade newTrade() {
     Trade trade = new Trade(RandomUtils.nextLong(1, 999), null);

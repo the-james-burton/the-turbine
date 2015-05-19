@@ -20,42 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain;
+package org.jimsey.project.turbine.spring.domain;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import static org.junit.Assert.*;
+
 import java.time.ZoneId;
 
-import org.springframework.data.annotation.Transient;
+import org.jimsey.projects.turbine.spring.domain.Timestamped;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+public class TimestampedTest {
 
-public class Timestamped implements Serializable {
+  private Timestamped timestamped;
 
-  private static final long serialVersionUID = 1L;
+  @Before
+  public void before() {
+    this.timestamped = new Timestamped(null);
+  }
 
-  private final LocalDateTime timestamp;
-
-  public Timestamped(String timestamp) {
-    if (timestamp == null) {
-      this.timestamp = LocalDateTime.now(ZoneId.of("GMT"));
-    } else {
-      this.timestamp = LocalDateTime.parse(timestamp);
+  @Ignore
+  @Test
+  public void showZones() {
+    for (String zoneId : ZoneId.getAvailableZoneIds()) {
+      System.out.println(zoneId);
     }
   }
 
-  // ------------------------------
-  @Transient
-  @JsonIgnore
-  public LocalDateTime getTimestamp() {
-    return timestamp;
+  @Test
+  public void testTimestampedParsing() {
+    String text = timestamped.getTimestampAsString();
+    Timestamped parsed = new Timestamped(text);
+    assertTrue(text.equals(parsed.getTimestampAsString()));
   }
-
-  @Transient
-  @JsonProperty("timestamp")
-  public String getTimestampAsString() {
-    return timestamp.toString();
-  }
-
+  
 }
