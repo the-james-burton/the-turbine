@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
+import java.lang.reflect.ParameterizedType;
+
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.spring.domain.Entity;
@@ -29,6 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
+import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformationCreator;
+import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformationCreatorImpl;
 
 public abstract class EntityRepositoryImpl<T extends Entity> implements EntityRepositoryCustom<T> {
 
@@ -38,9 +44,33 @@ public abstract class EntityRepositoryImpl<T extends Entity> implements EntityRe
   @NotNull
   ElasticsearchTemplate elasticsearch;
 
+  ElasticsearchEntityInformation<T, Long> information;
+
+  private Class<T> myEntity;
+  
+  @PostConstruct
+  @SuppressWarnings("unchecked")
+  public void init() throws ClassNotFoundException {
+    ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
+    myEntity = (Class<T>)type.getActualTypeArguments()[0];
+    ElasticsearchEntityInformationCreator informationCreator  = new ElasticsearchEntityInformationCreatorImpl(elasticsearch.getElasticsearchConverter().getMappingContext());
+    information = informationCreator.getEntityInformation(myEntity);
+    logger.info("{} repository initialized", information.getIndexName());
+  }
+
   @Override
   public void saveToIndex(T entity) {
     logger.info(" .... saveToIndex {} : {}", this.getClass().getName(), entity.getClass().getName());
   }
 
+  /*
+   * private IndexQuery createIndexQuery(T entity) {
+   * IndexQuery query = new IndexQuery();
+   * query.setObject(entity);
+   * query.setId(stringIdRepresentation(extractIdFromBean(entity)));
+   * query.setVersion(extractVersionFromBean(entity));
+   * query.setParentId(extractParentIdFromBean(entity));
+   * return query;
+   * }
+   */
 }

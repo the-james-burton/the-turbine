@@ -32,6 +32,7 @@ import org.jimsey.projects.turbine.spring.elasticsearch.repositories.QuoteReposi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -61,7 +62,9 @@ public class ElasticsearchService {
   protected DomainObjectGenerator rdog;
   
   @PostConstruct
-  public void test() {
+  public void init() {
+    logger.info("ElasticsearchTemplate: {}", elasticsearch.getSetting(Instrument.class).toString());
+    
     Instrument instrument = rdog.newInstrument();
     //instrumentRepository.save(instrument);
     //logger.info(Iterables.toString(instrumentRepository.findAll()));
