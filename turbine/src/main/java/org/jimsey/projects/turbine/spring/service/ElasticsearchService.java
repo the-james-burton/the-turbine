@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class ElasticsearchService {
 
   @Autowired
   @NotNull
-  private ElasticsearchTemplate elasticsearch;
+  private ElasticsearchOperations elasticsearch;
 
   @Autowired
   @NotNull
@@ -69,10 +68,10 @@ public class ElasticsearchService {
     //instrumentRepository.save(instrument);
     //logger.info(Iterables.toString(instrumentRepository.findAll()));
     
-    instrumentRepository.saveToIndex(instrument);
+    instrumentRepository.saveToIndex(instrument, "test-instrument");
 
-    Quote quote = rdog.newQuote();
-    quoteRepository.saveToIndex(quote);
+    //Quote quote = rdog.newQuote();
+    //quoteRepository.saveToIndex(quote, "test-quote");
     
     logger.info("getAllQuotes() : [{}]", getAllQuotes());
 

@@ -31,7 +31,8 @@ import org.jimsey.projects.turbine.spring.domain.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformationCreator;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformationCreatorImpl;
@@ -42,35 +43,38 @@ public abstract class EntityRepositoryImpl<T extends Entity> implements EntityRe
 
   @Autowired
   @NotNull
-  ElasticsearchTemplate elasticsearch;
+  ElasticsearchOperations elasticsearch;
 
   ElasticsearchEntityInformation<T, Long> information;
 
   private Class<T> myEntity;
-  
+
   @PostConstruct
   @SuppressWarnings("unchecked")
   public void init() throws ClassNotFoundException {
     ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
-    myEntity = (Class<T>)type.getActualTypeArguments()[0];
-    ElasticsearchEntityInformationCreator informationCreator  = new ElasticsearchEntityInformationCreatorImpl(elasticsearch.getElasticsearchConverter().getMappingContext());
+    myEntity = (Class<T>) type.getActualTypeArguments()[0];
+    ElasticsearchEntityInformationCreator informationCreator = new ElasticsearchEntityInformationCreatorImpl(elasticsearch
+        .getElasticsearchConverter().getMappingContext());
     information = informationCreator.getEntityInformation(myEntity);
     logger.info("{} repository initialized", information.getIndexName());
   }
 
   @Override
-  public void saveToIndex(T entity) {
+  public void saveToIndex(T entity, String indexName) {
     logger.info(" .... saveToIndex {} : {}", this.getClass().getName(), entity.getClass().getName());
+    IndexQuery query = createIndexQuery(entity);
+    query.setIndexName(indexName);
+    elasticsearch.index(query);
   }
 
-  /*
-   * private IndexQuery createIndexQuery(T entity) {
-   * IndexQuery query = new IndexQuery();
-   * query.setObject(entity);
-   * query.setId(stringIdRepresentation(extractIdFromBean(entity)));
-   * query.setVersion(extractVersionFromBean(entity));
-   * query.setParentId(extractParentIdFromBean(entity));
-   * return query;
-   * }
-   */
+  private IndexQuery createIndexQuery(T entity) {
+    IndexQuery query = new IndexQuery();
+    query.setObject(entity);
+    query.setId(information.getId(entity).toString());
+    query.setVersion(information.getVersion(entity));
+    query.setParentId(information.getParentId(entity));
+    return query;
+  }
+
 }

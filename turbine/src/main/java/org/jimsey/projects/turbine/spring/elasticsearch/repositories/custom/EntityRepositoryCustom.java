@@ -26,6 +26,6 @@ import org.jimsey.projects.turbine.spring.domain.Entity;
 
 public interface EntityRepositoryCustom<T extends Entity> {
 
-  public void saveToIndex(T entity);
+  public void saveToIndex(T entity, String indexName);
   
 }
