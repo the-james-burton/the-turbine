@@ -45,10 +45,15 @@ public class InstrumentConsumerRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
 
+    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=test-instrument&indexType=instrument",
+        infrastructureProperties.getElasticsearchHost(),
+        infrastructureProperties.getElasticsearchPort());    
+    
     from(infrastructureProperties.getAmqpInstruments()).id("instruments")
         .convertBodyTo(String.class)
-        .to("slog:json")
+        //.to("slog:json")
         .process(instrumentProcessor)
+        .to(elasticsearchUri)
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));

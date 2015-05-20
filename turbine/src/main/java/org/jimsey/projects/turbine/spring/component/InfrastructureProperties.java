@@ -50,6 +50,12 @@ public class InfrastructureProperties {
 
   @NotNull
   private String amqpTraders;
+  
+  @NotNull
+  private String elasticsearchHost;
+
+  @NotNull
+  private String elasticsearchPort;
 
   @PostConstruct
   public void init() throws JsonProcessingException {
@@ -88,6 +94,22 @@ public class InfrastructureProperties {
 
   public void setAmqpTraders(String amqpTraders) {
     this.amqpTraders = amqpTraders;
+  }
+
+  public String getElasticsearchHost() {
+    return elasticsearchHost;
+  }
+
+  public void setElasticsearchHost(String elasticsearchHost) {
+    this.elasticsearchHost = elasticsearchHost;
+  }
+
+  public String getElasticsearchPort() {
+    return elasticsearchPort;
+  }
+
+  public void setElasticsearchPort(String elasticsearchPort) {
+    this.elasticsearchPort = elasticsearchPort;
   }
 
 }

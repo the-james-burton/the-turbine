@@ -1,9 +1,11 @@
 infrastructure:
-  amqpInstruments: rabbitmq://localhost:5672/turbine.test1.exchange.instruments?queue=turbine.test1.queue.instruments
-  amqpQuotes: rabbitmq://localhost:5672/turbine.test1.exchange.quotes?queue=turbine.test1.queue.quotes
-  amqpTrades: rabbitmq://localhost:5672/turbine.test1.exchange.trades?queue=turbine.test1.queue.trades
-  amqpTraders: rabbitmq://localhost:5672/turbine.test1.exchange.traders?queue=turbine.test1.queue.traders
-
+  amqp-instruments: rabbitmq://localhost:5672/turbine.test1.exchange.instruments?queue=turbine.test1.queue.instruments
+  amqp-quotes: rabbitmq://localhost:5672/turbine.test1.exchange.quotes?queue=turbine.test1.queue.quotes
+  amqp-trades: rabbitmq://localhost:5672/turbine.test1.exchange.trades?queue=turbine.test1.queue.trades
+  amqp-traders: rabbitmq://localhost:5672/turbine.test1.exchange.traders?queue=turbine.test1.queue.traders
+  elasticsearch-host: localhost
+  elasticsearch-port: 9300
+  
 spring:
   data:
     elasticsearch:

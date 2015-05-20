@@ -64,22 +64,22 @@ public class ElasticsearchService {
   public void init() {
     logger.info("ElasticsearchTemplate: {}", elasticsearch.getSetting(Instrument.class).toString());
     
-    Instrument instrument = rdog.newInstrument();
+    //Instrument instrument = rdog.newInstrument();
+    //instrumentRepository.saveToIndex(instrument, "test-instrument");
+    
     //instrumentRepository.save(instrument);
     //logger.info(Iterables.toString(instrumentRepository.findAll()));
     
-    instrumentRepository.saveToIndex(instrument, "test-instrument");
-
     //Quote quote = rdog.newQuote();
     //quoteRepository.saveToIndex(quote, "test-quote");
     
-    logger.info("getAllQuotes() : [{}]", getAllQuotes());
+    //logger.info("getAllQuotes() : [{}]", getAllQuotes());
 
   }
 
   public String getAllQuotes() {
     NativeSearchQuery query = new NativeSearchQueryBuilder()
-    .withIndices("logstash-*")
+    .withIndices("test-*")
     .withTypes("quote")
     .build();
     

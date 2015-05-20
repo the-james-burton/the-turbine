@@ -63,7 +63,7 @@
 
     <!-- for dependencies... -->
     <spring.boot.version>1.2.3.RELEASE</spring.boot.version>
-    <camel.version>2.15.1</camel.version>
+    <camel.version>2.15.2</camel.version>
     <activemq.version>5.11.1</activemq.version>
     <rabbitmq.version>3.5.1</rabbitmq.version>
 
@@ -210,6 +210,12 @@
       <dependency>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-amqp</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-elasticsearch</artifactId>
         <version>${camel.version}</version>
       </dependency>
 
