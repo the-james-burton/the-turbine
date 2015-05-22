@@ -76,7 +76,7 @@ import com.google.common.base.Stopwatch;
 
 public class EquityOptionsTest {
 
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private static final Logger logger = LoggerFactory.getLogger(EquityOptionsTest.class);
 
   private BlackScholesMertonProcess bsmProcess;
 
