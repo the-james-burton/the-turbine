@@ -40,6 +40,9 @@ public class InfrastructureProperties {
   private static final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
 
   @NotNull
+  private String environmentName;
+  
+  @NotNull
   private String amqpInstruments;
 
   @NotNull
@@ -110,6 +113,14 @@ public class InfrastructureProperties {
 
   public void setElasticsearchPort(String elasticsearchPort) {
     this.elasticsearchPort = elasticsearchPort;
+  }
+
+  public String getEnvironmentName() {
+    return environmentName;
+  }
+
+  public void setEnvironmentName(String environmentName) {
+    this.environmentName = environmentName;
   }
 
 }
