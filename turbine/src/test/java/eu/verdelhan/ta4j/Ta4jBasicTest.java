@@ -22,12 +22,11 @@
  */
 package eu.verdelhan.ta4j;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,15 +49,15 @@ public class Ta4jBasicTest {
     
     final double variation = 3.0d;
     
-    double open = 100.0d;
-    double high = 102.0d;
-    double low = 98.0d;
-    double close = 101.0d;
-    double volume = 100.0d;
+    double open;
+    double high;
+    double low;
+    double close = RandomUtils.nextDouble(99.0d, 101.0d);
+    long volume = 100;
     
     ticks = new ArrayList<Tick>();
     
-    for (DateTime time = DateTime.now().minusDays(7); time.isBeforeNow(); time = time.plusDays(1)) {
+    for (DateTime time = DateTime.now().minusMonths(1); time.isBeforeNow(); time = time.plusDays(1)) {
       open = close;
       high = RandomUtils.nextDouble(close, close + variation);
       low = RandomUtils.nextDouble(Math.max(0, close - variation), close);
@@ -74,7 +73,24 @@ public class Ta4jBasicTest {
   public void basicTa4JTest() {
     for (Tick tick : ticks) {
       // TODO Tick.toString() does not work - raise an issue in Ta4J...
-      logger.info(ReflectionToStringBuilder.toString(tick, ToStringStyle.JSON_STYLE));
+      //System.out.println(ReflectionToStringBuilder.toString(tick, ToStringStyle.JSON_STYLE));
+                  
+      // {"date": 15707, "open": 145.11, "high": 146.15, "low": 144.73, "close": 146.06, "volume": 192059000, "adjusted": 144.65}
+      
+      //Formatter
+      
+      ZonedDateTime date = ZonedDateTime.parse(tick.getEndTime().toString());
+      
+      String json = String.format("{\"date\": %tQ, \"open\": %.2f, \"high\": %.2f, \"low\": %.2f, \"close\": %.2f, \"volume\": %.0f},",
+          date,
+          tick.getOpenPrice().toDouble(),
+          tick.getMaxPrice().toDouble(),
+          tick.getMinPrice().toDouble(),
+          tick.getClosePrice().toDouble(),
+          tick.getVolume().toDouble()
+          );
+      
+      System.out.println(json.replace(this.getClass().getSimpleName(), ""));
     }
     
     ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
