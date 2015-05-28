@@ -29,6 +29,7 @@ import org.apache.camel.Exchange;
 import org.jimsey.projects.turbine.spring.domain.Entity;
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.domain.Trade;
 import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.springframework.util.SerializationUtils;
@@ -88,6 +89,11 @@ public class TurbineObjectConverter {
     return trader.toString();
   }
 
+  @Converter
+  public static String toString(final TickJson tick, final Exchange exchange) {
+    return tick.toString();
+  }
+
   // --------------------------------------------
   @Converter
   public static Quote toQuote(final String text, final Exchange exchange) {
@@ -131,6 +137,17 @@ public class TurbineObjectConverter {
       e.printStackTrace();
     }
     return trader;
+  }
+
+  @Converter
+  public static TickJson toTickJson(final String text, final Exchange exchange) {
+    TickJson tick = null;
+    try {
+      tick = json.readValue(text, TickJson.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return tick;
   }
 
 }

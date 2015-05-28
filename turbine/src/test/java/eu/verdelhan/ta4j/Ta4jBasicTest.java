@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomUtils;
-import org.jimsey.projects.turbine.spring.domain.STick;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +64,7 @@ public class Ta4jBasicTest {
       low = RandomUtils.nextDouble(Math.max(0, close - variation), close);
       close = RandomUtils.nextDouble(Math.max(0, low), high);
       
-      Tick tick = new STick(time, open, high, low, close, RandomUtils.nextDouble(volume - variation, volume + variation));
+      Tick tick = new TickJson(time, open, high, low, close, RandomUtils.nextDouble(volume - variation, volume + variation));
       ticks.add(tick);
       series = new TimeSeries(ticks);
     }

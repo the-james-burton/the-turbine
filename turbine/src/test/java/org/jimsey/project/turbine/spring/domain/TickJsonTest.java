@@ -26,50 +26,62 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
-import org.jimsey.projects.turbine.spring.domain.STick;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.SerializationUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class STickTest {
+public class TickJsonTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private STick tick;
-  
+  private TickJson tick;
+
   @Before
   public void before() {
-    //{"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
-    //this.tick = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
+    // this.tick = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
   }
-  
+
   @Test
   public void testJsonConstructor() {
-    tick = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     String jsonConstructor = tick.toString();
-    tick = new STick(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    tick = new TickJson(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     String tickConstructor = tick.toString();
     logger.info(jsonConstructor);
-    logger.info(tickConstructor);    
+    logger.info(tickConstructor);
     assertNotNull(jsonConstructor);
     assertNotNull(tickConstructor);
   }
-  
+
   @Test
   public void testJson() throws IOException {
-    tick = new STick(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    tick = new TickJson(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     String text = json.writeValueAsString(tick);
-    tick = json.readValue(text, STick.class);
+    tick = json.readValue(text, TickJson.class);
     logger.info(text);
     logger.info(tick.toString());
     assertEquals(text, tick.toString());
 
   }
-  
+
+  @Ignore
+  @Test
+  public void testSerializable() throws IOException {
+    tick = new TickJson(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    byte[] bytes = SerializationUtils.serialize(tick);
+    TickJson tick2 = (TickJson) SerializationUtils.deserialize(bytes);
+    logger.info(tick.toString());
+    logger.info(tick2.toString());
+  }
+
 }

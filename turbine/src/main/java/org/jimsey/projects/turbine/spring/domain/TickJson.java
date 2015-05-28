@@ -45,18 +45,19 @@ import eu.verdelhan.ta4j.Tick;
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE,
     setterVisibility = Visibility.NONE)
-public class STick extends Tick implements Serializable {
+public class TickJson extends Tick implements Serializable {
 
+  // TODO serialization does not work because Tick is a constructor immutable - maybe raise a request in ta4j...
   private static final long serialVersionUID = 1L;
 
   private static ObjectMapper json = new ObjectMapper();
 
-  public STick(DateTime endTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume) {
+  public TickJson(DateTime endTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume) {
     super(endTime, openPrice, highPrice, lowPrice, closePrice, volume);
   }
 
   @JsonCreator
-  public STick(@JsonProperty("date") long date,
+  public TickJson(@JsonProperty("date") long date,
       @JsonProperty("open") double open,
       @JsonProperty("high") double high,
       @JsonProperty("low") double low,
