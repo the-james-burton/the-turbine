@@ -24,44 +24,52 @@ package org.jimsey.project.turbine.spring.domain;
 
 import static org.junit.Assert.*;
 
-import java.time.ZoneId;
+import java.io.IOException;
 
-import org.jimsey.projects.turbine.spring.domain.Timestamped;
+import org.jimsey.projects.turbine.spring.domain.STick;
+import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimestampedTest {
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-  private static final Logger logger = LoggerFactory.getLogger(TimestampedTest.class);
+public class STickTest {
 
-  private Timestamped timestamped;
+  private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
+  private static ObjectMapper json = new ObjectMapper();
+
+  private STick tick;
+  
   @Before
   public void before() {
-    this.timestamped = new Timestamped(null);
+    //{"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
+    //this.tick = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
   }
-
-  @Ignore
+  
   @Test
-  public void showZones() {
-    for (String zoneId : ZoneId.getAvailableZoneIds()) {
-      System.out.println(zoneId);
-    }
+  public void testJsonConstructor() {
+    tick = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    String jsonConstructor = tick.toString();
+    tick = new STick(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    String tickConstructor = tick.toString();
+    logger.info(jsonConstructor);
+    logger.info(tickConstructor);    
+    assertNotNull(jsonConstructor);
+    assertNotNull(tickConstructor);
   }
-
+  
   @Test
-  public void testTimestampedDefault() {
-    logger.info(timestamped.getTimestamp().toString());
-  }
+  public void testJson() throws IOException {
+    tick = new STick(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    String text = json.writeValueAsString(tick);
+    tick = json.readValue(text, STick.class);
+    logger.info(text);
+    logger.info(tick.toString());
+    assertEquals(text, tick.toString());
 
-  @Test
-  public void testTimestampedParsing() {
-    String text = timestamped.getTimestampAsString();
-    Timestamped parsed = new Timestamped(text);
-    assertTrue(text.equals(parsed.getTimestampAsString()));
   }
   
 }

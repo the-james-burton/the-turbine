@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.jimsey.projects.turbine.spring.domain.STick;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +64,7 @@ public class Ta4jBasicTest {
       low = RandomUtils.nextDouble(Math.max(0, close - variation), close);
       close = RandomUtils.nextDouble(Math.max(0, low), high);
       
-      Tick tick = new Tick(time, open, high, low, close, RandomUtils.nextDouble(volume - variation, volume + variation));
+      Tick tick = new STick(time, open, high, low, close, RandomUtils.nextDouble(volume - variation, volume + variation));
       ticks.add(tick);
       series = new TimeSeries(ticks);
     }
@@ -73,24 +74,8 @@ public class Ta4jBasicTest {
   public void basicTa4JTest() {
     for (Tick tick : ticks) {
       // TODO Tick.toString() does not work - raise an issue in Ta4J...
-      //System.out.println(ReflectionToStringBuilder.toString(tick, ToStringStyle.JSON_STYLE));
-                  
-      // {"date": 15707, "open": 145.11, "high": 146.15, "low": 144.73, "close": 146.06, "volume": 192059000, "adjusted": 144.65}
+      System.out.println(tick.toString());
       
-      //Formatter
-      
-      ZonedDateTime date = ZonedDateTime.parse(tick.getEndTime().toString());
-      
-      String json = String.format("{\"date\": %tQ, \"open\": %.2f, \"high\": %.2f, \"low\": %.2f, \"close\": %.2f, \"volume\": %.0f},",
-          date,
-          tick.getOpenPrice().toDouble(),
-          tick.getMaxPrice().toDouble(),
-          tick.getMinPrice().toDouble(),
-          tick.getClosePrice().toDouble(),
-          tick.getVolume().toDouble()
-          );
-      
-      System.out.println(json.replace(this.getClass().getSimpleName(), ""));
     }
     
     ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
