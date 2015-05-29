@@ -22,13 +22,12 @@
  */
 package eu.verdelhan.ta4j;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomUtils;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.joda.time.DateTime;
+import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
+import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -41,43 +40,31 @@ public class Ta4jBasicTest {
 
   private static final Logger logger = LoggerFactory.getLogger(Ta4jBasicTest.class);
 
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator();
+
   List<Tick> ticks;
-  
+
   TimeSeries series;
 
   @Before
   public void before() {
-    
-    final double variation = 3.0d;
-    
-    double open;
-    double high;
-    double low;
-    double close = RandomUtils.nextDouble(99.0d, 101.0d);
-    long volume = 100;
-    
+
     ticks = new ArrayList<Tick>();
-    
-    for (DateTime time = DateTime.now().minusMonths(1); time.isBeforeNow(); time = time.plusDays(1)) {
-      open = close;
-      high = RandomUtils.nextDouble(close, close + variation);
-      low = RandomUtils.nextDouble(Math.max(0, close - variation), close);
-      close = RandomUtils.nextDouble(Math.max(0, low), high);
-      
-      Tick tick = new TickJson(time, open, high, low, close, RandomUtils.nextDouble(volume - variation, volume + variation));
+
+    for (LocalDateTime date = LocalDateTime.now().minusMonths(1); date.isBefore(LocalDateTime.now()); date = date.plusDays(1)) {
+      Tick tick = rdog.newTick(date);
       ticks.add(tick);
       series = new TimeSeries(ticks);
     }
   }
-  
+
   @Test
   public void basicTa4JTest() {
     for (Tick tick : ticks) {
       // TODO Tick.toString() does not work - raise an issue in Ta4J...
       System.out.println(tick.toString());
-      
     }
-    
+
     ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
     SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
     logger.info("SMA: {}", sma.getValue(7));

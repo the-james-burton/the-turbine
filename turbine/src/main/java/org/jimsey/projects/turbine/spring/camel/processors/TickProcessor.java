@@ -20,28 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.projects.turbine.spring.camel.processors;
 
-import java.time.LocalDateTime;
-
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.apache.camel.Exchange;
+import org.apache.camel.Message;
+import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Trade;
-import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-public interface DomainObjectGenerator {
+@Component
+public class TickProcessor implements Processor {
 
-  Instrument newInstrument();
+  private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
 
-  Trader newTrader();
-
-  Quote newQuote();
-
-  Trade newTrade();
-
-  TickJson newTick();
-
-  TickJson newTick(LocalDateTime date);
+  @Override
+  public void process(final Exchange exchange) throws Exception {
+    Message message = exchange.getIn();
+    TickJson tick = message.getMandatoryBody(TickJson.class);
+    String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
+    
+    logger.info("consumed tick: [{}={}]",type, tick);
+  }
 
 }

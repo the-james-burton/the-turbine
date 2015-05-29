@@ -55,6 +55,9 @@ public class InfrastructureProperties {
   private String amqpTraders;
   
   @NotNull
+  private String amqpTicks;
+  
+  @NotNull
   private String elasticsearchHost;
 
   @NotNull
@@ -121,6 +124,14 @@ public class InfrastructureProperties {
 
   public void setEnvironmentName(String environmentName) {
     this.environmentName = environmentName;
+  }
+
+  public String getAmqpTicks() {
+    return amqpTicks;
+  }
+
+  public void setAmqpTicks(String amqpTicks) {
+    this.amqpTicks = amqpTicks;
   }
 
 }

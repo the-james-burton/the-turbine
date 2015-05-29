@@ -22,10 +22,13 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
+import java.time.LocalDateTime;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.domain.Trade;
 import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.springframework.stereotype.Service;
@@ -33,20 +36,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
+  private TickJson tick = new TickJson(LocalDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d);
+
   @Override
   public Instrument newInstrument() {
     Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999), null);
     instrument.setCode(RandomStringUtils.randomAlphanumeric(10));
     return instrument;
   }
-  
+
   @Override
   public Trader newTrader() {
     Trader trader = new Trader(RandomUtils.nextLong(1, 999), null);
     trader.setUsername(RandomStringUtils.randomAlphanumeric(10));
     return trader;
   }
-  
+
   @Override
   public Quote newQuote() {
     Quote quote = new Quote(RandomUtils.nextLong(1, 999), null);
@@ -56,7 +61,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     quote.setOffer(RandomUtils.nextDouble(10d, 99d));
     return quote;
   }
-  
+
   @Override
   public Trade newTrade() {
     Trade trade = new Trade(RandomUtils.nextLong(1, 999), null);
@@ -66,4 +71,27 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     trade.setSize(RandomUtils.nextLong(1000, 9999));
     return trade;
   }
+
+  @Override
+  public TickJson newTick(LocalDateTime date) {
+
+    final double variation = 3.0d;
+
+    double open = tick.getClosePrice().toDouble();
+    double high = RandomUtils.nextDouble(open, open + variation);
+    double low = RandomUtils.nextDouble(Math.max(0, open - variation), open);
+    double close = RandomUtils.nextDouble(Math.max(0, low), high);
+    double volume = RandomUtils.nextDouble(90, 110);
+
+    tick = new TickJson(date, open, high, low, close, volume);
+    return tick;
+  }
+
+  @Override
+  public TickJson newTick() {
+
+    tick = newTick(LocalDateTime.now());
+    return tick;
+  }
+
 }

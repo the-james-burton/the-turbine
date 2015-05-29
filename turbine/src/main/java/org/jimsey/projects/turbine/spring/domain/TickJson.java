@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import org.joda.time.DateTime;
@@ -52,8 +53,8 @@ public class TickJson extends Tick implements Serializable {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  public TickJson(DateTime endTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume) {
-    super(endTime, openPrice, highPrice, lowPrice, closePrice, volume);
+  public TickJson(LocalDateTime date, double open, double high, double low, double close, double volume) {
+    super(DateTime.parse(date.toString()), open, high, low, close, volume);
   }
 
   @JsonCreator

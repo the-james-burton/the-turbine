@@ -25,6 +25,7 @@ package org.jimsey.project.turbine.spring.domain;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.joda.time.DateTime;
@@ -55,7 +56,7 @@ public class TickJsonTest {
   public void testJsonConstructor() {
     tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     String jsonConstructor = tick.toString();
-    tick = new TickJson(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    tick = new TickJson(LocalDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     String tickConstructor = tick.toString();
     logger.info(jsonConstructor);
     logger.info(tickConstructor);
@@ -65,7 +66,7 @@ public class TickJsonTest {
 
   @Test
   public void testJson() throws IOException {
-    tick = new TickJson(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    tick = new TickJson(LocalDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     String text = json.writeValueAsString(tick);
     tick = json.readValue(text, TickJson.class);
     logger.info(text);
@@ -77,7 +78,7 @@ public class TickJsonTest {
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    tick = new TickJson(new DateTime(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    tick = new TickJson(LocalDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
     byte[] bytes = SerializationUtils.serialize(tick);
     TickJson tick2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(tick.toString());

@@ -33,7 +33,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("producer")
+@Profile("disabled")
 @ConfigurationProperties(prefix = "producer")
 @ManagedResource
 public class QuoteProducer extends AbstractBaseProducer {

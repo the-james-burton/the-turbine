@@ -22,26 +22,43 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import java.time.LocalDateTime;
+import javax.annotation.PostConstruct;
 
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Trade;
-import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.stereotype.Service;
 
-public interface DomainObjectGenerator {
+@Service
+@Profile("producer")
+@ConfigurationProperties(prefix = "producer")
+@ManagedResource
+public class TickProducer extends AbstractBaseProducer {
 
-  Instrument newInstrument();
+  private static final Logger logger = LoggerFactory.getLogger(TickProducer.class);
 
-  Trader newTrader();
+  @Override
+  @PostConstruct
+  public void init() {
+    super.init();
 
-  Quote newQuote();
+    logger.info(String.format("camel=%s", camel.getName()));
+    logger.info("producer initialised");
+  }
 
-  Trade newTrade();
+  @Override
+  public Object createBody() {
+    TickJson tick = rdog.newTick();
+    logger.info("produced: [{}]", tick);
+    return tick;
+  }
 
-  TickJson newTick();
-
-  TickJson newTick(LocalDateTime date);
+  @Override
+  public String getEndpointUri() {
+    return infrastructureProperties.getAmqpTicks();
+  }
 
 }

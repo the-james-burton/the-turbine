@@ -20,28 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.projects.turbine.spring.camel.routes;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Trade;
-import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.apache.camel.Processor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
-public interface DomainObjectGenerator {
+@Component
+@Profile("consumer")
+public class TickConsumerRoute extends BaseRoute {
 
-  Instrument newInstrument();
+  private static final Logger logger = LoggerFactory.getLogger(TickConsumerRoute.class);
 
-  Trader newTrader();
+  @Autowired
+  @NotNull
+  private Processor tickProcessor;
 
-  Quote newQuote();
+  @Override
+  public void configure() throws Exception {
 
-  Trade newTrade();
+    from(infrastructureProperties.getAmqpTicks()).id("ticks")
+        .convertBodyTo(String.class)
+        .to("slog:json")
+        .process(tickProcessor)
+        .end();
 
-  TickJson newTick();
-
-  TickJson newTick(LocalDateTime date);
+    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
 
 }
