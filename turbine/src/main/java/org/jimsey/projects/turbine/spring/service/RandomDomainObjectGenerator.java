@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
-  private TickJson tick = new TickJson(LocalDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d);
+  private TickJson tick = new TickJson(LocalDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, "ABC", "FTSE", LocalDateTime.now().toString());
 
   @Override
   public Instrument newInstrument() {
@@ -83,7 +83,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(90, 110);
 
-    tick = new TickJson(date, open, high, low, close, volume);
+    tick = new TickJson(date, open, high, low, close, volume, "ABC.L", "FTSE100", LocalDateTime.now().toString());
     return tick;
   }
 

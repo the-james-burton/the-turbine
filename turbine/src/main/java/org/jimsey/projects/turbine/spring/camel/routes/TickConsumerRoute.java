@@ -44,10 +44,15 @@ public class TickConsumerRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
 
+    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=test-tick&indexType=tick",
+        infrastructureProperties.getElasticsearchHost(),
+        infrastructureProperties.getElasticsearchPort());    
+
     from(infrastructureProperties.getAmqpTicks()).id("ticks")
         .convertBodyTo(String.class)
-        .to("slog:json")
+        //.to("slog:json")
         .process(tickProcessor)
+        .to(elasticsearchUri)
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));

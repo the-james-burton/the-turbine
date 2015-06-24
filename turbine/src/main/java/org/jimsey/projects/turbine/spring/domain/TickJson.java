@@ -26,20 +26,23 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import org.joda.time.DateTime;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
 
+@Document(indexName = "tick", type = "tick")
 @JsonAutoDetect(
     fieldVisibility = Visibility.NONE,
     getterVisibility = Visibility.NONE,
@@ -53,8 +56,19 @@ public class TickJson extends Tick implements Serializable {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  public TickJson(LocalDateTime date, double open, double high, double low, double close, double volume) {
+  private LocalDateTime timestamp;
+
+  private String symbol;
+
+  private String exchange;
+
+  public TickJson(LocalDateTime date, double open, double high, double low, double close, double volume, String symbol,
+      String exchange, String timestamp) {
     super(DateTime.parse(date.toString()), open, high, low, close, volume);
+    this.timestamp = date;
+    this.symbol = symbol;
+    this.exchange = exchange;
+    this.timestamp = LocalDateTime.parse(timestamp);
   }
 
   @JsonCreator
@@ -63,9 +77,12 @@ public class TickJson extends Tick implements Serializable {
       @JsonProperty("high") double high,
       @JsonProperty("low") double low,
       @JsonProperty("close") double close,
-      @JsonProperty("volume") double volume) {
-    super(DateTime.parse(LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()).toString()),
-        open, high, low, close, volume);
+      @JsonProperty("volume") double volume,
+      @JsonProperty("symbol") String symbol,
+      @JsonProperty("exchange") String exchange,
+      @JsonProperty("timestamp") String timestamp) {
+    this(LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
+        open, high, low, close, volume, symbol, exchange, timestamp);
   }
 
   @JsonProperty("date")
@@ -96,6 +113,21 @@ public class TickJson extends Tick implements Serializable {
   @JsonProperty("low")
   public double getLow() {
     return super.getMinPrice().toDouble();
+  }
+
+  @JsonProperty("symbol")
+  public String getSymbol() {
+    return symbol;
+  }
+
+  @JsonProperty("exchange")
+  public String getExchange() {
+    return exchange;
+  }
+
+  @JsonProperty("timestamp")
+  public String getTimestamp() {
+    return timestamp.toString();
   }
 
   @Override

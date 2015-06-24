@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.camel.processors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
@@ -31,18 +34,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eu.verdelhan.ta4j.Tick;
+import eu.verdelhan.ta4j.TimeSeries;
+import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
+
 @Component
 public class TickProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
+
+  private List<Tick> ticks = new ArrayList<Tick>();
+  private TimeSeries series = new TimeSeries(ticks);
+  private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+  private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
 
   @Override
   public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    
-    logger.info("consumed tick: [{}={}]",type, tick);
+    series.addTick(tick);
+    logger.info(tick.toString());
+    logger.info("sma={}", sma.getValue(series.getEnd()));
   }
 
 }
