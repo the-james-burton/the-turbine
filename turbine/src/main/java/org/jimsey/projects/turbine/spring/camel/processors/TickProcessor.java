@@ -59,4 +59,8 @@ public class TickProcessor implements Processor {
     logger.info("sma={}", sma.getValue(series.getEnd()));
   }
 
+  public List<Tick> getTicks() {
+    return ticks;
+  }
+  
 }
