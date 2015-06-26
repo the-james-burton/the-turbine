@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
-  private TickJson tick = new TickJson(LocalDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, "ABC", "FTSE", LocalDateTime.now().toString());
+  private TickJson tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, "ABC", "FTSE", OffsetDateTime.now().toString());
 
   @Override
   public Instrument newInstrument() {
@@ -73,7 +73,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
   }
 
   @Override
-  public TickJson newTick(LocalDateTime date) {
+  public TickJson newTick(OffsetDateTime date) {
 
     final double variation = 3.0d;
 
@@ -83,14 +83,14 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(90, 110);
 
-    tick = new TickJson(date, open, high, low, close, volume, "ABC.L", "FTSE100", LocalDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, "ABC.L", "FTSE100", OffsetDateTime.now().toString());
     return tick;
   }
 
   @Override
   public TickJson newTick() {
 
-    tick = newTick(LocalDateTime.now());
+    tick = newTick(OffsetDateTime.now());
     return tick;
   }
 

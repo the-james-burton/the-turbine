@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.web;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.spring.camel.processors.TickProcessor;
@@ -38,7 +38,7 @@ public class OhlcController {
   
   @RequestMapping("/ohlc")
   public String welcome(Map<String, Object> model) {
-    model.put("time", LocalDateTime.now());
+    model.put("time", OffsetDateTime.now());
     model.put("ticks", tickProcessor.getTicks());
     return "ohlc";
   }

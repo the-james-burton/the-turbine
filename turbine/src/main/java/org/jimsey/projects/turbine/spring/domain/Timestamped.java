@@ -23,8 +23,7 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
 
 import org.springframework.data.annotation.Transient;
 
@@ -35,20 +34,20 @@ public class Timestamped implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private final LocalDateTime timestamp;
+  private final OffsetDateTime timestamp;
 
   public Timestamped(String timestamp) {
     if (timestamp == null) {
-      this.timestamp = LocalDateTime.now(ZoneId.of("GMT"));
+      this.timestamp = OffsetDateTime.now();
     } else {
-      this.timestamp = LocalDateTime.parse(timestamp);
+      this.timestamp = OffsetDateTime.parse(timestamp);
     }
   }
 
   // ------------------------------
   @Transient
   @JsonIgnore
-  public LocalDateTime getTimestamp() {
+  public OffsetDateTime getTimestamp() {
     return timestamp;
   }
 

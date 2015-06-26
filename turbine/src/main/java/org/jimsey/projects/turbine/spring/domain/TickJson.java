@@ -24,18 +24,16 @@ package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import org.joda.time.DateTime;
-import org.springframework.data.annotation.Transient;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,19 +54,19 @@ public class TickJson extends Tick implements Serializable {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private LocalDateTime timestamp;
+  private OffsetDateTime timestamp;
 
   private String symbol;
 
   private String exchange;
 
-  public TickJson(LocalDateTime date, double open, double high, double low, double close, double volume, String symbol,
+  public TickJson(OffsetDateTime date, double open, double high, double low, double close, double volume, String symbol,
       String exchange, String timestamp) {
-    super(DateTime.parse(date.toString()), open, high, low, close, volume);
+    super(DateTime.parse(date.toString(), ISODateTimeFormat.dateTimeParser()), open, high, low, close, volume);
     this.timestamp = date;
     this.symbol = symbol;
     this.exchange = exchange;
-    this.timestamp = LocalDateTime.parse(timestamp);
+    this.timestamp = OffsetDateTime.parse(timestamp);
   }
 
   @JsonCreator
@@ -81,7 +79,7 @@ public class TickJson extends Tick implements Serializable {
       @JsonProperty("symbol") String symbol,
       @JsonProperty("exchange") String exchange,
       @JsonProperty("timestamp") String timestamp) {
-    this(LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
+    this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
         open, high, low, close, volume, symbol, exchange, timestamp);
   }
 
@@ -145,7 +143,7 @@ public class TickJson extends Tick implements Serializable {
   public String toStringWithoutJson() {
     // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
 
-    ZonedDateTime date = ZonedDateTime.parse(getEndTime().toString());
+    OffsetDateTime date = OffsetDateTime.parse(getEndTime().toString());
 
     return String.format("{\"date\": %tQ, \"open\": %.2f, \"high\": %.2f, \"low\": %.2f, \"close\": %.2f, \"volume\": %.0f},",
         date,

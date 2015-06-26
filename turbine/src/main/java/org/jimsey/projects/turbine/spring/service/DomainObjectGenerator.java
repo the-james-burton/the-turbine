@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
@@ -42,6 +42,6 @@ public interface DomainObjectGenerator {
 
   TickJson newTick();
 
-  TickJson newTick(LocalDateTime date);
+  TickJson newTick(OffsetDateTime date);
 
 }

@@ -22,7 +22,7 @@
  */
 package eu.verdelhan.ta4j;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class Ta4jBasicTest {
 
     ticks = new ArrayList<Tick>();
 
-    for (LocalDateTime date = LocalDateTime.now().minusMonths(1); date.isBefore(LocalDateTime.now()); date = date.plusDays(1)) {
+    for (OffsetDateTime date = OffsetDateTime.now().minusMonths(1); date.isBefore(OffsetDateTime.now()); date = date.plusDays(1)) {
       Tick tick = rdog.newTick(date);
       ticks.add(tick);
       series = new TimeSeries(ticks);
