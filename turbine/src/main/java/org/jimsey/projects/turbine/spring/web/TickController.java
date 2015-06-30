@@ -20,28 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring;
+package org.jimsey.projects.turbine.spring.web;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import java.time.OffsetDateTime;
+import java.util.Map;
 
-@Configuration
-@EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+import org.jimsey.projects.turbine.spring.service.Ping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-  @Override
-  public void configureMessageBroker(final MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/topic");
-    config.setApplicationDestinationPrefixes("/app");
+@Controller
+public class TickController {
+
+  @Autowired
+  private Ping ping;
+  
+  @MessageMapping("/ticks")
+  @SendTo("/topic/ticks")
+  public PingResponse ping() throws Exception {
+    return new PingResponse(ping.ping());
   }
-
-  @Override
-  public void registerStompEndpoints(final StompEndpointRegistry registry) {
-    registry.addEndpoint("/hello").withSockJS();
-    registry.addEndpoint("/ticks").withSockJS();
-  }
-
+  
 }

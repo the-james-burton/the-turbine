@@ -20,28 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring;
+package org.jimsey.projects.turbine.spring.web;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+public class PingResponse {
 
-@Configuration
-@EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
-
-  @Override
-  public void configureMessageBroker(final MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/topic");
-    config.setApplicationDestinationPrefixes("/app");
+  private Long time;
+  
+  public PingResponse(long time) {
+    this.time = time;
   }
-
-  @Override
-  public void registerStompEndpoints(final StompEndpointRegistry registry) {
-    registry.addEndpoint("/hello").withSockJS();
-    registry.addEndpoint("/ticks").withSockJS();
+  
+  public Long getTime() {
+    return time;
   }
-
+  
 }

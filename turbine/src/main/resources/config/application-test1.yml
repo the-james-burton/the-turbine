@@ -7,6 +7,7 @@ infrastructure:
   amqp-ticks: rabbitmq://localhost:5672/turbine.test1.exchange.traders?queue=turbine.test1.queue.ticks
   elasticsearch-host: localhost
   elasticsearch-port: 9300
+  websocket-ticks: /topic/ticks
   
 spring:
   data:

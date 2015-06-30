@@ -63,6 +63,9 @@ public class InfrastructureProperties {
   @NotNull
   private String elasticsearchPort;
 
+  @NotNull
+  private String websocketTicks;
+  
   @PostConstruct
   public void init() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
@@ -132,6 +135,14 @@ public class InfrastructureProperties {
 
   public void setAmqpTicks(String amqpTicks) {
     this.amqpTicks = amqpTicks;
+  }
+
+  public String getWebsocketTicks() {
+    return websocketTicks;
+  }
+
+  public void setWebsocketTicks(String websocketTicks) {
+    this.websocketTicks = websocketTicks;
   }
 
 }

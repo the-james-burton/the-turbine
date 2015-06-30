@@ -38,7 +38,7 @@
 		</#list>  
         ]}];
 
-    nv.addGraph(function() {
+    var chart = nv.addGraph(function() {
         var chart = nv.models.ohlcBarChart()
             .x(function(d) { return d['date'] })
             .y(function(d) { return d['close'] })
