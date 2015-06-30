@@ -69,7 +69,8 @@
             // var response = document.getElementById('response');
             // response.innerHTML = JSON.stringify(data[0]);
             data[0].values.push(JSON.parse(message));
-            drawGraph();
+            chart.update();
+            // drawGraph();
         }
     	
         var chart = nv.models.ohlcBarChart()
