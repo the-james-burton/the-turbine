@@ -4,9 +4,9 @@
     <title>OHLC WebSocket</title>
     <script src="js/sockjs-0.3.4.js"></script>
     <script src="js/stomp.js"></script>
-    <script src="js/d3.js" charset="utf-8"></script>
-    <script src="js/nv.d3.js"></script>
-    <link href="css/nv.d3.css" rel="stylesheet" type="text/css">
+    <link href="css/nv.d3.1.8.1.css" rel="stylesheet" type="text/css">
+    <script src="js/d3.3.5.5.js" charset="utf-8"></script>
+    <script src="js/nv.d3.1.8.1.js"></script>
 
     <style>
         text {

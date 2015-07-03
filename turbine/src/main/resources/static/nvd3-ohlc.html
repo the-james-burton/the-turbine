@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link href="css/nv.d3.css" rel="stylesheet" type="text/css">
-    <script src="js/d3.js" charset="utf-8"></script>
-    <script src="js/nv.d3.js"></script>
+    <link href="css/nv.d3.1.8.1.css" rel="stylesheet" type="text/css">
+    <script src="js/d3.3.5.5.js" charset="utf-8"></script>
+    <script src="js/nv.d3.1.8.1.js"></script>
 
     <style>
         text {
