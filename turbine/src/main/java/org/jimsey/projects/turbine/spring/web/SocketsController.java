@@ -26,12 +26,18 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.spring.camel.processors.TickProcessor;
+import org.jimsey.projects.turbine.spring.service.Ping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class SocketsController {
+
+  @Autowired
+  private Ping ping;
 
   @Autowired
   private TickProcessor tickProcessor;
@@ -40,7 +46,14 @@ public class SocketsController {
   public String welcome(Map<String, Object> model) {
     model.put("time", OffsetDateTime.now());
     model.put("ticks", tickProcessor.getTicks());
+    // freemarker is used automatically if sockets.ftl exists...
     return "sockets";
+  }
+
+  @MessageMapping("/ping")
+  @SendTo("/topic/ping")
+  public PingResponse ping() throws Exception {
+    return new PingResponse(ping.ping());
   }
 
 }

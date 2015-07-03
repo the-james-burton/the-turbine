@@ -50,6 +50,9 @@
                 stompClient.subscribe('/topic/ticks', function(tick){
                     onTick(tick.body);
                 });
+                stompClient.subscribe('/topic/ping', function(msg){
+                    onPing(msg.body);
+                });
             });
         }
 
@@ -62,9 +65,13 @@
         }
 
         function pingServer() {
-            stompClient.send("/app/ticks", {});
+            stompClient.send("/app/ping", {});
         }
 
+        function onPing(message) {
+        	alert(message);
+		}
+		
         function onTick(message) {
             // var response = document.getElementById('response');
             // response.innerHTML = JSON.stringify(data[0]);
