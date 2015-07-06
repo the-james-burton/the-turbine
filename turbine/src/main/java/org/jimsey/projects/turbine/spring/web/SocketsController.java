@@ -37,9 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SocketsController {
 
   @Autowired
-  private Ping ping;
-
-  @Autowired
   private TickProcessor tickProcessor;
   
   @RequestMapping("/sockets")
@@ -48,12 +45,6 @@ public class SocketsController {
     model.put("ticks", tickProcessor.getTicks());
     // freemarker is used automatically if sockets.ftl exists...
     return "sockets";
-  }
-
-  @MessageMapping("/ping")
-  @SendTo("/topic/ping")
-  public PingResponse ping() throws Exception {
-    return new PingResponse(ping.ping());
   }
 
 }

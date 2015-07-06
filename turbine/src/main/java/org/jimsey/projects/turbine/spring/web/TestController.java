@@ -22,25 +22,46 @@
  */
 package org.jimsey.projects.turbine.spring.web;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.Map;
 
-import org.jimsey.projects.turbine.spring.camel.processors.TickProcessor;
+import org.jimsey.projects.turbine.spring.service.Ping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class OhlcController {
+public class TestController {
+
+  private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
   @Autowired
-  private TickProcessor tickProcessor;
-  
-  @RequestMapping("/ohlc")
+  private Ping ping;
+
+  @RequestMapping("/test")
   public String welcome(Map<String, Object> model) {
-    model.put("time", OffsetDateTime.now());
-    model.put("ticks", tickProcessor.getTicks());
-    return "ohlc";
+    model.put("time", new Date());
+    model.put("message", "Freemarker is working");
+    return "test";
+  }
+
+  @MessageMapping("/ping")
+  @SendTo("/topic/ping")
+  public PingResponse ping() throws Exception {
+    return new PingResponse(ping.ping());
+  }
+  
+  @MessageMapping("/reply")
+  @SendTo("/topic/reply")
+  public ReplyResponse reply(ReplyResponse message) throws Exception {
+    logger.debug("received message={}", message.getMessage());
+    ReplyResponse response = new ReplyResponse();
+    response.setMessage(String.format("Hello %s, the time here is %s", message.getMessage(), ping.ping()));
+    return response;
   }
 
 }

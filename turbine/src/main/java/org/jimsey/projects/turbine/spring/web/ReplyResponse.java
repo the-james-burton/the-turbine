@@ -20,18 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain.test;
+package org.jimsey.projects.turbine.spring.web;
 
-public class Greeting {
 
-  private final String content;
+public class ReplyResponse {
 
-  public Greeting(final String content) {
-    this.content = content;
+  private String message;
+
+  public void setMessage(final String message) {
+    this.message = message;
   }
-
-  public String getContent() {
-    return content;
+  
+  public String getMessage() {
+    return message;
   }
-
+  
 }
