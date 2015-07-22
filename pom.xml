@@ -49,6 +49,10 @@
     <version>1.2.3.RELEASE</version>
   </parent>
 
+  <modules>
+    <module>turbine-server</module>
+  </modules>
+
   <properties>
     <!-- for maven... -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -133,10 +137,6 @@
 
     </plugins>
   </build>
-
-  <modules>
-    <module>turbine</module>
-  </modules>
 
   <dependencyManagement>
 
