@@ -8,6 +8,14 @@
     <script src="js/d3.3.5.5.js" charset="utf-8"></script>
     <script src="js/nv.d3.1.8.1.js"></script>
 
+    <!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.js"></script>
+	-->
+	
     <style>
         text {
             font: 12px sans-serif;

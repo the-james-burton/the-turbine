@@ -4,6 +4,12 @@
     <title>Hello WebSocket</title>
     <script src="js/sockjs-1.0.0.js"></script>
     <script src="js/stomp.js"></script>
+
+    <!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    -->
+
     <script type="text/javascript">
         var stompClient = null;
 
