@@ -27,8 +27,12 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
+import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -52,8 +56,14 @@ public class TickJson extends Tick implements Serializable {
   // TODO serialization does not work because Tick is a constructor immutable - maybe raise a request in ta4j...
   private static final long serialVersionUID = 1L;
 
+  private static final Logger logger = LoggerFactory.getLogger(TickJson.class);
+
   private static ObjectMapper json = new ObjectMapper();
 
+  // TODO need a better id...
+  @Id
+  private Long date;
+  
   private OffsetDateTime timestamp;
 
   private String symbol;
@@ -66,7 +76,16 @@ public class TickJson extends Tick implements Serializable {
     this.timestamp = date;
     this.symbol = symbol;
     this.exchange = exchange;
-    this.timestamp = OffsetDateTime.parse(timestamp);
+    try {
+      this.date = date.toInstant().toEpochMilli();
+    } catch (Exception e) {
+      logger.warn("Could not parse date: {}", date.toString());
+    }
+    try {
+      this.timestamp = OffsetDateTime.parse(timestamp);
+    } catch (Exception e) {
+      logger.warn("Could not parse timestamp: {}", timestamp);
+    }
   }
 
   @JsonCreator

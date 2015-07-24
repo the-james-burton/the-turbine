@@ -51,7 +51,7 @@ public class Ta4jBasicTest {
 
     ticks = new ArrayList<Tick>();
 
-    for (OffsetDateTime date = OffsetDateTime.now().minusMonths(1); date.isBefore(OffsetDateTime.now()); date = date.plusDays(1)) {
+    for (OffsetDateTime date = OffsetDateTime.now().minusMinutes(1); date.isBefore(OffsetDateTime.now()); date = date.plusSeconds(1)) {
       Tick tick = rdog.newTick(date);
       ticks.add(tick);
       series = new TimeSeries(ticks);
@@ -62,7 +62,7 @@ public class Ta4jBasicTest {
   public void basicTa4JTest() {
     for (Tick tick : ticks) {
       // TODO Tick.toString() does not work - raise an issue in Ta4J...
-      System.out.println(tick.toString());
+      System.out.println(tick.toString() + ",");
     }
 
     ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);

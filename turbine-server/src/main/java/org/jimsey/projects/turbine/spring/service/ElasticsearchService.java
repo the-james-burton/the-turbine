@@ -27,11 +27,14 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.InstrumentRepository;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.QuoteRepository;
+import org.jimsey.projects.turbine.spring.elasticsearch.repositories.TickRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -58,6 +61,10 @@ public class ElasticsearchService {
   
   @Autowired
   @NotNull
+  private TickRepository tickRepository;
+  
+  @Autowired
+  @NotNull
   protected DomainObjectGenerator rdog;
   
   @PostConstruct
@@ -73,7 +80,7 @@ public class ElasticsearchService {
     //Quote quote = rdog.newQuote();
     //quoteRepository.saveToIndex(quote, "test-quote");
     
-    //logger.info("getAllQuotes() : [{}]", getAllQuotes());
+    logger.info("getAllTicks() : [{}]", getAllTicks());
 
   }
 
@@ -86,6 +93,20 @@ public class ElasticsearchService {
     Iterable<Quote> quotes = quoteRepository.search(query);
     
     return Joiner.on(',').join(quotes);
+    
+  }
+  
+  public String getAllTicks() {
+    logger.info("getAllTicks");
+    NativeSearchQuery query = new NativeSearchQueryBuilder()
+    .withIndices("test-tick")
+    .withTypes("tick")
+    .withPageable(new PageRequest(0,Integer.MAX_VALUE))
+    .build();
+    
+    Iterable<TickJson> ticks = tickRepository.search(query);
+    
+    return Joiner.on(',').join(ticks);
     
   }
   
