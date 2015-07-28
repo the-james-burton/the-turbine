@@ -22,9 +22,15 @@
  */
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
+import java.util.List;
+
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface TickRepository extends ElasticsearchRepository<TickJson, Long> {
 
+  List<TickJson> findBySymbol(String symbol);
+  
+  List<TickJson> findBySymbolAndDateGreaterThan(String symbol, Long date);
+  
 }

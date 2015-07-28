@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,11 @@ public class TickConsumerRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
 
-    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=test-tick&indexType=tick",
+    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%sk&indexType=%s",
         infrastructureProperties.getElasticsearchHost(),
-        infrastructureProperties.getElasticsearchPort());    
+        infrastructureProperties.getElasticsearchPort(),
+        TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
+        TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS);    
 
     from(infrastructureProperties.getAmqpTicks()).id("ticks")
         .convertBodyTo(String.class)

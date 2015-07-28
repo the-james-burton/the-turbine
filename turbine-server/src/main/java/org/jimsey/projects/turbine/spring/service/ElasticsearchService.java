@@ -22,9 +22,12 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
@@ -80,7 +83,11 @@ public class ElasticsearchService {
     //Quote quote = rdog.newQuote();
     //quoteRepository.saveToIndex(quote, "test-quote");
     
-    logger.info("getAllTicks() : [{}]", getAllTicks());
+    //logger.info("getAllTicks() : [{}]", getAllTicks());
+    //logger.info("findBySymbol('DEF.L') : [{}]", tickRepository.findBySymbol("DEF.L"));
+    //logger.info("findBySymbol('ABC.L') : [{}]", tickRepository.findBySymbol("ABC.L"));
+
+    logger.info("findBySymbolAndDateGreaterThan('ABC.L') : [{}]", tickRepository.findBySymbolAndDateGreaterThan("ABC.L", 1437757455156l));
 
   }
 
@@ -99,8 +106,8 @@ public class ElasticsearchService {
   public String getAllTicks() {
     logger.info("getAllTicks");
     NativeSearchQuery query = new NativeSearchQueryBuilder()
-    .withIndices("test-tick")
-    .withTypes("tick")
+    .withIndices(TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS)
+    .withTypes(TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
     .withPageable(new PageRequest(0,Integer.MAX_VALUE))
     .build();
     
@@ -108,6 +115,14 @@ public class ElasticsearchService {
     
     return Joiner.on(',').join(ticks);
     
+  }
+
+  public List<TickJson> findBySymbol(String symbol) {
+    return tickRepository.findBySymbol(symbol);
+  }
+
+  public List<TickJson> findBySymbolAndDateGreaterThan(String symbol, Long date) {
+    return tickRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
   
 }

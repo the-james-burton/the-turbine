@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -44,7 +45,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
 
-@Document(indexName = "tick", type = "tick")
+@Document(
+    indexName = TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
+    type = TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
 @JsonAutoDetect(
     fieldVisibility = Visibility.NONE,
     getterVisibility = Visibility.NONE,

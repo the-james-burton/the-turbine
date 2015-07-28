@@ -22,27 +22,39 @@
  */
 package org.jimsey.projects.turbine.spring.web;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Joiner;
+
 @RestController
 @EnableAutoConfiguration
+@RequestMapping(TurbineConstants.REST_ROOT_TICKS)
 public class TickController {
 
-  private final String root = "/ticks/";
-  
   @Autowired
   @NotNull
   ElasticsearchService elasticsearch;
 
-  @RequestMapping(root+ "all")
-  public String ping() {
+  @RequestMapping("/all")
+  public String getAllTicks() {
     return elasticsearch.getAllTicks();
+  }
+
+  @RequestMapping("/all/{date}")
+  public String getAllTicksGreaterThanDate(@PathVariable Long date) {
+    List<TickJson> ticks = elasticsearch.findBySymbolAndDateGreaterThan("ABC.L", date);
+    return Joiner.on(',').join(ticks);
   }
 
 }
