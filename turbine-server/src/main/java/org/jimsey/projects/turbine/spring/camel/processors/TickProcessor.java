@@ -64,6 +64,7 @@ public class TickProcessor implements Processor {
     TickJson tick = message.getMandatoryBody(TickJson.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
     series.addTick(tick);
+    // TODO send symbols on their own topic...
     websockets.convertAndSend(infrastructureProperties.getWebsocketTicks(), tick);
     logger.info(tick.toString());
     logger.info("sma={}", sma.getValue(series.getEnd()));

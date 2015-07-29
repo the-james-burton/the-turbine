@@ -84,11 +84,9 @@ public class ElasticsearchService {
     //quoteRepository.saveToIndex(quote, "test-quote");
     
     //logger.info("getAllTicks() : [{}]", getAllTicks());
-    //logger.info("findBySymbol('DEF.L') : [{}]", tickRepository.findBySymbol("DEF.L"));
-    //logger.info("findBySymbol('ABC.L') : [{}]", tickRepository.findBySymbol("ABC.L"));
-
-    logger.info("findBySymbolAndDateGreaterThan('ABC.L') : [{}]", tickRepository.findBySymbolAndDateGreaterThan("ABC.L", 1437757455156l));
-
+    //logger.info("findBySymbol('DEF') : [{}]", tickRepository.findBySymbol("DEF"));
+    //logger.info("findBySymbol('ABC') : [{}]", tickRepository.findBySymbol("ABC"));
+        
   }
 
   public String getAllQuotes() {
@@ -118,10 +116,12 @@ public class ElasticsearchService {
   }
 
   public List<TickJson> findBySymbol(String symbol) {
+    logger.info("findBySymbol({})", symbol);
     return tickRepository.findBySymbol(symbol);
   }
 
   public List<TickJson> findBySymbolAndDateGreaterThan(String symbol, Long date) {
+    logger.info("findBySymbolAndDateGreaterThan({}, {})", symbol, date);
     return tickRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
   

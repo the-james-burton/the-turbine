@@ -83,7 +83,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(90, 110);
 
-    tick = new TickJson(date, open, high, low, close, volume, "ABC.L", "FTSE100", OffsetDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, "ABC", "FTSE100", OffsetDateTime.now().toString());
     return tick;
   }
 

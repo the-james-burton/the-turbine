@@ -109,8 +109,7 @@ public class Application extends CamelConfiguration {
                 .build()))
         .securitySchemes(newArrayList(apiKey()))
         .securityContexts(newArrayList(securityContext()))
-        .enableUrlTemplating(true)
-        ;
+        .enableUrlTemplating(true);
   }
 
   @Autowired

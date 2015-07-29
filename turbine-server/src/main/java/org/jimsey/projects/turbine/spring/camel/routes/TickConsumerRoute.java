@@ -45,7 +45,7 @@ public class TickConsumerRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
 
-    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%sk&indexType=%s",
+    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%s&indexType=%s",
         infrastructureProperties.getElasticsearchHost(),
         infrastructureProperties.getElasticsearchPort(),
         TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS,

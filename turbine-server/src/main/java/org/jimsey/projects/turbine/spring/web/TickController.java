@@ -22,13 +22,17 @@
  */
 package org.jimsey.projects.turbine.spring.web;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,18 +46,31 @@ import com.google.common.base.Joiner;
 @RequestMapping(TurbineConstants.REST_ROOT_TICKS)
 public class TickController {
 
+  private static final Logger logger = LoggerFactory.getLogger(TickController.class);
+
+  private long date = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli();
+  
   @Autowired
   @NotNull
   ElasticsearchService elasticsearch;
 
-  @RequestMapping("/all")
-  public String getAllTicks() {
-    return elasticsearch.getAllTicks();
+  @PostConstruct
+  public void init() {
+    logger.info("right now date value is {}", OffsetDateTime.now().toInstant().toEpochMilli());
+    logger.info("this mornings date value is {}", date);
+    logger.info("getTicksAfter() : [{}]", getTicksAfter("ABC", 1437757455156l));
   }
 
-  @RequestMapping("/all/{date}")
-  public String getAllTicksGreaterThanDate(@PathVariable Long date) {
-    List<TickJson> ticks = elasticsearch.findBySymbolAndDateGreaterThan("ABC.L", date);
+  @RequestMapping("/{symbol}")
+  public String getTicks(@PathVariable String symbol) {
+    logger.info("getTicks");
+    List<TickJson> ticks = elasticsearch.findBySymbol(symbol);
+    return Joiner.on(',').join(ticks);
+  }
+
+  @RequestMapping("/{symbol}/{date}")
+  public String getTicksAfter(@PathVariable String symbol, @PathVariable Long date) {
+    List<TickJson> ticks = elasticsearch.findBySymbolAndDateGreaterThan(symbol, date);
     return Joiner.on(',').join(ticks);
   }
 
