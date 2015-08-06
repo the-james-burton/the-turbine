@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.web;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 
@@ -58,9 +61,11 @@ public class TestController {
   @MessageMapping("/reply")
   @SendTo("/topic/reply")
   public ReplyResponse reply(ReplyResponse message) throws Exception {
-    logger.debug("received message={}", message.getMessage());
+    logger.info("received message={}", message.getMessage());
     ReplyResponse response = new ReplyResponse();
-    response.setMessage(String.format("Hello %s, the time here is %s", message.getMessage(), ping.ping()));
+    // OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault())
+    long date = OffsetDateTime.now().toInstant().toEpochMilli(); 
+    response.setMessage(String.format("Hello %s, the time here is %s", message.getMessage(), date));
     return response;
   }
 
