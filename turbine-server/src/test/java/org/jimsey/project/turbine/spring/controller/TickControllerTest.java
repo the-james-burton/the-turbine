@@ -55,6 +55,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -75,6 +77,8 @@ public class TickControllerTest {
   
   private List<TickJson> ticks = new ArrayList<TickJson>();
   
+  private static ObjectMapper json = new ObjectMapper();
+
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -91,7 +95,7 @@ public class TickControllerTest {
     
     Mockito.when(elasticsearch.findBySymbolAndDateGreaterThan(Mockito.anyString(), Mockito.any(Long.class))).thenReturn(ticks);
 
-    String expected = Joiner.on(',').join(ticks);
+    String expected = json.writeValueAsString(new Object() { @JsonProperty("ticks") List<TickJson> tickz = ticks; });
     
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
     
