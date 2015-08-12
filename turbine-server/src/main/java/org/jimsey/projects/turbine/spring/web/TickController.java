@@ -33,10 +33,13 @@ import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.exceptions.TurbineException;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
+import org.jimsey.projects.turbine.spring.service.Ping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,6 +62,9 @@ public class TickController {
   @NotNull
   ElasticsearchService elasticsearch;
 
+  @Autowired
+  private Ping ping;
+
   @PostConstruct
   public void init() throws Exception {
     long sod = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli();
@@ -66,6 +72,12 @@ public class TickController {
     logger.info("right now date value is {}", now);;
     logger.info("this mornings date value is {}", sod);
     logger.info("this mornings getTicksAfter() : [{}]", getTicksAfter("ABC", sod));
+  }
+
+  @RequestMapping("/ping")
+  public PingResponse ping() throws Exception {
+    logger.info("ping()");
+    return new PingResponse(ping.ping());
   }
 
   @RequestMapping("/{symbol}")

@@ -47,21 +47,23 @@ public class TestController {
 
   @RequestMapping("/test")
   public String welcome(Map<String, Object> model) {
+    logger.info("welcome()");
     model.put("time", new Date());
-    model.put("message", "Freemarker is working");
+    model.put("message", "Hello from TestController via freemarker!");
     return "test";
   }
 
   @MessageMapping("/ping")
   @SendTo("/topic/ping")
   public PingResponse ping() throws Exception {
+    logger.info("ping()");
     return new PingResponse(ping.ping());
   }
   
   @MessageMapping("/reply")
   @SendTo("/topic/reply")
   public ReplyResponse reply(ReplyResponse message) throws Exception {
-    logger.info("received message={}", message.getMessage());
+    logger.info("reply({})", message.getMessage());
     ReplyResponse response = new ReplyResponse();
     // OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault())
     long date = OffsetDateTime.now().toInstant().toEpochMilli(); 
