@@ -73,7 +73,7 @@ public class TickControllerTest {
 
   private MockMvc mvc;
 
-  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator();
+  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator("FTSE100", "ABC");
   
   private List<TickJson> ticks = new ArrayList<TickJson>();
   

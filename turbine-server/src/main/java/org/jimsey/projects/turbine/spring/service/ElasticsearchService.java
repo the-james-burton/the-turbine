@@ -66,10 +66,6 @@ public class ElasticsearchService {
   @NotNull
   private TickRepository tickRepository;
   
-  @Autowired
-  @NotNull
-  protected DomainObjectGenerator rdog;
-  
   @PostConstruct
   public void init() {
     logger.info("ElasticsearchTemplate: {}", elasticsearch.getSetting(Instrument.class).toString());

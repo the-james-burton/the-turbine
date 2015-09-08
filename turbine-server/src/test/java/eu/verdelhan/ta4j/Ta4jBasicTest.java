@@ -40,7 +40,7 @@ public class Ta4jBasicTest {
 
   private static final Logger logger = LoggerFactory.getLogger(Ta4jBasicTest.class);
 
-  DomainObjectGenerator rdog = new RandomDomainObjectGenerator();
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator("FTSE100", "ABC");
 
   List<Tick> ticks;
 

@@ -44,17 +44,21 @@ public abstract class AbstractBaseProducer extends BaseService {
   @Autowired
   @NotNull
   protected CamelContext camel;
-  
-  @Autowired
-  @NotNull
-  protected DomainObjectGenerator rdog;
-  
+    
   @Autowired
   @NotNull
   protected InfrastructureProperties infrastructureProperties;
 
+  protected DomainObjectGenerator rdog;
+
   public AbstractBaseProducer() {
+    this(null, null);
+    logger.warn("Using null exchange and symbol");
+  }
+
+  public AbstractBaseProducer(String exchange, String symbol) {
     super();
+    this.rdog = new RandomDomainObjectGenerator(exchange, symbol);
   }
 
   @ManagedOperation

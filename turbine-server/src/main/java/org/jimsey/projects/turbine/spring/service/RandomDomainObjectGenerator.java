@@ -31,13 +31,26 @@ import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.domain.Trade;
 import org.jimsey.projects.turbine.spring.domain.Trader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service
 public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
-  private TickJson tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, "ABC", "FTSE", OffsetDateTime.now().toString());
+  private static final Logger logger = LoggerFactory.getLogger(RandomDomainObjectGenerator.class);
 
+  private final String exchange;
+  
+  private final String symbol;
+    
+  private TickJson tick;
+  
+  public RandomDomainObjectGenerator(String exchange, String symbol) {
+    this.exchange = exchange;
+    this.symbol = symbol;
+    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol, this.exchange, OffsetDateTime.now().toString());
+  }
+  
   @Override
   public Instrument newInstrument() {
     Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999), null);
@@ -83,7 +96,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(90, 110);
 
-    tick = new TickJson(date, open, high, low, close, volume, "ABC", "FTSE100", OffsetDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, this.symbol, this.exchange, OffsetDateTime.now().toString());
     return tick;
   }
 

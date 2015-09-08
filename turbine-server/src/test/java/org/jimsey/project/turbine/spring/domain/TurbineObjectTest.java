@@ -47,7 +47,7 @@ public class TurbineObjectTest {
   @Before
   public void before() {
     json = new ObjectMapper();
-    rdog = new RandomDomainObjectGenerator();
+    rdog = new RandomDomainObjectGenerator("FTSE", "ABC");
   }
 
   @Test
