@@ -2,3 +2,6 @@
 /logs/
 /.springBeans
 /.classpath
+/.apt_generated/
+/todo.txt
+/.factorypath
