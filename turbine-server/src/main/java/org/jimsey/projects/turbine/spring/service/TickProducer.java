@@ -22,43 +22,66 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.ProducerTemplate;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Profile;
-import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
 
-@Service
-@Profile("producer")
 @ConfigurationProperties(prefix = "producer")
-@ManagedResource
-public class TickProducer extends AbstractBaseProducer {
+public class TickProducer {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProducer.class);
 
-  @Override
+  @Autowired
+  @NotNull
+  private CamelContext camel;
+
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrastructureProperties;
+
+  private DomainObjectGenerator rdog;
+
+  public TickProducer(String exchange, String symbol) {
+    this.rdog = new RandomDomainObjectGenerator(exchange, symbol);
+  }
+
   @PostConstruct
   public void init() {
-    super.init();
-
     logger.info(String.format("camel=%s", camel.getName()));
     logger.info("producer initialised");
   }
 
-  @Override
   public Object createBody() {
     TickJson tick = rdog.newTick();
-    logger.info("produced: [{}]", tick);
     return tick;
   }
 
-  @Override
-  public String getEndpointUri() {
-    return infrastructureProperties.getAmqpTicks();
+  @Scheduled(fixedDelay = TurbineConstants.PRODUCER_PERIOD)
+  public void produce() {
+    ProducerTemplate producer = camel.createProducerTemplate();
+
+    Map<String, Object> headers = new HashMap<String, Object>();
+
+    // byte[] body = DomainConverter.toBytes(quote, null);
+    // byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
+    Object body = createBody();
+    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, body.getClass().getName());
+
+    String text = camel.getTypeConverter().convertTo(String.class, body);
+    producer.sendBodyAndHeaders(infrastructureProperties.getAmqpTicks(), text, headers);
   }
 
 }

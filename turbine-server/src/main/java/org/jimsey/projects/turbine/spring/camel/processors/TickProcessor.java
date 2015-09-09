@@ -54,20 +54,24 @@ public class TickProcessor implements Processor {
   private InfrastructureProperties infrastructureProperties;
   
   private List<Tick> ticks = new ArrayList<Tick>();
-  private TimeSeries series = new TimeSeries(ticks);
-  private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-  private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
+  //private TimeSeries series = new TimeSeries(ticks);
+  //private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+  //private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
 
   @Override
   public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    series.addTick(tick);
+    //series.addTick(tick);
     // TODO send symbols on their own topic...
-    websockets.convertAndSend(infrastructureProperties.getWebsocketTicks(), tick);
-    logger.info(tick.toString());
-    logger.info("sma={}", sma.getValue(series.getEnd()));
+    //String topic = String.format("%s.%s.%s", infrastructureProperties.getWebsocketTicks(), tick.getExchange(), tick.getSymbol());
+    String topic = String.format("%s", infrastructureProperties.getWebsocketTicks());
+    if ("ABC".equals(tick.getSymbol())) {
+      websockets.convertAndSend(topic, tick);
+      logger.info(String.format("websocket send: %s : %s", topic, tick.toString()));
+    }
+    //logger.info("sma={}", sma.getValue(series.getEnd()));
   }
 
   public List<Tick> getTicks() {

@@ -20,45 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.projects.turbine.spring;
 
-import javax.annotation.PostConstruct;
+import org.jimsey.projects.turbine.spring.service.TickProducer;
 
-import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Profile;
-import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.stereotype.Service;
+public interface TickProducerFactory {
 
-@Service
-@Profile("disabled")
-@ConfigurationProperties(prefix = "producer")
-@ManagedResource
-public class QuoteProducer extends AbstractBaseProducer {
-
-  private static final Logger logger = LoggerFactory.getLogger(QuoteProducer.class);
-
-  @Override
-  @PostConstruct
-  public void init() {
-    super.init();
-
-    logger.info(String.format("camel=%s", camel.getName()));
-    logger.info("producer initialised");
-  }
-
-  @Override
-  public Object createBody() {
-    Quote quote = rdog.newQuote();
-    logger.info("produced: [quoteId={}]", quote.getId());
-    return quote;
-  }
-
-  @Override
-  public String getEndpointUri() {
-    return infrastructureProperties.getAmqpQuotes();
-  }
+  TickProducer createTickProducer(String exchange, String symbol);
 
 }

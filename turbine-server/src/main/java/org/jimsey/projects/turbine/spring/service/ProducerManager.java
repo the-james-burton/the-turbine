@@ -22,43 +22,56 @@
  */
 package org.jimsey.projects.turbine.spring.service;
 
-import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jimsey.projects.turbine.spring.domain.Instrument;
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
+
+import org.apache.camel.CamelContext;
+import org.jimsey.projects.turbine.spring.TickProducerFactory;
+import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("disabled")
+@Profile("producer")
 @ConfigurationProperties(prefix = "producer")
 @ManagedResource
-public class InstrumentProducer extends AbstractBaseProducer {
+public class ProducerManager {
 
-  private static final Logger logger = LoggerFactory.getLogger(InstrumentProducer.class);
+  private static final Logger logger = LoggerFactory.getLogger(ProducerManager.class);
 
-  @Override
+  @Autowired
+  @NotNull
+  private CamelContext camel;
+    
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrastructureProperties;
+
+  @Autowired
+  @NotNull
+  private TickProducerFactory tickProducerFactory;
+
+  /** */
+  private List<TickProducer> producers = new ArrayList<>();
+  
   @PostConstruct
   public void init() {
-    super.init();
-
-    logger.info(String.format("camel=%s", camel.getName()));
-    logger.info("producer initialised");
+    for (Symbols symbol : Symbols.values()) {
+      logger.info("creating TickProducer {}", symbol);
+      TickProducer producer = tickProducerFactory.createTickProducer(symbol.getExchange(), symbol.getSymbol());
+      producers.add(producer);
+    }
   }
-
-  @Override
-  public Object createBody() {
-    Instrument instrument = rdog.newInstrument();
-    logger.info("produced: [instrumentId={}]", instrument.getId());
-    return instrument;
-  }
-
-  @Override
-  public String getEndpointUri() {
-    return infrastructureProperties.getAmqpInstruments();
-  }
-
+  
 }

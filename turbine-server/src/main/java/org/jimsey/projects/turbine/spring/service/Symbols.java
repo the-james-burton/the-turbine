@@ -20,20 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring;
+package org.jimsey.projects.turbine.spring.service;
 
-public class TurbineConstants {
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-  public static final long PRODUCER_PERIOD = 2000;
+public enum Symbols {
   
-  public static final String REST_ROOT_TICKS = "/tick";
+  ABC(Symbols.ftse),
+  DEF(Symbols.ftse);
 
-  public static final String REST_ROOT_TEST = "/test";
- 
-  public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
+  private static final String ftse = "FTSE100";
+
+  private final String exchange;
   
-  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "test-tick";
+  private Symbols(String exchange) {
+    this.exchange = exchange;
+  }
   
-  public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "tick";
+
+  @Override
+  public String toString() {
+    return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
+  }  
+  
+  // --------------------------------
+  public String getSymbol() {
+    return this.name();
+  }
+  
+  public String getExchange() {
+    return this.exchange;
+  }
   
 }

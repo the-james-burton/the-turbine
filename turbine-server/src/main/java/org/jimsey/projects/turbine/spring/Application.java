@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring;
 
+import static com.google.common.collect.Lists.*;
+import static springfox.documentation.schema.AlternateTypeRules.*;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,20 +32,25 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.camel.spring.javaconfig.CamelConfiguration;
 import org.jimsey.projects.turbine.spring.service.Ping;
+import org.jimsey.projects.turbine.spring.service.TickProducer;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.async.DeferredResult;
+
+import com.fasterxml.classmate.TypeResolver;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -58,10 +66,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import com.fasterxml.classmate.TypeResolver;
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.schema.AlternateTypeRules.*;
 
 @SpringBootApplication
 @EnableScheduling
@@ -85,6 +89,21 @@ public class Application extends CamelConfiguration {
     logger.info(String.format("ping=%s", message));
   }
 
+  @Bean 
+  public TickProducerFactory tickProcuderFactory() {
+      return new TickProducerFactory() {
+          public TickProducer createTickProducer(String exchange, String symbol) {
+              return runtimeTickProducer(exchange, symbol);
+          }
+      };
+  }
+
+  @Bean
+  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  TickProducer runtimeTickProducer(String exchange, String symbol) {
+      return new TickProducer(exchange, symbol);
+  }
+  
   @Bean
   public Docket petApi() {
     return new Docket(DocumentationType.SWAGGER_2)
