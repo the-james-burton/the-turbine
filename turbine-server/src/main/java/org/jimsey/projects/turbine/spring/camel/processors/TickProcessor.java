@@ -25,6 +25,8 @@ package org.jimsey.projects.turbine.spring.camel.processors;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
@@ -38,20 +40,15 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import eu.verdelhan.ta4j.Tick;
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
 @Component
 public class TickProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
-
-  @Autowired
-  private SimpMessagingTemplate websockets;
   
   @Autowired
-  private InfrastructureProperties infrastructureProperties;
+  @NotNull
+  private TickPublisher tickPublisher;
   
   private List<Tick> ticks = new ArrayList<Tick>();
   //private TimeSeries series = new TimeSeries(ticks);
@@ -63,14 +60,7 @@ public class TickProcessor implements Processor {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    //series.addTick(tick);
-    // TODO send symbols on their own topic...
-    //String topic = String.format("%s.%s.%s", infrastructureProperties.getWebsocketTicks(), tick.getExchange(), tick.getSymbol());
-    String topic = String.format("%s", infrastructureProperties.getWebsocketTicks());
-    if ("ABC".equals(tick.getSymbol())) {
-      websockets.convertAndSend(topic, tick);
-      logger.info(String.format("websocket send: %s : %s", topic, tick.toString()));
-    }
+    tickPublisher.publish(tick);
     //logger.info("sma={}", sma.getValue(series.getEnd()));
   }
 
