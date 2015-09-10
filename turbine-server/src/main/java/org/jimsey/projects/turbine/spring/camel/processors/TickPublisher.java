@@ -50,14 +50,13 @@ public class TickPublisher {
   public void publish(TickJson tick) {
     // series.addTick(tick);
     // TODO send symbols on their own topic...
-    // String topic = String.format("%s.%s.%s", infrastructureProperties.getWebsocketTicks(), tick.getExchange(),
-    // tick.getSymbol());
-    String topic = String.format("%s", infrastructureProperties.getWebsocketTicks());
-    if ("ABC".equals(tick.getSymbol())) {
-      websockets.convertAndSend(topic, tick);
-      // websockets.convertAndSend(tick);
-      logger.info(String.format("websocket send: %s : %s", topic, tick.toString()));
-    }
+    String topic = String.format("%s.%s.%s", infrastructureProperties.getWebsocketTicks(), tick.getExchange(), tick.getSymbol());
+    // String topic = String.format("%s", infrastructureProperties.getWebsocketTicks());
+    // if ("ABC".equals(tick.getSymbol())) {
+    websockets.convertAndSend(topic, tick);
+    // websockets.convertAndSend(tick);
+    logger.info(String.format("websocket send: %s : %s", topic, tick.toString()));
+    // }
 
   }
 
