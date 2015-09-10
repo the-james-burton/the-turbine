@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
 import org.jimsey.projects.turbine.spring.domain.Quote;
 
-public class QuoteRepositoryImpl extends EntityRepositoryImpl<Quote> implements EntityRepositoryCustom<Quote> {
+public class QuoteRepositoryImpl extends EntityRepositoryImpl<Quote>implements EntityRepositoryCustom<Quote> {
 
   // private static final Logger logger = LoggerFactory.getLogger(QuoteRepositoryImpl.class);
 

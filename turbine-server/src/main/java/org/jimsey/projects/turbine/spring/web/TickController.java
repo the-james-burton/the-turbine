@@ -38,8 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,7 +67,8 @@ public class TickController {
   public void init() throws Exception {
     long sod = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli();
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
-    logger.info("right now date value is {}", now);;
+    logger.info("right now date value is {}", now);
+    ;
     logger.info("this mornings date value is {}", sod);
     logger.info("this mornings getTicksAfter() : [{}]", getTicksAfter("ABC", sod));
   }
@@ -90,19 +89,19 @@ public class TickController {
   @RequestMapping("/{symbol}/{date}")
   public String getTicksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
     List<TickJson> ticks = elasticsearch.findBySymbolAndDateGreaterThan(symbol, date);
-    //return Joiner.on(',').join(ticks);
-    //return objectToJson(ticks);
-    //if (true) {
+    // return Joiner.on(',').join(ticks);
+    // return objectToJson(ticks);
+    // if (true) {
     // throw new Exception("I hate you!");
-    //}
-    
+    // }
+
     // TODO can do this with java 8 lambdas?
     Object ticksDTO = new Object() {
       @JsonProperty("ticks")
       List<TickJson> tickz = ticks;
-//      List<TickJson> getTicks() {
-//        return
-//      }
+      // List<TickJson> getTicks() {
+      // return
+      // }
     };
     return json.writeValueAsString(ticksDTO);
   }

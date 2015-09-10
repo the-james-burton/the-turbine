@@ -47,7 +47,7 @@ import com.google.common.base.Joiner;
 
 @Service
 public class ElasticsearchService {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(ElasticsearchService.class);
 
   @Autowired
@@ -61,54 +61,54 @@ public class ElasticsearchService {
   @Autowired
   @NotNull
   private QuoteRepository quoteRepository;
-  
+
   @Autowired
   @NotNull
   private TickRepository tickRepository;
-  
+
   @PostConstruct
   public void init() {
     logger.info("ElasticsearchTemplate: {}", elasticsearch.getSetting(Instrument.class).toString());
-    
-    //Instrument instrument = rdog.newInstrument();
-    //instrumentRepository.saveToIndex(instrument, "test-instrument");
-    
-    //instrumentRepository.save(instrument);
-    //logger.info(Iterables.toString(instrumentRepository.findAll()));
-    
-    //Quote quote = rdog.newQuote();
-    //quoteRepository.saveToIndex(quote, "test-quote");
-    
-    //logger.info("getAllTicks() : [{}]", getAllTicks());
-    //logger.info("findBySymbol('DEF') : [{}]", tickRepository.findBySymbol("DEF"));
-    //logger.info("findBySymbol('ABC') : [{}]", tickRepository.findBySymbol("ABC"));
-        
+
+    // Instrument instrument = rdog.newInstrument();
+    // instrumentRepository.saveToIndex(instrument, "test-instrument");
+
+    // instrumentRepository.save(instrument);
+    // logger.info(Iterables.toString(instrumentRepository.findAll()));
+
+    // Quote quote = rdog.newQuote();
+    // quoteRepository.saveToIndex(quote, "test-quote");
+
+    // logger.info("getAllTicks() : [{}]", getAllTicks());
+    // logger.info("findBySymbol('DEF') : [{}]", tickRepository.findBySymbol("DEF"));
+    // logger.info("findBySymbol('ABC') : [{}]", tickRepository.findBySymbol("ABC"));
+
   }
 
   public String getAllQuotes() {
     NativeSearchQuery query = new NativeSearchQueryBuilder()
-    .withIndices("test-*")
-    .withTypes("quote")
-    .build();
-    
+        .withIndices("test-*")
+        .withTypes("quote")
+        .build();
+
     Iterable<Quote> quotes = quoteRepository.search(query);
-    
+
     return Joiner.on(',').join(quotes);
-    
+
   }
-  
+
   public String getAllTicks() {
     logger.info("getAllTicks");
     NativeSearchQuery query = new NativeSearchQueryBuilder()
-    .withIndices(TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS)
-    .withTypes(TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
-    .withPageable(new PageRequest(0,Integer.MAX_VALUE))
-    .build();
-    
+        .withIndices(TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS)
+        .withTypes(TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
+        .withPageable(new PageRequest(0, Integer.MAX_VALUE))
+        .build();
+
     Iterable<TickJson> ticks = tickRepository.search(query);
-    
+
     return Joiner.on(',').join(ticks);
-    
+
   }
 
   public List<TickJson> findBySymbol(String symbol) {
@@ -120,5 +120,5 @@ public class ElasticsearchService {
     logger.info("findBySymbolAndDateGreaterThan({}, {})", symbol, date);
     return tickRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
-  
+
 }

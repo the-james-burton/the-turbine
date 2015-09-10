@@ -32,17 +32,23 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
+  StompEndpointRegistry registry;
+
   @Override
   public void configureMessageBroker(final MessageBrokerRegistry config) {
     config.enableSimpleBroker("/topic");
+    // config.enableStompBrokerRelay("/topic");
     config.setApplicationDestinationPrefixes("/app");
   }
 
   @Override
   public void registerStompEndpoints(final StompEndpointRegistry registry) {
+    this.registry = registry;
     registry.addEndpoint("/reply").setAllowedOrigins("*").withSockJS();
     registry.addEndpoint("/ping").setAllowedOrigins("*").withSockJS();
     registry.addEndpoint("/ticks").setAllowedOrigins("*").withSockJS();
-    }
+  }
+
+  // TODO add stomp endpoints for multiple exchanges/symbols
 
 }

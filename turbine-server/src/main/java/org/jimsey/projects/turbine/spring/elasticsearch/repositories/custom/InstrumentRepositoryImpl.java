@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
 import org.jimsey.projects.turbine.spring.domain.Instrument;
 
-public class InstrumentRepositoryImpl extends EntityRepositoryImpl<Instrument> implements EntityRepositoryCustom<Instrument> {
+public class InstrumentRepositoryImpl extends EntityRepositoryImpl<Instrument>implements EntityRepositoryCustom<Instrument> {
 
   // private static final Logger logger = LoggerFactory.getLogger(InstrumentRepositoryImpl.class);
 

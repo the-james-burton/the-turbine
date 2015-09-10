@@ -25,15 +25,15 @@ package org.jimsey.projects.turbine.spring;
 public class TurbineConstants {
 
   public static final long PRODUCER_PERIOD = 2000;
-  
+
   public static final String REST_ROOT_TICKS = "/tick";
 
   public static final String REST_ROOT_TEST = "/test";
- 
+
   public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
-  
+
   public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "test-tick";
-  
+
   public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "tick";
-  
+
 }

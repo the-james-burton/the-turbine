@@ -31,12 +31,10 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import eu.verdelhan.ta4j.Tick;
@@ -45,15 +43,15 @@ import eu.verdelhan.ta4j.Tick;
 public class TickProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
-  
+
   @Autowired
   @NotNull
   private TickPublisher tickPublisher;
-  
+
   private List<Tick> ticks = new ArrayList<Tick>();
-  //private TimeSeries series = new TimeSeries(ticks);
-  //private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-  //private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
+  // private TimeSeries series = new TimeSeries(ticks);
+  // private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+  // private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
 
   @Override
   public void process(final Exchange exchange) throws Exception {
@@ -61,11 +59,11 @@ public class TickProcessor implements Processor {
     TickJson tick = message.getMandatoryBody(TickJson.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
     tickPublisher.publish(tick);
-    //logger.info("sma={}", sma.getValue(series.getEnd()));
+    // logger.info("sma={}", sma.getValue(series.getEnd()));
   }
 
   public List<Tick> getTicks() {
     return ticks;
   }
-  
+
 }

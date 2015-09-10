@@ -43,8 +43,8 @@ public class QuoteProcessor implements Processor {
     // Quote quote = (Quote) SerializationUtils.deserialize(bytes);
     Quote quote = message.getMandatoryBody(Quote.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    
-    logger.info("consumed: [{}={}, quoteId={}]",TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, quote.getId());
+
+    logger.info("consumed: [{}={}, quoteId={}]", TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, quote.getId());
   }
 
 }

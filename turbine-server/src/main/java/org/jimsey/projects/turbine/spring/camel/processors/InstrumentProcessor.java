@@ -41,8 +41,8 @@ public class InstrumentProcessor implements Processor {
     Message message = exchange.getIn();
     Instrument instrument = message.getMandatoryBody(Instrument.class);
     String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-   
-    logger.info("consumed: [{}={}, instrumentId={}]",TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, instrument.getId());
+
+    logger.info("consumed: [{}={}, instrumentId={}]", TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, instrument.getId());
   }
 
 }

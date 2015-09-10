@@ -22,7 +22,6 @@
  */
 package org.jimsey.projects.turbine.spring.web;
 
-
 public class ReplyResponse {
 
   private String message;
@@ -30,9 +29,9 @@ public class ReplyResponse {
   public void setMessage(final String message) {
     this.message = message;
   }
-  
+
   public String getMessage() {
     return message;
   }
-  
+
 }

@@ -26,10 +26,7 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.spring.camel.processors.TickProcessor;
-import org.jimsey.projects.turbine.spring.service.Ping;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -38,7 +35,7 @@ public class SocketsController {
 
   @Autowired
   private TickProcessor tickProcessor;
-  
+
   @RequestMapping("/sockets")
   public String welcome(Map<String, Object> model) {
     model.put("time", OffsetDateTime.now());

@@ -34,11 +34,8 @@ import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +50,7 @@ public class ProducerManager {
   @Autowired
   @NotNull
   private CamelContext camel;
-    
+
   @Autowired
   @NotNull
   private InfrastructureProperties infrastructureProperties;
@@ -64,7 +61,7 @@ public class ProducerManager {
 
   /** */
   private List<TickProducer> producers = new ArrayList<>();
-  
+
   @PostConstruct
   public void init() {
     for (Symbols symbol : Symbols.values()) {
@@ -73,5 +70,5 @@ public class ProducerManager {
       producers.add(producer);
     }
   }
-  
+
 }

@@ -23,9 +23,9 @@
 package org.jimsey.projects.turbine.spring.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 /**
  * Intended to be serialized to JSON and sent to client from REST API
@@ -60,5 +60,5 @@ public class TurbineException extends RuntimeException {
   public String getError() {
     return this.getMessage();
   }
-  
+
 }

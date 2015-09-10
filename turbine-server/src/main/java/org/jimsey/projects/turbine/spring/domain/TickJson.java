@@ -28,7 +28,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
@@ -66,7 +65,7 @@ public class TickJson extends Tick implements Serializable {
   // TODO need a better id...
   @Id
   private Long date;
-  
+
   private OffsetDateTime timestamp;
 
   private String symbol;
@@ -173,8 +172,7 @@ public class TickJson extends Tick implements Serializable {
         getMaxPrice().toDouble(),
         getMinPrice().toDouble(),
         getClosePrice().toDouble(),
-        getVolume().toDouble()
-        );
+        getVolume().toDouble());
   }
 
 }

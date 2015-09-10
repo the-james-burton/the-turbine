@@ -38,7 +38,7 @@ public class QuoteConsumerRoute extends BaseRoute {
   private static final Logger logger = LoggerFactory.getLogger(QuoteConsumerRoute.class);
 
   @Autowired
-  //@Qualifier("quoteProcessor")
+  // @Qualifier("quoteProcessor")
   @NotNull
   private Processor quoteProcessor;
 

@@ -41,7 +41,7 @@ public class InfrastructureProperties {
 
   @NotNull
   private String environmentName;
-  
+
   @NotNull
   private String amqpInstruments;
 
@@ -53,10 +53,10 @@ public class InfrastructureProperties {
 
   @NotNull
   private String amqpTraders;
-  
+
   @NotNull
   private String amqpTicks;
-  
+
   @NotNull
   private String elasticsearchHost;
 
@@ -65,7 +65,7 @@ public class InfrastructureProperties {
 
   @NotNull
   private String websocketTicks;
-  
+
   @PostConstruct
   public void init() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();

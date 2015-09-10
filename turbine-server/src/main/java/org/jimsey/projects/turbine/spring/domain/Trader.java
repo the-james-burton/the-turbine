@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Trader extends Entity {
 
   private static final long serialVersionUID = 1L;
-  
+
   private String username;
 
   @PersistenceConstructor

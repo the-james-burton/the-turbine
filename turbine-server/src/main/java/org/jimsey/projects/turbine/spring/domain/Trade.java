@@ -79,5 +79,5 @@ public class Trade extends Entity {
   public void setSize(Long size) {
     this.size = size;
   }
-  
+
 }

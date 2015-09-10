@@ -38,20 +38,21 @@ public class InstrumentConsumerRoute extends BaseRoute {
   private static final Logger logger = LoggerFactory.getLogger(InstrumentConsumerRoute.class);
 
   @Autowired
-  //@Qualifier("instrumentProcessor")
+  // @Qualifier("instrumentProcessor")
   @NotNull
   private Processor instrumentProcessor;
 
   @Override
   public void configure() throws Exception {
 
-    final String elasticsearchUri = String.format("elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=test-instrument&indexType=instrument",
+    final String elasticsearchUri = String.format(
+        "elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=test-instrument&indexType=instrument",
         infrastructureProperties.getElasticsearchHost(),
-        infrastructureProperties.getElasticsearchPort());    
-    
+        infrastructureProperties.getElasticsearchPort());
+
     from(infrastructureProperties.getAmqpInstruments()).id("instruments")
         .convertBodyTo(String.class)
-        //.to("slog:json")
+        // .to("slog:json")
         .process(instrumentProcessor)
         .to(elasticsearchUri)
         .end();

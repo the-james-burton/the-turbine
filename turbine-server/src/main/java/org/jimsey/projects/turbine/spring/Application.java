@@ -89,35 +89,35 @@ public class Application extends CamelConfiguration {
     logger.info(String.format("ping=%s", message));
   }
 
-  @Bean 
+  @Bean
   public TickProducerFactory tickProcuderFactory() {
-      return new TickProducerFactory() {
-          public TickProducer createTickProducer(String exchange, String symbol) {
-              return runtimeTickProducer(exchange, symbol);
-          }
-      };
+    return new TickProducerFactory() {
+      public TickProducer createTickProducer(String exchange, String symbol) {
+        return runtimeTickProducer(exchange, symbol);
+      }
+    };
   }
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   TickProducer runtimeTickProducer(String exchange, String symbol) {
-      return new TickProducer(exchange, symbol);
+    return new TickProducer(exchange, symbol);
   }
-  
+
   @Bean
   public Docket petApi() {
     return new Docket(DocumentationType.SWAGGER_2)
         .select()
-          .apis(RequestHandlerSelectors.any())
-          .paths(PathSelectors.any())
-          .build()
+        .apis(RequestHandlerSelectors.any())
+        .paths(PathSelectors.any())
+        .build()
         .pathMapping("/")
         .directModelSubstitute(LocalDate.class,
             String.class)
         .genericModelSubstitutes(ResponseEntity.class)
         .alternateTypeRules(
             newRule(typeResolver.resolve(DeferredResult.class,
-                    typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
+                typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
                 typeResolver.resolve(WildcardType.class)))
         .useDefaultResponseMessages(false)
         .globalResponseMessage(RequestMethod.GET,
@@ -146,8 +146,7 @@ public class Application extends CamelConfiguration {
   }
 
   List<SecurityReference> defaultAuth() {
-    AuthorizationScope authorizationScope
-        = new AuthorizationScope("global", "accessEverything");
+    AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
     AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
     authorizationScopes[0] = authorizationScope;
     return newArrayList(
@@ -168,7 +167,7 @@ public class Application extends CamelConfiguration {
     return new UiConfiguration(
         "validatorUrl");
   }
-  
+
   @SuppressWarnings("unused")
   private static void logBeanNames(final ConfigurableApplicationContext spring) {
     logger.info("Let's inspect the beans provided by Spring Boot:");

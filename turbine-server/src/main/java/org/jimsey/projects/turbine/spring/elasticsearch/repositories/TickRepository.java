@@ -30,7 +30,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 public interface TickRepository extends ElasticsearchRepository<TickJson, Long> {
 
   List<TickJson> findBySymbol(String symbol);
-  
+
   List<TickJson> findBySymbolAndDateGreaterThan(String symbol, Long date);
-  
+
 }

@@ -25,13 +25,13 @@ package org.jimsey.projects.turbine.spring.web;
 public class PingResponse {
 
   private Long time;
-  
+
   public PingResponse(long time) {
     this.time = time;
   }
-  
+
   public Long getTime() {
     return time;
   }
-  
+
 }
