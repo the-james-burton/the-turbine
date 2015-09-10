@@ -36,9 +36,12 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(final MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/topic");
+    // java.lang.NoClassDefFoundError: reactor/io/encoding/Codec
+    // Please add a dependency on org.projectreactor:reactor-net for TCP connection management.
     // config.enableStompBrokerRelay("/topic");
+    config.enableSimpleBroker("/topic");
     config.setApplicationDestinationPrefixes("/app");
+    // config.setPathMatcher(new AntPathMatcher("."));
   }
 
   @Override
