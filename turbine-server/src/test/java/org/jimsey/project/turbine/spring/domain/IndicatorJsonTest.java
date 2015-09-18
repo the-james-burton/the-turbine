@@ -22,40 +22,63 @@
  */
 package org.jimsey.project.turbine.spring.domain;
 
-import java.io.IOException;
+import static org.junit.Assert.*;
 
-import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
+import java.io.IOException;
+import java.time.OffsetDateTime;
+
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.SerializationUtils;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TurbineObjectTest {
+public class IndicatorJsonTest {
+
+  private static final String exchange = "FTSE100";
+
+  private static final String symbol = "ABC";
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
-  private ObjectMapper json;
+  private static ObjectMapper json = new ObjectMapper();
 
-  private DomainObjectGenerator rdog;
+  private IndicatorJson indicator;
 
   @Before
   public void before() {
-    json = new ObjectMapper();
-    rdog = new RandomDomainObjectGenerator("FTSE", "ABC");
   }
 
   @Test
-  public void testTickJson() throws JsonParseException, JsonMappingException, IOException {
-    TickJson tick = rdog.newTick();
-    String text = tick.toString();
-    System.out.println(text);
-    TickJson object = json.readValue(text, TickJson.class);
-    System.out.println(object.toString());
+  public void testConstructor() {
+    indicator = new IndicatorJson(OffsetDateTime.now().toString(), exchange, symbol, "test-indicator", 123.4d);
+    String asString = indicator.toString();
+    logger.info(asString);
+    assertNotNull(asString);
   }
+
+  @Test
+  public void testJson() throws IOException {
+    indicator = new IndicatorJson(OffsetDateTime.now().toString(), exchange, symbol, "test-indicator", 123.4d);
+    String text = json.writeValueAsString(indicator);
+    logger.info(text);
+    indicator = json.readValue(text, IndicatorJson.class);
+    logger.info(indicator.toString());
+    assertEquals(text, indicator.toString());
+
+  }
+
+  @Test
+  public void testSerializable() throws IOException {
+    indicator = new IndicatorJson(OffsetDateTime.now().toString(), exchange, symbol, "test-indicator", 123.4d);
+    byte[] bytes = SerializationUtils.serialize(indicator);
+    IndicatorJson indicator2 = (IndicatorJson) SerializationUtils.deserialize(bytes);
+    logger.info(indicator.toString());
+    logger.info(indicator2.toString());
+  }
+
 }

@@ -24,13 +24,8 @@ package org.jimsey.projects.turbine.spring.service;
 
 import java.time.OffsetDateTime;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Trade;
-import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,40 +44,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     this.symbol = symbol;
     this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol, this.exchange,
         OffsetDateTime.now().toString());
-  }
-
-  @Override
-  public Instrument newInstrument() {
-    Instrument instrument = new Instrument(RandomUtils.nextLong(1, 999), null);
-    instrument.setCode(RandomStringUtils.randomAlphanumeric(10));
-    return instrument;
-  }
-
-  @Override
-  public Trader newTrader() {
-    Trader trader = new Trader(RandomUtils.nextLong(1, 999), null);
-    trader.setUsername(RandomStringUtils.randomAlphanumeric(10));
-    return trader;
-  }
-
-  @Override
-  public Quote newQuote() {
-    Quote quote = new Quote(RandomUtils.nextLong(1, 999), null);
-    quote.setInstrument(newInstrument());
-    quote.setTrader(newTrader());
-    quote.setBid(RandomUtils.nextDouble(10d, 99d));
-    quote.setOffer(RandomUtils.nextDouble(10d, 99d));
-    return quote;
-  }
-
-  @Override
-  public Trade newTrade() {
-    Trade trade = new Trade(RandomUtils.nextLong(1, 999), null);
-    trade.setQuote(newQuote());
-    trade.setBuyer(newTrader());
-    trade.setSeller(newTrader());
-    trade.setSize(RandomUtils.nextLong(1000, 9999));
-    return trade;
   }
 
   @Override

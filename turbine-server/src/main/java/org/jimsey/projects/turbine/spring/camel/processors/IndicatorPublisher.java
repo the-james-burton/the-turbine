@@ -22,29 +22,35 @@
  */
 package org.jimsey.projects.turbine.spring.camel.processors;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.Quote;
+import javax.validation.constraints.NotNull;
+
+import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 
-@Component
-public class QuoteProcessor implements Processor {
+@Controller
+public class IndicatorPublisher {
 
-  private static final Logger logger = LoggerFactory.getLogger(QuoteProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(IndicatorPublisher.class);
 
-  @Override
-  public void process(final Exchange exchange) throws Exception {
-    Message message = exchange.getIn();
-    // byte[] bytes = (byte[]) message.getBody();
-    // Quote quote = (Quote) SerializationUtils.deserialize(bytes);
-    Quote quote = message.getMandatoryBody(Quote.class);
-    String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
+  @Autowired
+  @NotNull
+  private SimpMessagingTemplate websockets;
 
-    logger.info("consumed: [{}={}, quoteId={}]", TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, quote.getId());
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrastructureProperties;
+
+  // annotation is for receiving
+  // @MessageMapping("topic.{exchange}.{symbol}")
+  public void publish(TickJson tick) {
+    String topic = String.format("%s.%s.%s", infrastructureProperties.getWebsocketTicks(), tick.getExchange(), tick.getSymbol());
+    websockets.convertAndSend(topic, tick);
+    logger.info(String.format("websocket send: %s : %s", topic, tick.toString()));
   }
 
 }

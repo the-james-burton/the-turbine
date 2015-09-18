@@ -27,27 +27,39 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Document(indexName = "trader", type = "trader")
-public class Trader extends Entity {
+@Document(indexName = "indicator", type = "indicator")
+public class IndicatorJson extends Entity {
 
   private static final long serialVersionUID = 1L;
 
-  private String username;
+  private static ObjectMapper json = new ObjectMapper();
+
+  private String indicator;
+
+  private Double value;
 
   @PersistenceConstructor
   @JsonCreator
-  public Trader(@JsonProperty("id") Long id, @JsonProperty("timestamp") String timestamp) {
-    super(id, timestamp);
+  public IndicatorJson(
+      @JsonProperty("timestamp") String timestamp,
+      @JsonProperty("exchange") String exchange,
+      @JsonProperty("symbol") String symbol,
+      @JsonProperty("indicator") String indicator,
+      @JsonProperty("value") Double value) {
+    super(timestamp, exchange, symbol);
+    this.indicator = indicator;
+    this.value = value;
   }
 
   // -------------------------------------------
-  public String getUsername() {
-    return username;
+  public String getIndicator() {
+    return indicator;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public Double getValue() {
+    return value;
   }
 
 }

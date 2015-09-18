@@ -24,8 +24,6 @@ package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,15 +33,18 @@ public abstract class Entity extends Timestamped implements Serializable {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  @Id
-  private final Long id;
+  // TODO do we need an @Id here..?
 
-  public Entity(final Long id, final String timestamp) {
+  private String exchange;
+
+  private String symbol;
+
+  public Entity(final String timestamp, final String exchange, final String symbol) {
     super(timestamp);
-    this.id = id;
+    this.exchange = exchange;
+    this.symbol = symbol;
   }
 
-  // ------------------------------------
   @Override
   public String toString() {
     String result = null;
@@ -61,12 +62,20 @@ public abstract class Entity extends Timestamped implements Serializable {
   }
 
   // -------------------------------
-  public Long getId() {
-    return id;
+  public String getExchange() {
+    return exchange;
   }
 
-  // public void setId(Long id) {
-  // this.id = id;
-  // }
+  public void setExchange(String exchange) {
+    this.exchange = exchange;
+  }
+
+  public String getSymbol() {
+    return symbol;
+  }
+
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
 
 }

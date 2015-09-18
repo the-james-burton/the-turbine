@@ -20,29 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.camel.processors;
+package org.jimsey.projects.turbine.spring.service;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-@Component
-public class InstrumentProcessor implements Processor {
-
-  private static final Logger logger = LoggerFactory.getLogger(InstrumentProcessor.class);
-
-  @Override
-  public void process(final Exchange exchange) throws Exception {
-    Message message = exchange.getIn();
-    Instrument instrument = message.getMandatoryBody(Instrument.class);
-    String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-
-    logger.info("consumed: [{}={}, instrumentId={}]", TurbineConstants.HEADER_FOR_OBJECT_TYPE, type, instrument.getId());
-  }
+public class IndicatorService {
 
 }

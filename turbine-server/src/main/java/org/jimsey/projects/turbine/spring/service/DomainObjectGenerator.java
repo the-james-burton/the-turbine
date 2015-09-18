@@ -24,21 +24,9 @@ package org.jimsey.projects.turbine.spring.service;
 
 import java.time.OffsetDateTime;
 
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Trade;
-import org.jimsey.projects.turbine.spring.domain.Trader;
 
 public interface DomainObjectGenerator {
-
-  Instrument newInstrument();
-
-  Trader newTrader();
-
-  Quote newQuote();
-
-  Trade newTrade();
 
   TickJson newTick();
 

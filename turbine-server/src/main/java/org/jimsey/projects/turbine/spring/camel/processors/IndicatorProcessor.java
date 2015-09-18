@@ -22,42 +22,39 @@
  */
 package org.jimsey.projects.turbine.spring.camel.processors;
 
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-public class TickProcessor implements Processor {
+import eu.verdelhan.ta4j.Tick;
+import eu.verdelhan.ta4j.TimeSeries;
+import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
 
-  private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
+public class IndicatorProcessor implements Processor {
 
-  @Autowired
-  @NotNull
-  private TickPublisher tickPublisher;
+  private List<Tick> ticks = new ArrayList<Tick>();
 
-  // private List<Tick> ticks = new ArrayList<Tick>();
-  // private TimeSeries series = new TimeSeries(ticks);
-  // private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-  // private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
+  private TimeSeries series = new TimeSeries(ticks);
+
+  private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+
+  private BollingerBandsMiddleIndicator bbm = new BollingerBandsMiddleIndicator(closePriceIndicator);
+  private BollingerBandsLowerIndicator bbl = new BollingerBandsLowerIndicator(bbm, closePriceIndicator);
+  private BollingerBandsUpperIndicator bbu = new BollingerBandsUpperIndicator(bbm, closePriceIndicator);
 
   @Override
-  public void process(final Exchange exchange) throws Exception {
+  public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
-    // String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    tickPublisher.publish(tick);
-    // logger.info("sma={}", sma.getValue(series.getEnd()));
+    series.addTick(tick);
+    bbm.getValue(series.getEnd());
   }
-
-  // public List<Tick> getTicks() {
-  // return ticks;
-  // }
 
 }

@@ -27,11 +27,8 @@ import java.io.IOException;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.jimsey.projects.turbine.spring.domain.Entity;
-import org.jimsey.projects.turbine.spring.domain.Instrument;
-import org.jimsey.projects.turbine.spring.domain.Quote;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Trade;
-import org.jimsey.projects.turbine.spring.domain.Trader;
 import org.springframework.util.SerializationUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,96 +46,16 @@ public class TurbineObjectConverter {
 
   // --------------------------------------------
   @Converter
-  public static Quote toQuote(final byte[] bytes, final Exchange exchange) {
-    return (Quote) SerializationUtils.deserialize(bytes);
-  }
-
-  @Converter
-  public static Instrument toInstrument(final byte[] bytes, final Exchange exchange) {
-    return (Instrument) SerializationUtils.deserialize(bytes);
-  }
-
-  @Converter
-  public static Trade toTrade(final byte[] bytes, final Exchange exchange) {
-    return (Trade) SerializationUtils.deserialize(bytes);
-  }
-
-  @Converter
-  public static Trader toTrader(final byte[] bytes, final Exchange exchange) {
-    return (Trader) SerializationUtils.deserialize(bytes);
-  }
-
-  // --------------------------------------------
-  @Converter
-  public static String toString(final Quote quote, final Exchange exchange) {
-    return quote.toString();
-  }
-
-  @Converter
-  public static String toString(final Instrument instrument, final Exchange exchange) {
-    return instrument.toString();
-  }
-
-  @Converter
-  public static String toString(final Trade trade, final Exchange exchange) {
-    return trade.toString();
-  }
-
-  @Converter
-  public static String toString(final Trader trader, final Exchange exchange) {
-    return trader.toString();
-  }
-
-  @Converter
   public static String toString(final TickJson tick, final Exchange exchange) {
     return tick.toString();
   }
 
+  @Converter
+  public static String toString(final IndicatorJson indicator, final Exchange exchange) {
+    return indicator.toString();
+  }
+
   // --------------------------------------------
-  @Converter
-  public static Quote toQuote(final String text, final Exchange exchange) {
-    Quote quote = null;
-    try {
-      quote = json.readValue(text, Quote.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return quote;
-  }
-
-  @Converter
-  public static Instrument toInstrument(final String text, final Exchange exchange) {
-    Instrument instrument = null;
-    try {
-      instrument = json.readValue(text, Instrument.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return instrument;
-  }
-
-  @Converter
-  public static Trade toTrade(final String text, final Exchange exchange) {
-    Trade trade = null;
-    try {
-      trade = json.readValue(text, Trade.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return trade;
-  }
-
-  @Converter
-  public static Trader toTrader(final String text, final Exchange exchange) {
-    Trader trader = null;
-    try {
-      trader = json.readValue(text, Trader.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return trader;
-  }
-
   @Converter
   public static TickJson toTickJson(final String text, final Exchange exchange) {
     TickJson tick = null;
@@ -148,6 +65,17 @@ public class TurbineObjectConverter {
       e.printStackTrace();
     }
     return tick;
+  }
+
+  @Converter
+  public static IndicatorJson toIndicatorJson(final String text, final Exchange exchange) {
+    IndicatorJson indicator = null;
+    try {
+      indicator = json.readValue(text, IndicatorJson.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return indicator;
   }
 
 }

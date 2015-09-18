@@ -64,6 +64,11 @@
           <optional>true</optional>
         </dependency>
         
+      <dependency>
+          <groupId>org.projectreactor</groupId>
+          <artifactId>reactor-net</artifactId>
+      </dependency>
+      
 		<!-- <dependency> -->
 		<!-- <groupId>org.apache.activemq</groupId> -->
 		<!-- <artifactId>activemq-all</artifactId> -->

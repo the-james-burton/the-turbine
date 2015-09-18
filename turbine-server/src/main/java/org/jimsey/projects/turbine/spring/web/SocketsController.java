@@ -39,7 +39,8 @@ public class SocketsController {
   @RequestMapping("/sockets")
   public String welcome(Map<String, Object> model) {
     model.put("time", OffsetDateTime.now());
-    model.put("ticks", tickProcessor.getTicks());
+    // TODO replace with TickService
+    // model.put("ticks", tickProcessor.getTicks());
     // freemarker is used automatically if sockets.ftl exists...
     return "sockets";
   }

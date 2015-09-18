@@ -184,6 +184,12 @@
         <version>${spring.boot.version}</version>
       </dependency>
 
+      <dependency>
+          <groupId>org.projectreactor</groupId>
+          <artifactId>reactor-net</artifactId>
+          <version>1.1.6.RELEASE</version>
+      </dependency>
+
       <!-- <dependency> -->
       <!-- <groupId>org.apache.activemq</groupId> -->
       <!-- <artifactId>activemq-all</artifactId> -->

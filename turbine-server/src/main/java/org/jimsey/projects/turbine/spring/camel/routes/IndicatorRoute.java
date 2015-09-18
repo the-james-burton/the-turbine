@@ -20,12 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
+package org.jimsey.projects.turbine.spring.camel.routes;
 
-import org.jimsey.projects.turbine.spring.domain.Quote;
-import org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom.EntityRepositoryCustom;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import javax.validation.constraints.NotNull;
 
-public interface QuoteRepository extends ElasticsearchRepository<Quote, Long>, EntityRepositoryCustom<Quote> {
+import org.apache.camel.Processor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+@Component
+@Profile("consumer")
+public class IndicatorRoute extends BaseRoute {
+
+  private static final Logger logger = LoggerFactory.getLogger(IndicatorRoute.class);
+
+  @Autowired
+  @NotNull
+  private Processor tickProcessor;
+
+  @Override
+  public void configure() throws Exception {
+
+    from(infrastructureProperties.getAmqpTicks() + ".two").id("ticks2")
+        .convertBodyTo(String.class)
+        // .to("slog:json")
+        .log("*** CONSUMED")
+        .end();
+
+    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
 
 }
