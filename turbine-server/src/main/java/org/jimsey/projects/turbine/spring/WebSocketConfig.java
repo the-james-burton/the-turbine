@@ -37,10 +37,12 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(final MessageBrokerRegistry config) {
-    // java.lang.NoClassDefFoundError: reactor/io/encoding/Codec
-    // Please add a dependency on org.projectreactor:reactor-net for TCP connection management.
-    // config.enableStompBrokerRelay("/topic");
-    config.enableSimpleBroker("/topic");
+    // to support stomp over websockets natively...
+    // config.enableSimpleBroker("/topic");
+
+    // to use the stomp support build into RabbitMQ...
+    config.enableStompBrokerRelay("/topic").setRelayHost("localhost").setRelayPort(61613);
+
     config.setApplicationDestinationPrefixes("/app");
     config.setPathMatcher(new AntPathMatcher("."));
   }
@@ -48,9 +50,9 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(final StompEndpointRegistry registry) {
     this.registry = registry;
-    registry.addEndpoint("/reply").setAllowedOrigins("*").withSockJS();
-    registry.addEndpoint("/ping").setAllowedOrigins("*").withSockJS();
-    registry.addEndpoint("/ticks").setAllowedOrigins("*").withSockJS();
+    registry.addEndpoint("/reply").setAllowedOrigins("http://localhost:9000").withSockJS();
+    registry.addEndpoint("/ping").setAllowedOrigins("http://localhost:9000").withSockJS();
+    registry.addEndpoint("/ticks").setAllowedOrigins("http://localhost:9000").withSockJS();
   }
 
   // TODO add stomp endpoints for multiple exchanges/symbols

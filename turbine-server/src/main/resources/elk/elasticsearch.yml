@@ -1,0 +1,3 @@
+http.cors.enabled: true
+http.cors.allow-credentials: true
+path.data: /home/jimsey/Development/installs/elasticsearch-data
