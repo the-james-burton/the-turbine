@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.jimsey.projects.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
@@ -64,7 +65,7 @@ public class TickProducer {
     logger.info("producer initialised");
   }
 
-  public Object createBody() {
+  public TickJson createBody() {
     TickJson tick = rdog.newTick();
     return tick;
   }
@@ -77,10 +78,14 @@ public class TickProducer {
 
     // byte[] body = DomainConverter.toBytes(quote, null);
     // byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
-    Object body = createBody();
-    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, body.getClass().getName());
+    TickJson tick = createBody();
+    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, tick.getClass().getName());
 
-    String text = camel.getTypeConverter().convertTo(String.class, body);
+    // TODO should this be done in the TickProcessor instead?
+    headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
+        String.format(".%s.%s", tick.getExchange(), tick.getSymbol()));
+
+    String text = camel.getTypeConverter().convertTo(String.class, tick);
     producer.sendBodyAndHeaders(infrastructureProperties.getAmqpTicks(), text, headers);
   }
 

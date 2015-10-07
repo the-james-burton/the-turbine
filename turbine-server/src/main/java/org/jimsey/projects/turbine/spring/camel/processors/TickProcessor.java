@@ -22,15 +22,12 @@
  */
 package org.jimsey.projects.turbine.spring.camel.processors;
 
-import javax.validation.constraints.NotNull;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,9 +35,9 @@ public class TickProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
 
-  @Autowired
-  @NotNull
-  private TickPublisher tickPublisher;
+  // @Autowired
+  // @NotNull
+  // private TickPublisher tickPublisher;
 
   // private List<Tick> ticks = new ArrayList<Tick>();
   // private TimeSeries series = new TimeSeries(ticks);
@@ -52,7 +49,8 @@ public class TickProcessor implements Processor {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     // String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    tickPublisher.publish(tick);
+    logger.info("doing something with it");
+    // tickPublisher.publish(tick);
     // logger.info("sma={}", sma.getValue(series.getEnd()));
   }
 

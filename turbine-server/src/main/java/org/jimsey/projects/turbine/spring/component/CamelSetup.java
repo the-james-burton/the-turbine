@@ -23,14 +23,17 @@
 package org.jimsey.projects.turbine.spring.component;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.log.LogComponent;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicyFactory;
+import org.jimsey.projects.SpringSimpleMessagingComponent;
 import org.jimsey.projects.turbine.spring.camel.formatters.ToStringLogFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -39,16 +42,28 @@ public class CamelSetup {
   private static final Logger logger = LoggerFactory.getLogger(CamelSetup.class);
 
   @Autowired
-  CamelContext camel;
+  private CamelContext camel;
+
+  @Autowired
+  @NotNull
+  private SimpMessagingTemplate websockets;
 
   @PostConstruct
   public void init() {
     logger.info("setting up camel...");
+
     LogComponent slog = new LogComponent();
     slog.setExchangeFormatter(new ToStringLogFormatter());
+
+    SpringSimpleMessagingComponent ssm = new SpringSimpleMessagingComponent();
+    ssm.setMessageSendingOperations(websockets);
+
     camel.setUseMDCLogging(true);
-    camel.addComponent("slog", slog);
     camel.addRoutePolicyFactory(new MetricsRoutePolicyFactory());
+
+    camel.addComponent("slog", slog);
+    camel.addComponent("ssm", ssm);
+
     logger.info("camel setup complete");
   }
 
