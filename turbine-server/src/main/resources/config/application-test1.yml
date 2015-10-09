@@ -1,9 +1,5 @@
 infrastructure:
   environment-name: test1
-  amqp-instruments: rabbitmq://localhost:5672/turbine.test1.exchange.instruments?queue=turbine.test1.queue.instruments
-  amqp-quotes: rabbitmq://localhost:5672/turbine.test1.exchange.quotes?queue=turbine.test1.queue.quotes
-  amqp-trades: rabbitmq://localhost:5672/turbine.test1.exchange.trades?queue=turbine.test1.queue.trades
-  amqp-traders: rabbitmq://localhost:5672/turbine.test1.exchange.traders?queue=turbine.test1.queue.traders
   amqp-ticks: rabbitmq://localhost:5672/turbine.test1.exchange.ticks?exchangeType=topic&queue=turbine.test1.queue.ticks
   elasticsearch-host: localhost
   elasticsearch-port: 9300

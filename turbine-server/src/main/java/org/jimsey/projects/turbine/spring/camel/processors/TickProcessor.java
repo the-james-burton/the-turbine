@@ -23,9 +23,7 @@
 package org.jimsey.projects.turbine.spring.camel.processors;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -46,8 +44,8 @@ public class TickProcessor implements Processor {
 
   @Override
   public void process(final Exchange exchange) throws Exception {
-    Message message = exchange.getIn();
-    TickJson tick = message.getMandatoryBody(TickJson.class);
+    // Message message = exchange.getIn();
+    // TickJson tick = message.getMandatoryBody(TickJson.class);
     // String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
     logger.info("doing something with it");
     // tickPublisher.publish(tick);

@@ -43,18 +43,6 @@ public class InfrastructureProperties {
   private String environmentName;
 
   @NotNull
-  private String amqpInstruments;
-
-  @NotNull
-  private String amqpQuotes;
-
-  @NotNull
-  private String amqpTrades;
-
-  @NotNull
-  private String amqpTraders;
-
-  @NotNull
   private String amqpTicks;
 
   @NotNull
@@ -73,37 +61,6 @@ public class InfrastructureProperties {
   }
 
   // ------------------------------------------
-  public String getAmqpInstruments() {
-    return amqpInstruments;
-  }
-
-  public void setAmqpInstruments(String amqpInstruments) {
-    this.amqpInstruments = amqpInstruments;
-  }
-
-  public String getAmqpQuotes() {
-    return amqpQuotes;
-  }
-
-  public void setAmqpQuotes(String amqpQuotes) {
-    this.amqpQuotes = amqpQuotes;
-  }
-
-  public String getAmqpTrades() {
-    return amqpTrades;
-  }
-
-  public void setAmqpTrades(String amqpTrades) {
-    this.amqpTrades = amqpTrades;
-  }
-
-  public String getAmqpTraders() {
-    return amqpTraders;
-  }
-
-  public void setAmqpTraders(String amqpTraders) {
-    this.amqpTraders = amqpTraders;
-  }
 
   public String getElasticsearchHost() {
     return elasticsearchHost;
