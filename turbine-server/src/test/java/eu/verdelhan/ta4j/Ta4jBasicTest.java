@@ -51,7 +51,8 @@ public class Ta4jBasicTest {
 
     ticks = new ArrayList<Tick>();
 
-    for (OffsetDateTime date = OffsetDateTime.now().minusMinutes(1); date.isBefore(OffsetDateTime.now()); date = date.plusSeconds(1)) {
+    for (OffsetDateTime date = OffsetDateTime.now().minusMinutes(1); date
+        .isBefore(OffsetDateTime.now()); date = date.plusSeconds(1)) {
       Tick tick = rdog.newTick(date);
       ticks.add(tick);
       series = new TimeSeries(ticks);
@@ -65,9 +66,9 @@ public class Ta4jBasicTest {
       System.out.println(tick.toString() + ",");
     }
 
-    ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-    SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
-    logger.info("SMA: {}", sma.getValue(7));
+    ClosePriceIndicator cpi = new ClosePriceIndicator(series);
+    SMAIndicator sma = new SMAIndicator(cpi, 5);
+    logger.info("CPI: {}, SMA: {}", cpi.getValue(7), sma.getValue(7));
   }
 
 }

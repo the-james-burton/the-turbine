@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.log.LogComponent;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicyFactory;
-import org.jimsey.projects.SpringSimpleMessagingComponent;
+import org.jimsey.projects.camel.components.SpringSimpleMessagingComponent;
 import org.jimsey.projects.turbine.spring.camel.formatters.ToStringLogFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

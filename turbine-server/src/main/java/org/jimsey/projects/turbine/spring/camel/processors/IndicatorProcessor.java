@@ -22,39 +22,39 @@
  */
 package org.jimsey.projects.turbine.spring.camel.processors;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.spring.domain.Symbol;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.spring.domain.Xchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import eu.verdelhan.ta4j.Tick;
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
-
+@Component
 public class IndicatorProcessor implements Processor {
 
-  private List<Tick> ticks = new ArrayList<Tick>();
+  private static final Logger logger = LoggerFactory.getLogger(IndicatorProcessor.class);
 
-  private TimeSeries series = new TimeSeries(ticks);
-
-  private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-
-  private BollingerBandsMiddleIndicator bbm = new BollingerBandsMiddleIndicator(closePriceIndicator);
-  private BollingerBandsLowerIndicator bbl = new BollingerBandsLowerIndicator(bbm, closePriceIndicator);
-  private BollingerBandsUpperIndicator bbu = new BollingerBandsUpperIndicator(bbm, closePriceIndicator);
+  // TODO need a better implementation of some sort..?
+  private Map<String, Xchange> exchanges = new HashMap<>();
 
   @Override
   public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
-    series.addTick(tick);
-    bbm.getValue(series.getEnd());
+    logger.info(tick.toString());
+    Xchange xchange = exchanges.get(tick.getExchange());
+    Symbol symbol = xchange.getSymbol(tick.getSymbol());
+    logger.info("cpi:{}, bbu: {}, bbl: {}, bbm: {}",
+        symbol.getClosePriceIndicator(),
+        symbol.getBollingerBandsUpperIndicator(),
+        symbol.getBollingerBandsLowerIndicator(),
+        symbol.getBollingerBandsMiddleIndicator());
   }
 
 }

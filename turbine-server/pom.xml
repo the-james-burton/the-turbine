@@ -136,10 +136,10 @@
 
     <!-- TODO treat as system dependency until published to maven central... -->
     <dependency>
-      <groupId>org.jimsey.projects</groupId>
+      <groupId>org.jimsey.projects.camel.components</groupId>
       <artifactId>camel-spring-simple-messaging</artifactId>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/camel-spring-simple-messaging/camel-spring-simple-messaging-1.0-SNAPSHOT.jar</systemPath>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${basedir}/../lib/camel-spring-simple-messaging/camel-spring-simple-messaging-1.0-SNAPSHOT.jar</systemPath> -->
     </dependency>
 
     <dependency>

@@ -38,6 +38,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -147,6 +148,11 @@ public class TickJson extends Tick implements Serializable {
   @JsonProperty("timestamp")
   public String getTimestamp() {
     return timestamp.toString();
+  }
+
+  @JsonIgnore
+  public OffsetDateTime getTimestampAsObject() {
+    return timestamp;
   }
 
   @Override

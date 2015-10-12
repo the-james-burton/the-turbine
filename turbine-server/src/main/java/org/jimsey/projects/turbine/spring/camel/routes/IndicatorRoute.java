@@ -39,15 +39,17 @@ public class IndicatorRoute extends BaseRoute {
 
   @Autowired
   @NotNull
-  private Processor tickProcessor;
+  private Processor indicatorProcessor;
 
   @Override
   public void configure() throws Exception {
 
-    from(infrastructureProperties.getAmqpTicks() + ".two").id("ticks2")
+    from(infrastructureProperties.getAmqpTicks() + ".two").id("indicator")
         .convertBodyTo(String.class)
         // .to("slog:json")
-        .log("*** CONSUMED")
+        .to(String.format("log:%s?showAll=true", this.getClass().getName()))
+        // TODO processor temporarily disabled while the domain model is implemented...
+        // .process(indicatorProcessor)
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));

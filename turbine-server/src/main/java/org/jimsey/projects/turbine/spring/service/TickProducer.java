@@ -30,10 +30,11 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
-import org.jimsey.projects.SpringSimpleMessagingConstants;
+import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,8 @@ public class TickProducer {
     // TODO should this be done in the TickProcessor instead?
     headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
         String.format(".%s.%s", tick.getExchange(), tick.getSymbol()));
+
+    logger.info("producing: [body: {}, headers: {}]", tick.toString(), new JSONObject(headers));
 
     String text = camel.getTypeConverter().convertTo(String.class, tick);
     producer.sendBodyAndHeaders(infrastructureProperties.getAmqpTicks(), text, headers);
