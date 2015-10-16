@@ -25,16 +25,27 @@ package org.jimsey.projects.turbine.spring.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Xchange {
+public class Market {
+
+  private final String market;
 
   private Map<String, Symbol> symbols = new HashMap<>();
+
+  public Market(String market) {
+    this.market = market;
+  }
 
   public void addSymbol(Symbol symbol) {
     symbols.put(symbol.getSymbol(), symbol);
   }
 
-  public Symbol getSymbol(String symbol) {
-    return symbols.get(symbol);
+  public Symbol getSymbol(String key) {
+    Symbol symbol = symbols.get(key);
+    if (symbol == null) {
+      symbol = new Symbol(market, key);
+      symbols.put(key, symbol);
+    }
+    return symbol;
   }
 
 }

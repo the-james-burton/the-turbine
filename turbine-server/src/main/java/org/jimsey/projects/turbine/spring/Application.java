@@ -92,16 +92,16 @@ public class Application extends CamelConfiguration {
   @Bean
   public TickProducerFactory tickProcuderFactory() {
     return new TickProducerFactory() {
-      public TickProducer createTickProducer(String exchange, String symbol) {
-        return runtimeTickProducer(exchange, symbol);
+      public TickProducer createTickProducer(String market, String symbol) {
+        return runtimeTickProducer(market, symbol);
       }
     };
   }
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  TickProducer runtimeTickProducer(String exchange, String symbol) {
-    return new TickProducer(exchange, symbol);
+  TickProducer runtimeTickProducer(String market, String symbol) {
+    return new TickProducer(market, symbol);
   }
 
   @Bean

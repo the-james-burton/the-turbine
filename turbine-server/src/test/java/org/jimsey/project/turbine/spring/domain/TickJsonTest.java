@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TickJsonTest {
 
-  private static final String exchange = "FTSE100";
+  private static final String market = "FTSE100";
 
   private static final String symbol = "ABC";
 
@@ -57,9 +57,9 @@ public class TickJsonTest {
 
   @Test
   public void testJsonConstructor() {
-    tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, exchange, OffsetDateTime.now().toString());
+    tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, market, OffsetDateTime.now().toString());
     String jsonConstructor = tick.toString();
-    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, exchange, OffsetDateTime.now().toString());
+    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, market, OffsetDateTime.now().toString());
     String tickConstructor = tick.toString();
     logger.info(jsonConstructor);
     logger.info(tickConstructor);
@@ -69,7 +69,7 @@ public class TickJsonTest {
 
   @Test
   public void testJson() throws IOException {
-    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, exchange, OffsetDateTime.now().toString());
+    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, market, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(tick);
     tick = json.readValue(text, TickJson.class);
     logger.info(text);
@@ -81,7 +81,7 @@ public class TickJsonTest {
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, exchange, OffsetDateTime.now().toString());
+    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d, symbol, market, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(tick);
     TickJson tick2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(tick.toString());

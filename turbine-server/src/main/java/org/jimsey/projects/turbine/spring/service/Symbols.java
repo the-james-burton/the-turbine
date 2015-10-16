@@ -32,10 +32,10 @@ public enum Symbols {
 
   private static final String ftse = "FTSE100";
 
-  private final String exchange;
+  private final String market;
 
-  private Symbols(String exchange) {
-    this.exchange = exchange;
+  private Symbols(String market) {
+    this.market = market;
   }
 
   @Override
@@ -48,8 +48,8 @@ public enum Symbols {
     return this.name();
   }
 
-  public String getExchange() {
-    return this.exchange;
+  public String getMarket() {
+    return this.market;
   }
 
 }

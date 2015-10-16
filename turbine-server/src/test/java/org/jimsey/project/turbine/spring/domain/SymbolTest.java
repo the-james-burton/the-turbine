@@ -28,6 +28,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.Symbol;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
@@ -42,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SymbolTest {
 
-  private static final String exchange = "FTSE100";
+  private static final String market = "FTSE100";
 
   private static final String symbol = "ABC";
 
@@ -58,10 +59,10 @@ public class SymbolTest {
   public void before() {
     logger.info("new ObjectMapper...");
     json = new ObjectMapper();
-    logger.info("new RandomDomainObjectGenerator({}, {})...", exchange, symbol);
-    rdog = new RandomDomainObjectGenerator(exchange, symbol);
-    logger.info("new Symbol({}, {})...", exchange, symbol);
-    sym = new Symbol(exchange, symbol);
+    logger.info("new RandomDomainObjectGenerator({}, {})...", market, symbol);
+    rdog = new RandomDomainObjectGenerator(market, symbol);
+    logger.info("new Symbol({}, {})...", market, symbol);
+    sym = new Symbol(market, symbol);
     for (OffsetDateTime date = OffsetDateTime.now().minusMinutes(1); date
         .isBefore(OffsetDateTime.now()); date = date.plusSeconds(1)) {
       sym.receiveTick(rdog.newTick(date));
@@ -83,8 +84,8 @@ public class SymbolTest {
     logger.info("testJson:{}", text);
     // Symbol is not deserializable, so we will not test json.readvalue
     logger.info("assertions...");
-    // {"exchange":"FTSE100","symbol":"ABC","closePriceIndicator":106.05653150666,"bollingerBandsMiddleIndicator":106.05653150666,"bollingerBandsLowerIndicator":-106.05653150666,"bollingerBandsUpperIndicator":318.16959451997997,"timestamp":"2015-10-12T17:27:13.870+01:00"}
-    assertThat(text, containsString("exchange"));
+    // {"market":"FTSE100","symbol":"ABC","closePriceIndicator":106.05653150666,"bollingerBandsMiddleIndicator":106.05653150666,"bollingerBandsLowerIndicator":-106.05653150666,"bollingerBandsUpperIndicator":318.16959451997997,"timestamp":"2015-10-12T17:27:13.870+01:00"}
+    assertThat(text, containsString("market"));
     assertThat(text, containsString("symbol"));
     assertThat(text, containsString("closePriceIndicator"));
     assertThat(text, containsString("bollingerBandsMiddleIndicator"));
@@ -94,12 +95,13 @@ public class SymbolTest {
 
   }
 
+  // ta4j indicators are not Serializable, so don't test just now...
   @Ignore
   @Test
   public void testSerializable() throws IOException {
     byte[] bytes = SerializationUtils.serialize(sym);
-    // ta4j indicators are not Serializable, so don't test just now...
-    assertNotNull(bytes);
+    IndicatorJson sym2 = (IndicatorJson) SerializationUtils.deserialize(bytes);
+    assertEquals(sym.toString(), sym2.toString());
   }
 
 }

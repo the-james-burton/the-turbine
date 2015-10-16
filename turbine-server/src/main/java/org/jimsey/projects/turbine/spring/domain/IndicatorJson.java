@@ -44,11 +44,11 @@ public class IndicatorJson extends Entity {
   @JsonCreator
   public IndicatorJson(
       @JsonProperty("timestamp") String timestamp,
-      @JsonProperty("exchange") String exchange,
+      @JsonProperty("market") String market,
       @JsonProperty("symbol") String symbol,
       @JsonProperty("indicator") String indicator,
       @JsonProperty("value") Double value) {
-    super(timestamp, exchange, symbol);
+    super(timestamp, market, symbol);
     this.indicator = indicator;
     this.value = value;
   }

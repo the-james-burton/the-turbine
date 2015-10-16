@@ -26,6 +26,6 @@ import org.jimsey.projects.turbine.spring.service.TickProducer;
 
 public interface TickProducerFactory {
 
-  TickProducer createTickProducer(String exchange, String symbol);
+  TickProducer createTickProducer(String market, String symbol);
 
 }

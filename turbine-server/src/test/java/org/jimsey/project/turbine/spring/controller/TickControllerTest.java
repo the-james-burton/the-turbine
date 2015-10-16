@@ -57,7 +57,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Joiner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MockServletContext.class)
@@ -74,9 +73,9 @@ public class TickControllerTest {
   private MockMvc mvc;
 
   private DomainObjectGenerator rdog = new RandomDomainObjectGenerator("FTSE100", "ABC");
-  
+
   private List<TickJson> ticks = new ArrayList<TickJson>();
-  
+
   private static ObjectMapper json = new ObjectMapper();
 
   @Before
@@ -91,16 +90,23 @@ public class TickControllerTest {
   public void testGetAllTicksGreaterThanDate() throws Exception {
     // use this for a spy...
     // Mockito.doReturn(123l).when(ping).ping();
-    // String result = "{\"date\":1437757461193,\"open\":93.31372449905724,\"high\":94.64656138818943,\"low\":92.35919077806433,\"close\":94.08436014274173,\"volume\":97.2503072332036,\"symbol\":\"ABC\",\"exchange\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:21.193+01:00\"}, {\"date\":1437757457169,\"open\":95.76421881828955,\"high\":98.67332820497525,\"low\":92.87399277681914,\"close\":95.30416761402581,\"volume\":96.25382742497295,\"symbol\":\"ABC\",\"exchange\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:17.169+01:00\"}, {\"date\":1437757455156,\"open\":95.20691875293008,\"high\":96.33109747791707,\"low\":95.03864535693057,\"close\":95.76421881828955,\"volume\":104.54628090784864,\"symbol\":\"ABC\",\"exchange\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:15.156+01:00\"}, {\"date\":1437757459179,\"open\":95.30416761402581,\"high\":95.88765706158829,\"low\":92.37627010410178,\"close\":93.31372449905724,\"volume\":92.83201741698048,\"symbol\":\"ABC\",\"exchange\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:19.179+01:00\"}";
-    
+    // String result =
+    // "{\"date\":1437757461193,\"open\":93.31372449905724,\"high\":94.64656138818943,\"low\":92.35919077806433,\"close\":94.08436014274173,\"volume\":97.2503072332036,\"symbol\":\"ABC\",\"market\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:21.193+01:00\"},
+    // {\"date\":1437757457169,\"open\":95.76421881828955,\"high\":98.67332820497525,\"low\":92.87399277681914,\"close\":95.30416761402581,\"volume\":96.25382742497295,\"symbol\":\"ABC\",\"market\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:17.169+01:00\"},
+    // {\"date\":1437757455156,\"open\":95.20691875293008,\"high\":96.33109747791707,\"low\":95.03864535693057,\"close\":95.76421881828955,\"volume\":104.54628090784864,\"symbol\":\"ABC\",\"market\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:15.156+01:00\"},
+    // {\"date\":1437757459179,\"open\":95.30416761402581,\"high\":95.88765706158829,\"low\":92.37627010410178,\"close\":93.31372449905724,\"volume\":92.83201741698048,\"symbol\":\"ABC\",\"market\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:19.179+01:00\"}";
+
     Mockito.when(elasticsearch.findBySymbolAndDateGreaterThan(Mockito.anyString(), Mockito.any(Long.class))).thenReturn(ticks);
 
-    String expected = json.writeValueAsString(new Object() { @JsonProperty("ticks") List<TickJson> tickz = ticks; });
-    
+    String expected = json.writeValueAsString(new Object() {
+      @JsonProperty("ticks")
+      List<TickJson> tickz = ticks;
+    });
+
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
-    
+
     String restUri = String.format("%s/all/%s", TurbineConstants.REST_ROOT_TICKS, date);
-    
+
     mvc.perform(MockMvcRequestBuilders.get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().string(equalTo(expected)));

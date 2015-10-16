@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class IndicatorJsonTest {
 
-  private static final String exchange = "FTSE100";
+  private static final String market = "FTSE100";
 
   private static final String symbol = "ABC";
 
@@ -55,7 +55,7 @@ public class IndicatorJsonTest {
 
   @Test
   public void testConstructor() {
-    indicator = new IndicatorJson(OffsetDateTime.now().toString(), exchange, symbol, "test-indicator", 123.4d);
+    indicator = new IndicatorJson(OffsetDateTime.now().toString(), market, symbol, "test-indicator", 123.4d);
     String asString = indicator.toString();
     logger.info(asString);
     assertNotNull(asString);
@@ -63,7 +63,7 @@ public class IndicatorJsonTest {
 
   @Test
   public void testJson() throws IOException {
-    indicator = new IndicatorJson(OffsetDateTime.now().toString(), exchange, symbol, "test-indicator", 123.4d);
+    indicator = new IndicatorJson(OffsetDateTime.now().toString(), market, symbol, "test-indicator", 123.4d);
     String text = json.writeValueAsString(indicator);
     logger.info(text);
     indicator = json.readValue(text, IndicatorJson.class);
@@ -74,7 +74,7 @@ public class IndicatorJsonTest {
 
   @Test
   public void testSerializable() throws IOException {
-    indicator = new IndicatorJson(OffsetDateTime.now().toString(), exchange, symbol, "test-indicator", 123.4d);
+    indicator = new IndicatorJson(OffsetDateTime.now().toString(), market, symbol, "test-indicator", 123.4d);
     byte[] bytes = SerializationUtils.serialize(indicator);
     IndicatorJson indicator2 = (IndicatorJson) SerializationUtils.deserialize(bytes);
     logger.info(indicator.toString());

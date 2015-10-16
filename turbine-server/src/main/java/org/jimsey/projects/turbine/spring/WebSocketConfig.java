@@ -55,6 +55,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     registry.addEndpoint("/ticks").setAllowedOrigins("http://localhost:9000").withSockJS();
   }
 
-  // TODO add stomp endpoints for multiple exchanges/symbols
+  // TODO add stomp endpoints for multiple markets/symbols?
 
 }

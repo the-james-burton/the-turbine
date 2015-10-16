@@ -33,16 +33,16 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
   private static final Logger logger = LoggerFactory.getLogger(RandomDomainObjectGenerator.class);
 
-  private final String exchange;
+  private final String market;
 
   private final String symbol;
 
   private TickJson tick;
 
-  public RandomDomainObjectGenerator(String exchange, String symbol) {
-    this.exchange = exchange;
+  public RandomDomainObjectGenerator(String market, String symbol) {
+    this.market = market;
     this.symbol = symbol;
-    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol, this.exchange,
+    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol, this.market,
         OffsetDateTime.now().toString());
   }
 
@@ -57,7 +57,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(90, 110);
 
-    tick = new TickJson(date, open, high, low, close, volume, this.symbol, this.exchange, OffsetDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, this.symbol, this.market, OffsetDateTime.now().toString());
     return tick;
   }
 

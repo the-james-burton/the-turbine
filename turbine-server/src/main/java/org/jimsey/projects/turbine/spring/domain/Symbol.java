@@ -53,7 +53,7 @@ public class Symbol implements Serializable {
 
   private static final ObjectMapper json = new ObjectMapper();
 
-  private final String exchange;
+  private final String market;
 
   private final String symbol;
 
@@ -76,9 +76,9 @@ public class Symbol implements Serializable {
 
   @JsonCreator
   public Symbol(
-      @JsonProperty("exchange") String exchange,
+      @JsonProperty("market") String market,
       @JsonProperty("symbol") String symbol) {
-    this.exchange = exchange;
+    this.market = market;
     this.symbol = symbol;
     calculated = calculate();
   }
@@ -124,8 +124,8 @@ public class Symbol implements Serializable {
   }
 
   // ---------------------------------
-  public String getExchange() {
-    return exchange;
+  public String getMarket() {
+    return market;
   }
 
   public String getSymbol() {

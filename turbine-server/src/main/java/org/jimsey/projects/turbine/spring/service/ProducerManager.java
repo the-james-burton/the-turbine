@@ -66,7 +66,7 @@ public class ProducerManager {
   public void init() {
     for (Symbols symbol : Symbols.values()) {
       logger.info("creating TickProducer {}", symbol);
-      TickProducer producer = tickProducerFactory.createTickProducer(symbol.getExchange(), symbol.getSymbol());
+      TickProducer producer = tickProducerFactory.createTickProducer(symbol.getMarket(), symbol.getSymbol());
       producers.add(producer);
     }
   }

@@ -35,13 +35,13 @@ public abstract class Entity extends Timestamped implements Serializable {
 
   // TODO do we need an @Id here..?
 
-  private String exchange;
+  private String market;
 
   private String symbol;
 
-  public Entity(final String timestamp, final String exchange, final String symbol) {
+  public Entity(final String timestamp, final String market, final String symbol) {
     super(timestamp);
-    this.exchange = exchange;
+    this.market = market;
     this.symbol = symbol;
   }
 
@@ -62,12 +62,12 @@ public abstract class Entity extends Timestamped implements Serializable {
   }
 
   // -------------------------------
-  public String getExchange() {
-    return exchange;
+  public String getMarket() {
+    return market;
   }
 
-  public void setExchange(String exchange) {
-    this.exchange = exchange;
+  public void setMarket(String market) {
+    this.market = market;
   }
 
   public String getSymbol() {

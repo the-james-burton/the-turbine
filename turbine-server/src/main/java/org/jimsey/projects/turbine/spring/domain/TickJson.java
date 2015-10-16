@@ -71,14 +71,14 @@ public class TickJson extends Tick implements Serializable {
 
   private String symbol;
 
-  private String exchange;
+  private String market;
 
   public TickJson(OffsetDateTime date, double open, double high, double low, double close, double volume, String symbol,
-      String exchange, String timestamp) {
+      String market, String timestamp) {
     super(DateTime.parse(date.toString(), ISODateTimeFormat.dateTimeParser()), open, high, low, close, volume);
     this.timestamp = date;
     this.symbol = symbol;
-    this.exchange = exchange;
+    this.market = market;
     try {
       this.date = date.toInstant().toEpochMilli();
     } catch (Exception e) {
@@ -99,10 +99,10 @@ public class TickJson extends Tick implements Serializable {
       @JsonProperty("close") double close,
       @JsonProperty("volume") double volume,
       @JsonProperty("symbol") String symbol,
-      @JsonProperty("exchange") String exchange,
+      @JsonProperty("market") String market,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        open, high, low, close, volume, symbol, exchange, timestamp);
+        open, high, low, close, volume, symbol, market, timestamp);
   }
 
   @JsonProperty("date")
@@ -140,9 +140,9 @@ public class TickJson extends Tick implements Serializable {
     return symbol;
   }
 
-  @JsonProperty("exchange")
-  public String getExchange() {
-    return exchange;
+  @JsonProperty("market")
+  public String getMarket() {
+    return market;
   }
 
   @JsonProperty("timestamp")

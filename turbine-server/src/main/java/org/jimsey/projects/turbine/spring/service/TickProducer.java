@@ -56,8 +56,8 @@ public class TickProducer {
 
   private DomainObjectGenerator rdog;
 
-  public TickProducer(String exchange, String symbol) {
-    this.rdog = new RandomDomainObjectGenerator(exchange, symbol);
+  public TickProducer(String market, String symbol) {
+    this.rdog = new RandomDomainObjectGenerator(market, symbol);
   }
 
   @PostConstruct
@@ -84,7 +84,7 @@ public class TickProducer {
 
     // TODO should this be done in the TickProcessor instead?
     headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s.%s", tick.getExchange(), tick.getSymbol()));
+        String.format(".%s.%s", tick.getMarket(), tick.getSymbol()));
 
     logger.info("producing: [body: {}, headers: {}]", tick.toString(), new JSONObject(headers));
 

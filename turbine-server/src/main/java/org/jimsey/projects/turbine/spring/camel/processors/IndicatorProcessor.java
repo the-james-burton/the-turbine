@@ -30,7 +30,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.domain.Symbol;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.domain.Xchange;
+import org.jimsey.projects.turbine.spring.domain.Market;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,15 +41,20 @@ public class IndicatorProcessor implements Processor {
   private static final Logger logger = LoggerFactory.getLogger(IndicatorProcessor.class);
 
   // TODO need a better implementation of some sort..?
-  private Map<String, Xchange> exchanges = new HashMap<>();
+  private Map<String, Market> markets = new HashMap<>();
 
   @Override
   public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     logger.info(tick.toString());
-    Xchange xchange = exchanges.get(tick.getExchange());
-    Symbol symbol = xchange.getSymbol(tick.getSymbol());
+    Market market = markets.get(tick.getMarket());
+    if (market == null) {
+      market = new Market(tick.getMarket());
+      markets.put(tick.getMarket(), market);
+    }
+    Symbol symbol = market.getSymbol(tick.getSymbol());
+    symbol.receiveTick(tick);
     logger.info("cpi:{}, bbu: {}, bbl: {}, bbm: {}",
         symbol.getClosePriceIndicator(),
         symbol.getBollingerBandsUpperIndicator(),
