@@ -49,7 +49,7 @@ public class StockRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
 
-    from(infrastructureProperties.getAmqpTicks() + ".two").id("indicator")
+    from(infrastructureProperties.getAmqpStocks()).id("stocks")
         .convertBodyTo(String.class)
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
@@ -66,7 +66,7 @@ public class StockRoute extends BaseRoute {
   public String getWebsocket() {
     return String.format(
         "ssm://%s",
-        infrastructureProperties.getWebsocketIndicators());
+        infrastructureProperties.getWebsocketStocks());
   }
 
 }
