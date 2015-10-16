@@ -28,7 +28,9 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.spring.elasticsearch.repositories.StockRepository;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.TickRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,10 @@ public class ElasticsearchService {
   @Autowired
   @NotNull
   private TickRepository tickRepository;
+
+  @Autowired
+  @NotNull
+  private StockRepository stockRepository;
 
   @PostConstruct
   public void init() {
@@ -98,14 +104,24 @@ public class ElasticsearchService {
 
   }
 
-  public List<TickJson> findBySymbol(String symbol) {
-    logger.info("findBySymbol({})", symbol);
+  public List<TickJson> findTicksBySymbol(String symbol) {
+    logger.info("findTicksBySymbol({})", symbol);
     return tickRepository.findBySymbol(symbol);
   }
 
-  public List<TickJson> findBySymbolAndDateGreaterThan(String symbol, Long date) {
-    logger.info("findBySymbolAndDateGreaterThan({}, {})", symbol, date);
+  public List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date) {
+    logger.info("findTicksBySymbolAndDateGreaterThan({}, {})", symbol, date);
     return tickRepository.findBySymbolAndDateGreaterThan(symbol, date);
+  }
+
+  public List<StockJson> findStocksBySymbol(String symbol) {
+    logger.info("findStocksBySymbol({})", symbol);
+    return stockRepository.findBySymbol(symbol);
+  }
+
+  public List<StockJson> findStocksBySymbolAndDateGreaterThan(String symbol, Long date) {
+    logger.info("findStocksBySymbolAndDateGreaterThan({}, {})", symbol, date);
+    return stockRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
 
 }

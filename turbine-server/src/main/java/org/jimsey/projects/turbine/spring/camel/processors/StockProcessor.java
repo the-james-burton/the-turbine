@@ -28,7 +28,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.domain.Symbol;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.domain.Market;
 import org.slf4j.Logger;
@@ -36,9 +36,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IndicatorProcessor implements Processor {
+public class StockProcessor implements Processor {
 
-  private static final Logger logger = LoggerFactory.getLogger(IndicatorProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(StockProcessor.class);
 
   // TODO need a better implementation of some sort..?
   private Map<String, Market> markets = new HashMap<>();
@@ -53,13 +53,13 @@ public class IndicatorProcessor implements Processor {
       market = new Market(tick.getMarket());
       markets.put(tick.getMarket(), market);
     }
-    Symbol symbol = market.getSymbol(tick.getSymbol());
-    symbol.receiveTick(tick);
+    StockJson stock = market.getSymbol(tick.getSymbol());
+    stock.receiveTick(tick);
     logger.info("cpi:{}, bbu: {}, bbl: {}, bbm: {}",
-        symbol.getClosePriceIndicator(),
-        symbol.getBollingerBandsUpperIndicator(),
-        symbol.getBollingerBandsLowerIndicator(),
-        symbol.getBollingerBandsMiddleIndicator());
+        stock.getClosePriceIndicator(),
+        stock.getBollingerBandsUpperIndicator(),
+        stock.getBollingerBandsLowerIndicator(),
+        stock.getBollingerBandsMiddleIndicator());
   }
 
 }

@@ -28,8 +28,8 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.domain.Symbol;
+import org.jimsey.project.turbine.spring.TurbineTestConstants;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
 import org.junit.Before;
@@ -41,11 +41,7 @@ import org.springframework.util.SerializationUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SymbolTest {
-
-  private static final String market = "FTSE100";
-
-  private static final String symbol = "ABC";
+public class StockJsonTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
@@ -53,26 +49,26 @@ public class SymbolTest {
 
   private DomainObjectGenerator rdog;
 
-  private Symbol sym;
+  private StockJson stock;
 
   @Before
   public void before() {
     logger.info("new ObjectMapper...");
     json = new ObjectMapper();
-    logger.info("new RandomDomainObjectGenerator({}, {})...", market, symbol);
-    rdog = new RandomDomainObjectGenerator(market, symbol);
-    logger.info("new Symbol({}, {})...", market, symbol);
-    sym = new Symbol(market, symbol);
+    logger.info("new RandomDomainObjectGenerator({}, {})...", TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
+    rdog = new RandomDomainObjectGenerator(TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
+    logger.info("new Symbol({}, {})...", TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
+    stock = new StockJson(TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
     for (OffsetDateTime date = OffsetDateTime.now().minusMinutes(1); date
         .isBefore(OffsetDateTime.now()); date = date.plusSeconds(1)) {
-      sym.receiveTick(rdog.newTick(date));
+      stock.receiveTick(rdog.newTick(date));
     }
     logger.info("symbol initialized...");
   }
 
   @Test
   public void testToString() {
-    String text = sym.toString();
+    String text = stock.toString();
     logger.info("testToString:{}", text);
     assertNotNull(text);
   }
@@ -80,11 +76,12 @@ public class SymbolTest {
   @Test
   public void testJson() throws IOException {
     logger.info("json.writeValueAsString()...");
-    String text = json.writeValueAsString(sym);
+    String text = json.writeValueAsString(stock);
     logger.info("testJson:{}", text);
     // Symbol is not deserializable, so we will not test json.readvalue
     logger.info("assertions...");
     // {"market":"FTSE100","symbol":"ABC","closePriceIndicator":106.05653150666,"bollingerBandsMiddleIndicator":106.05653150666,"bollingerBandsLowerIndicator":-106.05653150666,"bollingerBandsUpperIndicator":318.16959451997997,"timestamp":"2015-10-12T17:27:13.870+01:00"}
+    assertThat(text, containsString("date"));
     assertThat(text, containsString("market"));
     assertThat(text, containsString("symbol"));
     assertThat(text, containsString("closePriceIndicator"));
@@ -92,16 +89,15 @@ public class SymbolTest {
     assertThat(text, containsString("bollingerBandsLowerIndicator"));
     assertThat(text, containsString("bollingerBandsUpperIndicator"));
     assertThat(text, containsString("timestamp"));
-
   }
 
   // ta4j indicators are not Serializable, so don't test just now...
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    byte[] bytes = SerializationUtils.serialize(sym);
-    IndicatorJson sym2 = (IndicatorJson) SerializationUtils.deserialize(bytes);
-    assertEquals(sym.toString(), sym2.toString());
+    byte[] bytes = SerializationUtils.serialize(stock);
+    StockJson stock2 = (StockJson) SerializationUtils.deserialize(bytes);
+    assertEquals(stock.toString(), stock2.toString());
   }
 
 }

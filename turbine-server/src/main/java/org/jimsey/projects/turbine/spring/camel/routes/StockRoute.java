@@ -34,16 +34,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("consumer")
-public class IndicatorRoute extends BaseRoute {
+public class StockRoute extends BaseRoute {
 
-  private static final Logger logger = LoggerFactory.getLogger(IndicatorRoute.class);
+  private static final Logger logger = LoggerFactory.getLogger(StockRoute.class);
 
   @Autowired
   @NotNull
-  private Processor indicatorProcessor;
+  private Processor stockProcessor;
 
-  public IndicatorRoute() {
-    super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS, TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS);
+  public StockRoute() {
+    super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_STOCKS, TurbineConstants.ELASTICSEARCH_TYPE_FOR_STOCKS);
   }
 
   @Override
@@ -54,7 +54,7 @@ public class IndicatorRoute extends BaseRoute {
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         // TODO processor temporarily disabled while the domain model is implemented...
-        .process(indicatorProcessor)
+        .process(stockProcessor)
         // .multicast().parallelProcessing()
         // .to(getWebsocket(), getElasticsearchUri())
         .end();

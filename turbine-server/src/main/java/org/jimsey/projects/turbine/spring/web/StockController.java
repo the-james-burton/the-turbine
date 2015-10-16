@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.exceptions.TurbineException;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.Ping;
@@ -49,10 +49,10 @@ import com.google.common.base.Joiner;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(TurbineConstants.REST_ROOT_TICKS)
-public class TickController {
+@RequestMapping(TurbineConstants.REST_ROOT_STOCKS)
+public class StockController {
 
-  private static final Logger logger = LoggerFactory.getLogger(TickController.class);
+  private static final Logger logger = LoggerFactory.getLogger(StockController.class);
 
   private static ObjectMapper json = new ObjectMapper();
 
@@ -69,7 +69,7 @@ public class TickController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    logger.info("this mornings getTicksAfter() : [{}]", getTicksAfter("ABC", sod));
+    logger.info("this mornings getStocksAfter() : [{}]", getStocksAfter("ABC", sod));
   }
 
   @RequestMapping("/ping")
@@ -79,42 +79,34 @@ public class TickController {
   }
 
   @RequestMapping("/{symbol}")
-  public String getTicks(@PathVariable String symbol) {
-    logger.info("getTicks");
-    List<TickJson> ticks = elasticsearch.findTicksBySymbol(symbol);
-    return Joiner.on(',').join(ticks);
+  public String getIndicators(@PathVariable String symbol) {
+    logger.info("getIndicators");
+    List<StockJson> indicators = elasticsearch.findStocksBySymbol(symbol);
+    return Joiner.on(',').join(indicators);
   }
 
   @RequestMapping("/{symbol}/{date}")
-  public String getTicksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
-    List<TickJson> ticks = elasticsearch.findTicksBySymbolAndDateGreaterThan(symbol, date);
-    // return Joiner.on(',').join(ticks);
-    // return objectToJson(ticks);
-    // if (true) {
-    // throw new Exception("I hate you!");
-    // }
+  public String getStocksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
+    List<StockJson> stocks = elasticsearch.findStocksBySymbolAndDateGreaterThan(symbol, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {
-      @JsonProperty("ticks")
-      List<TickJson> tickz = ticks;
-      // List<TickJson> getTicks() {
-      // return
-      // }
+      @JsonProperty("stocks")
+      List<StockJson> stockz = stocks;
     };
     return json.writeValueAsString(dto);
   }
 
   /**
    * No need for this. Spring boot will send a decent error message to the client.
-   * @param ticks
+   * @param stocks
    * @return
    */
   @Deprecated
-  private String objectToJson(List<TickJson> ticks) {
+  private String objectToJson(List<StockJson> stocks) {
     String result = null;
     try {
-      result = json.writeValueAsString(ticks);
+      result = json.writeValueAsString(stocks);
     } catch (JsonProcessingException e) {
       try {
         logger.error(e.getMessage(), e);

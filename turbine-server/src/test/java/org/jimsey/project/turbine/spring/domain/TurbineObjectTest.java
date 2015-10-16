@@ -24,6 +24,7 @@ package org.jimsey.project.turbine.spring.domain;
 
 import java.io.IOException;
 
+import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
@@ -47,7 +48,7 @@ public class TurbineObjectTest {
   @Before
   public void before() {
     json = new ObjectMapper();
-    rdog = new RandomDomainObjectGenerator("FTSE", "ABC");
+    rdog = new RandomDomainObjectGenerator(TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
   }
 
   @Test

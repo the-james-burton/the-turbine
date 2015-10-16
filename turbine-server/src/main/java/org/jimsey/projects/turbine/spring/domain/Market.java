@@ -29,20 +29,20 @@ public class Market {
 
   private final String market;
 
-  private Map<String, Symbol> symbols = new HashMap<>();
+  private Map<String, StockJson> symbols = new HashMap<>();
 
   public Market(String market) {
     this.market = market;
   }
 
-  public void addSymbol(Symbol symbol) {
+  public void addSymbol(StockJson symbol) {
     symbols.put(symbol.getSymbol(), symbol);
   }
 
-  public Symbol getSymbol(String key) {
-    Symbol symbol = symbols.get(key);
+  public StockJson getSymbol(String key) {
+    StockJson symbol = symbols.get(key);
     if (symbol == null) {
-      symbol = new Symbol(market, key);
+      symbol = new StockJson(market, key);
       symbols.put(key, symbol);
     }
     return symbol;

@@ -20,32 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring;
+package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
-public class TurbineConstants {
+import java.util.List;
 
-  public static final long PRODUCER_PERIOD = 3000;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-  public static final String REST_ROOT_TICKS = "/tick";
+public interface StockRepository extends ElasticsearchRepository<StockJson, Long> {
 
-  public static final String REST_ROOT_STOCKS = "/stocks";
+  List<StockJson> findBySymbol(String symbol);
 
-  public static final String REST_ROOT_STRATEGIES = "/strategy";
-
-  public static final String REST_ROOT_TEST = "/test";
-
-  public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "ticks";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_STOCKS = "stocks";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "strategies";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "tick";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "stocks";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "strategy";
+  List<StockJson> findBySymbolAndDateGreaterThan(String symbol, Long date);
 
 }

@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -29,6 +30,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * This is too fine grained... use the Symbol class instead.
+ * @author jimsey
+ */
+@Deprecated
 @Document(indexName = "indicator", type = "indicator")
 public class IndicatorJson extends Entity {
 
@@ -39,6 +45,9 @@ public class IndicatorJson extends Entity {
   private String indicator;
 
   private Double value;
+
+  @Id
+  private Long date;
 
   @PersistenceConstructor
   @JsonCreator
@@ -51,6 +60,7 @@ public class IndicatorJson extends Entity {
     super(timestamp, market, symbol);
     this.indicator = indicator;
     this.value = value;
+    this.date = getTimestamp().toInstant().toEpochMilli();
   }
 
   // -------------------------------------------
@@ -60,6 +70,11 @@ public class IndicatorJson extends Entity {
 
   public Double getValue() {
     return value;
+  }
+
+  @JsonProperty("date")
+  public long getDate() {
+    return date;
   }
 
 }

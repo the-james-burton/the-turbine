@@ -63,7 +63,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
   @Override
   public TickJson newTick() {
-
     tick = newTick(OffsetDateTime.now());
     return tick;
   }

@@ -26,8 +26,10 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -46,12 +48,14 @@ import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerI
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
 
-@Document(indexName = "indicator", type = "indicator")
-public class Symbol implements Serializable {
+@Document(
+    indexName = TurbineConstants.ELASTICSEARCH_INDEX_FOR_STOCKS,
+    type = TurbineConstants.ELASTICSEARCH_TYPE_FOR_STOCKS)
+public class StockJson implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger logger = LoggerFactory.getLogger(Symbol.class);
+  private static final Logger logger = LoggerFactory.getLogger(StockJson.class);
 
   private static final ObjectMapper json = new ObjectMapper();
 
@@ -60,6 +64,9 @@ public class Symbol implements Serializable {
   private final String symbol;
 
   private TickJson latestTick;
+
+  @Id
+  private Long date;
 
   private final int timeFrame = 10;
 
@@ -83,17 +90,19 @@ public class Symbol implements Serializable {
   private String calculated;
 
   @JsonCreator
-  public Symbol(
+  public StockJson(
       @JsonProperty("market") String market,
       @JsonProperty("symbol") String symbol) {
     this.market = market;
     this.symbol = symbol;
+    this.date = OffsetDateTime.now().toEpochSecond() * 1000;
     calculated = calculate();
   }
 
   public void receiveTick(TickJson tick) {
     latestTick = tick;
     series.addTick(tick);
+    this.date = getTimestamp().toInstant().toEpochMilli();
     calculated = calculate();
   }
 
@@ -129,6 +138,11 @@ public class Symbol implements Serializable {
       return null;
     }
     return latestTick.getTimestamp();
+  }
+
+  @JsonProperty("date")
+  public long getDate() {
+    return date;
   }
 
   // ---------------------------------

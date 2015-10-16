@@ -28,6 +28,7 @@ import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.jimsey.projects.turbine.spring.domain.Entity;
 import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.springframework.util.SerializationUtils;
 
@@ -55,6 +56,11 @@ public class TurbineObjectConverter {
     return indicator.toString();
   }
 
+  @Converter
+  public static String toString(final StockJson stock, final Exchange exchange) {
+    return stock.toString();
+  }
+
   // --------------------------------------------
   @Converter
   public static TickJson toTickJson(final String text, final Exchange exchange) {
@@ -76,6 +82,17 @@ public class TurbineObjectConverter {
       e.printStackTrace();
     }
     return indicator;
+  }
+
+  @Converter
+  public static StockJson toStockJson(final String text, final Exchange exchange) {
+    StockJson stock = null;
+    try {
+      stock = json.readValue(text, StockJson.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return stock;
   }
 
 }

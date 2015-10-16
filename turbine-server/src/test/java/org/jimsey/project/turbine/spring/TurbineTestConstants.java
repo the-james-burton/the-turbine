@@ -20,36 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.project.turbine.spring;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+public class TurbineTestConstants {
 
-public enum Symbols {
+  public static final String MARKET = "FTSE100";
 
-  ABC(Symbols.ftse),
-  DEF(Symbols.ftse);
-
-  private static final String ftse = "FTSE100";
-
-  private final String market;
-
-  private Symbols(String market) {
-    this.market = market;
-  }
-
-  @Override
-  public String toString() {
-    return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
-  }
-
-  // --------------------------------
-  public String getSymbol() {
-    return this.name();
-  }
-
-  public String getMarket() {
-    return this.market;
-  }
+  public static final String SYMBOL = "ABC";
 
 }

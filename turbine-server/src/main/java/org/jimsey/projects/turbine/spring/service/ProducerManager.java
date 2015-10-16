@@ -64,7 +64,7 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
-    for (Symbols symbol : Symbols.values()) {
+    for (Stocks symbol : Stocks.values()) {
       logger.info("creating TickProducer {}", symbol);
       TickProducer producer = tickProducerFactory.createTickProducer(symbol.getMarket(), symbol.getSymbol());
       producers.add(producer);
