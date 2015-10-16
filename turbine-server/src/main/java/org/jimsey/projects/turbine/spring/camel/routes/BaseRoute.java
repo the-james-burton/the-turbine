@@ -22,21 +22,57 @@
  */
 package org.jimsey.projects.turbine.spring.camel.routes;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class BaseRoute extends RouteBuilder {
+public abstract class BaseRoute extends RouteBuilder {
+
+  private final String index;
+
+  private final String type;
+
+  private String elasticsearchUri;
 
   @Autowired
   @NotNull
   protected InfrastructureProperties infrastructureProperties;
 
+  public BaseRoute(String index, String type) {
+    this.index = index;
+    this.type = type;
+  }
+
+  @PostConstruct
+  public void init() {
+    elasticsearchUri = String.format(
+        "elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%s&indexType=%s",
+        infrastructureProperties.getElasticsearchHost(),
+        infrastructureProperties.getElasticsearchPort(),
+        index, type);
+  }
+
+  public abstract String getWebsocket();
+
   @Override
   public void configure() throws Exception {
     // if required
+  }
+
+  // ------------------------------
+  public String getIndex() {
+    return index;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public String getElasticsearchUri() {
+    return elasticsearchUri;
   }
 
 }

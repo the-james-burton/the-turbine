@@ -46,6 +46,9 @@ public class InfrastructureProperties {
   private String amqpTicks;
 
   @NotNull
+  private String amqpIndicators;
+
+  @NotNull
   private String elasticsearchHost;
 
   @NotNull
@@ -53,6 +56,9 @@ public class InfrastructureProperties {
 
   @NotNull
   private String websocketTicks;
+
+  @NotNull
+  private String websocketIndicators;
 
   @PostConstruct
   public void init() throws JsonProcessingException {
@@ -100,6 +106,22 @@ public class InfrastructureProperties {
 
   public void setWebsocketTicks(String websocketTicks) {
     this.websocketTicks = websocketTicks;
+  }
+
+  public String getAmqpIndicators() {
+    return amqpIndicators;
+  }
+
+  public void setAmqpIndicators(String amqpIndicators) {
+    this.amqpIndicators = amqpIndicators;
+  }
+
+  public String getWebsocketIndicators() {
+    return websocketIndicators;
+  }
+
+  public void setWebsocketIndicators(String websocketIndicators) {
+    this.websocketIndicators = websocketIndicators;
   }
 
 }

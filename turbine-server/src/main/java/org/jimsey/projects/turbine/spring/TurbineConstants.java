@@ -28,12 +28,24 @@ public class TurbineConstants {
 
   public static final String REST_ROOT_TICKS = "/tick";
 
+  public static final String REST_ROOT_INDICATORS = "/indicator";
+
+  public static final String REST_ROOT_STRATEGIES = "/strategy";
+
   public static final String REST_ROOT_TEST = "/test";
 
   public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
 
-  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "test-tick";
+  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "ticks";
+
+  public static final String ELASTICSEARCH_INDEX_FOR_INDICATORS = "indicators";
+
+  public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "strategies";
 
   public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "tick";
+
+  public static final String ELASTICSEARCH_TYPE_FOR_INDICATORS = "indicator";
+
+  public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "strategy";
 
 }

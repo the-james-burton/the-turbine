@@ -42,19 +42,12 @@ public class TickConsumerRoute extends BaseRoute {
   @NotNull
   private Processor tickProcessor;
 
+  public TickConsumerRoute() {
+    super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS, TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS);
+  }
+
   @Override
   public void configure() throws Exception {
-
-    final String elasticsearchUri = String.format(
-        "elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%s&indexType=%s",
-        infrastructureProperties.getElasticsearchHost(),
-        infrastructureProperties.getElasticsearchPort(),
-        TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
-        TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS);
-
-    final String ticksWebsocketUri = String.format(
-        "ssm://%s",
-        infrastructureProperties.getWebsocketTicks());
 
     from(infrastructureProperties.getAmqpTicks()).id("ticks")
         .convertBodyTo(String.class)
@@ -62,10 +55,17 @@ public class TickConsumerRoute extends BaseRoute {
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .process(tickProcessor)
         .multicast().parallelProcessing()
-        .to(ticksWebsocketUri, elasticsearchUri)
+        .to(getWebsocket(), getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
+
+  @Override
+  public String getWebsocket() {
+    return String.format(
+        "ssm://%s",
+        infrastructureProperties.getWebsocketTicks());
   }
 
 }

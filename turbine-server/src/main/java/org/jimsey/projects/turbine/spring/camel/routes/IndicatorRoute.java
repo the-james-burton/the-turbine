@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,10 @@ public class IndicatorRoute extends BaseRoute {
   @NotNull
   private Processor indicatorProcessor;
 
+  public IndicatorRoute() {
+    super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_TICKS, TurbineConstants.ELASTICSEARCH_TYPE_FOR_TICKS);
+  }
+
   @Override
   public void configure() throws Exception {
 
@@ -49,10 +54,19 @@ public class IndicatorRoute extends BaseRoute {
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         // TODO processor temporarily disabled while the domain model is implemented...
-        // .process(indicatorProcessor)
+        .process(indicatorProcessor)
+        // .multicast().parallelProcessing()
+        // .to(getWebsocket(), getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
+
+  @Override
+  public String getWebsocket() {
+    return String.format(
+        "ssm://%s",
+        infrastructureProperties.getWebsocketIndicators());
   }
 
 }
