@@ -39,7 +39,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
+import eu.verdelhan.ta4j.indicators.helpers.StandardDeviationIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
@@ -59,18 +61,24 @@ public class Symbol implements Serializable {
 
   private TickJson latestTick;
 
+  private final int timeFrame = 10;
+
   private final TimeSeries series = new TimeSeries(new ArrayList<Tick>());
 
   private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
+  private final SMAIndicator smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);
+
+  private final StandardDeviationIndicator standardDeviationIndicator = new StandardDeviationIndicator(smaIndicator, timeFrame);
+
   private final BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator = new BollingerBandsMiddleIndicator(
-      closePriceIndicator);
+      smaIndicator);
 
   private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator = new BollingerBandsLowerIndicator(
-      bollingerBandsMiddleIndicator, closePriceIndicator);
+      bollingerBandsMiddleIndicator, standardDeviationIndicator);
 
   private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator = new BollingerBandsUpperIndicator(
-      bollingerBandsMiddleIndicator, closePriceIndicator);
+      bollingerBandsMiddleIndicator, standardDeviationIndicator);
 
   private String calculated;
 
