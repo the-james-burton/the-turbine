@@ -1,7 +1,7 @@
 #!/bin/bash
 
-curl -XDELETE 'http://localhost:9200/ticks'
-curl -XDELETE 'http://localhost:9200/stocks'
-curl -XDELETE 'http://localhost:9200/strategies'
+curl -XDELETE 'http://localhost:9200/turbine-ticks'
+curl -XDELETE 'http://localhost:9200/turbine-stocks'
+curl -XDELETE 'http://localhost:9200/turbine-strategies'
 
 

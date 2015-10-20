@@ -55,7 +55,7 @@ public class StockProcessor implements Processor {
     stock.receiveTick(tick);
     logger.info("stock: {}", stock.getStock().toString());
     message.setHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, this.getClass().getName());
-    message.setBody(stock.toString());
+    message.setBody(stock.getStock().toString());
   }
 
 }

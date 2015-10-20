@@ -36,16 +36,16 @@ public class TurbineConstants {
 
   public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
 
-  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "ticks";
+  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "turbine-ticks";
 
-  public static final String ELASTICSEARCH_INDEX_FOR_STOCKS = "stocks";
+  public static final String ELASTICSEARCH_INDEX_FOR_STOCKS = "turbine-stocks";
 
-  public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "strategies";
+  public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "turbine-strategies";
 
-  public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "tick";
+  public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "turbine-tick";
 
-  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "stocks";
+  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "turbine-stocks";
 
-  public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "strategy";
+  public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
 
 }

@@ -56,6 +56,7 @@ public class StockRoute extends BaseRoute {
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .process(stockProcessor)
+        .to(getElasticsearchUri())
         // .multicast().parallelProcessing()
         // .to(getWebsocket(), getElasticsearchUri())
         .end();
