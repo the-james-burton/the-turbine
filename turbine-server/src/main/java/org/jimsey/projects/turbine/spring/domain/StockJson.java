@@ -23,34 +23,33 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
+import java.time.ZoneId;
 
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.verdelhan.ta4j.Tick;
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.helpers.StandardDeviationIndicator;
-import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
-
 @Document(
     indexName = TurbineConstants.ELASTICSEARCH_INDEX_FOR_STOCKS,
     type = TurbineConstants.ELASTICSEARCH_TYPE_FOR_STOCKS)
+@JsonAutoDetect(
+    fieldVisibility = Visibility.NONE,
+    getterVisibility = Visibility.NONE,
+    isGetterVisibility = Visibility.NONE,
+    creatorVisibility = Visibility.NONE,
+    setterVisibility = Visibility.NONE)
 public class StockJson implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -59,59 +58,71 @@ public class StockJson implements Serializable {
 
   private static final ObjectMapper json = new ObjectMapper();
 
+  @Id
+  private Long date;
+
+  private OffsetDateTime timestamp;
+
   private final String market;
 
   private final String symbol;
 
-  private TickJson latestTick;
+  private final Double closePriceIndicator;
 
-  @Id
-  private Long date;
+  private final Double bollingerBandsMiddleIndicator;
 
-  private final int timeFrame = 10;
+  private final Double bollingerBandsLowerIndicator;
 
-  private final TimeSeries series = new TimeSeries(new ArrayList<Tick>());
+  private final Double bollingerBandsUpperIndicator;
 
-  private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-
-  private final SMAIndicator smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);
-
-  private final StandardDeviationIndicator standardDeviationIndicator = new StandardDeviationIndicator(smaIndicator, timeFrame);
-
-  private final BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator = new BollingerBandsMiddleIndicator(
-      smaIndicator);
-
-  private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator = new BollingerBandsLowerIndicator(
-      bollingerBandsMiddleIndicator, standardDeviationIndicator);
-
-  private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator = new BollingerBandsUpperIndicator(
-      bollingerBandsMiddleIndicator, standardDeviationIndicator);
-
-  private String calculated;
+  public StockJson(
+      OffsetDateTime date,
+      double closePriceIndicator,
+      double bollingerBandsMiddleIndicator,
+      double bollingerBandsLowerIndicator,
+      double bollingerBandsUpperIndicator,
+      String symbol,
+      String market,
+      String timestamp) {
+    this.timestamp = date;
+    this.symbol = symbol;
+    this.market = market;
+    this.closePriceIndicator = closePriceIndicator;
+    this.bollingerBandsMiddleIndicator = bollingerBandsMiddleIndicator;
+    this.bollingerBandsLowerIndicator = bollingerBandsLowerIndicator;
+    this.bollingerBandsUpperIndicator = bollingerBandsUpperIndicator;
+    try {
+      this.date = date.toInstant().toEpochMilli();
+    } catch (Exception e) {
+      logger.warn("Could not parse date: {}", date.toString());
+    }
+    try {
+      this.timestamp = OffsetDateTime.parse(timestamp);
+    } catch (Exception e) {
+      logger.warn("Could not parse timestamp: {}", timestamp);
+    }
+  }
 
   @JsonCreator
   public StockJson(
+      @JsonProperty("date") long date,
+      @JsonProperty("closePriceIndicator") double closePriceIndicator,
+      @JsonProperty("bollingerBandsMiddleIndicator") double bollingerBandsMiddleIndicator,
+      @JsonProperty("bollingerBandsLowerIndicator") double bollingerBandsLowerIndicator,
+      @JsonProperty("bollingerBandsUpperIndicator") double bollingerBandsUpperIndicator,
+      @JsonProperty("symbol") String symbol,
       @JsonProperty("market") String market,
-      @JsonProperty("symbol") String symbol) {
-    this.market = market;
-    this.symbol = symbol;
-    this.date = OffsetDateTime.now().toEpochSecond() * 1000;
-    calculated = calculate();
-  }
-
-  public void receiveTick(TickJson tick) {
-    latestTick = tick;
-    series.addTick(tick);
-    this.date = getTimestamp().toInstant().toEpochMilli();
-    calculated = calculate();
+      @JsonProperty("timestamp") String timestamp) {
+    this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
+        closePriceIndicator,
+        bollingerBandsMiddleIndicator,
+        bollingerBandsLowerIndicator,
+        bollingerBandsUpperIndicator,
+        symbol, market, timestamp);
   }
 
   @Override
   public String toString() {
-    return calculated;
-  }
-
-  public String calculate() {
     String result = null;
     try {
       result = json.writeValueAsString(this);
@@ -121,71 +132,52 @@ public class StockJson implements Serializable {
     return result;
   }
 
-  // ---------------------------------
-  @Transient
-  @JsonIgnore
-  public OffsetDateTime getTimestamp() {
-    if (latestTick == null) {
-      return null;
-    }
-    return latestTick.getTimestampAsObject();
-  }
-
-  @Transient
-  @JsonProperty("timestamp")
-  public String getTimestampAsString() {
-    if (latestTick == null) {
-      return null;
-    }
-    return latestTick.getTimestamp();
-  }
-
+  // -----------------------
   @JsonProperty("date")
   public long getDate() {
     return date;
   }
 
-  // ---------------------------------
+  @JsonProperty("market")
   public String getMarket() {
     return market;
   }
 
+  @JsonProperty("symbol")
   public String getSymbol() {
     return symbol;
   }
 
-  // ---------------------------------
-  @JsonProperty
+  @JsonProperty("closePriceIndicator")
   public Double getClosePriceIndicator() {
-    if (series.getEnd() < 0) {
-      return null;
-    }
-    return closePriceIndicator.getValue(series.getEnd()).toDouble();
+    return closePriceIndicator;
+  }
+
+  @JsonProperty("bollingerBandsMiddleIndicator")
+  public Double getBollingerBandsMiddleIndicator() {
+    return bollingerBandsMiddleIndicator;
+  }
+
+  @JsonProperty("bollingerBandsLowerIndicator")
+  public Double getBollingerBandsLowerIndicator() {
+    return bollingerBandsLowerIndicator;
+  }
+
+  @JsonProperty("bollingerBandsUpperIndicator")
+  public Double getBollingerBandsUpperIndicator() {
+    return bollingerBandsUpperIndicator;
+  }
+
+  @JsonProperty("timestamp")
+  public String getTimestamp() {
+    return timestamp.toString();
+  }
+
+  @JsonIgnore
+  public OffsetDateTime getTimestampAsObject() {
+    return timestamp;
   }
 
   // ---------------------------------
-  @JsonProperty
-  public Double getBollingerBandsMiddleIndicator() {
-    if (series.getEnd() < 0) {
-      return null;
-    }
-    return bollingerBandsMiddleIndicator.getValue(series.getEnd()).toDouble();
-  }
-
-  @JsonProperty
-  public Double getBollingerBandsLowerIndicator() {
-    if (series.getEnd() < 0) {
-      return null;
-    }
-    return bollingerBandsLowerIndicator.getValue(series.getEnd()).toDouble();
-  }
-
-  @JsonProperty
-  public Double getBollingerBandsUpperIndicator() {
-    if (series.getEnd() < 0) {
-      return null;
-    }
-    return bollingerBandsUpperIndicator.getValue(series.getEnd()).toDouble();
-  }
 
 }

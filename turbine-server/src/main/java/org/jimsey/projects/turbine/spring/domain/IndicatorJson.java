@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * This is too fine grained... use the Symbol class instead.
+ * This is too fine grained... use the Stock class instead.
  * @author jimsey
  */
 @Deprecated

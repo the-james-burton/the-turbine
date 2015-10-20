@@ -22,7 +22,6 @@
  */
 package org.jimsey.project.turbine.spring.domain;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -30,8 +29,7 @@ import java.time.OffsetDateTime;
 
 import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.spring.domain.StockJson;
-import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,59 +43,51 @@ public class StockJsonTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
-  private static ObjectMapper json;
-
-  private DomainObjectGenerator rdog;
+  private static ObjectMapper json = new ObjectMapper();
 
   private StockJson stock;
 
   @Before
   public void before() {
-    logger.info("new ObjectMapper...");
-    json = new ObjectMapper();
-    logger.info("new RandomDomainObjectGenerator({}, {})...", TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
-    rdog = new RandomDomainObjectGenerator(TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
-    logger.info("new Symbol({}, {})...", TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
-    stock = new StockJson(TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
-    for (OffsetDateTime date = OffsetDateTime.now().minusMinutes(1); date
-        .isBefore(OffsetDateTime.now()); date = date.plusSeconds(1)) {
-      stock.receiveTick(rdog.newTick(date));
-    }
-    logger.info("symbol initialized...");
+    // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
+    // this.stock = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
   }
 
   @Test
-  public void testToString() {
-    String text = stock.toString();
-    logger.info("testToString:{}", text);
-    assertNotNull(text);
+  public void testJsonConstructor() {
+    stock = new StockJson(1401174943825l, 100.0d, 98.0d, 95.0d, 102.0d,
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
+    String jsonConstructor = stock.toString();
+    stock = new StockJson(OffsetDateTime.now(), 100.0d, 98.0d, 95.0d, 102.0d,
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
+    String stockConstructor = stock.toString();
+    logger.info(jsonConstructor);
+    logger.info(stockConstructor);
+    assertNotNull(jsonConstructor);
+    assertNotNull(stockConstructor);
   }
 
   @Test
   public void testJson() throws IOException {
-    logger.info("json.writeValueAsString()...");
+    stock = new StockJson(OffsetDateTime.now(), 100.0d, 98.0d, 95.0d, 102.0d,
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(stock);
-    logger.info("testJson:{}", text);
-    // Symbol is not deserializable, so we will not test json.readvalue
-    logger.info("assertions...");
-    // {"market":"FTSE100","symbol":"ABC","closePriceIndicator":106.05653150666,"bollingerBandsMiddleIndicator":106.05653150666,"bollingerBandsLowerIndicator":-106.05653150666,"bollingerBandsUpperIndicator":318.16959451997997,"timestamp":"2015-10-12T17:27:13.870+01:00"}
-    assertThat(text, containsString("date"));
-    assertThat(text, containsString("market"));
-    assertThat(text, containsString("symbol"));
-    assertThat(text, containsString("closePriceIndicator"));
-    assertThat(text, containsString("bollingerBandsMiddleIndicator"));
-    assertThat(text, containsString("bollingerBandsLowerIndicator"));
-    assertThat(text, containsString("bollingerBandsUpperIndicator"));
-    assertThat(text, containsString("timestamp"));
+    stock = json.readValue(text, StockJson.class);
+    logger.info(text);
+    logger.info(stock.toString());
+    assertEquals(text, stock.toString());
+
   }
 
-  // ta4j indicators are not Serializable, so don't test just now...
   @Ignore
   @Test
   public void testSerializable() throws IOException {
+    stock = new StockJson(OffsetDateTime.now(), 100.0d, 98.0d, 95.0d, 102.0d,
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(stock);
-    StockJson stock2 = (StockJson) SerializationUtils.deserialize(bytes);
-    assertEquals(stock.toString(), stock2.toString());
+    TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);
+    logger.info(stock.toString());
+    logger.info(stock2.toString());
   }
 
 }

@@ -22,15 +22,15 @@
  */
 package org.jimsey.projects.turbine.spring.camel.processors;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.domain.StockJson;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Market;
+import org.jimsey.projects.turbine.spring.domain.Stock;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,25 +41,21 @@ public class StockProcessor implements Processor {
   private static final Logger logger = LoggerFactory.getLogger(StockProcessor.class);
 
   // TODO need a better implementation of some sort..?
-  private Map<String, Market> markets = new HashMap<>();
+  private ConcurrentHashMap<String, Market> markets = new ConcurrentHashMap<>();
 
   @Override
   public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     logger.info(tick.toString());
-    Market market = markets.get(tick.getMarket());
-    if (market == null) {
-      market = new Market(tick.getMarket());
-      markets.put(tick.getMarket(), market);
-    }
-    StockJson stock = market.getSymbol(tick.getSymbol());
+    Market market = markets.computeIfAbsent(tick.getMarket(), key -> {
+      return new Market(key);
+    });
+    Stock stock = market.getSymbol(tick.getSymbol());
     stock.receiveTick(tick);
-    logger.info("cpi:{}, bbu: {}, bbl: {}, bbm: {}",
-        stock.getClosePriceIndicator(),
-        stock.getBollingerBandsUpperIndicator(),
-        stock.getBollingerBandsLowerIndicator(),
-        stock.getBollingerBandsMiddleIndicator());
+    logger.info("stock: {}", stock.getStock().toString());
+    message.setHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, this.getClass().getName());
+    message.setBody(stock.toString());
   }
 
 }

@@ -134,7 +134,7 @@
 
   <logger
     name="org.jimsey.projects"
-    level="DEBUG" />
+    level="INFO" />
 
   <logger
     name="json"

@@ -36,6 +36,7 @@ import java.util.List;
 import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
@@ -85,10 +86,8 @@ public class StockControllerTest {
     MockitoAnnotations.initMocks(this);
     mvc = MockMvcBuilders.standaloneSetup(controller).build();
     stocks = new ArrayList<StockJson>();
-    StockJson stock = new StockJson(TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
-    stocks.add(stock);
-    stock.receiveTick(rdog.newTick());
-
+    TickJson tick = rdog.newTick();
+    stocks.add(rdog.newStock(tick.getTimestampAsObject()));
   }
 
   @Test

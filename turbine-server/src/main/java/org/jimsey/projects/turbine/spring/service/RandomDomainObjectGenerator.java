@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.service;
 import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,8 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
   private final String symbol;
 
   private TickJson tick;
+
+  private StockJson stock;
 
   public RandomDomainObjectGenerator(String market, String symbol) {
     this.market = market;
@@ -59,6 +62,31 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
     tick = new TickJson(date, open, high, low, close, volume, this.symbol, this.market, OffsetDateTime.now().toString());
     return tick;
+  }
+
+  @Override
+  public StockJson newStock(OffsetDateTime date) {
+
+    final double variation = 3.0d;
+
+    double open = tick.getClose();
+    double high = tick.getHigh();
+    double low = tick.getLow();
+    double close = tick.getClose();
+
+    double closePriceIndicator = close;
+    double bollingerBandsUpperIndicator = RandomUtils.nextDouble(open, open + variation);
+    double bollingerBandsLowerIndicator = RandomUtils.nextDouble(Math.max(0, open - variation), open);
+    double bollingerBandsMiddleIndicator = RandomUtils.nextDouble(Math.max(0, low), high);
+
+    stock = new StockJson(
+        date,
+        closePriceIndicator,
+        bollingerBandsMiddleIndicator,
+        bollingerBandsLowerIndicator,
+        bollingerBandsUpperIndicator,
+        this.symbol, this.market, OffsetDateTime.now().toString());
+    return stock;
   }
 
   @Override

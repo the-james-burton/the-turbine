@@ -22,30 +22,23 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Market {
 
   private final String market;
 
-  private Map<String, StockJson> symbols = new HashMap<>();
+  private ConcurrentHashMap<String, Stock> stocks = new ConcurrentHashMap<>();
 
   public Market(String market) {
     this.market = market;
   }
 
-  public void addSymbol(StockJson symbol) {
-    symbols.put(symbol.getSymbol(), symbol);
-  }
-
-  public StockJson getSymbol(String key) {
-    StockJson symbol = symbols.get(key);
-    if (symbol == null) {
-      symbol = new StockJson(market, key);
-      symbols.put(key, symbol);
-    }
-    return symbol;
+  public Stock getSymbol(String symbol) {
+    Stock stock = stocks.computeIfAbsent(symbol, key -> {
+      return new Stock(market, key);
+    });
+    return stock;
   }
 
 }

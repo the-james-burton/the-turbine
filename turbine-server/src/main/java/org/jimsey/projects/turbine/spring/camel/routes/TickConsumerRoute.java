@@ -48,8 +48,9 @@ public class TickConsumerRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
+    String input = String.format("%s.%s", infrastructureProperties.getAmqpTicks(), "ticks");
 
-    from(infrastructureProperties.getAmqpTicks()).id("ticks")
+    from(input).id("ticks")
         .convertBodyTo(String.class)
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))

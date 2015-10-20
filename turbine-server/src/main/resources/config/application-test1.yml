@@ -1,7 +1,7 @@
 infrastructure:
   environment-name: test1
   amqp-ticks: rabbitmq://localhost:5672/turbine.test1.market.ticks?exchangeType=topic&queue=turbine.test1.queue.ticks
-  amqp-stocks: rabbitmq://localhost:5672/turbine.test1.market.stocks?exchangeType=topic&queue=turbine.test1.queue.indicators
+  amqp-stocks: rabbitmq://localhost:5672/turbine.test1.market.stocks?exchangeType=topic&queue=turbine.test1.queue.stocks
   elasticsearch-host: localhost
   elasticsearch-port: 9300
   websocket-ticks: /topic/ticks

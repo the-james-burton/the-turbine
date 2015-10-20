@@ -49,7 +49,7 @@ public class TickProcessor implements Processor {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     // String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    logger.info(tick.toString());
+    logger.info("tick: {}", tick.toString());
     // tickPublisher.publish(tick);
     // logger.info("sma={}", sma.getValue(series.getEnd()));
   }
