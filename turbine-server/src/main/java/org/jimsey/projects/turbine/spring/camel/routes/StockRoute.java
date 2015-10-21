@@ -58,9 +58,9 @@ public class StockRoute extends BaseRoute {
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .process(stockProcessor)
-        .to(getElasticsearchUri())
-        // .multicast().parallelProcessing()
-        // .to(getWebsocket(), getElasticsearchUri())
+        // .to(getElasticsearchUri())
+        .multicast().parallelProcessing()
+        .to(getWebsocket(), getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
