@@ -56,6 +56,8 @@ public class TickProducer {
 
   private DomainObjectGenerator rdog;
 
+  private String output;
+
   public TickProducer(String market, String symbol) {
     this.rdog = new RandomDomainObjectGenerator(market, symbol);
   }
@@ -63,6 +65,10 @@ public class TickProducer {
   @PostConstruct
   public void init() {
     logger.info(String.format("camel=%s", camel.getName()));
+    output = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        infrastructureProperties.getAmqpTicksQueue(), "ticks");
     logger.info("producer initialised");
   }
 
@@ -89,7 +95,7 @@ public class TickProducer {
     logger.info("producing: [body: {}, headers: {}]", tick.toString(), new JSONObject(headers));
 
     String text = camel.getTypeConverter().convertTo(String.class, tick);
-    producer.sendBodyAndHeaders(infrastructureProperties.getAmqpTicks(), text, headers);
+    producer.sendBodyAndHeaders(output, text, headers);
   }
 
 }

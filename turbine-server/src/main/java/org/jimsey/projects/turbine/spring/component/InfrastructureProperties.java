@@ -43,10 +43,25 @@ public class InfrastructureProperties {
   private String environmentName;
 
   @NotNull
-  private String amqpTicks;
+  private String amqpServer;
 
   @NotNull
-  private String amqpStocks;
+  private String amqpTicksExchange;
+
+  @NotNull
+  private String amqpStocksExchange;
+
+  @NotNull
+  private String amqpStrategiesExchange;
+
+  @NotNull
+  private String amqpTicksQueue;
+
+  @NotNull
+  private String amqpStocksQueue;
+
+  @NotNull
+  private String amqpStrategiesQueue;
 
   @NotNull
   private String elasticsearchHost;
@@ -60,6 +75,9 @@ public class InfrastructureProperties {
   @NotNull
   private String websocketStocks;
 
+  @NotNull
+  private String websocketStrategies;
+
   @PostConstruct
   public void init() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
@@ -67,6 +85,69 @@ public class InfrastructureProperties {
   }
 
   // ------------------------------------------
+  public String getEnvironmentName() {
+    return environmentName;
+  }
+
+  public void setEnvironmentName(String environmentName) {
+    this.environmentName = environmentName;
+  }
+
+  public String getAmqpServer() {
+    return amqpServer;
+  }
+
+  public void setAmqpServer(String amqpServer) {
+    this.amqpServer = amqpServer;
+  }
+
+  public String getAmqpTicksExchange() {
+    return amqpTicksExchange;
+  }
+
+  public void setAmqpTicksExchange(String amqpTicksExchange) {
+    this.amqpTicksExchange = amqpTicksExchange;
+  }
+
+  public String getAmqpStocksExchange() {
+    return amqpStocksExchange;
+  }
+
+  public void setAmqpStocksExchange(String amqpStocksExchange) {
+    this.amqpStocksExchange = amqpStocksExchange;
+  }
+
+  public String getAmqpStrategiesExchange() {
+    return amqpStrategiesExchange;
+  }
+
+  public void setAmqpStrategiesExchange(String amqpStrategiesExchange) {
+    this.amqpStrategiesExchange = amqpStrategiesExchange;
+  }
+
+  public String getAmqpTicksQueue() {
+    return amqpTicksQueue;
+  }
+
+  public void setAmqpTicksQueue(String amqpTicksQueue) {
+    this.amqpTicksQueue = amqpTicksQueue;
+  }
+
+  public String getAmqpStocksQueue() {
+    return amqpStocksQueue;
+  }
+
+  public void setAmqpStocksQueue(String amqpStocksQueue) {
+    this.amqpStocksQueue = amqpStocksQueue;
+  }
+
+  public String getAmqpStrategiesQueue() {
+    return amqpStrategiesQueue;
+  }
+
+  public void setAmqpStrategiesQueue(String amqpStrategiesQueue) {
+    this.amqpStrategiesQueue = amqpStrategiesQueue;
+  }
 
   public String getElasticsearchHost() {
     return elasticsearchHost;
@@ -84,22 +165,6 @@ public class InfrastructureProperties {
     this.elasticsearchPort = elasticsearchPort;
   }
 
-  public String getEnvironmentName() {
-    return environmentName;
-  }
-
-  public void setEnvironmentName(String environmentName) {
-    this.environmentName = environmentName;
-  }
-
-  public String getAmqpTicks() {
-    return amqpTicks;
-  }
-
-  public void setAmqpTicks(String amqpTicks) {
-    this.amqpTicks = amqpTicks;
-  }
-
   public String getWebsocketTicks() {
     return websocketTicks;
   }
@@ -108,20 +173,20 @@ public class InfrastructureProperties {
     this.websocketTicks = websocketTicks;
   }
 
-  public String getAmqpStocks() {
-    return amqpStocks;
-  }
-
-  public void setAmqpStocks(String amqpStocks) {
-    this.amqpStocks = amqpStocks;
-  }
-
   public String getWebsocketStocks() {
     return websocketStocks;
   }
 
   public void setWebsocketStocks(String websocketStocks) {
     this.websocketStocks = websocketStocks;
+  }
+
+  public String getWebsocketStrategies() {
+    return websocketStrategies;
+  }
+
+  public void setWebsocketStrategies(String websocketStrategies) {
+    this.websocketStrategies = websocketStrategies;
   }
 
 }

@@ -1,11 +1,17 @@
 infrastructure:
   environment-name: test1
-  amqp-ticks: rabbitmq://localhost:5672/turbine.test1.market.ticks?exchangeType=topic&queue=turbine.test1.queue.ticks
-  amqp-stocks: rabbitmq://localhost:5672/turbine.test1.market.stocks?exchangeType=topic&queue=turbine.test1.queue.stocks
+  amqp-server: localhost:5672
+  amqp-ticks-exchange: turbine.test1.market.ticks
+  amqp-stocks-exchange: turbine.test1.market.stocks
+  amqp-strategies-exchange: turbine.test1.market.strategies
+  amqp-ticks-queue: turbine.test1.queue.ticks
+  amqp-stocks-queue: turbine.test1.queue.stocks
+  amqp-strategies-queue: turbine.test1.queue.strategies
   elasticsearch-host: localhost
   elasticsearch-port: 9300
   websocket-ticks: /topic/ticks
   websocket-stocks: /topic/stocks
+  websocket-strategies: /topic/strategies
   
 spring:
   data:

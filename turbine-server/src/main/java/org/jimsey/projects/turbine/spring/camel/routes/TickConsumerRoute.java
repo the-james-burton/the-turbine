@@ -48,7 +48,10 @@ public class TickConsumerRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
-    String input = String.format("%s.%s", infrastructureProperties.getAmqpTicks(), "ticks");
+    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        infrastructureProperties.getAmqpTicksQueue(), "ticks");
 
     from(input).id("ticks")
         .convertBodyTo(String.class)

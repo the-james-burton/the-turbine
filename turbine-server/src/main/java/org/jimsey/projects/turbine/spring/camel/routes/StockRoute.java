@@ -48,8 +48,10 @@ public class StockRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
-
-    String input = String.format("%s.%s", infrastructureProperties.getAmqpTicks(), "stocks");
+    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        infrastructureProperties.getAmqpTicksQueue(), "stocks");
 
     from(input).id("stocks")
         .convertBodyTo(String.class)
