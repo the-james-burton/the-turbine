@@ -58,7 +58,10 @@ public class TestController {
     return new PingResponse(ping.ping());
   }
 
-  @MessageMapping("/reply")
+  // TODO cannot seem to make this work with RabbitMQ as the broker, so a
+  // camel route has been setup to handling incoming messages instead...
+  @Deprecated
+  @MessageMapping("/request")
   @SendTo("/topic/reply")
   public ReplyResponse reply(ReplyResponse message) throws Exception {
     logger.info("reply({})", message.getMessage());

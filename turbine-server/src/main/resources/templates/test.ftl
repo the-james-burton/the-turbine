@@ -14,9 +14,9 @@
         var stompClient = null;
 
         function onLoad() {
-            var socket = new SockJS('/reply');
+            var socket = new SockJS('http://localhost:15674/stomp');
             stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
+            stompClient.connect({login : "guest", passcode : "guest"}, function(frame) {
                 console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/reply', function(message){
                 	receiveReply(message);
@@ -26,7 +26,7 @@
         }
         
         function sendMessage() {
-            stompClient.send("/app/reply", {}, JSON.stringify({ 'message': 'websockets test' }));
+            stompClient.send("/amq/queue/request", {}, JSON.stringify({ 'message': 'websockets test' }));
         }
         
         function receiveReply(message) {

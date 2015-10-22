@@ -30,6 +30,7 @@ import org.jimsey.projects.turbine.spring.domain.Entity;
 import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.StockJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.spring.web.ReplyResponse;
 import org.springframework.util.SerializationUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,6 +90,28 @@ public class TurbineObjectConverter {
     StockJson stock = null;
     try {
       stock = json.readValue(text, StockJson.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return stock;
+  }
+
+  @Converter
+  public static ReplyResponse toReplyResponse(final String text, final Exchange exchange) {
+    ReplyResponse stock = null;
+    try {
+      stock = json.readValue(text, ReplyResponse.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return stock;
+  }
+
+  @Converter
+  public static ReplyResponse toReplyResponse(final byte[] bytes, final Exchange exchange) {
+    ReplyResponse stock = null;
+    try {
+      stock = json.readValue(bytes, ReplyResponse.class);
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -41,7 +41,12 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     // config.enableSimpleBroker("/topic");
 
     // to use the stomp support build into RabbitMQ...
-    config.enableStompBrokerRelay("/topic").setRelayHost("localhost").setRelayPort(61613);
+    config.enableStompBrokerRelay("/topic", "/queue")
+        .setRelayHost("localhost")
+        .setRelayPort(61613)
+        .setSystemLogin("guest")
+        .setSystemPasscode("guest")
+        .setVirtualHost("/");
 
     config.setApplicationDestinationPrefixes("/app");
     config.setPathMatcher(new AntPathMatcher("."));
@@ -50,11 +55,10 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(final StompEndpointRegistry registry) {
     this.registry = registry;
-    registry.addEndpoint("/reply").setAllowedOrigins("http://localhost:9000").withSockJS();
-    registry.addEndpoint("/ping").setAllowedOrigins("http://localhost:9000").withSockJS();
-    registry.addEndpoint("/ticks").setAllowedOrigins("http://localhost:9000").withSockJS();
+    registry.addEndpoint("/reply").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
+    registry.addEndpoint("/request").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
+    registry.addEndpoint("/ping").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
+    registry.addEndpoint("/ticks").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
   }
-
-  // TODO add stomp endpoints for multiple markets/symbols?
 
 }
