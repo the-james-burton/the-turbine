@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Market;
 import org.jimsey.projects.turbine.spring.domain.Stock;
@@ -55,6 +56,8 @@ public class StockProcessor implements Processor {
     stock.receiveTick(tick);
     logger.info("stock: {}", stock.getStock().toString());
     message.setHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, this.getClass().getName());
+    String destinationSuffix = String.format(".%s.%s", tick.getMarket(), tick.getSymbol());
+    message.setHeader(SpringSimpleMessagingConstants.DESTINATION_SUFFIX, destinationSuffix);
     message.setBody(stock.getStock().toString());
   }
 

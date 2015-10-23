@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring;
 
 public class TurbineConstants {
 
-  public static final long PRODUCER_PERIOD = 3000;
+  public static final long PRODUCER_PERIOD = 250;
 
   public static final String REST_ROOT_TICKS = "/tick";
 
@@ -44,7 +44,7 @@ public class TurbineConstants {
 
   public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "turbine-tick";
 
-  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "turbine-stocks";
+  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "turbine-stock";
 
   public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
 
