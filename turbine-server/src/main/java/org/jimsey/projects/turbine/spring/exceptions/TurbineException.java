@@ -48,7 +48,7 @@ public class TurbineException extends RuntimeException {
 
   /**
    * Only allow a message to be set
-   * @param error
+   * @param error the error message
    */
   @JsonCreator
   public TurbineException(@JsonProperty("error") String error) {
