@@ -45,8 +45,8 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         .setRelayHost("localhost")
         .setRelayPort(61613)
         .setSystemLogin("guest")
-        .setSystemPasscode("guest")
-        .setVirtualHost("/");
+        .setSystemPasscode("guest");
+    // .setVirtualHost("/");
 
     config.setApplicationDestinationPrefixes("/app");
     config.setPathMatcher(new AntPathMatcher("."));

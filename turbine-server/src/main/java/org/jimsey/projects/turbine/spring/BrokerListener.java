@@ -35,7 +35,7 @@ public class BrokerListener implements ApplicationListener<BrokerAvailabilityEve
 
   @Override
   public void onApplicationEvent(BrokerAvailabilityEvent event) {
-    logger.info(event.toString());
+    logger.info("BrokerAvailabilityEvent: [{}]", event.toString());
   }
 
 }

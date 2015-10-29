@@ -58,6 +58,8 @@ public class TickProducer {
 
   private String output;
 
+  private ProducerTemplate producer;
+
   public TickProducer(String market, String symbol) {
     this.rdog = new RandomDomainObjectGenerator(market, symbol);
   }
@@ -65,6 +67,7 @@ public class TickProducer {
   @PostConstruct
   public void init() {
     logger.info(String.format("camel=%s", camel.getName()));
+    producer = camel.createProducerTemplate();
     output = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
         infrastructureProperties.getAmqpServer(),
         infrastructureProperties.getAmqpTicksExchange(),
@@ -79,7 +82,6 @@ public class TickProducer {
 
   @Scheduled(fixedDelay = TurbineConstants.PRODUCER_PERIOD)
   public void produce() {
-    ProducerTemplate producer = camel.createProducerTemplate();
 
     Map<String, Object> headers = new HashMap<String, Object>();
 
