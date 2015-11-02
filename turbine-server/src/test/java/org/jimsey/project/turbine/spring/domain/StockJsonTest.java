@@ -26,6 +26,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.spring.domain.StockJson;
@@ -47,18 +49,23 @@ public class StockJsonTest {
 
   private StockJson stock;
 
+  private final Map<String, Double> indicators = new HashMap<>();
+
   @Before
   public void before() {
     // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
     // this.stock = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+    indicators.put("testval1", 1234.0d);
+    indicators.put("testval2", 2345.0d);
+    indicators.put("testval13", 3456.0d);
   }
 
   @Test
   public void testJsonConstructor() {
-    stock = new StockJson(1401174943825l, 100.0d, 98.0d, 95.0d, 102.0d,
+    stock = new StockJson(1401174943825l, 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
     String jsonConstructor = stock.toString();
-    stock = new StockJson(OffsetDateTime.now(), 100.0d, 98.0d, 95.0d, 102.0d,
+    stock = new StockJson(OffsetDateTime.now(), 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
     String stockConstructor = stock.toString();
     logger.info(jsonConstructor);
@@ -69,7 +76,7 @@ public class StockJsonTest {
 
   @Test
   public void testJson() throws IOException {
-    stock = new StockJson(OffsetDateTime.now(), 100.0d, 98.0d, 95.0d, 102.0d,
+    stock = new StockJson(OffsetDateTime.now(), 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(stock);
     stock = json.readValue(text, StockJson.class);
@@ -82,7 +89,7 @@ public class StockJsonTest {
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    stock = new StockJson(OffsetDateTime.now(), 100.0d, 98.0d, 95.0d, 102.0d,
+    stock = new StockJson(OffsetDateTime.now(), 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(stock);
     TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);

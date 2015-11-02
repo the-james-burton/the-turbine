@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
@@ -67,30 +68,22 @@ public class StockJson implements Serializable {
 
   private final String symbol;
 
-  private final Double closePriceIndicator;
+  private final Double close;
 
-  private final Double bollingerBandsMiddleIndicator;
-
-  private final Double bollingerBandsLowerIndicator;
-
-  private final Double bollingerBandsUpperIndicator;
+  private final Map<String, Double> indicators;
 
   public StockJson(
       OffsetDateTime date,
-      double closePriceIndicator,
-      double bollingerBandsMiddleIndicator,
-      double bollingerBandsLowerIndicator,
-      double bollingerBandsUpperIndicator,
+      double close,
+      Map<String, Double> indicators,
       String symbol,
       String market,
       String timestamp) {
     this.timestamp = date;
+    this.close = close;
     this.symbol = symbol;
     this.market = market;
-    this.closePriceIndicator = closePriceIndicator;
-    this.bollingerBandsMiddleIndicator = bollingerBandsMiddleIndicator;
-    this.bollingerBandsLowerIndicator = bollingerBandsLowerIndicator;
-    this.bollingerBandsUpperIndicator = bollingerBandsUpperIndicator;
+    this.indicators = indicators;
     try {
       this.date = date.toInstant().toEpochMilli();
     } catch (Exception e) {
@@ -106,19 +99,13 @@ public class StockJson implements Serializable {
   @JsonCreator
   public StockJson(
       @JsonProperty("date") long date,
-      @JsonProperty("closePriceIndicator") double closePriceIndicator,
-      @JsonProperty("bollingerBandsMiddleIndicator") double bollingerBandsMiddleIndicator,
-      @JsonProperty("bollingerBandsLowerIndicator") double bollingerBandsLowerIndicator,
-      @JsonProperty("bollingerBandsUpperIndicator") double bollingerBandsUpperIndicator,
+      @JsonProperty("close") double close,
+      @JsonProperty("indicators") Map<String, Double> indicators,
       @JsonProperty("symbol") String symbol,
       @JsonProperty("market") String market,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        closePriceIndicator,
-        bollingerBandsMiddleIndicator,
-        bollingerBandsLowerIndicator,
-        bollingerBandsUpperIndicator,
-        symbol, market, timestamp);
+        close, indicators, symbol, market, timestamp);
   }
 
   @Override
@@ -148,29 +135,19 @@ public class StockJson implements Serializable {
     return symbol;
   }
 
-  @JsonProperty("closePriceIndicator")
-  public Double getClosePriceIndicator() {
-    return closePriceIndicator;
-  }
-
-  @JsonProperty("bollingerBandsMiddleIndicator")
-  public Double getBollingerBandsMiddleIndicator() {
-    return bollingerBandsMiddleIndicator;
-  }
-
-  @JsonProperty("bollingerBandsLowerIndicator")
-  public Double getBollingerBandsLowerIndicator() {
-    return bollingerBandsLowerIndicator;
-  }
-
-  @JsonProperty("bollingerBandsUpperIndicator")
-  public Double getBollingerBandsUpperIndicator() {
-    return bollingerBandsUpperIndicator;
-  }
-
   @JsonProperty("timestamp")
   public String getTimestamp() {
     return timestamp.toString();
+  }
+
+  @JsonProperty("close")
+  public Double getClose() {
+    return close;
+  }
+
+  @JsonProperty("indicators")
+  public Map<String, Double> getIndicators() {
+    return indicators;
   }
 
   @JsonIgnore

@@ -20,32 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring;
+package org.jimsey.projects.turbine.spring.domain.indicators;
 
-public class TurbineConstants {
+import java.util.Map;
 
-  public static final long PRODUCER_PERIOD = 2000;
+public interface TurbineIndicator {
 
-  public static final String REST_ROOT_TICKS = "/tick";
+  void update();
 
-  public static final String REST_ROOT_STOCKS = "/stocks";
-
-  public static final String REST_ROOT_STRATEGIES = "/strategy";
-
-  public static final String REST_ROOT_TEST = "/test";
-
-  public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "turbine-ticks";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_STOCKS = "turbine-stocks";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "turbine-strategies";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "turbine-tick";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "turbine-stock";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
+  Map<String, Double> getValues();
 
 }

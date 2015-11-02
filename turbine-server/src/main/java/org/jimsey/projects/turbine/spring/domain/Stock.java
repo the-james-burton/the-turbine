@@ -23,24 +23,22 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
+import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.helpers.StandardDeviationIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
 
 public class Stock {
 
   private static final Logger logger = LoggerFactory.getLogger(Stock.class);
-
-  private final int timeFrame = 10;
 
   private String symbol;
 
@@ -54,37 +52,32 @@ public class Stock {
 
   private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
-  private final SMAIndicator smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);
+  private final List<TurbineIndicator> turbineIndicators = new ArrayList<>();
 
-  private final StandardDeviationIndicator standardDeviationIndicator = new StandardDeviationIndicator(smaIndicator, timeFrame);
-
-  private final BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator = new BollingerBandsMiddleIndicator(
-      smaIndicator);
-
-  private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator = new BollingerBandsLowerIndicator(
-      bollingerBandsMiddleIndicator, standardDeviationIndicator);
-
-  private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator = new BollingerBandsUpperIndicator(
-      bollingerBandsMiddleIndicator, standardDeviationIndicator);
+  private final Map<String, Double> indicators = new HashMap<>();
 
   public Stock(final String market, final String symbol) {
     this.market = market;
     this.symbol = symbol;
+    // TODO better way to initialize indicators..?
+    turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
   }
 
   public void receiveTick(TickJson tick) {
     this.tick = tick;
     logger.debug("market: {}, symbol: {}, receiveTick: {}", market, symbol, tick.getTimestamp());
     series.addTick(tick);
+    turbineIndicators.stream().forEach((indicator) -> {
+      indicator.update();
+      indicators.putAll(indicator.getValues());
+    });
     createStock();
   }
 
   private void createStock() {
     Double cpi = closePriceIndicator.getValue(series.getEnd()).toDouble();
-    Double bbmi = bollingerBandsMiddleIndicator.getValue(series.getEnd()).toDouble();
-    Double bbli = bollingerBandsLowerIndicator.getValue(series.getEnd()).toDouble();
-    Double bbui = bollingerBandsUpperIndicator.getValue(series.getEnd()).toDouble();
-    stock = new StockJson(tick.getDate(), cpi, bbmi, bbli, bbui, symbol, market, tick.getTimestamp());
+    // TODO refactor StockJson to take a map instead of explict values...
+    stock = new StockJson(tick.getDate(), cpi, indicators, symbol, market, tick.getTimestamp());
   }
 
   public StockJson getStock() {

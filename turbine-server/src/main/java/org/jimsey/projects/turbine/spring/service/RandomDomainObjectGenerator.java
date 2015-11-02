@@ -23,6 +23,8 @@
 package org.jimsey.projects.turbine.spring.service;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.jimsey.projects.turbine.spring.domain.StockJson;
@@ -72,19 +74,16 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double open = tick.getClose();
     double high = tick.getHigh();
     double low = tick.getLow();
-    double close = tick.getClose();
+    double closePriceIndicator = tick.getClose();
 
-    double closePriceIndicator = close;
-    double bollingerBandsUpperIndicator = RandomUtils.nextDouble(open, open + variation);
-    double bollingerBandsLowerIndicator = RandomUtils.nextDouble(Math.max(0, open - variation), open);
-    double bollingerBandsMiddleIndicator = RandomUtils.nextDouble(Math.max(0, low), high);
+    Map<String, Double> indicators = new HashMap<>();
+
+    indicators.put("bollingerBandsUpperIndicator", RandomUtils.nextDouble(open, open + variation));
+    indicators.put("bollingerBandsLowerIndicator", RandomUtils.nextDouble(Math.max(0, open - variation), open));
+    indicators.put("bollingerBandsMiddleIndicator", RandomUtils.nextDouble(Math.max(0, low), high));
 
     stock = new StockJson(
-        date,
-        closePriceIndicator,
-        bollingerBandsMiddleIndicator,
-        bollingerBandsLowerIndicator,
-        bollingerBandsUpperIndicator,
+        date, closePriceIndicator, indicators,
         this.symbol, this.market, OffsetDateTime.now().toString());
     return stock;
   }
