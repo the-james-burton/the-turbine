@@ -24,22 +24,30 @@ package org.jimsey.projects.turbine.spring.camel.processors;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
+import org.jimsey.projects.turbine.spring.StockFactory;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Market;
 import org.jimsey.projects.turbine.spring.domain.Stock;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StockProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(StockProcessor.class);
+
+  @Autowired
+  @NotNull
+  private StockFactory stockFactory;
 
   // TODO need a better implementation of some sort..?
   private ConcurrentHashMap<String, Market> markets = new ConcurrentHashMap<>();
@@ -50,7 +58,7 @@ public class StockProcessor implements Processor {
     TickJson tick = message.getMandatoryBody(TickJson.class);
     logger.info(tick.toString());
     Market market = markets.computeIfAbsent(tick.getMarket(), key -> {
-      return new Market(key);
+      return new Market(key, stockFactory);
     });
     Stock stock = market.getSymbol(tick.getSymbol());
     stock.receiveTick(tick);

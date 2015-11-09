@@ -56,16 +56,14 @@ public class BollingerBands implements TurbineIndicator {
   public BollingerBands(final TimeSeries series, final ClosePriceIndicator indicator) {
     this.series = series;
     this.closePriceIndicator = indicator;
+
+    // setup this indicator...
     smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);
-
     standardDeviationIndicator = new StandardDeviationIndicator(smaIndicator, timeFrame);
-
     bollingerBandsMiddleIndicator = new BollingerBandsMiddleIndicator(
         smaIndicator);
-
     bollingerBandsLowerIndicator = new BollingerBandsLowerIndicator(
         bollingerBandsMiddleIndicator, standardDeviationIndicator);
-
     bollingerBandsUpperIndicator = new BollingerBandsUpperIndicator(
         bollingerBandsMiddleIndicator, standardDeviationIndicator);
 

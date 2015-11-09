@@ -20,30 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring;
 
-import java.util.concurrent.ConcurrentHashMap;
+import org.jimsey.projects.turbine.spring.domain.Stock;
 
-import org.jimsey.projects.turbine.spring.StockFactory;
+public interface StockFactory {
 
-public class Market {
-
-  private final String market;
-
-  private final StockFactory stockFactory;
-
-  private ConcurrentHashMap<String, Stock> stocks = new ConcurrentHashMap<>();
-
-  public Market(String market, StockFactory stockFactory) {
-    this.market = market;
-    this.stockFactory = stockFactory;
-  }
-
-  public Stock getSymbol(String symbol) {
-    Stock stock = stocks.computeIfAbsent(symbol, key -> {
-      return stockFactory.createStock(market, key);
-    });
-    return stock;
-  }
+  Stock createStock(String market, String symbol);
 
 }

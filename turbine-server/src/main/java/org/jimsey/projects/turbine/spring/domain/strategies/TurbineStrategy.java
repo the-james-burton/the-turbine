@@ -20,30 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring.domain.strategies;
 
-import java.util.concurrent.ConcurrentHashMap;
+import org.jimsey.projects.turbine.spring.domain.StrategyJson;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 
-import org.jimsey.projects.turbine.spring.StockFactory;
+import eu.verdelhan.ta4j.Strategy;
 
-public class Market {
+public interface TurbineStrategy {
 
-  private final String market;
+  Strategy getStrategy();
 
-  private final StockFactory stockFactory;
-
-  private ConcurrentHashMap<String, Stock> stocks = new ConcurrentHashMap<>();
-
-  public Market(String market, StockFactory stockFactory) {
-    this.market = market;
-    this.stockFactory = stockFactory;
-  }
-
-  public Stock getSymbol(String symbol) {
-    Stock stock = stocks.computeIfAbsent(symbol, key -> {
-      return stockFactory.createStock(market, key);
-    });
-    return stock;
-  }
+  StrategyJson run(TickJson tick);
 
 }

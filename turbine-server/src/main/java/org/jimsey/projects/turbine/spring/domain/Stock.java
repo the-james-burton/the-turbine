@@ -27,18 +27,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.ProducerTemplate;
+import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.camel.routes.StrategyRoute;
+import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
 import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
+import org.jimsey.projects.turbine.spring.domain.strategies.SMAStrategy;
+import org.jimsey.projects.turbine.spring.domain.strategies.TurbineStrategy;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
+@ConfigurationProperties(prefix = "consumer")
 public class Stock {
 
   private static final Logger logger = LoggerFactory.getLogger(Stock.class);
+
+  @Autowired
+  @NotNull
+  protected InfrastructureProperties infrastructureProperties;
+
+  @Autowired
+  @NotNull
+  private CamelContext camel;
+
+  private ProducerTemplate producer;
 
   private String symbol;
 
@@ -54,6 +79,8 @@ public class Stock {
 
   private final List<TurbineIndicator> turbineIndicators = new ArrayList<>();
 
+  private final List<TurbineStrategy> turbineStrategies = new ArrayList<>();
+
   private final Map<String, Double> indicators = new HashMap<>();
 
   public Stock(final String market, final String symbol) {
@@ -61,6 +88,12 @@ public class Stock {
     this.symbol = symbol;
     // TODO better way to initialize indicators..?
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
+    turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
+  }
+
+  @PostConstruct
+  public void init() {
+    producer = camel.createProducerTemplate();
   }
 
   public void receiveTick(TickJson tick) {
@@ -71,13 +104,36 @@ public class Stock {
       indicator.update();
       indicators.putAll(indicator.getValues());
     });
+    turbineStrategies.stream().forEach((strategy) -> {
+      publishStrategy(strategy.run(tick));
+    });
+
     createStock();
   }
 
+  private void publishStrategy(StrategyJson strategyJson) {
+
+    if (strategyJson == null) {
+      return;
+    }
+
+    Map<String, Object> headers = new HashMap<String, Object>();
+
+    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, strategyJson.getClass().getName());
+    headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
+        String.format(".%s.%s", strategyJson.getMarket(), strategyJson.getSymbol()));
+
+    logger.info(" *** STRATEGY : producing: [body: {}, headers: {}]", strategyJson.toString(), new JSONObject(headers));
+
+    String text = camel.getTypeConverter().convertTo(String.class, strategyJson);
+    producer.sendBodyAndHeaders(StrategyRoute.STRATEGY_PUBLISH, text, headers);
+
+  }
+
   private void createStock() {
-    Double cpi = closePriceIndicator.getValue(series.getEnd()).toDouble();
+    Double close = closePriceIndicator.getValue(series.getEnd()).toDouble();
     // TODO refactor StockJson to take a map instead of explict values...
-    stock = new StockJson(tick.getDate(), cpi, indicators, symbol, market, tick.getTimestamp());
+    stock = new StockJson(tick.getDate(), close, indicators, symbol, market, tick.getTimestamp());
   }
 
   public StockJson getStock() {

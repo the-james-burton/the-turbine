@@ -35,27 +35,13 @@ public class TickProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
 
-  // @Autowired
-  // @NotNull
-  // private TickPublisher tickPublisher;
-
-  // private List<Tick> ticks = new ArrayList<Tick>();
-  // private TimeSeries series = new TimeSeries(ticks);
-  // private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
-  // private SMAIndicator sma = new SMAIndicator(closePriceIndicator, 5);
-
   @Override
   public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     // String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
+    // ticks are passed straight through with no procesing...
     logger.info("tick: {}", tick.toString());
-    // tickPublisher.publish(tick);
-    // logger.info("sma={}", sma.getValue(series.getEnd()));
   }
-
-  // public List<Tick> getTicks() {
-  // return ticks;
-  // }
 
 }
