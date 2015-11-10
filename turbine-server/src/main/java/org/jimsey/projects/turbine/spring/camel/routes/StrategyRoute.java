@@ -22,13 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.camel.routes;
 
-import javax.validation.constraints.NotNull;
-
-import org.apache.camel.Processor;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -39,10 +35,6 @@ public class StrategyRoute extends BaseRoute {
   private static final Logger logger = LoggerFactory.getLogger(StrategyRoute.class);
 
   public static final String STRATEGY_PUBLISH = "direct:strategy-publish-route";
-
-  @Autowired
-  @NotNull
-  private Processor stockProcessor;
 
   public StrategyRoute() {
     super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_STRATEGIES,

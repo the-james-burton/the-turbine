@@ -41,9 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StockProcessor implements Processor {
+public class StrategyProcessor implements Processor {
 
-  private static final Logger logger = LoggerFactory.getLogger(StockProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(StrategyProcessor.class);
 
   @Autowired
   @NotNull

@@ -79,7 +79,7 @@ public class StrategyJson implements Serializable {
 
   private final Integer position;
 
-  private final Double cost;
+  private final Double cash;
 
   private final Double value;
 
@@ -92,7 +92,7 @@ public class StrategyJson implements Serializable {
       String action,
       Integer amount,
       Integer position,
-      Double cost,
+      Double cash,
       Double value,
       String timestamp) {
     this.timestamp = date;
@@ -103,7 +103,7 @@ public class StrategyJson implements Serializable {
     this.action = action;
     this.amount = amount;
     this.position = position;
-    this.cost = cost;
+    this.cash = cash;
     this.value = value;
     try {
       this.date = date.toInstant().toEpochMilli();
@@ -127,11 +127,11 @@ public class StrategyJson implements Serializable {
       @JsonProperty("action") String action,
       @JsonProperty("amount") Integer amount,
       @JsonProperty("position") Integer position,
-      @JsonProperty("cost") Double cost,
+      @JsonProperty("cash") Double cash,
       @JsonProperty("value") Double value,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        market, symbol, close, name, action, amount, position, cost, value, timestamp);
+        market, symbol, close, name, action, amount, position, cash, value, timestamp);
   }
 
   @Override
@@ -191,9 +191,9 @@ public class StrategyJson implements Serializable {
     return position;
   }
 
-  @JsonProperty("cost")
-  public Double getCost() {
-    return cost;
+  @JsonProperty("cash")
+  public Double getCash() {
+    return cash;
   }
 
   @JsonProperty("value")

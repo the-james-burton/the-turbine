@@ -37,6 +37,7 @@ import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.camel.routes.StrategyRoute;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
+import org.jimsey.projects.turbine.spring.domain.indicators.SMATwelve;
 import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
 import org.jimsey.projects.turbine.spring.domain.strategies.SMAStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.TurbineStrategy;
@@ -87,6 +88,7 @@ public class Stock {
     this.market = market;
     this.symbol = symbol;
     // TODO better way to initialize indicators..?
+    turbineIndicators.add(new SMATwelve(series, closePriceIndicator));
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
     turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
   }
@@ -95,6 +97,8 @@ public class Stock {
   public void init() {
     producer = camel.createProducerTemplate();
   }
+
+  // TODO always publish strategy positions with every tick...
 
   public void receiveTick(TickJson tick) {
     this.tick = tick;
@@ -123,9 +127,11 @@ public class Stock {
     headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
         String.format(".%s.%s", strategyJson.getMarket(), strategyJson.getSymbol()));
 
-    logger.info(" *** STRATEGY : producing: [body: {}, headers: {}]", strategyJson.toString(), new JSONObject(headers));
+    logger.info("strategy: [body: {}, headers: {}]", strategyJson.toString(), new JSONObject(headers));
 
     String text = camel.getTypeConverter().convertTo(String.class, strategyJson);
+
+    // TODO is it right that this Stock object publishes to a camel route..?
     producer.sendBodyAndHeaders(StrategyRoute.STRATEGY_PUBLISH, text, headers);
 
   }

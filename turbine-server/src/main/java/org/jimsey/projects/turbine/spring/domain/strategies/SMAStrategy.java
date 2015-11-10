@@ -31,8 +31,8 @@ import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.TradingRecord;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
-import eu.verdelhan.ta4j.trading.rules.OverIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
+import eu.verdelhan.ta4j.trading.rules.CrossedDownIndicatorRule;
+import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
 
 public class SMAStrategy implements TurbineStrategy {
 
@@ -48,12 +48,12 @@ public class SMAStrategy implements TurbineStrategy {
 
   private final TradingRecord tradingRecord = new TradingRecord();
 
-  // TODO configure trade size...
-  private final int tradeSizeInt = 1;
+  // TODO how to handle trade size...?
+  private final int tradeSize = 1;
 
   private int position = 0;
 
-  private double cost = 0.0d;
+  private double cash = 200.0d;
 
   private double value = 0.0d;
 
@@ -64,8 +64,8 @@ public class SMAStrategy implements TurbineStrategy {
     // setup this strategy...
     sma = new SMAIndicator(closePriceIndicator, 12);
     strategy = new Strategy(
-        new OverIndicatorRule(sma, closePriceIndicator),
-        new UnderIndicatorRule(sma, closePriceIndicator));
+        new CrossedUpIndicatorRule(sma, closePriceIndicator),
+        new CrossedDownIndicatorRule(sma, closePriceIndicator));
   }
 
   @Override
@@ -74,34 +74,32 @@ public class SMAStrategy implements TurbineStrategy {
     double close = closePriceIndicator.getValue(index).toDouble();
     boolean shouldEnter = strategy.shouldEnter(index, tradingRecord);
     boolean shouldExit = strategy.shouldExit(index, tradingRecord);
-    StrategyJson result = null;
-    if (shouldEnter) {
-      position += tradeSizeInt;
-      cost += close * tradeSizeInt;
-      value = close * position;
-      tradingRecord.enter(index, Decimal.valueOf(close), Decimal.valueOf(tradeSizeInt));
-      result = new StrategyJson(
-          tick.getDate(),
-          tick.getSymbol(),
-          tick.getMarket(),
-          tick.getClose(),
-          name, "enter", tradeSizeInt, position, cost, value,
-          tick.getTimestamp());
+    String action = "none";
+    int thisTradeSize = tradeSize;
+    if (shouldEnter && cash > (close * tradeSize)) {
+      position += tradeSize;
+      cash -= close * tradeSize;
+      tradingRecord.enter(index, Decimal.valueOf(close), Decimal.valueOf(thisTradeSize));
+      action = "enter";
     }
-    if (shouldExit) {
-      position -= tradeSizeInt;
-      cost -= close * tradeSizeInt;
-      value = close * position;
-      tradingRecord.exit(index, Decimal.valueOf(close), Decimal.valueOf(-tradeSizeInt));
-      result = new StrategyJson(
-          tick.getDate(),
-          tick.getSymbol(),
-          tick.getMarket(),
-          tick.getClose(),
-          name, "exit", tradeSizeInt, position, cost, value,
-          tick.getTimestamp());
+    // TODO handle negative (short) positions..?
+    if (shouldExit && position > 0) {
+      position -= tradeSize;
+      cash += close * tradeSize;
+      thisTradeSize = -tradeSize;
+      tradingRecord.exit(index, Decimal.valueOf(close), Decimal.valueOf(thisTradeSize));
+      action = "exit";
     }
-    return result;
+    value = close * position;
+
+    // by returning null, we can suppress non-operating strategy output if we wish...
+    return new StrategyJson(
+        tick.getDate(),
+        tick.getSymbol(),
+        tick.getMarket(),
+        tick.getClose(),
+        name, action, thisTradeSize, position, cash, value,
+        tick.getTimestamp());
   }
 
   // ---------------------------------
@@ -114,8 +112,8 @@ public class SMAStrategy implements TurbineStrategy {
     return position;
   }
 
-  public double getCost() {
-    return cost;
+  public double getCash() {
+    return cash;
   }
 
   public double getValue() {
