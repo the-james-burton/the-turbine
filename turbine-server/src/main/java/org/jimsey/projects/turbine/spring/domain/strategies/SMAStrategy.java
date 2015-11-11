@@ -53,7 +53,7 @@ public class SMAStrategy implements TurbineStrategy {
 
   private int position = 0;
 
-  private double cash = 200.0d;
+  private double cash = 250.0d;
 
   private double value = 0.0d;
 
