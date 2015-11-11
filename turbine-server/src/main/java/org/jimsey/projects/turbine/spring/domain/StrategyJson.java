@@ -161,6 +161,11 @@ public class StrategyJson implements Serializable {
     return symbol;
   }
 
+  @JsonProperty("name")
+  public String getName() {
+    return name;
+  }
+
   @JsonProperty("timestamp")
   public String getTimestamp() {
     return timestamp.toString();
