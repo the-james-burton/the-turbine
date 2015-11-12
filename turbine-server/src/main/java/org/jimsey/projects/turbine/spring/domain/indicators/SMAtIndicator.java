@@ -22,41 +22,24 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
-public class SMATwelve implements TurbineIndicator {
+public class SMAtIndicator extends BaseIndicator {
 
-  private final int timeFrame = 12;
+  private final SMAIndicator smaIndicator;
 
-  private final TimeSeries series;
-
-  private final ClosePriceIndicator closePriceIndicator;
-
-  private final SMAIndicator smaTwelve;
-
-  private final Map<String, Double> values = new HashMap<>();
-
-  public SMATwelve(final TimeSeries series, final ClosePriceIndicator indicator) {
-    this.series = series;
-    this.closePriceIndicator = indicator;
+  public SMAtIndicator(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(12, series, indicator);
 
     // setup this indicator...
-    smaTwelve = new SMAIndicator(closePriceIndicator, timeFrame);
+    this.smaIndicator = new SMAIndicator(indicator, this.timeFrame);
   }
 
   @Override
   public void update() {
-    values.put("smaTwelve", smaTwelve.getValue(series.getEnd()).toDouble());
-  }
-
-  @Override
-  public Map<String, Double> getValues() {
-    return values;
+    values.put(String.format("sma%s", this.timeFrame), smaIndicator.getValue(series.getEnd()).toDouble());
   }
 
 }

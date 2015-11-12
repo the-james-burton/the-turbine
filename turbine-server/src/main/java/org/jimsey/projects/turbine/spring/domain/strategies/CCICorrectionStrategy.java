@@ -22,28 +22,37 @@
  */
 package org.jimsey.projects.turbine.spring.domain.strategies;
 
+import eu.verdelhan.ta4j.Decimal;
+import eu.verdelhan.ta4j.Rule;
 import eu.verdelhan.ta4j.Strategy;
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
-import eu.verdelhan.ta4j.trading.rules.CrossedDownIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
+import eu.verdelhan.ta4j.indicators.oscillators.CCIIndicator;
+import eu.verdelhan.ta4j.trading.rules.OverIndicatorRule;
+import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 
-public class SMAStrategy extends BaseStrategy {
+/**
+ * based on an example in Ta4j itself
+ */
+public class CCICorrectionStrategy extends BaseStrategy {
 
-  private final ClosePriceIndicator closePriceIndicator;
+  public CCICorrectionStrategy(TimeSeries series) {
+    super(series, "CCICorrectionStrategy");
+    if (series == null) {
+      throw new IllegalArgumentException("Series cannot be null");
+    }
 
-  private final SMAIndicator sma;
+    CCIIndicator longCci = new CCIIndicator(series, 200);
+    CCIIndicator shortCci = new CCIIndicator(series, 5);
+    Decimal plus100 = Decimal.HUNDRED;
+    Decimal minus100 = Decimal.valueOf(-100);
 
-  public SMAStrategy(final TimeSeries series, final ClosePriceIndicator closePriceIndicator) {
-    super(series, "SMAStrategy");
-    this.closePriceIndicator = closePriceIndicator;
+    Rule entryRule = new OverIndicatorRule(longCci, plus100) // Bull trend
+        .and(new UnderIndicatorRule(shortCci, minus100)); // Signal
 
-    // setup this strategy...
-    sma = new SMAIndicator(closePriceIndicator, 12);
-    this.strategy = new Strategy(
-        new CrossedUpIndicatorRule(sma, closePriceIndicator),
-        new CrossedDownIndicatorRule(sma, closePriceIndicator));
+    Rule exitRule = new UnderIndicatorRule(longCci, minus100) // Bear trend
+        .and(new OverIndicatorRule(shortCci, plus100)); // Signal
+
+    this.strategy = new Strategy(entryRule, exitRule);
   }
 
 }

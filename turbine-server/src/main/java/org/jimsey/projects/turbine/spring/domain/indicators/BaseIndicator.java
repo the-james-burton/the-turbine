@@ -20,30 +20,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain.strategies;
+package org.jimsey.projects.turbine.spring.domain.indicators;
 
-import eu.verdelhan.ta4j.Strategy;
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
-import eu.verdelhan.ta4j.trading.rules.CrossedDownIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
 
-public class SMAStrategy extends BaseStrategy {
+public abstract class BaseIndicator implements TurbineIndicator {
 
-  private final ClosePriceIndicator closePriceIndicator;
+  protected final int timeFrame;
 
-  private final SMAIndicator sma;
+  protected final TimeSeries series;
 
-  public SMAStrategy(final TimeSeries series, final ClosePriceIndicator closePriceIndicator) {
-    super(series, "SMAStrategy");
+  protected final ClosePriceIndicator closePriceIndicator;
+
+  protected final Map<String, Double> values = new HashMap<>();
+
+  public BaseIndicator(
+      final int timeframe,
+      final TimeSeries series,
+      final ClosePriceIndicator closePriceIndicator) {
+    this.timeFrame = timeframe;
+    this.series = series;
     this.closePriceIndicator = closePriceIndicator;
+  }
 
-    // setup this strategy...
-    sma = new SMAIndicator(closePriceIndicator, 12);
-    this.strategy = new Strategy(
-        new CrossedUpIndicatorRule(sma, closePriceIndicator),
-        new CrossedDownIndicatorRule(sma, closePriceIndicator));
+  @Override
+  public Map<String, Double> getValues() {
+    return values;
   }
 
 }

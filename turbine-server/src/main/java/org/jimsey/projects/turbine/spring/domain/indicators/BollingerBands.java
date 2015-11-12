@@ -22,9 +22,6 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.helpers.StandardDeviationIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -33,13 +30,7 @@ import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerI
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
 
-public class BollingerBands implements TurbineIndicator {
-
-  private final int timeFrame = 10;
-
-  private final TimeSeries series;
-
-  private final ClosePriceIndicator closePriceIndicator;
+public class BollingerBands extends BaseIndicator {
 
   private final SMAIndicator smaIndicator;
 
@@ -51,11 +42,8 @@ public class BollingerBands implements TurbineIndicator {
 
   private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
 
-  private final Map<String, Double> values = new HashMap<>();
-
   public BollingerBands(final TimeSeries series, final ClosePriceIndicator indicator) {
-    this.series = series;
-    this.closePriceIndicator = indicator;
+    super(10, series, indicator);
 
     // setup this indicator...
     smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);
@@ -73,11 +61,6 @@ public class BollingerBands implements TurbineIndicator {
   public void update() {
     values.put("bollingerBandsLowerIndicator", bollingerBandsLowerIndicator.getValue(series.getEnd()).toDouble());
     values.put("bollingerBandsUpperIndicator", bollingerBandsUpperIndicator.getValue(series.getEnd()).toDouble());
-  }
-
-  @Override
-  public Map<String, Double> getValues() {
-    return values;
   }
 
 }
