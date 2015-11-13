@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring.service;
 
 import java.time.OffsetDateTime;
 
-import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 
 public interface DomainObjectGenerator {
@@ -33,6 +33,6 @@ public interface DomainObjectGenerator {
 
   TickJson newTick(OffsetDateTime date);
 
-  StockJson newStock(OffsetDateTime date);
+  IndicatorJson newStock(OffsetDateTime date);
 
 }

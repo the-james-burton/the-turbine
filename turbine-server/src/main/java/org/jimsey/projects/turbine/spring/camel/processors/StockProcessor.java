@@ -29,9 +29,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.StockFactory;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.Market;
 import org.jimsey.projects.turbine.spring.domain.Stock;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
@@ -63,11 +61,7 @@ public class StockProcessor implements Processor {
     });
     Stock stock = market.getSymbol(tick.getSymbol());
     stock.receiveTick(tick);
-    logger.info("stock: {}", stock.getStock().toString());
-    message.setHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, this.getClass().getName());
-    String destinationSuffix = String.format(".%s.%s", tick.getMarket(), tick.getSymbol());
-    message.setHeader(SpringSimpleMessagingConstants.DESTINATION_SUFFIX, destinationSuffix);
-    message.setBody(stock.getStock().toString());
+    logger.info("stock: {}", stock.toString());
   }
 
 }

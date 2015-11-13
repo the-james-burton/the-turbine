@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
@@ -38,8 +41,10 @@ public class SMAtIndicator extends BaseIndicator {
   }
 
   @Override
-  public void update() {
+  public Map<String, Double> computeValues() {
+    Map<String, Double> values = new HashMap<>();
     values.put(String.format("sma%s", this.timeFrame), smaIndicator.getValue(series.getEnd()).toDouble());
+    return values;
   }
 
 }

@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomUtils;
-import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
   private TickJson tick;
 
-  private StockJson stock;
+  private IndicatorJson stock;
 
   public RandomDomainObjectGenerator(String market, String symbol) {
     this.market = market;
@@ -67,7 +67,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
   }
 
   @Override
-  public StockJson newStock(OffsetDateTime date) {
+  public IndicatorJson newStock(OffsetDateTime date) {
 
     final double variation = 3.0d;
 
@@ -82,7 +82,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     indicators.put("bollingerBandsLowerIndicator", RandomUtils.nextDouble(Math.max(0, open - variation), open));
     indicators.put("bollingerBandsMiddleIndicator", RandomUtils.nextDouble(Math.max(0, low), high));
 
-    stock = new StockJson(
+    stock = new IndicatorJson(
         date, closePriceIndicator, indicators,
         this.symbol, this.market, OffsetDateTime.now().toString());
     return stock;

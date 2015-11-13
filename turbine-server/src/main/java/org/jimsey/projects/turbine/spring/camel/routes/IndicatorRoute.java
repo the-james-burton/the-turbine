@@ -22,46 +22,44 @@
  */
 package org.jimsey.projects.turbine.spring.camel.routes;
 
-import javax.validation.constraints.NotNull;
-
-import org.apache.camel.Processor;
-import org.apache.camel.builder.RouteBuilder;
-import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 @Profile("consumer")
-public class StockRoute extends RouteBuilder {
+public class IndicatorRoute extends BaseRoute {
 
-  private static final Logger logger = LoggerFactory.getLogger(StockRoute.class);
+  private static final Logger logger = LoggerFactory.getLogger(IndicatorRoute.class);
 
-  @Autowired
-  @NotNull
-  private Processor stockProcessor;
+  public static final String INDICATOR_PUBLISH = "direct:indicator-publish-route";
 
-  @Autowired
-  @NotNull
-  protected InfrastructureProperties infrastructureProperties;
+  public IndicatorRoute() {
+    super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
+        TurbineConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS);
+  }
 
   @Override
   public void configure() throws Exception {
-    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "stocks");
 
-    from(input).id("stocks")
+    from(INDICATOR_PUBLISH).id(INDICATOR_PUBLISH)
         .convertBodyTo(String.class)
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
-        .process(stockProcessor)
+        .multicast().parallelProcessing()
+        .to(getWebsocket(), getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
+
+  @Override
+  public String getWebsocket() {
+    return String.format(
+        "ssm://%s",
+        infrastructureProperties.getWebsocketIndicators());
   }
 
 }

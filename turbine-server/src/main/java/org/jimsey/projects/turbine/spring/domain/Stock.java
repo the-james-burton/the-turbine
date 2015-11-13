@@ -34,10 +34,10 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.camel.routes.IndicatorRoute;
 import org.jimsey.projects.turbine.spring.camel.routes.StrategyRoute;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
-import org.jimsey.projects.turbine.spring.domain.indicators.SMAtIndicator;
 import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
 import org.jimsey.projects.turbine.spring.domain.strategies.SMAStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.TurbineStrategy;
@@ -70,10 +70,6 @@ public class Stock {
 
   private String market;
 
-  private TickJson tick;
-
-  private StockJson stock;
-
   private final TimeSeries series = new TimeSeries(new ArrayList<Tick>());
 
   private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
@@ -82,14 +78,12 @@ public class Stock {
 
   private final List<TurbineStrategy> turbineStrategies = new ArrayList<>();
 
-  private final Map<String, Double> indicators = new HashMap<>();
-
   public Stock(final String market, final String symbol) {
     this.market = market;
     this.symbol = symbol;
 
     // TODO better way to initialize indicators..?
-    turbineIndicators.add(new SMAtIndicator(series, closePriceIndicator));
+    // turbineIndicators.add(new SMAtIndicator(series, closePriceIndicator));
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
 
     // TODO add back when we can choose which strategy to view in the client...
@@ -105,25 +99,37 @@ public class Stock {
   // TODO always publish strategy positions with every tick...
 
   public void receiveTick(TickJson tick) {
-    this.tick = tick;
     logger.debug("market: {}, symbol: {}, receiveTick: {}", market, symbol, tick.getTimestamp());
     series.addTick(tick);
     turbineIndicators.stream().forEach((indicator) -> {
-      indicator.update();
-      indicators.putAll(indicator.getValues());
+      publishIndicator(indicator.run(tick));
     });
     turbineStrategies.stream().forEach((strategy) -> {
       publishStrategy(strategy.run(tick));
     });
+  }
 
-    createStock();
+  // TODO IMPORTANT!!!!
+  // rewrite this using camel routes, splitting on strategies and indicators...
+
+  private void publishIndicator(IndicatorJson indicatorJson) {
+
+    Map<String, Object> headers = new HashMap<String, Object>();
+
+    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, indicatorJson.getClass().getName());
+    headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
+        String.format(".%s.%s", indicatorJson.getMarket(), indicatorJson.getSymbol()));
+
+    logger.info("indicator: [body: {}, headers: {}]", indicatorJson.toString(), new JSONObject(headers));
+
+    String text = camel.getTypeConverter().convertTo(String.class, indicatorJson);
+
+    // TODO is it right that this Stock object publishes to a camel route..?
+    producer.sendBodyAndHeaders(IndicatorRoute.INDICATOR_PUBLISH, text, headers);
+
   }
 
   private void publishStrategy(StrategyJson strategyJson) {
-
-    if (strategyJson == null) {
-      return;
-    }
 
     Map<String, Object> headers = new HashMap<String, Object>();
 
@@ -140,13 +146,4 @@ public class Stock {
 
   }
 
-  private void createStock() {
-    Double close = closePriceIndicator.getValue(series.getEnd()).toDouble();
-    // TODO refactor StockJson to take a map instead of explict values...
-    stock = new StockJson(tick.getDate(), close, indicators, symbol, market, tick.getTimestamp());
-  }
-
-  public StockJson getStock() {
-    return stock;
-  }
 }

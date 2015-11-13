@@ -22,12 +22,11 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
-import java.util.Map;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 
 public interface TurbineIndicator {
 
-  void update();
-
-  Map<String, Double> getValues();
+  IndicatorJson run(TickJson tick);
 
 }

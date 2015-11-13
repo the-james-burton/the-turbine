@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.helpers.StandardDeviationIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -58,9 +61,11 @@ public class BollingerBands extends BaseIndicator {
   }
 
   @Override
-  public void update() {
+  public Map<String, Double> computeValues() {
+    Map<String, Double> values = new HashMap<>();
     values.put("bollingerBandsLowerIndicator", bollingerBandsLowerIndicator.getValue(series.getEnd()).toDouble());
     values.put("bollingerBandsUpperIndicator", bollingerBandsUpperIndicator.getValue(series.getEnd()).toDouble());
+    return values;
   }
 
 }

@@ -22,10 +22,11 @@
  */
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
+public class IndicatorJsonRepositoryImpl {
 
-public class IndicatorJsonRepositoryImpl extends EntityRepositoryImpl<IndicatorJson>
-    implements EntityRepositoryCustom<IndicatorJson> {
+  // how to instantiate a custom repository, if required in the future...
+  // public class IndicatorJsonRepositoryImpl extends EntityRepositoryImpl<IndicatorJson>
+  // implements EntityRepositoryCustom<IndicatorJson> {
 
   // private static final Logger logger = LoggerFactory.getLogger(QuoteRepositoryImpl.class);
 

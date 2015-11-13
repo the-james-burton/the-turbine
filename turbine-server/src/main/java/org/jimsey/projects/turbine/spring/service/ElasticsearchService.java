@@ -28,9 +28,9 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.elasticsearch.repositories.StockRepository;
+import org.jimsey.projects.turbine.spring.elasticsearch.repositories.IndicatorRepository;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.TickRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class ElasticsearchService {
 
   @Autowired
   @NotNull
-  private StockRepository stockRepository;
+  private IndicatorRepository indicatorRepository;
 
   @PostConstruct
   public void init() {
@@ -114,14 +114,14 @@ public class ElasticsearchService {
     return tickRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
 
-  public List<StockJson> findStocksBySymbol(String symbol) {
-    logger.info("findStocksBySymbol({})", symbol);
-    return stockRepository.findBySymbol(symbol);
+  public List<IndicatorJson> findIndicatorsBySymbol(String symbol) {
+    logger.info("findIndicatorsBySymbol({})", symbol);
+    return indicatorRepository.findBySymbol(symbol);
   }
 
-  public List<StockJson> findStocksBySymbolAndDateGreaterThan(String symbol, Long date) {
-    logger.info("findStocksBySymbolAndDateGreaterThan({}, {})", symbol, date);
-    return stockRepository.findBySymbolAndDateGreaterThan(symbol, date);
+  public List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date) {
+    logger.info("findIndicatorsBySymbolAndDateGreaterThan({}, {})", symbol, date);
+    return indicatorRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
 
 }

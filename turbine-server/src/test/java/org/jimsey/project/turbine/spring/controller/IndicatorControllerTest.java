@@ -35,12 +35,12 @@ import java.util.List;
 
 import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.web.StockController;
+import org.jimsey.projects.turbine.spring.web.IndicatorController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,10 +63,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MockServletContext.class)
 @WebAppConfiguration
-public class StockControllerTest {
+public class IndicatorControllerTest {
 
   @InjectMocks
-  private StockController controller;
+  private IndicatorController controller;
 
   // @Spy
   @Mock
@@ -77,7 +77,7 @@ public class StockControllerTest {
   private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(
       TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
 
-  private List<StockJson> stocks = new ArrayList<StockJson>();
+  private List<IndicatorJson> indicators = new ArrayList<IndicatorJson>();
 
   private static ObjectMapper json = new ObjectMapper();
 
@@ -85,25 +85,25 @@ public class StockControllerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     mvc = MockMvcBuilders.standaloneSetup(controller).build();
-    stocks = new ArrayList<StockJson>();
+    indicators = new ArrayList<IndicatorJson>();
     TickJson tick = rdog.newTick();
-    stocks.add(rdog.newStock(tick.getTimestampAsObject()));
+    indicators.add(rdog.newStock(tick.getTimestampAsObject()));
   }
 
   @Test
   public void testGetAllStocksGreaterThanDate() throws Exception {
     Mockito.when(elasticsearch
-        .findStocksBySymbolAndDateGreaterThan(Mockito.anyString(), Mockito.any(Long.class)))
-        .thenReturn(stocks);
+        .findIndicatorsBySymbolAndDateGreaterThan(Mockito.anyString(), Mockito.any(Long.class)))
+        .thenReturn(indicators);
 
     String expected = json.writeValueAsString(new Object() {
-      @JsonProperty("stocks")
-      List<StockJson> stockz = stocks;
+      @JsonProperty("indicators")
+      List<IndicatorJson> indicatorz = indicators;
     });
 
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
 
-    String restUri = String.format("%s/all/%s", TurbineConstants.REST_ROOT_STOCKS, date);
+    String restUri = String.format("%s/all/%s", TurbineConstants.REST_ROOT_INDICATORS, date);
 
     mvc.perform(MockMvcRequestBuilders.get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

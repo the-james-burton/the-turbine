@@ -28,7 +28,7 @@ public class TurbineConstants {
 
   public static final String REST_ROOT_TICKS = "/tick";
 
-  public static final String REST_ROOT_STOCKS = "/stocks";
+  public static final String REST_ROOT_INDICATORS = "/indicator";
 
   public static final String REST_ROOT_STRATEGIES = "/strategy";
 
@@ -38,13 +38,13 @@ public class TurbineConstants {
 
   public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "turbine-ticks";
 
-  public static final String ELASTICSEARCH_INDEX_FOR_STOCKS = "turbine-stocks";
+  public static final String ELASTICSEARCH_INDEX_FOR_INDICATORS = "turbine-indicators";
 
   public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "turbine-strategies";
 
   public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "turbine-tick";
 
-  public static final String ELASTICSEARCH_TYPE_FOR_STOCKS = "turbine-stock";
+  public static final String ELASTICSEARCH_TYPE_FOR_INDICATORS = "turbine-indicator";
 
   public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
 

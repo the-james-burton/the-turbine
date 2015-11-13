@@ -24,13 +24,13 @@ package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
 import java.util.List;
 
-import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface StockRepository extends ElasticsearchRepository<StockJson, Long> {
+public interface IndicatorRepository extends ElasticsearchRepository<IndicatorJson, Long> {
 
-  List<StockJson> findBySymbol(String symbol);
+  List<IndicatorJson> findBySymbol(String symbol);
 
-  List<StockJson> findBySymbolAndDateGreaterThan(String symbol, Long date);
+  List<IndicatorJson> findBySymbolAndDateGreaterThan(String symbol, Long date);
 
 }

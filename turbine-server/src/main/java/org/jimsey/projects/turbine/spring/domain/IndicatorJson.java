@@ -43,19 +43,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Document(
-    indexName = TurbineConstants.ELASTICSEARCH_INDEX_FOR_STOCKS,
-    type = TurbineConstants.ELASTICSEARCH_TYPE_FOR_STOCKS)
+    indexName = TurbineConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
+    type = TurbineConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS)
 @JsonAutoDetect(
     fieldVisibility = Visibility.NONE,
     getterVisibility = Visibility.NONE,
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE,
     setterVisibility = Visibility.NONE)
-public class StockJson implements Serializable {
+public class IndicatorJson implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger logger = LoggerFactory.getLogger(StockJson.class);
+  private static final Logger logger = LoggerFactory.getLogger(IndicatorJson.class);
 
   private static final ObjectMapper json = new ObjectMapper();
 
@@ -72,7 +72,7 @@ public class StockJson implements Serializable {
 
   private final Map<String, Double> indicators;
 
-  public StockJson(
+  public IndicatorJson(
       OffsetDateTime date,
       double close,
       Map<String, Double> indicators,
@@ -97,7 +97,7 @@ public class StockJson implements Serializable {
   }
 
   @JsonCreator
-  public StockJson(
+  public IndicatorJson(
       @JsonProperty("date") long date,
       @JsonProperty("close") double close,
       @JsonProperty("indicators") Map<String, Double> indicators,

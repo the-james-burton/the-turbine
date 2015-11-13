@@ -49,7 +49,7 @@ public class InfrastructureProperties {
   private String amqpTicksExchange;
 
   @NotNull
-  private String amqpStocksExchange;
+  private String amqpIndicatorsExchange;
 
   @NotNull
   private String amqpStrategiesExchange;
@@ -58,7 +58,7 @@ public class InfrastructureProperties {
   private String amqpTicksQueue;
 
   @NotNull
-  private String amqpStocksQueue;
+  private String amqpIndicatorsQueue;
 
   @NotNull
   private String amqpStrategiesQueue;
@@ -73,7 +73,7 @@ public class InfrastructureProperties {
   private String websocketTicks;
 
   @NotNull
-  private String websocketStocks;
+  private String websocketIndicators;
 
   @NotNull
   private String websocketStrategies;
@@ -109,12 +109,12 @@ public class InfrastructureProperties {
     this.amqpTicksExchange = amqpTicksExchange;
   }
 
-  public String getAmqpStocksExchange() {
-    return amqpStocksExchange;
+  public String getAmqpIndicatorsExchange() {
+    return amqpIndicatorsExchange;
   }
 
-  public void setAmqpStocksExchange(String amqpStocksExchange) {
-    this.amqpStocksExchange = amqpStocksExchange;
+  public void setAmqpIndicatorsExchange(String amqpIndicatorsExchange) {
+    this.amqpIndicatorsExchange = amqpIndicatorsExchange;
   }
 
   public String getAmqpStrategiesExchange() {
@@ -133,12 +133,12 @@ public class InfrastructureProperties {
     this.amqpTicksQueue = amqpTicksQueue;
   }
 
-  public String getAmqpStocksQueue() {
-    return amqpStocksQueue;
+  public String getAmqpIndicatorsQueue() {
+    return amqpIndicatorsQueue;
   }
 
-  public void setAmqpStocksQueue(String amqpStocksQueue) {
-    this.amqpStocksQueue = amqpStocksQueue;
+  public void setAmqpIndicatorsQueue(String amqpIndicatorsQueue) {
+    this.amqpIndicatorsQueue = amqpIndicatorsQueue;
   }
 
   public String getAmqpStrategiesQueue() {
@@ -173,12 +173,12 @@ public class InfrastructureProperties {
     this.websocketTicks = websocketTicks;
   }
 
-  public String getWebsocketStocks() {
-    return websocketStocks;
+  public String getWebsocketIndicators() {
+    return websocketIndicators;
   }
 
-  public void setWebsocketStocks(String websocketStocks) {
-    this.websocketStocks = websocketStocks;
+  public void setWebsocketIndicators(String websocketIndicators) {
+    this.websocketIndicators = websocketIndicators;
   }
 
   public String getWebsocketStrategies() {

@@ -2,15 +2,15 @@ infrastructure:
   environment-name: test1
   amqp-server: localhost:5672
   amqp-ticks-exchange: turbine.test1.market.ticks
-  amqp-stocks-exchange: turbine.test1.market.stocks
+  amqp-indicators-exchange: turbine.test1.market.indicators
   amqp-strategies-exchange: turbine.test1.market.strategies
   amqp-ticks-queue: turbine.test1.queue.ticks
-  amqp-stocks-queue: turbine.test1.queue.stocks
+  amqp-indicators-queue: turbine.test1.queue.indicators
   amqp-strategies-queue: turbine.test1.queue.strategies
   elasticsearch-host: localhost
   elasticsearch-port: 9300
   websocket-ticks: /topic/ticks
-  websocket-stocks: /topic/stocks
+  websocket-indicators: /topic/indicators
   websocket-strategies: /topic/strategies
   
 spring:

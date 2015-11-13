@@ -22,8 +22,10 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
+import org.jimsey.projects.turbine.spring.domain.TickJson;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,8 +38,6 @@ public abstract class BaseIndicator implements TurbineIndicator {
 
   protected final ClosePriceIndicator closePriceIndicator;
 
-  protected final Map<String, Double> values = new HashMap<>();
-
   public BaseIndicator(
       final int timeframe,
       final TimeSeries series,
@@ -47,9 +47,16 @@ public abstract class BaseIndicator implements TurbineIndicator {
     this.closePriceIndicator = closePriceIndicator;
   }
 
-  @Override
-  public Map<String, Double> getValues() {
-    return values;
-  }
+  protected abstract Map<String, Double> computeValues();
+
+  public IndicatorJson run(TickJson tick) {
+    return new IndicatorJson(
+        tick.getTimestampAsObject(),
+        tick.getClose(),
+        computeValues(),
+        tick.getSymbol(),
+        tick.getMarket(),
+        tick.getTimestamp());
+  };
 
 }

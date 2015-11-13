@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.StockJson;
+import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
 import org.jimsey.projects.turbine.spring.exceptions.TurbineException;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.Ping;
@@ -49,10 +49,10 @@ import com.google.common.base.Joiner;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(TurbineConstants.REST_ROOT_STOCKS)
-public class StockController {
+@RequestMapping(TurbineConstants.REST_ROOT_INDICATORS)
+public class IndicatorController {
 
-  private static final Logger logger = LoggerFactory.getLogger(StockController.class);
+  private static final Logger logger = LoggerFactory.getLogger(IndicatorController.class);
 
   private static ObjectMapper json = new ObjectMapper();
 
@@ -81,32 +81,32 @@ public class StockController {
   @RequestMapping("/{symbol}")
   public String getIndicators(@PathVariable String symbol) {
     logger.info("getIndicators");
-    List<StockJson> indicators = elasticsearch.findStocksBySymbol(symbol);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsBySymbol(symbol);
     return Joiner.on(',').join(indicators);
   }
 
   @RequestMapping("/{symbol}/{date}")
   public String getStocksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
-    List<StockJson> stocks = elasticsearch.findStocksBySymbolAndDateGreaterThan(symbol, date);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsBySymbolAndDateGreaterThan(symbol, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {
-      @JsonProperty("stocks")
-      List<StockJson> stockz = stocks;
+      @JsonProperty("indicators")
+      List<IndicatorJson> indicatorz = indicators;
     };
     return json.writeValueAsString(dto);
   }
 
   /**
    * No need for this. Spring boot will send a decent error message to the client.
-   * @param stocks
+   * @param indicators
    * @return
    */
   @Deprecated
-  private String objectToJson(List<StockJson> stocks) {
+  private String objectToJson(List<IndicatorJson> indicators) {
     String result = null;
     try {
-      result = json.writeValueAsString(stocks);
+      result = json.writeValueAsString(indicators);
     } catch (JsonProcessingException e) {
       try {
         logger.error(e.getMessage(), e);
