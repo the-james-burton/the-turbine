@@ -36,14 +36,18 @@ public abstract class BaseIndicator implements TurbineIndicator {
 
   protected final TimeSeries series;
 
+  private final String name;
+
   protected final ClosePriceIndicator closePriceIndicator;
 
   public BaseIndicator(
       final int timeframe,
       final TimeSeries series,
+      final String name,
       final ClosePriceIndicator closePriceIndicator) {
     this.timeFrame = timeframe;
     this.series = series;
+    this.name = name;
     this.closePriceIndicator = closePriceIndicator;
   }
 
@@ -56,6 +60,7 @@ public abstract class BaseIndicator implements TurbineIndicator {
         computeValues(),
         tick.getSymbol(),
         tick.getMarket(),
+        name,
         tick.getTimestamp());
   };
 

@@ -33,4 +33,6 @@ public interface IndicatorRepository extends ElasticsearchRepository<IndicatorJs
 
   List<IndicatorJson> findBySymbolAndDateGreaterThan(String symbol, Long date);
 
+  List<IndicatorJson> findBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date);
+
 }

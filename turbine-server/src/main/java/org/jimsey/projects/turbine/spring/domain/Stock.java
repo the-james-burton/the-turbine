@@ -38,7 +38,9 @@ import org.jimsey.projects.turbine.spring.camel.routes.IndicatorRoute;
 import org.jimsey.projects.turbine.spring.camel.routes.StrategyRoute;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
+import org.jimsey.projects.turbine.spring.domain.indicators.SMAtIndicator;
 import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
+import org.jimsey.projects.turbine.spring.domain.strategies.CCICorrectionStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.SMAStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.TurbineStrategy;
 import org.json.JSONObject;
@@ -83,11 +85,11 @@ public class Stock {
     this.symbol = symbol;
 
     // TODO better way to initialize indicators..?
-    // turbineIndicators.add(new SMAtIndicator(series, closePriceIndicator));
+    turbineIndicators.add(new SMAtIndicator(series, closePriceIndicator));
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
 
     // TODO add back when we can choose which strategy to view in the client...
-    // turbineStrategies.add(new CCICorrectionStrategy(series));
+    turbineStrategies.add(new CCICorrectionStrategy(series));
     turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
   }
 

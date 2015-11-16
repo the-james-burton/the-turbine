@@ -67,7 +67,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
   }
 
   @Override
-  public IndicatorJson newStock(OffsetDateTime date) {
+  public IndicatorJson newIndicator(OffsetDateTime date, String name) {
 
     final double variation = 3.0d;
 
@@ -84,7 +84,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
     stock = new IndicatorJson(
         date, closePriceIndicator, indicators,
-        this.symbol, this.market, OffsetDateTime.now().toString());
+        this.symbol, this.market, name, OffsetDateTime.now().toString());
     return stock;
   }
 

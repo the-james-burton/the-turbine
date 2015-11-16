@@ -69,7 +69,7 @@ public class IndicatorController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    logger.info("this mornings getStocksAfter() : [{}]", getStocksAfter("ABC", sod));
+    logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("ABC", "BollingerBands", sod));
   }
 
   @RequestMapping("/ping")
@@ -85,9 +85,10 @@ public class IndicatorController {
     return Joiner.on(',').join(indicators);
   }
 
-  @RequestMapping("/{symbol}/{date}")
-  public String getStocksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsBySymbolAndDateGreaterThan(symbol, date);
+  @RequestMapping("/{symbol}/{name}/{date}")
+  public String getIndicatorsAfter(@PathVariable String symbol, @PathVariable String name, @PathVariable Long date)
+      throws JsonProcessingException {
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsBySymbolAndNameAndDateGreaterThan(symbol, name, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {

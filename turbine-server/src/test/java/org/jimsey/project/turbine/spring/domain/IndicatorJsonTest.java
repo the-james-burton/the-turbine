@@ -51,6 +51,8 @@ public class IndicatorJsonTest {
 
   private final Map<String, Double> indicators = new HashMap<>();
 
+  private final String name = "testName";
+
   @Before
   public void before() {
     // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
@@ -63,10 +65,10 @@ public class IndicatorJsonTest {
   @Test
   public void testJsonConstructor() {
     stock = new IndicatorJson(1401174943825l, 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
     String jsonConstructor = stock.toString();
     stock = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
     String stockConstructor = stock.toString();
     logger.info(jsonConstructor);
     logger.info(stockConstructor);
@@ -77,7 +79,7 @@ public class IndicatorJsonTest {
   @Test
   public void testJson() throws IOException {
     stock = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(stock);
     stock = json.readValue(text, IndicatorJson.class);
     logger.info(text);
@@ -90,7 +92,7 @@ public class IndicatorJsonTest {
   @Test
   public void testSerializable() throws IOException {
     stock = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, OffsetDateTime.now().toString());
+        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(stock);
     TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(stock.toString());

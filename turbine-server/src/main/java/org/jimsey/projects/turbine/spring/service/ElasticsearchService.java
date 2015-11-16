@@ -124,4 +124,9 @@ public class ElasticsearchService {
     return indicatorRepository.findBySymbolAndDateGreaterThan(symbol, date);
   }
 
+  public List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date) {
+    logger.info("findIndicatorsBySymbolAndDateGreaterThan({}, {}, {})", symbol, name, date);
+    return indicatorRepository.findBySymbolAndNameAndDateGreaterThan(symbol, name, date);
+  }
+
 }

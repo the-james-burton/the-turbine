@@ -33,6 +33,6 @@ public interface DomainObjectGenerator {
 
   TickJson newTick(OffsetDateTime date);
 
-  IndicatorJson newStock(OffsetDateTime date);
+  IndicatorJson newIndicator(OffsetDateTime date, String name);
 
 }

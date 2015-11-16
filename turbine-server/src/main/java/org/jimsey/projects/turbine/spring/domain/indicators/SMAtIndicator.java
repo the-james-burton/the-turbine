@@ -34,7 +34,7 @@ public class SMAtIndicator extends BaseIndicator {
   private final SMAIndicator smaIndicator;
 
   public SMAtIndicator(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, indicator);
+    super(12, series, "SMA12", indicator);
 
     // setup this indicator...
     this.smaIndicator = new SMAIndicator(indicator, this.timeFrame);

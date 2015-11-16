@@ -46,7 +46,7 @@ public class BollingerBands extends BaseIndicator {
   private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
 
   public BollingerBands(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, indicator);
+    super(10, series, "BollingerBands", indicator);
 
     // setup this indicator...
     smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);

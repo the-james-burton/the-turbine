@@ -70,6 +70,8 @@ public class IndicatorJson implements Serializable {
 
   private final Double close;
 
+  private final String name;
+
   private final Map<String, Double> indicators;
 
   public IndicatorJson(
@@ -78,11 +80,13 @@ public class IndicatorJson implements Serializable {
       Map<String, Double> indicators,
       String symbol,
       String market,
+      String name,
       String timestamp) {
     this.timestamp = date;
     this.close = close;
     this.symbol = symbol;
     this.market = market;
+    this.name = name;
     this.indicators = indicators;
     try {
       this.date = date.toInstant().toEpochMilli();
@@ -103,9 +107,10 @@ public class IndicatorJson implements Serializable {
       @JsonProperty("indicators") Map<String, Double> indicators,
       @JsonProperty("symbol") String symbol,
       @JsonProperty("market") String market,
+      @JsonProperty("name") String name,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        close, indicators, symbol, market, timestamp);
+        close, indicators, symbol, market, name, timestamp);
   }
 
   @Override
@@ -148,6 +153,11 @@ public class IndicatorJson implements Serializable {
   @JsonProperty("indicators")
   public Map<String, Double> getIndicators() {
     return indicators;
+  }
+
+  @JsonProperty("name")
+  public String getName() {
+    return name;
   }
 
   @JsonIgnore
