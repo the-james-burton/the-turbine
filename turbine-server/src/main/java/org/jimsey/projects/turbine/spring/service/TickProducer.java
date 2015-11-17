@@ -30,6 +30,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
@@ -54,13 +56,19 @@ public class TickProducer {
   @NotNull
   private InfrastructureProperties infrastructureProperties;
 
-  private DomainObjectGenerator rdog;
+  private final String market;
+
+  private final String symbol;
+
+  private final DomainObjectGenerator rdog;
 
   private String output;
 
   private ProducerTemplate producer;
 
   public TickProducer(String market, String symbol) {
+    this.market = market;
+    this.symbol = symbol;
     this.rdog = new RandomDomainObjectGenerator(market, symbol);
   }
 
@@ -98,6 +106,19 @@ public class TickProducer {
 
     String text = camel.getTypeConverter().convertTo(String.class, tick);
     producer.sendBodyAndHeaders(output, text, headers);
+  }
+
+  public String getMarket() {
+    return market;
+  }
+
+  public String getSymbol() {
+    return symbol;
+  }
+
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
   }
 
 }

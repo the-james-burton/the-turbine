@@ -24,6 +24,7 @@ package org.jimsey.projects.turbine.spring.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,23 @@ public class ProducerManager {
       TickProducer producer = tickProducerFactory.createTickProducer(symbol.getMarket(), symbol.getSymbol());
       producers.add(producer);
     }
+  }
+
+  @ManagedOperation
+  public void produceTick(String market, String symbol) {
+    producers.stream()
+        .filter(producer -> {
+          return market.equals(producer.getMarket()) && symbol.equals(producer.getSymbol());
+        })
+        .forEach(producer -> producer.produce());
+  }
+
+  @ManagedOperation
+  public String showProducers() {
+    Optional<String> result = producers.stream()
+        .map(TickProducer::toString)
+        .reduce((p1, p2) -> String.format("%s,%s", p1, p2));
+    return result.toString();
   }
 
 }

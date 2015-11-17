@@ -23,19 +23,12 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
-import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.camel.routes.IndicatorRoute;
-import org.jimsey.projects.turbine.spring.camel.routes.StrategyRoute;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
 import org.jimsey.projects.turbine.spring.domain.indicators.SMAtIndicator;
@@ -43,7 +36,6 @@ import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
 import org.jimsey.projects.turbine.spring.domain.strategies.CCICorrectionStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.SMAStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.TurbineStrategy;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +58,6 @@ public class Stock {
   @NotNull
   private CamelContext camel;
 
-  private ProducerTemplate producer;
-
   private String symbol;
 
   private String market;
@@ -84,68 +74,29 @@ public class Stock {
     this.market = market;
     this.symbol = symbol;
 
-    // TODO better way to initialize indicators..?
+    // TODO eventually we should only add indicators and strategies when a user requests them...
     turbineIndicators.add(new SMAtIndicator(series, closePriceIndicator));
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
 
-    // TODO add back when we can choose which strategy to view in the client...
     turbineStrategies.add(new CCICorrectionStrategy(series));
     turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
   }
 
   @PostConstruct
   public void init() {
-    producer = camel.createProducerTemplate();
   }
-
-  // TODO always publish strategy positions with every tick...
 
   public void receiveTick(TickJson tick) {
     logger.debug("market: {}, symbol: {}, receiveTick: {}", market, symbol, tick.getTimestamp());
     series.addTick(tick);
-    turbineIndicators.stream().forEach((indicator) -> {
-      publishIndicator(indicator.run(tick));
-    });
-    turbineStrategies.stream().forEach((strategy) -> {
-      publishStrategy(strategy.run(tick));
-    });
   }
 
-  // TODO IMPORTANT!!!!
-  // rewrite this using camel routes, splitting on strategies and indicators...
-
-  private void publishIndicator(IndicatorJson indicatorJson) {
-
-    Map<String, Object> headers = new HashMap<String, Object>();
-
-    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, indicatorJson.getClass().getName());
-    headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s.%s", indicatorJson.getMarket(), indicatorJson.getSymbol()));
-
-    logger.info("indicator: [body: {}, headers: {}]", indicatorJson.toString(), new JSONObject(headers));
-
-    String text = camel.getTypeConverter().convertTo(String.class, indicatorJson);
-
-    // TODO is it right that this Stock object publishes to a camel route..?
-    producer.sendBodyAndHeaders(IndicatorRoute.INDICATOR_PUBLISH, text, headers);
-
+  public List<TurbineIndicator> getIndicators() {
+    return turbineIndicators;
   }
 
-  private void publishStrategy(StrategyJson strategyJson) {
-
-    Map<String, Object> headers = new HashMap<String, Object>();
-
-    headers.put(TurbineConstants.HEADER_FOR_OBJECT_TYPE, strategyJson.getClass().getName());
-    headers.put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s.%s", strategyJson.getMarket(), strategyJson.getSymbol()));
-
-    logger.info("strategy: [body: {}, headers: {}]", strategyJson.toString(), new JSONObject(headers));
-
-    String text = camel.getTypeConverter().convertTo(String.class, strategyJson);
-
-    // TODO is it right that this Stock object publishes to a camel route..?
-    producer.sendBodyAndHeaders(StrategyRoute.STRATEGY_PUBLISH, text, headers);
-
+  public List<TurbineStrategy> getStrategies() {
+    return turbineStrategies;
   }
 
 }

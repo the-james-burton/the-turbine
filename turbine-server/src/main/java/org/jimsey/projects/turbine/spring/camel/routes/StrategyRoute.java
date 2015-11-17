@@ -34,8 +34,6 @@ public class StrategyRoute extends BaseRoute {
 
   private static final Logger logger = LoggerFactory.getLogger(StrategyRoute.class);
 
-  public static final String STRATEGY_PUBLISH = "direct:strategy-publish-route";
-
   public StrategyRoute() {
     super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_STRATEGIES,
         TurbineConstants.ELASTICSEARCH_TYPE_FOR_STRATEGIES);
@@ -43,12 +41,16 @@ public class StrategyRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
+    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        infrastructureProperties.getAmqpTicksQueue(), "strategies");
 
-    from(STRATEGY_PUBLISH).id(STRATEGY_PUBLISH)
+    from(input).id("strategy-publish-route")
+        .log(" ** tick for strategies")
+        .split().method("strategySplitter")
+        // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
-        // .to("slog:json")
-        .to(String.format("log:%s?showAll=true", this.getClass().getName()))
-        // .process(strategyProcessor)
         .multicast().parallelProcessing()
         .to(getWebsocket(), getElasticsearchUri())
         .end();

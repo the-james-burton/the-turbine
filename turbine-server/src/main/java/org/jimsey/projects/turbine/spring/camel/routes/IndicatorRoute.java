@@ -34,8 +34,6 @@ public class IndicatorRoute extends BaseRoute {
 
   private static final Logger logger = LoggerFactory.getLogger(IndicatorRoute.class);
 
-  public static final String INDICATOR_PUBLISH = "direct:indicator-publish-route";
-
   public IndicatorRoute() {
     super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
         TurbineConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS);
@@ -43,11 +41,16 @@ public class IndicatorRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
+    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        infrastructureProperties.getAmqpTicksQueue(), "indicators");
 
-    from(INDICATOR_PUBLISH).id(INDICATOR_PUBLISH)
+    from(input).id("indicator-publish-route")
+        .log(" ** tick for indicators")
+        .split().method("indicatorSplitter")
+        // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
-        // .to("slog:json")
-        .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .multicast().parallelProcessing()
         .to(getWebsocket(), getElasticsearchUri())
         .end();

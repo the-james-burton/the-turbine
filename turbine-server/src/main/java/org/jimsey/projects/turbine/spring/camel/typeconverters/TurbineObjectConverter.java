@@ -75,6 +75,17 @@ public class TurbineObjectConverter {
   }
 
   @Converter
+  public static TickJson toTickJson(final byte[] bytes, final Exchange exchange) {
+    TickJson tick = null;
+    try {
+      tick = json.readValue(bytes, TickJson.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return tick;
+  }
+
+  @Converter
   public static IndicatorJson toIndicatorJson(final String text, final Exchange exchange) {
     IndicatorJson indicator = null;
     try {

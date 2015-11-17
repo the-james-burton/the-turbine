@@ -20,30 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring.service;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.validation.constraints.NotNull;
+
 import org.jimsey.projects.turbine.spring.StockFactory;
+import org.jimsey.projects.turbine.spring.domain.Market;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class Market {
+@Component
+public class MarketsManager {
 
-  private final String market;
+  @Autowired
+  @NotNull
+  private StockFactory stockFactory;
 
-  private final StockFactory stockFactory;
+  // TODO need a better implementation of some sort..?
+  private ConcurrentHashMap<String, Market> markets = new ConcurrentHashMap<>();
 
-  private ConcurrentHashMap<String, Stock> stocks = new ConcurrentHashMap<>();
-
-  public Market(String market, StockFactory stockFactory) {
-    this.market = market;
-    this.stockFactory = stockFactory;
-  }
-
-  public Stock findSymbol(String symbol) {
-    Stock stock = stocks.computeIfAbsent(symbol, key -> {
-      return stockFactory.createStock(market, key);
+  public Market findMarket(String name) {
+    markets.computeIfAbsent(name, key -> {
+      // TODO upfront setup of markets and stocks...
+      return new Market(key, stockFactory);
     });
-    return stock;
+    return markets.get(name);
   }
 
 }
