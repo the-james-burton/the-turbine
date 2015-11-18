@@ -12,6 +12,7 @@ infrastructure:
   websocket-ticks: /topic/ticks
   websocket-indicators: /topic/indicators
   websocket-strategies: /topic/strategies
+  websocket-reply: /topic/reply
   
 spring:
   data:

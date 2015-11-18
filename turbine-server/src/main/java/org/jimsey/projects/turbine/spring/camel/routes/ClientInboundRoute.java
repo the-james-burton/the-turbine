@@ -56,14 +56,20 @@ public class ClientInboundRoute extends RouteBuilder {
     String input = String.format("rabbitmq://%s/request?exchangeType=direct&queue=request",
         infrastructureProperties.getAmqpServer());
 
-    from(input).id("requests")
+    from(input).id("client-requests")
         .convertBodyTo(ReplyResponse.class)
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .process(clientProcessor)
-        .to("ssm:///topic/reply")
+        .to(getWebsocket())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
+
+  public String getWebsocket() {
+    return String.format(
+        "ssm://%s",
+        infrastructureProperties.getWebsocketReply());
   }
 
 }

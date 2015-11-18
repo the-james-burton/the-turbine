@@ -78,6 +78,9 @@ public class InfrastructureProperties {
   @NotNull
   private String websocketStrategies;
 
+  @NotNull
+  private String websocketReply;
+
   @PostConstruct
   public void init() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
@@ -187,6 +190,14 @@ public class InfrastructureProperties {
 
   public void setWebsocketStrategies(String websocketStrategies) {
     this.websocketStrategies = websocketStrategies;
+  }
+
+  public String getWebsocketReply() {
+    return websocketReply;
+  }
+
+  public void setWebsocketReply(String websocketReply) {
+    this.websocketReply = websocketReply;
   }
 
 }

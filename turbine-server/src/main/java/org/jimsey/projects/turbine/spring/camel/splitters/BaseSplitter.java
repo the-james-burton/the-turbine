@@ -22,26 +22,40 @@
  */
 package org.jimsey.projects.turbine.spring.camel.splitters;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.apache.camel.Body;
-import org.apache.camel.Headers;
+import javax.validation.constraints.NotNull;
+
 import org.apache.camel.Message;
-import org.jimsey.projects.turbine.spring.domain.Stock;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.springframework.stereotype.Component;
+import org.apache.camel.impl.DefaultMessage;
+import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
+import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.component.MarketsManager;
+import org.jimsey.projects.turbine.spring.domain.Entity;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-public class StrategySplitter extends BaseSplitter {
+public abstract class BaseSplitter {
 
-  public List<Message> split(@Headers Map<String, Object> headers, @Body TickJson tick) {
-    logger.debug(" ---- in strategy splitter");
-    Stock stock = marketsManager.findMarket(tick.getMarket()).findSymbol(tick.getSymbol());
-    return stock.getStrategies().stream()
-        .map(strategy -> createMessage(strategy.run(tick), headers))
-        .collect(Collectors.toList());
+  protected static final Logger logger = LoggerFactory.getLogger(BaseSplitter.class);
+
+  @Autowired
+  @NotNull
+  protected MarketsManager marketsManager;
+
+  protected Message createMessage(Entity entity, Map<String, Object> headers) {
+    DefaultMessage message = new DefaultMessage();
+    message.setHeaders(headers);
+    message.setBody(entity);
+    message.setHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, entity.getClass().getName());
+    message.setHeader(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
+        String.format(".%s.%s", entity.getMarket(), entity.getSymbol()));
+
+    logger.info("entity: [body: {}, headers: {}]", entity.toString(), new JSONObject(headers));
+
+    return message;
   }
 
 }
