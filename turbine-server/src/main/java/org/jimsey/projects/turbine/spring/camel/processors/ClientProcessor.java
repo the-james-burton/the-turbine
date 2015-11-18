@@ -39,7 +39,10 @@ public class ClientProcessor implements Processor {
   public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     ReplyResponse request = message.getMandatoryBody(ReplyResponse.class);
-    request.setMessage("the turbine says hello to ".concat(request.getMessage()));
+    String response = "the turbine says hello to ".concat(request.getMessage());
+    logger.info("received message from client: [{}], replying with [{}]",
+        request.getMessage(), response);
+    request.setMessage(response);
   }
 
 }
