@@ -134,11 +134,11 @@
 
   <logger
     name="org.springframework.messaging.simp"
-    level="DEBUG" />
+    level="INFO" />
 
   <logger
     name="org.springframework.web.socket"
-    level="DEBUG" />
+    level="INFO" />
 
   <logger
     name="org.jimsey.projects"
