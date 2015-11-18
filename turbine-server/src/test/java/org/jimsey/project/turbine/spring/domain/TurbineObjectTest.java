@@ -25,9 +25,9 @@ package org.jimsey.project.turbine.spring.domain;
 import java.io.IOException;
 
 import org.jimsey.project.turbine.spring.TurbineTestConstants;
+import org.jimsey.projects.turbine.spring.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.spring.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
-import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;

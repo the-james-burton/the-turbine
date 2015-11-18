@@ -47,7 +47,7 @@ public class IndicatorJsonTest {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private IndicatorJson stock;
+  private IndicatorJson indicator;
 
   private final Map<String, Double> indicators = new HashMap<>();
 
@@ -64,12 +64,12 @@ public class IndicatorJsonTest {
 
   @Test
   public void testJsonConstructor() {
-    stock = new IndicatorJson(1401174943825l, 100.0d, indicators,
+    indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
-    String jsonConstructor = stock.toString();
-    stock = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
+    String jsonConstructor = indicator.toString();
+    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
-    String stockConstructor = stock.toString();
+    String stockConstructor = indicator.toString();
     logger.info(jsonConstructor);
     logger.info(stockConstructor);
     assertNotNull(jsonConstructor);
@@ -78,24 +78,24 @@ public class IndicatorJsonTest {
 
   @Test
   public void testJson() throws IOException {
-    stock = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
+    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
-    String text = json.writeValueAsString(stock);
-    stock = json.readValue(text, IndicatorJson.class);
+    String text = json.writeValueAsString(indicator);
+    indicator = json.readValue(text, IndicatorJson.class);
     logger.info(text);
-    logger.info(stock.toString());
-    assertEquals(text, stock.toString());
+    logger.info(indicator.toString());
+    assertEquals(text, indicator.toString());
 
   }
 
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    stock = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
+    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
         TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
-    byte[] bytes = SerializationUtils.serialize(stock);
+    byte[] bytes = SerializationUtils.serialize(indicator);
     TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);
-    logger.info(stock.toString());
+    logger.info(indicator.toString());
     logger.info(stock2.toString());
   }
 

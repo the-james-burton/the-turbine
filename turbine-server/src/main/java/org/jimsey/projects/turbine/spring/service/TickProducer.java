@@ -35,6 +35,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.spring.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.json.JSONObject;
 import org.slf4j.Logger;

@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.projects.turbine.spring.component;
 
 import java.util.concurrent.ConcurrentHashMap;
 

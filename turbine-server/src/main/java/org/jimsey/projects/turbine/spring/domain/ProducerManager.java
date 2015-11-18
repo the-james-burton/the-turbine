@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.projects.turbine.spring.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,8 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.CamelContext;
 import org.jimsey.projects.turbine.spring.TickProducerFactory;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.spring.service.Stocks;
+import org.jimsey.projects.turbine.spring.service.TickProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

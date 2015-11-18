@@ -20,12 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.spring.service;
+package org.jimsey.projects.turbine.spring.domain;
 
 import java.time.OffsetDateTime;
-
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
 
 public interface DomainObjectGenerator {
 

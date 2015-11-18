@@ -26,8 +26,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jimsey.projects.turbine.spring.service.DomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.service.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.spring.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.spring.domain.RandomDomainObjectGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
