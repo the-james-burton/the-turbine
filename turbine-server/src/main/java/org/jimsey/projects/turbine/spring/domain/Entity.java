@@ -23,26 +23,70 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class Entity extends Timestamped implements Serializable {
+@JsonAutoDetect(
+    fieldVisibility = Visibility.NONE,
+    getterVisibility = Visibility.NONE,
+    isGetterVisibility = Visibility.NONE,
+    creatorVisibility = Visibility.NONE,
+    setterVisibility = Visibility.NONE)
+public abstract class Entity implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  private static final Logger logger = LoggerFactory.getLogger(Entity.class);
+
   private static ObjectMapper json = new ObjectMapper();
 
-  // TODO do we need an @Id here..?
+  // TODO need a better id...
+  @Id
+  private Long date;
 
-  private String market;
+  private OffsetDateTime timestamp;
 
-  private String symbol;
+  private final String market;
 
-  public Entity(final String timestamp, final String market, final String symbol) {
-    super(timestamp);
-    this.market = market;
+  private final String symbol;
+
+  private final Double close;
+
+  private final String name;
+
+  public Entity(
+      OffsetDateTime date,
+      double close,
+      String symbol,
+      String market,
+      String name,
+      String timestamp) {
+    this.timestamp = date;
+    this.close = close;
     this.symbol = symbol;
+    this.market = market;
+    this.name = name;
+    try {
+      this.date = date.toInstant().toEpochMilli();
+    } catch (Exception e) {
+      logger.warn("Could not parse date: {}", date.toString());
+    }
+    try {
+      this.timestamp = OffsetDateTime.parse(timestamp);
+    } catch (Exception e) {
+      logger.warn("Could not parse timestamp: {}", timestamp);
+    }
+
   }
 
   @Override
@@ -62,20 +106,39 @@ public abstract class Entity extends Timestamped implements Serializable {
   }
 
   // -------------------------------
+  @JsonProperty("date")
+  public long getDate() {
+    return date;
+  }
+
+  @JsonProperty("market")
   public String getMarket() {
     return market;
   }
 
-  public void setMarket(String market) {
-    this.market = market;
-  }
-
+  @JsonProperty("symbol")
   public String getSymbol() {
     return symbol;
   }
 
-  public void setSymbol(String symbol) {
-    this.symbol = symbol;
+  @JsonProperty("timestamp")
+  public String getTimestamp() {
+    return timestamp.toString();
+  }
+
+  @JsonProperty("close")
+  public Double getClose() {
+    return close;
+  }
+
+  @JsonProperty("name")
+  public String getName() {
+    return name;
+  }
+
+  @JsonIgnore
+  public OffsetDateTime getTimestampAsObject() {
+    return timestamp;
   }
 
 }

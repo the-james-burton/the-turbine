@@ -31,46 +31,19 @@ import java.util.Map;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Document(
     indexName = TurbineConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
     type = TurbineConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS)
-@JsonAutoDetect(
-    fieldVisibility = Visibility.NONE,
-    getterVisibility = Visibility.NONE,
-    isGetterVisibility = Visibility.NONE,
-    creatorVisibility = Visibility.NONE,
-    setterVisibility = Visibility.NONE)
-public class IndicatorJson implements Serializable {
+public class IndicatorJson extends Entity implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private static final Logger logger = LoggerFactory.getLogger(IndicatorJson.class);
-
-  private static final ObjectMapper json = new ObjectMapper();
-
-  @Id
-  private Long date;
-
-  private OffsetDateTime timestamp;
-
-  private final String market;
-
-  private final String symbol;
-
-  private final Double close;
-
-  private final String name;
 
   private final Map<String, Double> indicators;
 
@@ -82,22 +55,8 @@ public class IndicatorJson implements Serializable {
       String market,
       String name,
       String timestamp) {
-    this.timestamp = date;
-    this.close = close;
-    this.symbol = symbol;
-    this.market = market;
-    this.name = name;
+    super(date, close, symbol, market, name, timestamp);
     this.indicators = indicators;
-    try {
-      this.date = date.toInstant().toEpochMilli();
-    } catch (Exception e) {
-      logger.warn("Could not parse date: {}", date.toString());
-    }
-    try {
-      this.timestamp = OffsetDateTime.parse(timestamp);
-    } catch (Exception e) {
-      logger.warn("Could not parse timestamp: {}", timestamp);
-    }
   }
 
   @JsonCreator
@@ -113,58 +72,10 @@ public class IndicatorJson implements Serializable {
         close, indicators, symbol, market, name, timestamp);
   }
 
-  @Override
-  public String toString() {
-    String result = null;
-    try {
-      result = json.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return result;
-  }
-
   // -----------------------
-  @JsonProperty("date")
-  public long getDate() {
-    return date;
-  }
-
-  @JsonProperty("market")
-  public String getMarket() {
-    return market;
-  }
-
-  @JsonProperty("symbol")
-  public String getSymbol() {
-    return symbol;
-  }
-
-  @JsonProperty("timestamp")
-  public String getTimestamp() {
-    return timestamp.toString();
-  }
-
-  @JsonProperty("close")
-  public Double getClose() {
-    return close;
-  }
-
   @JsonProperty("indicators")
   public Map<String, Double> getIndicators() {
     return indicators;
   }
-
-  @JsonProperty("name")
-  public String getName() {
-    return name;
-  }
-
-  @JsonIgnore
-  public OffsetDateTime getTimestampAsObject() {
-    return timestamp;
-  }
-
-  // ---------------------------------
 
 }
