@@ -34,11 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jimsey.project.turbine.spring.TurbineTestConstants;
+import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
-import org.jimsey.projects.turbine.spring.domain.DomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.domain.RandomDomainObjectGenerator;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.web.IndicatorController;
 import org.junit.Before;

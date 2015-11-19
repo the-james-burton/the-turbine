@@ -54,6 +54,8 @@
   </parent>
 
   <modules>
+    <module>turbine-fuel</module>
+    <module>turbine-furnace</module>
     <module>turbine-server</module>
   </modules>
 

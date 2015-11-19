@@ -33,7 +33,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.spring.javaconfig.CamelConfiguration;
 import org.jimsey.projects.turbine.spring.domain.Stock;
 import org.jimsey.projects.turbine.spring.service.Ping;
-import org.jimsey.projects.turbine.spring.service.TickProducer;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,15 +92,6 @@ public class Application extends CamelConfiguration {
   }
 
   @Bean
-  public TickProducerFactory tickProcuderFactory() {
-    return new TickProducerFactory() {
-      public TickProducer createTickProducer(String market, String symbol) {
-        return runtimeTickProducer(market, symbol);
-      }
-    };
-  }
-
-  @Bean
   public StockFactory stockFactory() {
     return new StockFactory() {
       public Stock createStock(String market, String symbol) {
@@ -114,12 +104,6 @@ public class Application extends CamelConfiguration {
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   Stock runtimeStock(String market, String symbol) {
     return new Stock(market, symbol);
-  }
-
-  @Bean
-  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  TickProducer runtimeTickProducer(String market, String symbol) {
-    return new TickProducer(market, symbol);
   }
 
   @Bean

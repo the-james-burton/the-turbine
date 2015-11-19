@@ -24,8 +24,8 @@ package org.jimsey.projects.turbine.spring.domain.indicators;
 
 import java.util.Map;
 
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;

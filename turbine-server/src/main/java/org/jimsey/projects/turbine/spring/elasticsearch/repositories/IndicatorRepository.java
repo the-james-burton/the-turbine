@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
 import java.util.List;
 
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface IndicatorRepository extends ElasticsearchRepository<IndicatorJson, Long> {

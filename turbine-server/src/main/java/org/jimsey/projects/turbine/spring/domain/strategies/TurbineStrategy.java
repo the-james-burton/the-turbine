@@ -22,8 +22,8 @@
  */
 package org.jimsey.projects.turbine.spring.domain.strategies;
 
-import org.jimsey.projects.turbine.spring.domain.StrategyJson;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 import eu.verdelhan.ta4j.Strategy;
 

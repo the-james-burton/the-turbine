@@ -25,7 +25,8 @@ package org.jimsey.projects.turbine.spring.camel.processors;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -39,8 +40,8 @@ public class TickProcessor implements Processor {
   public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
-    // String type = message.getHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, String.class);
-    // ticks are passed straight through with no procesing...
+    message.getHeaders().put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
+        String.format(".%s.%s", tick.getMarket(), tick.getSymbol()));
     logger.info("tick: {}", tick.toString());
   }
 

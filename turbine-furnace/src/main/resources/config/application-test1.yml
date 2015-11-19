@@ -1,0 +1,29 @@
+logging:
+  file: logs/furnace.log
+spring:
+  jmx:
+    port: 49001
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9300
+      repositories:
+        enabled: false
+server:
+  port: 48001
+  
+infrastructure:
+  environment-name: test1
+  amqp-server: localhost:5672
+  amqp-ticks-exchange: turbine.test1.market.ticks
+  amqp-indicators-exchange: turbine.test1.market.indicators
+  amqp-strategies-exchange: turbine.test1.market.strategies
+  amqp-ticks-queue: turbine.test1.queue.ticks
+  amqp-indicators-queue: turbine.test1.queue.indicators
+  amqp-strategies-queue: turbine.test1.queue.strategies
+  elasticsearch-host: localhost
+  elasticsearch-port: 9300
+  websocket-ticks: /topic/ticks
+  websocket-indicators: /topic/indicators
+  websocket-strategies: /topic/strategies
+  websocket-reply: /topic/reply
+  

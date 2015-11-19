@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
-import org.jimsey.projects.turbine.spring.domain.Entity;
+import org.jimsey.projects.turbine.fuel.domain.Entity;
 
 public interface EntityRepositoryCustom<T extends Entity> {
 

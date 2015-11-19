@@ -26,12 +26,7 @@ import java.io.IOException;
 
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
-import org.jimsey.projects.turbine.spring.domain.Entity;
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.domain.StrategyJson;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.jimsey.projects.turbine.spring.web.ReplyResponse;
-import org.springframework.util.SerializationUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,73 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TurbineObjectConverter {
 
   private static ObjectMapper json = new ObjectMapper();
-
-  // --------------------------------------------
-  @Converter
-  public static byte[] toBytes(final Entity entity, final Exchange exchange) {
-    return SerializationUtils.serialize(entity);
-  }
-
-  // --------------------------------------------
-  @Converter
-  public static String toString(final TickJson tick, final Exchange exchange) {
-    return tick.toString();
-  }
-
-  @Converter
-  public static String toString(final IndicatorJson indicator, final Exchange exchange) {
-    return indicator.toString();
-  }
-
-  @Converter
-  public static String toString(final StrategyJson strategy, final Exchange exchange) {
-    return strategy.toString();
-  }
-
-  // --------------------------------------------
-  @Converter
-  public static TickJson toTickJson(final String text, final Exchange exchange) {
-    TickJson tick = null;
-    try {
-      tick = json.readValue(text, TickJson.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return tick;
-  }
-
-  @Converter
-  public static TickJson toTickJson(final byte[] bytes, final Exchange exchange) {
-    TickJson tick = null;
-    try {
-      tick = json.readValue(bytes, TickJson.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return tick;
-  }
-
-  @Converter
-  public static IndicatorJson toIndicatorJson(final String text, final Exchange exchange) {
-    IndicatorJson indicator = null;
-    try {
-      indicator = json.readValue(text, IndicatorJson.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return indicator;
-  }
-
-  @Converter
-  public static StrategyJson toStrategyJson(final String text, final Exchange exchange) {
-    StrategyJson strategy = null;
-    try {
-      strategy = json.readValue(text, StrategyJson.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return strategy;
-  }
 
   @Converter
   public static ReplyResponse toReplyResponse(final String text, final Exchange exchange) {

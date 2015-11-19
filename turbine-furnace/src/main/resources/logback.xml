@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="logback.xsd">
+
+  <!-- some stuff here is from spring boot itself... -->
+
+  <conversionRule
+    conversionWord="clr"
+    converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+  <conversionRule
+    conversionWord="wex"
+    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+  <!-- ================================================================ -->
+  <property
+    name="CONSOLE_LOG_PATTERN"
+    value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wex" />
+  <property
+    name="FILE_LOG_PATTERN"
+    value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%t] %-40.40logger{39} : %m%n%wex" />
+  <property
+    name="RAW_LOG_PATTERN"
+    value="%m%n" />
+  <property
+    name="LOG_FILE"
+    value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
+  <property
+    name="RAW_FILE"
+    value="logs/json}" />
+
+  <!-- ================================================================ -->
+  <appender
+    name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="JSON" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>camel.routeId</key>
+      <defaultValue>unknown</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="ASYNC-RAW" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="RAW" />
+      </appender>
+      <appender name="RAW" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+          <pattern>${RAW_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${RAW_FILE}-${camel.routeId}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+          <fileNamePattern>${RAW_FILE}-${camel.routeId}.log.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+          <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+      </appender>
+      <!-- <appender name="FILE-${logid}" class="ch.qos.logback.core.FileAppender"> <file>logs/sift-${logid}.log</file> <append>false</append> </appender> -->
+    </sift>
+  </appender>
+
+  <appender
+    name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+      <pattern>${FILE_LOG_PATTERN}</pattern>
+    </encoder>
+    <file>${LOG_FILE}</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>${LOG_FILE}.%i</fileNamePattern>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>10MB</maxFileSize>
+    </triggeringPolicy>
+  </appender>
+
+  <appender
+    name="DEBUG_LEVEL_REMAPPER"
+    class="org.springframework.boot.logging.logback.LevelRemappingAppender">
+    <destinationLogger>org.springframework.boot</destinationLogger>
+  </appender>
+
+  <!-- ================================================================ -->
+  <logger
+    name="org.apache.catalina.startup.DigesterFactory"
+    level="ERROR" />
+  <logger
+    name="org.apache.catalina.util.LifecycleBase"
+    level="ERROR" />
+  <logger
+    name="org.apache.coyote.http11.Http11NioProtocol"
+    level="WARN" />
+  <logger
+    name="org.apache.sshd.common.util.SecurityUtils"
+    level="WARN" />
+  <logger
+    name="org.apache.tomcat.util.net.NioSelectorPool"
+    level="WARN" />
+  <logger
+    name="org.crsh.plugin"
+    level="WARN" />
+  <logger
+    name="org.crsh.ssh"
+    level="WARN" />
+  <logger
+    name="org.eclipse.jetty.util.component.AbstractLifeCycle"
+    level="ERROR" />
+  <logger
+    name="org.hibernate.validator.internal.util.Version"
+    level="WARN" />
+  <logger
+    name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration"
+    level="WARN" />
+  <logger
+    name="springfox"
+    level="WARN" />
+  <logger
+    name="org.apache.camel"
+    level="INFO" />
+  <logger
+    name="org.springframework.boot.actuate.endpoint.jmx"
+    additivity="false">
+    <appender-ref ref="DEBUG_LEVEL_REMAPPER" />
+  </logger>
+  <logger
+    name="org.thymeleaf"
+    additivity="false">
+    <appender-ref ref="DEBUG_LEVEL_REMAPPER" />
+  </logger>
+
+  <logger
+    name="org.springframework.messaging.simp"
+    level="INFO" />
+
+  <logger
+    name="org.springframework.web.socket"
+    level="INFO" />
+
+  <logger
+    name="org.jimsey.projects.camel.components"
+    level="INFO" />
+
+  <logger
+    name="org.jimsey.projects"
+    level="INFO" />
+
+  <logger
+    name="json"
+    additivity="false">
+    <appender-ref ref="JSON" />
+  </logger>
+
+  <!-- ================================================================ -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="FILE" />
+  </root>
+
+</configuration>

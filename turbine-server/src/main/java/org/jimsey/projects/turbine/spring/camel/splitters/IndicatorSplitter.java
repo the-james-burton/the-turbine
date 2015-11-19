@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 import org.apache.camel.Body;
 import org.apache.camel.Headers;
 import org.apache.camel.Message;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.spring.domain.Stock;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
 import org.springframework.stereotype.Component;
 
 @Component

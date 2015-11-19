@@ -27,7 +27,7 @@ import java.lang.reflect.ParameterizedType;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.spring.domain.Entity;
+import org.jimsey.projects.turbine.fuel.domain.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

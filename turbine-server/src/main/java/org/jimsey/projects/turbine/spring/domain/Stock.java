@@ -29,6 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.CamelContext;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
 import org.jimsey.projects.turbine.spring.domain.indicators.SMAtIndicator;

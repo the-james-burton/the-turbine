@@ -22,8 +22,8 @@
  */
 package org.jimsey.projects.turbine.spring.domain.indicators;
 
-import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 public interface TurbineIndicator {
 

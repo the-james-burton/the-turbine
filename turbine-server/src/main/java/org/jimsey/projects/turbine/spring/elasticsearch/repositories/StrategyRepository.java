@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring.elasticsearch.repositories;
 
 import java.util.List;
 
-import org.jimsey.projects.turbine.spring.domain.StrategyJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface StrategyRepository extends ElasticsearchRepository<StrategyJson, Long> {
