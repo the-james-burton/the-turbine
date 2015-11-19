@@ -45,15 +45,16 @@ public abstract class BaseSplitter {
   @NotNull
   protected MarketsManager marketsManager;
 
-  protected Message createMessage(Entity entity, Map<String, Object> headers) {
+  protected Message createMessage(final Entity entity, final Map<String, Object> headers) {
     DefaultMessage message = new DefaultMessage();
-    message.setHeaders(headers);
+    message.getHeaders().putAll(headers);
     message.setBody(entity);
     message.setHeader(TurbineConstants.HEADER_FOR_OBJECT_TYPE, entity.getClass().getName());
     message.setHeader(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s.%s", entity.getMarket(), entity.getSymbol()));
+        String.format(".%s.%s.%s",
+            entity.getMarket(), entity.getSymbol(), entity.getName()));
 
-    logger.info("entity: [body: {}, headers: {}]", entity.toString(), new JSONObject(headers));
+    logger.info("entity: [body: {}, headers: {}]", entity.toString(), new JSONObject(message.getHeaders()));
 
     return message;
   }

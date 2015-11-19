@@ -141,6 +141,10 @@
     level="INFO" />
 
   <logger
+    name="org.jimsey.projects.camel.components"
+    level="INFO" />
+
+  <logger
     name="org.jimsey.projects"
     level="INFO" />
 
