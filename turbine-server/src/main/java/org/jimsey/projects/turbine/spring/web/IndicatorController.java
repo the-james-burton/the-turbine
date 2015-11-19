@@ -28,10 +28,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.jimsey.projects.turbine.spring.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.exceptions.TurbineException;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.Ping;
 import org.slf4j.Logger;
@@ -96,27 +94,6 @@ public class IndicatorController {
       List<IndicatorJson> indicatorz = indicators;
     };
     return json.writeValueAsString(dto);
-  }
-
-  /**
-   * No need for this. Spring boot will send a decent error message to the client.
-   * @param indicators
-   * @return
-   */
-  @Deprecated
-  private String objectToJson(List<IndicatorJson> indicators) {
-    String result = null;
-    try {
-      result = json.writeValueAsString(indicators);
-    } catch (JsonProcessingException e) {
-      try {
-        logger.error(e.getMessage(), e);
-        result = json.writeValueAsString(new TurbineException(e.getMessage()));
-      } catch (Exception x) {
-        logger.error(x.getMessage(), x);
-      }
-    }
-    return StringUtils.defaultString(result);
   }
 
 }
