@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.elasticsearch.repositories.custom;
 
+@Deprecated
 public class IndicatorJsonRepositoryImpl {
 
   // how to instantiate a custom repository, if required in the future...
