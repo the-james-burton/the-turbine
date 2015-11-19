@@ -12,7 +12,7 @@
   <!-- TODO -->
   <!-- ==================================== -->
 
-  <name>turbine parent</name>
+  <name>turbine-parent</name>
   <description>turbine description</description>
   <url>https://github.com/the-james-burton/the-turbine</url>
   <inceptionYear>2015</inceptionYear>
@@ -56,7 +56,7 @@
   <modules>
     <module>turbine-fuel</module>
     <module>turbine-furnace</module>
-    <module>turbine-server</module>
+    <module>turbine-condenser</module>
   </modules>
 
   <properties>
