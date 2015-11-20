@@ -38,7 +38,7 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.web.IndicatorController;
 import org.junit.Before;
@@ -105,7 +105,7 @@ public class IndicatorControllerTest {
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
 
     String restUri = String.format("%s/%s/%s/%s",
-        TurbineConstants.REST_ROOT_INDICATORS, "symbol", "testName", date);
+        TurbineFurnaceConstants.REST_ROOT_INDICATORS, "symbol", "testName", date);
 
     mvc.perform(MockMvcRequestBuilders.get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

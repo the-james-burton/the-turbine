@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring;
 
-public class TurbineConstants {
+public class TurbineFurnaceConstants {
 
   public static final long PRODUCER_PERIOD = 2000;
   // public static final long PRODUCER_PERIOD = Long.MAX_VALUE;

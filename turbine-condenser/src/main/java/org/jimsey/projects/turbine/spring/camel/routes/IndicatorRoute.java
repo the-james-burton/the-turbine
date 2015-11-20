@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.camel.routes;
 
-import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,8 +33,8 @@ public class IndicatorRoute extends BaseRoute {
   private static final Logger logger = LoggerFactory.getLogger(IndicatorRoute.class);
 
   public IndicatorRoute() {
-    super(TurbineConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
-        TurbineConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS);
+    super(TurbineFurnaceConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
+        TurbineFurnaceConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS);
   }
 
   @Override

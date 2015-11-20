@@ -36,7 +36,7 @@ import java.util.List;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineConstants;
+import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.web.TickController;
 import org.junit.Before;
@@ -105,7 +105,7 @@ public class TickControllerTest {
 
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
 
-    String restUri = String.format("%s/all/%s", TurbineConstants.REST_ROOT_TICKS, date);
+    String restUri = String.format("%s/all/%s", TurbineFurnaceConstants.REST_ROOT_TICKS, date);
 
     mvc.perform(MockMvcRequestBuilders.get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

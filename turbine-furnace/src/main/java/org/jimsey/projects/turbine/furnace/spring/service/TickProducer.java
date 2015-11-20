@@ -35,6 +35,7 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.furnace.spring.TurbineFurnaceConstants;
+import org.jimsey.projects.turbine.furnace.spring.camel.routes.TickPublishingRoute;
 import org.jimsey.projects.turbine.furnace.spring.component.InfrastructureProperties;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -64,8 +65,6 @@ public class TickProducer {
 
   private final DomainObjectGenerator rdog;
 
-  private String output;
-
   private ProducerTemplate producer;
 
   public TickProducer(String market, String symbol) {
@@ -78,10 +77,6 @@ public class TickProducer {
   public void init() {
     logger.info(String.format("camel=%s", camel.getName()));
     producer = camel.createProducerTemplate();
-    output = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "ticks");
     logger.info("producer initialised");
   }
 
@@ -103,7 +98,7 @@ public class TickProducer {
     logger.info("producing: [body: {}, headers: {}]", tick.toString(), new JSONObject(headers));
 
     String text = camel.getTypeConverter().convertTo(String.class, tick);
-    producer.sendBodyAndHeaders(output, text, headers);
+    producer.sendBodyAndHeaders(TickPublishingRoute.IN, text, headers);
   }
 
   public String getMarket() {
