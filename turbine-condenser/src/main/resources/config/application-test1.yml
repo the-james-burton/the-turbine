@@ -1,3 +1,18 @@
+logging:
+  file: logs/consumer.log
+
+spring:
+  jmx:
+    port: 49002
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9300
+      repositories:
+        enabled: true
+
+server:
+  port: 48002
+
 infrastructure:
   environment-name: test1
   amqp-server: localhost:5672
@@ -14,9 +29,3 @@ infrastructure:
   websocket-strategies: /topic/strategies
   websocket-reply: /topic/reply
   
-spring:
-  data:
-    elasticsearch:
-      cluster-nodes: localhost:9300
-      repositories:
-        enabled: true
