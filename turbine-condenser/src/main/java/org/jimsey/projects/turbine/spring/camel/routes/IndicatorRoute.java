@@ -25,11 +25,9 @@ package org.jimsey.projects.turbine.spring.camel.routes;
 import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("consumer")
 public class IndicatorRoute extends BaseRoute {
 
   private static final Logger logger = LoggerFactory.getLogger(IndicatorRoute.class);

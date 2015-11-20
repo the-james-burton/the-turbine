@@ -29,11 +29,9 @@ import org.jimsey.projects.turbine.spring.TurbineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("consumer")
 public class TickConsumerRoute extends BaseRoute {
 
   private static final Logger logger = LoggerFactory.getLogger(TickConsumerRoute.class);
