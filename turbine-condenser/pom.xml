@@ -154,6 +154,7 @@
     </dependency>
 
     <!-- needed for spring-data-elasticsearch -->
+    <!-- look at adding JEST as ES layer instead -->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
