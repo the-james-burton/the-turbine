@@ -28,6 +28,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.stereotype.Component;
 
+/**
+ * Hooks into websocket broker availability events.
+ *
+ * @author the-james-burton
+ */
 @Component
 public class BrokerListener implements ApplicationListener<BrokerAvailabilityEvent> {
 

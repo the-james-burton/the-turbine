@@ -27,9 +27,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.IndicatorRepository;
 import org.jimsey.projects.turbine.spring.elasticsearch.repositories.TickRepository;
 import org.slf4j.Logger;
@@ -93,8 +93,8 @@ public class ElasticsearchService {
   public String getAllTicks() {
     logger.info("getAllTicks");
     NativeSearchQuery query = new NativeSearchQueryBuilder()
-        .withIndices(TurbineFurnaceConstants.ELASTICSEARCH_INDEX_FOR_TICKS)
-        .withTypes(TurbineFurnaceConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
+        .withIndices(TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS)
+        .withTypes(TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
         .withPageable(new PageRequest(0, Integer.MAX_VALUE))
         .build();
 

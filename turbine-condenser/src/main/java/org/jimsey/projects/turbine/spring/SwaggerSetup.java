@@ -29,6 +29,11 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.UiConfiguration;
 
+/**
+ * Configuration class to setup swagger for this application.
+ *
+ * @author the-james-burton
+ */
 @Configuration
 public class SwaggerSetup {
 

@@ -39,16 +39,4 @@ public class TurbineFurnaceConstants {
 
   public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
 
-  public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "turbine-ticks";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_INDICATORS = "turbine-indicators";
-
-  public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "turbine-strategies";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "turbine-tick";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_INDICATORS = "turbine-indicator";
-
-  public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
-
 }

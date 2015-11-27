@@ -24,6 +24,11 @@ package org.jimsey.projects.turbine.spring;
 
 import org.jimsey.projects.turbine.spring.domain.Stock;
 
+/**
+ * Interface for runtime-created StockFactory beans.
+ *
+ * @author the-james-burton
+ */
 public interface StockFactory {
 
   Stock createStock(String market, String symbol);

@@ -31,6 +31,11 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 
+/**
+ * Hooks into connection events to/from stomp. Only works for direct connections, not when using a broker.
+ *
+ * @author the-james-burton
+ */
 @Component
 public class StompConnectEvent implements ApplicationListener<SessionConnectEvent> {
 
