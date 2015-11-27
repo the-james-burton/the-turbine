@@ -22,6 +22,11 @@
  */
 package org.jimsey.projects.turbine.spring;
 
+/**
+ * Constants for this application.
+ *
+ * @author the-james-burton
+ */
 public class TurbineCondenserConstants {
 
   public static final long PRODUCER_PERIOD = 2000;
