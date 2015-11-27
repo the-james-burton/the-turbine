@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.spring.web;
 
 import javax.annotation.PostConstruct;
 
-import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
+import org.jimsey.projects.turbine.spring.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.spring.service.Ping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(TurbineFurnaceConstants.REST_ROOT_TURBINE)
+@RequestMapping(TurbineCondenserConstants.REST_ROOT_TURBINE)
 public class TurbineController {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineController.class);

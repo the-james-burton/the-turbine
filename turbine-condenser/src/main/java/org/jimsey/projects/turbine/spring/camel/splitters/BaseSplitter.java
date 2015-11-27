@@ -30,7 +30,7 @@ import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultMessage;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.fuel.domain.Entity;
-import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
+import org.jimsey.projects.turbine.spring.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.spring.component.MarketsManager;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public abstract class BaseSplitter {
     DefaultMessage message = new DefaultMessage();
     message.getHeaders().putAll(headers);
     message.setBody(entity);
-    message.setHeader(TurbineFurnaceConstants.HEADER_FOR_OBJECT_TYPE, entity.getClass().getName());
+    message.setHeader(TurbineCondenserConstants.HEADER_FOR_OBJECT_TYPE, entity.getClass().getName());
     message.setHeader(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
         String.format(".%s.%s.%s",
             entity.getMarket(), entity.getSymbol(), entity.getName()));

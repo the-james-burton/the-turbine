@@ -29,7 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
-import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
+import org.jimsey.projects.turbine.spring.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.Ping;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ import com.google.common.base.Joiner;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(TurbineFurnaceConstants.REST_ROOT_INDICATORS)
+@RequestMapping(TurbineCondenserConstants.REST_ROOT_INDICATORS)
 public class IndicatorController {
 
   private static final Logger logger = LoggerFactory.getLogger(IndicatorController.class);

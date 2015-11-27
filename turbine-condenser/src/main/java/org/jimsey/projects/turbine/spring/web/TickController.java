@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineFurnaceConstants;
+import org.jimsey.projects.turbine.spring.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.spring.exceptions.TurbineException;
 import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
 import org.jimsey.projects.turbine.spring.service.Ping;
@@ -49,7 +49,7 @@ import com.google.common.base.Joiner;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(TurbineFurnaceConstants.REST_ROOT_TICKS)
+@RequestMapping(TurbineCondenserConstants.REST_ROOT_TICKS)
 public class TickController {
 
   private static final Logger logger = LoggerFactory.getLogger(TickController.class);
