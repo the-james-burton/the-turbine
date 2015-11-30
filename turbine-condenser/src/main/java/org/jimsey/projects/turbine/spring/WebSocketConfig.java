@@ -22,7 +22,11 @@
  */
 package org.jimsey.projects.turbine.spring;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
@@ -64,6 +68,14 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     registry.addEndpoint("/request").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
     registry.addEndpoint("/ping").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
     registry.addEndpoint("/ticks").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
+  }
+
+  @Override
+  public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
+    // Spring boot 1.3.0 escapes the JSON string, but we don't want it to
+    // so here, prevent registration of default converters
+    messageConverters.add(new StringMessageConverter());
+    return false; // Prevent registration of default converters
   }
 
 }

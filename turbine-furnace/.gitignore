@@ -2,3 +2,4 @@
 /logs/
 /.classpath
 /.factorypath
+/.apt_generated/

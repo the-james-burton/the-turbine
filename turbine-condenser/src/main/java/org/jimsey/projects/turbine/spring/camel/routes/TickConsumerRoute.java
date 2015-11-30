@@ -53,10 +53,10 @@ public class TickConsumerRoute extends BaseRoute {
         infrastructureProperties.getAmqpTicksQueue(), "ticks");
 
     from(input).id("ticks")
-        .convertBodyTo(String.class)
         // .to("slog:json")
-        .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .process(tickProcessor)
+        .convertBodyTo(String.class)
+        .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .multicast().parallelProcessing()
         .to(getWebsocket(), getElasticsearchUri())
         .end();

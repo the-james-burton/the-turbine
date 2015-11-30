@@ -1,8 +1,0 @@
-logging:
-  file: logs/producer.log
-spring:
-  jmx:
-    port: 49001
-server:
-  port: 48001
-  

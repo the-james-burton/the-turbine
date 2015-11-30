@@ -1,5 +1,5 @@
 logging:
-  file: logs/consumer.log
+  file: logs/condenser.log
 
 spring:
   jmx:
