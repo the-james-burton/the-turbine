@@ -31,6 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * Camel processor that does anything required to the tick before we send it to the client.
+ *
+ * @author the-james-burton
+ */
 @Component
 public class TickProcessor implements Processor {
 

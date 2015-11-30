@@ -28,6 +28,11 @@ import org.apache.camel.spi.ExchangeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Custom Camel logger which simply returns the 'toString()' representation of the given object.
+ *
+ * @author the-james-burton
+ */
 public class ToStringLogFormatter implements ExchangeFormatter {
 
   private static final Logger logger = LoggerFactory.getLogger(ToStringLogFormatter.class);

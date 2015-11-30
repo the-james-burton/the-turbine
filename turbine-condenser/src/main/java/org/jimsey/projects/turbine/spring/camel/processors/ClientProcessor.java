@@ -30,6 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class is intended to be the Camel processor that deals with any client requests.
+ *
+ * @author the-james-burton
+ */
 @Component
 public class ClientProcessor implements Processor {
 
