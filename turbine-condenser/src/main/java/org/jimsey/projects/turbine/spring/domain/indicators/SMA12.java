@@ -29,11 +29,11 @@ import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
-public class SMAtIndicator extends BaseIndicator {
+public class SMA12 extends BaseIndicator {
 
   private final SMAIndicator smaIndicator;
 
-  public SMAtIndicator(final TimeSeries series, final ClosePriceIndicator indicator) {
+  public SMA12(final TimeSeries series, final ClosePriceIndicator indicator) {
     super(12, series, "SMA12", indicator);
 
     // setup this indicator...

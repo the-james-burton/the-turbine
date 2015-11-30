@@ -32,7 +32,7 @@ import org.apache.camel.CamelContext;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.spring.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.spring.domain.indicators.BollingerBands;
-import org.jimsey.projects.turbine.spring.domain.indicators.SMAtIndicator;
+import org.jimsey.projects.turbine.spring.domain.indicators.SMA12;
 import org.jimsey.projects.turbine.spring.domain.indicators.TurbineIndicator;
 import org.jimsey.projects.turbine.spring.domain.strategies.CCICorrectionStrategy;
 import org.jimsey.projects.turbine.spring.domain.strategies.SMAStrategy;
@@ -76,7 +76,7 @@ public class Stock {
     this.symbol = symbol;
 
     // TODO eventually we should only add indicators and strategies when a user requests them...
-    turbineIndicators.add(new SMAtIndicator(series, closePriceIndicator));
+    turbineIndicators.add(new SMA12(series, closePriceIndicator));
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
 
     turbineStrategies.add(new CCICorrectionStrategy(series));
