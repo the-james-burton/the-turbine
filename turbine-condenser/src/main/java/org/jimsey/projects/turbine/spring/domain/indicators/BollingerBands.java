@@ -33,6 +33,7 @@ import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsLowerI
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollingerbands.BollingerBandsUpperIndicator;
 
+@EnableTurbineIndicator
 public class BollingerBands extends BaseIndicator {
 
   private final SMAIndicator smaIndicator;

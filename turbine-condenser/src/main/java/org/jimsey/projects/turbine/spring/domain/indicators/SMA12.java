@@ -29,6 +29,7 @@ import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
+@EnableTurbineIndicator
 public class SMA12 extends BaseIndicator {
 
   private final SMAIndicator smaIndicator;

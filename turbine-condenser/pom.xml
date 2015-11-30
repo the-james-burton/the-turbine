@@ -23,11 +23,11 @@
   <dependencies>
 
     <!-- start overrides -->
-<!--     <dependency> -->
-<!--       <groupId>org.springframework.data</groupId> -->
-<!--       <artifactId>spring-data-elasticsearch</artifactId> -->
-<!--       <version>${spring.data.elasticsearch}</version> -->
-<!--     </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.springframework.data</groupId> -->
+    <!-- <artifactId>spring-data-elasticsearch</artifactId> -->
+    <!-- <version>${spring.data.elasticsearch}</version> -->
+    <!-- </dependency> -->
     <!-- end overrides -->
 
     <dependency>
@@ -140,12 +140,12 @@
       <artifactId>camel-metrics</artifactId>
     </dependency>
 
-    <!-- TODO treat as system dependency until published to maven central... -->
     <dependency>
       <groupId>org.jimsey.projects.camel.components</groupId>
       <artifactId>camel-spring-simple-messaging</artifactId>
-<!--       <scope>system</scope> -->
-<!--       <systemPath>${basedir}/../lib/camel-spring-simple-messaging/camel-spring-simple-messaging-1.0-SNAPSHOT.jar</systemPath> -->
+      <!-- for local testing only... -->
+      <!-- <scope>system</scope> -->
+      <!-- <systemPath>${basedir}/../lib/camel-spring-simple-messaging/camel-spring-simple-messaging-1.0-SNAPSHOT.jar</systemPath> -->
     </dependency>
 
     <dependency>
@@ -202,6 +202,13 @@
       <systemPath>${basedir}/../lib/jquantlib/jquantlib-helpers-0.2.4.jar</systemPath>
     </dependency>
 
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.10</version>
+    </dependency>
+
+
     <!-- <dependency> -->
     <!-- <groupId>org.springframework.data</groupId> -->
     <!-- <artifactId>spring-data-elasticsearch</artifactId> -->
@@ -239,16 +246,16 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-gemfire</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.neo4j</groupId> -->
-<!--       <artifactId>neo4j-cypher-compiler-2.0</artifactId> -->
-<!--       <version>2.0.3</version> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.neo4j</groupId> -->
-<!--       <artifactId>neo4j-cypher-compiler-2.0</artifactId> -->
-<!--       <version>2.0.3</version> -->
-<!--     </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.neo4j</groupId> -->
+    <!-- <artifactId>neo4j-cypher-compiler-2.0</artifactId> -->
+    <!-- <version>2.0.3</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.neo4j</groupId> -->
+    <!-- <artifactId>neo4j-cypher-compiler-2.0</artifactId> -->
+    <!-- <version>2.0.3</version> -->
+    <!-- </dependency> -->
   </dependencies>
 
 </project>

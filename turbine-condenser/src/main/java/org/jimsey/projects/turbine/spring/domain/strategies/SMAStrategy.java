@@ -29,6 +29,10 @@ import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 import eu.verdelhan.ta4j.trading.rules.CrossedDownIndicatorRule;
 import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
 
+/**
+ * based on an example in Ta4j itself
+ */
+@EnableTurbineStrategy
 public class SMAStrategy extends BaseStrategy {
 
   private final ClosePriceIndicator closePriceIndicator;

@@ -33,6 +33,7 @@ import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 /**
  * based on an example in Ta4j itself
  */
+@EnableTurbineStrategy
 public class CCICorrectionStrategy extends BaseStrategy {
 
   public CCICorrectionStrategy(TimeSeries series) {
