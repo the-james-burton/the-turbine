@@ -55,28 +55,15 @@ public class TurbineService {
     logger.info("found strategies : {}", listStrategies().toString());
   }
 
-  public List<String> listIndicators() {
-    Reflections reflections = new Reflections("org.jimsey.projects.turbine.condenser.domain.indicators");
-    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
-    return classes.stream()
-        .map(clazz -> clazz.getName())
-        .collect(Collectors.toList());
-  }
-
   public List<String> listStrategies() {
-    Reflections reflections = new Reflections("org.jimsey.projects.turbine.condenser.domain.strategies");
-    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
-    return classes.stream()
-        .map(clazz -> clazz.getName())
-        .collect(Collectors.toList());
+    return findAnnotationUsage("org.jimsey.projects.turbine.condenser.domain.strategies", EnableTurbineStrategy.class);
   }
 
-  // public List<String> listStrategies() {
-  // TODO can't seem to pass in a suitable parameter
-  // return findAnnotationUsage("org.jimsey.projects.turbine.condenser.domain.strategies", EnableTurbineStrategy.class);
-  // }
+  public List<String> listIndicators() {
+    return findAnnotationUsage("org.jimsey.projects.turbine.condenser.domain.indicators", EnableTurbineIndicator.class);
+  }
 
-  private List<String> findAnnotationUsage(String packageName, Class<Annotation> annotation) {
+  private List<String> findAnnotationUsage(String packageName, Class<? extends Annotation> annotation) {
     Reflections reflections = new Reflections(packageName);
     Set<Class<?>> classes = reflections.getTypesAnnotatedWith(annotation);
     return classes.stream()
