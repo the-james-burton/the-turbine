@@ -74,7 +74,14 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
   public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
     // Spring boot 1.3.0 escapes the JSON string, but we don't want it to
     // so here, prevent registration of default converters
-    messageConverters.add(new StringMessageConverter());
+
+    // MappingJackson2MessageConverter stringMessageconverter = new MappingJackson2MessageConverter();
+    StringMessageConverter stringMessageconverter = new StringMessageConverter();
+
+    // stringMessageconverter.getSupportedMimeTypes().addAll(Arrays.asList(
+    // MediaType.TEXT_PLAIN, MediaType.TEXT_HTML, MediaType.APPLICATION_JSON));
+
+    messageConverters.add(stringMessageconverter);
     return false; // Prevent registration of default converters
   }
 

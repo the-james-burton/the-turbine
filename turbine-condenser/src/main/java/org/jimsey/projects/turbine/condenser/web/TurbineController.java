@@ -22,10 +22,14 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.Ping;
+import org.jimsey.projects.turbine.condenser.service.TurbineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +49,34 @@ public class TurbineController {
   private static ObjectMapper json = new ObjectMapper();
 
   @Autowired
+  @NotNull
   private Ping ping;
+
+  @Autowired
+  @NotNull
+  private TurbineService turbineService;
 
   @PostConstruct
   public void init() throws Exception {
     logger.info("TurbineController: initialised");
   }
 
-  @RequestMapping("/ping")
+  @RequestMapping(path = "/ping", produces = "application/json")
   public PingResponse ping() throws Exception {
     logger.info("ping()");
     return new PingResponse(ping.ping());
+  }
+
+  @RequestMapping("/indicators")
+  public List<String> indicators() throws Exception {
+    logger.info("indicators()");
+    return turbineService.listIndicators();
+  }
+
+  @RequestMapping("/strategies")
+  public List<String> strategies() throws Exception {
+    logger.info("strategies()");
+    return turbineService.listStrategies();
   }
 
 }
