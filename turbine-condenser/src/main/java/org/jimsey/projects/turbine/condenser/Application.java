@@ -23,17 +23,12 @@
 package org.jimsey.projects.turbine.condenser;
 
 import java.util.Arrays;
-import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.spring.javaconfig.CamelConfiguration;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
-import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.condenser.service.Ping;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,24 +72,6 @@ public class Application extends CamelConfiguration {
     long message = ping.ping();
     logger.info(String.format("ping=%s", message));
 
-  }
-
-  @PostConstruct
-  public void init() {
-    listIndicators();
-    listStrategies();
-  }
-
-  public void listIndicators() {
-    Reflections reflections = new Reflections("org.jimsey.projects.turbine.condenser.domain.indicators");
-    Set<Class<?>> indicators = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
-    indicators.stream().forEach(clazz -> logger.info("found turbine indicator: {}", clazz.getName()));
-  }
-
-  public void listStrategies() {
-    Reflections reflections = new Reflections("org.jimsey.projects.turbine.condenser.domain.strategies");
-    Set<Class<?>> strategies = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
-    strategies.stream().forEach(clazz -> logger.info("found turbine strategy: {}", clazz.getName()));
   }
 
   @Bean

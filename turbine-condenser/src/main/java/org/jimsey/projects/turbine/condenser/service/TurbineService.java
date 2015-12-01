@@ -22,10 +22,18 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.condenser.elasticsearch.repositories.IndicatorRepository;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +51,37 @@ public class TurbineService {
   @PostConstruct
   public void init() {
     logger.info("TurbineService: initialised");
+    logger.info("found indicators : {}", listIndicators().toString());
+    logger.info("found strategies : {}", listStrategies().toString());
   }
+
+  public List<String> listIndicators() {
+    Reflections reflections = new Reflections("org.jimsey.projects.turbine.condenser.domain.indicators");
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
+    return classes.stream()
+        .map(clazz -> clazz.getName())
+        .collect(Collectors.toList());
+  }
+
+  public List<String> listStrategies() {
+    Reflections reflections = new Reflections("org.jimsey.projects.turbine.condenser.domain.strategies");
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
+    return classes.stream()
+        .map(clazz -> clazz.getName())
+        .collect(Collectors.toList());
+  }
+
+  // public List<String> listStrategies() {
+  // TODO can't seem to pass in a suitable parameter
+  // return findAnnotationUsage("org.jimsey.projects.turbine.condenser.domain.strategies", EnableTurbineStrategy.class);
+  // }
+
+  private List<String> findAnnotationUsage(String packageName, Class<Annotation> annotation) {
+    Reflections reflections = new Reflections(packageName);
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(annotation);
+    return classes.stream()
+        .map(clazz -> clazz.getName())
+        .collect(Collectors.toList());
+  }
+
 }
