@@ -33,12 +33,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
+import org.jimsey.projects.turbine.condenser.service.ElasticsearchService;
+import org.jimsey.projects.turbine.condenser.web.TickController;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineCondenserConstants;
-import org.jimsey.projects.turbine.spring.service.ElasticsearchService;
-import org.jimsey.projects.turbine.spring.web.TickController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

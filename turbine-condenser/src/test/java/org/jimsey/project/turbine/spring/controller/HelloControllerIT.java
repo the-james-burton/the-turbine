@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 
-import org.jimsey.projects.turbine.spring.Application;
+import org.jimsey.projects.turbine.condenser.Application;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
