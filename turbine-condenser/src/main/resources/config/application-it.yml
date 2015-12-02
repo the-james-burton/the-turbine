@@ -1,0 +1,34 @@
+logging:
+  file: logs/condenser-it.log
+
+spring:
+  jmx:
+    port: 49003
+  data:
+    elasticsearch:
+      repositories:
+        enabled: false
+
+server:
+  port: 48003
+
+infrastructure:
+  environment-name: it
+  amqp-camel-component: stub
+  amqp-server: nowhere:1
+  amqp-ticks-exchange: turbine.it.market.ticks
+  amqp-indicators-exchange: turbine.it.market.indicators
+  amqp-strategies-exchange: turbine.it.market.strategies
+  amqp-ticks-queue: turbine.it.queue.ticks
+  amqp-indicators-queue: turbine.it.queue.indicators
+  amqp-strategies-queue: turbine.it.queue.strategies
+  elasticsearch-camel-component: stub
+  elasticsearch-host: nowhere
+  elasticsearch-port: 2
+  websocket-camel-component: stub
+  websocket-ticks: /topic/ticks
+  websocket-indicators: /topic/indicators
+  websocket-strategies: /topic/strategies
+  websocket-reply: /topic/reply
+  
+  

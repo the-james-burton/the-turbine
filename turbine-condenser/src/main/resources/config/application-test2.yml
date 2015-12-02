@@ -1,2 +1,0 @@
-infrastructure:
-  amqpDestination: amqp:queue:test2DestinationName

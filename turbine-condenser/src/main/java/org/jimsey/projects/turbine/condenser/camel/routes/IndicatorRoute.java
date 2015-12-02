@@ -39,28 +39,16 @@ public class IndicatorRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
-    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "indicators");
-
-    from(input).id("indicator-publish-route")
+    from(getInput("indicators")).id("indicator-publish-route")
         .log(" ** tick for indicators")
         .split().method("indicatorSplitter")
         // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
         .multicast().parallelProcessing()
-        .to(getWebsocket(), getElasticsearchUri())
+        .to(getWebsocket(infrastructureProperties.getWebsocketIndicators()), getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
-  }
-
-  @Override
-  public String getWebsocket() {
-    return String.format(
-        "ssm://%s",
-        infrastructureProperties.getWebsocketIndicators());
   }
 
 }

@@ -22,17 +22,48 @@
  */
 package org.jimsey.project.turbine.condenser.service;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.lang.invoke.MethodHandle;
+import java.util.List;
+
 import org.jimsey.projects.turbine.condenser.service.Ping;
-import org.jimsey.projects.turbine.condenser.web.TurbineController;
+import org.jimsey.projects.turbine.condenser.service.TurbineService;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TurbineServiceTest {
 
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandle.class.getName());
+
   @InjectMocks
-  private TurbineController controller;
+  private TurbineService turbineService;
 
   @Mock
   private Ping ping;
+
+  @Before
+  public void setup() {
+    turbineService = new TurbineService();
+  }
+
+  @Test
+  public void testListIndicators() throws Exception {
+    // logger.info("{}", turbineService.listIndicators());
+    List<String> indicators = turbineService.listIndicators();
+    assertThat(indicators.size(), is(greaterThan(0)));
+  }
+
+  @Test
+  public void testListStrategies() throws Exception {
+    // logger.info("{}", turbineService.listStrategies());
+    List<String> strategies = turbineService.listStrategies();
+    assertThat(strategies.size(), is(greaterThan(0)));
+  }
 
 }

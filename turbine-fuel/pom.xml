@@ -13,6 +13,11 @@
     <version>1.3.0.RELEASE</version>
   </parent>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
   <build>
     <plugins>
 
@@ -52,7 +57,7 @@
   </build>
 
   <dependencies>
-    
+
     <dependency>
       <groupId>eu.verdelhan</groupId>
       <artifactId>ta4j</artifactId>

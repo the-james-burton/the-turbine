@@ -22,7 +22,6 @@
  */
 package org.jimsey.projects.turbine.condenser.camel.routes;
 
-import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.builder.RouteBuilder;
@@ -35,8 +34,6 @@ public abstract class BaseRoute extends RouteBuilder {
 
   private final String type;
 
-  private String elasticsearchUri;
-
   @Autowired
   @NotNull
   protected InfrastructureProperties infrastructureProperties;
@@ -46,16 +43,37 @@ public abstract class BaseRoute extends RouteBuilder {
     this.type = type;
   }
 
-  @PostConstruct
-  public void init() {
-    elasticsearchUri = String.format(
-        "elasticsearch://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%s&indexType=%s",
+  public String getElasticsearchUri() {
+    return String.format(
+        "%s://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%s&indexType=%s",
+        infrastructureProperties.getElasticsearchCamelComponent(),
         infrastructureProperties.getElasticsearchHost(),
         infrastructureProperties.getElasticsearchPort(),
         index, type);
   }
 
-  public abstract String getWebsocket();
+  public String getInput(String queueSuffix) {
+    // bit of a hack, but the 'stub' camel component seems to recognise the 'queue' option name...
+    String queueOptionName = "queue";
+    if (infrastructureProperties.getAmqpCamelComponent().equals("stub")) {
+      queueOptionName = queueOptionName + "stub";
+    }
+    String input = String.format("%s://%s/%s?exchangeType=topic&%s=%s.%s",
+        infrastructureProperties.getAmqpCamelComponent(),
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        queueOptionName,
+        infrastructureProperties.getAmqpTicksQueue(),
+        queueSuffix);
+    return input;
+  }
+
+  public String getWebsocket(String destination) {
+    return String.format(
+        "%s://%s",
+        infrastructureProperties.getWebsocketCamelComponent(),
+        destination);
+  }
 
   @Override
   public void configure() throws Exception {
@@ -69,10 +87,6 @@ public abstract class BaseRoute extends RouteBuilder {
 
   public String getType() {
     return type;
-  }
-
-  public String getElasticsearchUri() {
-    return elasticsearchUri;
   }
 
 }

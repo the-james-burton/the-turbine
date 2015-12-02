@@ -25,15 +25,18 @@ package org.jimsey.projects.turbine.condenser.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
-import org.apache.camel.builder.RouteBuilder;
-import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StockRoute extends RouteBuilder {
+public class StockRoute extends BaseRoute {
+
+  public StockRoute() {
+    // not using elasticsearch...
+    super("", "");
+  }
 
   private static final Logger logger = LoggerFactory.getLogger(StockRoute.class);
 
@@ -41,18 +44,9 @@ public class StockRoute extends RouteBuilder {
   @NotNull
   private Processor stockProcessor;
 
-  @Autowired
-  @NotNull
-  protected InfrastructureProperties infrastructureProperties;
-
   @Override
   public void configure() throws Exception {
-    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "stocks");
-
-    from(input).id("stocks")
+    from(getInput("stocks")).id("stocks")
         .convertBodyTo(String.class)
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))

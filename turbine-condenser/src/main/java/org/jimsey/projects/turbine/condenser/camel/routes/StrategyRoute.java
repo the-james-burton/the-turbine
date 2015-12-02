@@ -39,28 +39,16 @@ public class StrategyRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
-    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "strategies");
-
-    from(input).id("strategy-publish-route")
+    from(getInput("strategies")).id("strategy-publish-route")
         .log(" ** tick for strategies")
         .split().method("strategySplitter")
         // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
         .multicast().parallelProcessing()
-        .to(getWebsocket(), getElasticsearchUri())
+        .to(getWebsocket(infrastructureProperties.getWebsocketStrategies()), getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
-  }
-
-  @Override
-  public String getWebsocket() {
-    return String.format(
-        "ssm://%s",
-        infrastructureProperties.getWebsocketStrategies());
   }
 
 }

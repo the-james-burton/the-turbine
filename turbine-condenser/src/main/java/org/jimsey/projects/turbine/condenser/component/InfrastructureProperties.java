@@ -46,6 +46,9 @@ public class InfrastructureProperties {
   private String amqpServer;
 
   @NotNull
+  private String amqpCamelComponent;
+
+  @NotNull
   private String amqpTicksExchange;
 
   @NotNull
@@ -64,6 +67,9 @@ public class InfrastructureProperties {
   private String amqpStrategiesQueue;
 
   @NotNull
+  private String elasticsearchCamelComponent;
+
+  @NotNull
   private String elasticsearchHost;
 
   @NotNull
@@ -71,6 +77,9 @@ public class InfrastructureProperties {
 
   @NotNull
   private String websocketTicks;
+
+  @NotNull
+  private String websocketCamelComponent;
 
   @NotNull
   private String websocketIndicators;
@@ -198,6 +207,30 @@ public class InfrastructureProperties {
 
   public void setWebsocketReply(String websocketReply) {
     this.websocketReply = websocketReply;
+  }
+
+  public String getAmqpCamelComponent() {
+    return amqpCamelComponent;
+  }
+
+  public void setAmqpCamelComponent(String amqpCamelComponent) {
+    this.amqpCamelComponent = amqpCamelComponent;
+  }
+
+  public String getElasticsearchCamelComponent() {
+    return elasticsearchCamelComponent;
+  }
+
+  public void setElasticsearchCamelComponent(String elasticsearchCamelComponent) {
+    this.elasticsearchCamelComponent = elasticsearchCamelComponent;
+  }
+
+  public String getWebsocketCamelComponent() {
+    return websocketCamelComponent;
+  }
+
+  public void setWebsocketCamelComponent(String websocketCamelComponent) {
+    this.websocketCamelComponent = websocketCamelComponent;
   }
 
 }

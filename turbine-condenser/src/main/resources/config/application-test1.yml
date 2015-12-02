@@ -15,6 +15,7 @@ server:
 
 infrastructure:
   environment-name: test1
+  amqp-camel-component: rabbitmq
   amqp-server: localhost:5672
   amqp-ticks-exchange: turbine.test1.market.ticks
   amqp-indicators-exchange: turbine.test1.market.indicators
@@ -22,8 +23,10 @@ infrastructure:
   amqp-ticks-queue: turbine.test1.queue.ticks
   amqp-indicators-queue: turbine.test1.queue.indicators
   amqp-strategies-queue: turbine.test1.queue.strategies
+  elasticsearch-camel-component: elasticsearch
   elasticsearch-host: localhost
   elasticsearch-port: 9300
+  websocket-camel-component: ssm
   websocket-ticks: /topic/ticks
   websocket-indicators: /topic/indicators
   websocket-strategies: /topic/strategies

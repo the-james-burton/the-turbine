@@ -25,7 +25,6 @@ package org.jimsey.projects.turbine.condenser.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
-import org.apache.camel.builder.RouteBuilder;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.condenser.web.ReplyResponse;
 import org.slf4j.Logger;
@@ -34,7 +33,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClientInboundRoute extends RouteBuilder {
+public class ClientInboundRoute extends BaseRoute {
+
+  public ClientInboundRoute() {
+    super("", "");
+  }
 
   private static final Logger logger = LoggerFactory.getLogger(ClientInboundRoute.class);
 
@@ -51,23 +54,25 @@ public class ClientInboundRoute extends RouteBuilder {
   // using rabbitmq as the stomp/websocket message broker...
   @Override
   public void configure() throws Exception {
-    String input = String.format("rabbitmq://%s/request?exchangeType=direct&queue=request",
-        infrastructureProperties.getAmqpServer());
+    // bit of a hack, but the 'stub' camel component seems to recognise the 'queue' option name...
+    String queueOptionName = "queue";
+    if (infrastructureProperties.getAmqpCamelComponent().equals("stub")) {
+      queueOptionName = queueOptionName + "stub";
+    }
+
+    String input = String.format("%s://%s/request?exchangeType=direct&%s=request",
+        infrastructureProperties.getAmqpCamelComponent(),
+        infrastructureProperties.getAmqpServer(),
+        queueOptionName);
 
     from(input).id("client-requests")
         .convertBodyTo(ReplyResponse.class)
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .process(clientProcessor)
-        .to(getWebsocket())
+        .to(getWebsocket(infrastructureProperties.getWebsocketReply()))
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
-  }
-
-  public String getWebsocket() {
-    return String.format(
-        "ssm://%s",
-        infrastructureProperties.getWebsocketReply());
   }
 
 }

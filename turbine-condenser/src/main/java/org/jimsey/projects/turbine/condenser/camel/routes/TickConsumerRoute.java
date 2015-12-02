@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.condenser.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
+import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,10 @@ public class TickConsumerRoute extends BaseRoute {
   @NotNull
   private Processor tickProcessor;
 
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrstructureProperties;
+
   public TickConsumerRoute() {
     super(TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
         TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS);
@@ -47,28 +52,17 @@ public class TickConsumerRoute extends BaseRoute {
 
   @Override
   public void configure() throws Exception {
-    String input = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "ticks");
-
-    from(input).id("ticks")
+    from(getInput("ticks")).id("ticks")
         // .to("slog:json")
         .process(tickProcessor)
         .convertBodyTo(String.class)
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .multicast().parallelProcessing()
-        .to(getWebsocket(), getElasticsearchUri())
+        .to(getWebsocket(infrastructureProperties.getWebsocketTicks()),
+            getElasticsearchUri())
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
-  }
-
-  @Override
-  public String getWebsocket() {
-    return String.format(
-        "ssm://%s",
-        infrastructureProperties.getWebsocketTicks());
   }
 
 }
