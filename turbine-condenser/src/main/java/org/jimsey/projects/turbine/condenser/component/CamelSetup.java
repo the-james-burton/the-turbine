@@ -28,15 +28,17 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.log.LogComponent;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicyFactory;
+import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingComponent;
 import org.jimsey.projects.turbine.condenser.camel.formatters.ToStringLogFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class CamelSetup {
 
   private static final Logger logger = LoggerFactory.getLogger(CamelSetup.class);
@@ -50,21 +52,32 @@ public class CamelSetup {
 
   @PostConstruct
   public void init() {
-    logger.info("setting up camel...");
+    logger.info("camel setup init started...");
 
-    LogComponent slog = new LogComponent();
-    slog.setExchangeFormatter(new ToStringLogFormatter());
-
-    SpringSimpleMessagingComponent ssm = new SpringSimpleMessagingComponent();
-    ssm.setMessageSendingOperations(websockets);
-
-    camel.setUseMDCLogging(true);
-    camel.addRoutePolicyFactory(new MetricsRoutePolicyFactory());
-
-    camel.addComponent("slog", slog);
-    camel.addComponent("ssm", ssm);
-
-    logger.info("camel setup complete");
+    logger.info("camel setup init completed");
   }
 
+  @Bean
+  CamelContextConfiguration contextConfiguration() {
+    return new CamelContextConfiguration() {
+      @Override
+      public void beforeApplicationStart(CamelContext camel) {
+        logger.info("beforeApplicationStart hook started...");
+
+        LogComponent slog = new LogComponent();
+        slog.setExchangeFormatter(new ToStringLogFormatter());
+
+        SpringSimpleMessagingComponent ssm = new SpringSimpleMessagingComponent();
+        ssm.setMessageSendingOperations(websockets);
+
+        camel.setUseMDCLogging(true);
+        camel.addRoutePolicyFactory(new MetricsRoutePolicyFactory());
+
+        camel.addComponent("slog", slog);
+        camel.addComponent("ssm", ssm);
+
+        logger.info("beforeApplicationStart hook completed");
+      }
+    };
+  }
 }

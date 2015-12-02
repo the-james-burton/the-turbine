@@ -72,8 +72,8 @@
 
     <!-- for dependencies... -->
     <spring.boot.version>1.3.0.RELEASE</spring.boot.version>
-    <!-- <spring.boot.version>1.3.0.M2</spring.boot.version> -->
-    <camel.version>2.15.3</camel.version>
+    <!-- <spring.boot.version>1.3.l0.M2</spring.boot.version> -->
+    <camel.version>2.15.5</camel.version>
     <!-- <activemq.version>5.11.1</activemq.version> -->
     <!-- <rabbitmq.version>3.5.1</rabbitmq.version> -->
     <springfox.version>2.1.2</springfox.version>
@@ -335,9 +335,17 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
         <version>${spring.boot.version}</version>
+        <scope>test</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-test</artifactId>
+        <version>${camel.version}</version>
+        <scope>test</scope>
+      </dependency>
+
 
       <!-- <dependency> -->
       <!-- <groupId>org.scala-lang</groupId> -->
