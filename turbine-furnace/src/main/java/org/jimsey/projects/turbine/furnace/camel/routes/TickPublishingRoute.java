@@ -44,20 +44,32 @@ public class TickPublishingRoute extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
-    String output = String.format("rabbitmq://%s/%s?exchangeType=topic&queue=%s.%s",
-        infrastructureProperties.getAmqpServer(),
-        infrastructureProperties.getAmqpTicksExchange(),
-        infrastructureProperties.getAmqpTicksQueue(), "ticks");
 
     from(IN).id("tick-publish-route")
         .log(" ** tick for publishing")
         // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
         .multicast().parallelProcessing()
-        .to(output)
+        .to(getOutput("ticks"))
         .end();
 
     logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  }
+
+  public String getOutput(String queueSuffix) {
+    // bit of a hack, but the 'stub' camel component seems to recognise the 'queue' option name...
+    String queueOptionName = "queue";
+    if (infrastructureProperties.getAmqpCamelComponent().equals("stub")) {
+      queueOptionName = queueOptionName + "stub";
+    }
+    String input = String.format("%s://%s/%s?exchangeType=topic&%s=%s.%s",
+        infrastructureProperties.getAmqpCamelComponent(),
+        infrastructureProperties.getAmqpServer(),
+        infrastructureProperties.getAmqpTicksExchange(),
+        queueOptionName,
+        infrastructureProperties.getAmqpTicksQueue(),
+        queueSuffix);
+    return input;
   }
 
 }

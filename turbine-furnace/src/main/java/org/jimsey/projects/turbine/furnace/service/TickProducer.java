@@ -36,7 +36,6 @@ import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.furnace.camel.routes.TickPublishingRoute;
-import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +53,6 @@ public class TickProducer {
   @Autowired
   @NotNull
   private CamelContext camel;
-
-  @Autowired
-  @NotNull
-  private InfrastructureProperties infrastructureProperties;
 
   private final String market;
 

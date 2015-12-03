@@ -30,7 +30,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.camel.CamelContext;
 import org.jimsey.projects.turbine.furnace.TickProducerFactory;
-import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +50,6 @@ public class ProducerManager {
   @Autowired
   @NotNull
   private CamelContext camel;
-
-  @Autowired
-  @NotNull
-  private InfrastructureProperties infrastructureProperties;
 
   @Autowired
   @NotNull

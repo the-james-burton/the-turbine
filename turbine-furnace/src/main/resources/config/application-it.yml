@@ -1,0 +1,19 @@
+logging:
+  file: logs/furnace-it.log
+spring:
+  jmx:
+    port: 49004
+  data:
+    elasticsearch:
+      repositories:
+        enabled: false
+server:
+  port: 48004
+  
+infrastructure:
+  environment-name: it
+  amqp-camel-component: stub
+  amqp-server: nowhere:1
+  amqp-ticks-exchange: turbine.it.market.ticks
+  amqp-ticks-queue: turbine.it.queue.ticks
+  

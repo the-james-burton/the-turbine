@@ -46,40 +46,13 @@ public class InfrastructureProperties {
   private String amqpServer;
 
   @NotNull
+  private String amqpCamelComponent;
+
+  @NotNull
   private String amqpTicksExchange;
 
   @NotNull
-  private String amqpIndicatorsExchange;
-
-  @NotNull
-  private String amqpStrategiesExchange;
-
-  @NotNull
   private String amqpTicksQueue;
-
-  @NotNull
-  private String amqpIndicatorsQueue;
-
-  @NotNull
-  private String amqpStrategiesQueue;
-
-  @NotNull
-  private String elasticsearchHost;
-
-  @NotNull
-  private String elasticsearchPort;
-
-  @NotNull
-  private String websocketTicks;
-
-  @NotNull
-  private String websocketIndicators;
-
-  @NotNull
-  private String websocketStrategies;
-
-  @NotNull
-  private String websocketReply;
 
   @PostConstruct
   public void init() throws JsonProcessingException {
@@ -112,22 +85,6 @@ public class InfrastructureProperties {
     this.amqpTicksExchange = amqpTicksExchange;
   }
 
-  public String getAmqpIndicatorsExchange() {
-    return amqpIndicatorsExchange;
-  }
-
-  public void setAmqpIndicatorsExchange(String amqpIndicatorsExchange) {
-    this.amqpIndicatorsExchange = amqpIndicatorsExchange;
-  }
-
-  public String getAmqpStrategiesExchange() {
-    return amqpStrategiesExchange;
-  }
-
-  public void setAmqpStrategiesExchange(String amqpStrategiesExchange) {
-    this.amqpStrategiesExchange = amqpStrategiesExchange;
-  }
-
   public String getAmqpTicksQueue() {
     return amqpTicksQueue;
   }
@@ -136,68 +93,12 @@ public class InfrastructureProperties {
     this.amqpTicksQueue = amqpTicksQueue;
   }
 
-  public String getAmqpIndicatorsQueue() {
-    return amqpIndicatorsQueue;
+  public String getAmqpCamelComponent() {
+    return amqpCamelComponent;
   }
 
-  public void setAmqpIndicatorsQueue(String amqpIndicatorsQueue) {
-    this.amqpIndicatorsQueue = amqpIndicatorsQueue;
-  }
-
-  public String getAmqpStrategiesQueue() {
-    return amqpStrategiesQueue;
-  }
-
-  public void setAmqpStrategiesQueue(String amqpStrategiesQueue) {
-    this.amqpStrategiesQueue = amqpStrategiesQueue;
-  }
-
-  public String getElasticsearchHost() {
-    return elasticsearchHost;
-  }
-
-  public void setElasticsearchHost(String elasticsearchHost) {
-    this.elasticsearchHost = elasticsearchHost;
-  }
-
-  public String getElasticsearchPort() {
-    return elasticsearchPort;
-  }
-
-  public void setElasticsearchPort(String elasticsearchPort) {
-    this.elasticsearchPort = elasticsearchPort;
-  }
-
-  public String getWebsocketTicks() {
-    return websocketTicks;
-  }
-
-  public void setWebsocketTicks(String websocketTicks) {
-    this.websocketTicks = websocketTicks;
-  }
-
-  public String getWebsocketIndicators() {
-    return websocketIndicators;
-  }
-
-  public void setWebsocketIndicators(String websocketIndicators) {
-    this.websocketIndicators = websocketIndicators;
-  }
-
-  public String getWebsocketStrategies() {
-    return websocketStrategies;
-  }
-
-  public void setWebsocketStrategies(String websocketStrategies) {
-    this.websocketStrategies = websocketStrategies;
-  }
-
-  public String getWebsocketReply() {
-    return websocketReply;
-  }
-
-  public void setWebsocketReply(String websocketReply) {
-    this.websocketReply = websocketReply;
+  public void setAmqpCamelComponent(String amqpCamelComponent) {
+    this.amqpCamelComponent = amqpCamelComponent;
   }
 
 }
