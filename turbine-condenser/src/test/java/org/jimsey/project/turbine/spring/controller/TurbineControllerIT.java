@@ -32,7 +32,6 @@ import javax.validation.constraints.NotNull;
 import org.jimsey.projects.turbine.condenser.Application;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -76,16 +75,26 @@ public class TurbineControllerIT {
 
   @Test
   public void testPing() throws Exception {
+    logger.info("it should return nano time value...");
     String url = String.format("%s/%s", serviceUrl.toString(), "ping");
     ResponseEntity<String> response = template.getForEntity(url, String.class);
     logger.info("{}", response.getBody());
     assertNotNull(response.getBody());
   }
 
-  @Ignore
   @Test
   public void testListIndicators() throws Exception {
+    logger.info("it should return a list of indicators...");
     String url = String.format("%s/%s", serviceUrl.toString(), "indicators");
+    ResponseEntity<String> response = template.getForEntity(url, String.class);
+    logger.info("{}", response.getBody());
+    assertNotNull(response.getBody());
+  }
+
+  @Test
+  public void testListStrategies() throws Exception {
+    logger.info("it should return a list of strategies...");
+    String url = String.format("%s/%s", serviceUrl.toString(), "strategies");
     ResponseEntity<String> response = template.getForEntity(url, String.class);
     logger.info("{}", response.getBody());
     assertNotNull(response.getBody());
