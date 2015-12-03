@@ -27,6 +27,7 @@ import eu.verdelhan.ta4j.Rule;
 import eu.verdelhan.ta4j.Strategy;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.CCIIndicator;
+import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.trading.rules.OverIndicatorRule;
 import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 
@@ -36,8 +37,8 @@ import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 @EnableTurbineStrategy
 public class CCICorrectionStrategy extends BaseStrategy {
 
-  public CCICorrectionStrategy(TimeSeries series) {
-    super(series, "CCICorrectionStrategy");
+  public CCICorrectionStrategy(TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(series, "CCICorrectionStrategy", closePriceIndicator);
     if (series == null) {
       throw new IllegalArgumentException("Series cannot be null");
     }

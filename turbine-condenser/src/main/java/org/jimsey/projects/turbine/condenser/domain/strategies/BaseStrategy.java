@@ -29,12 +29,15 @@ import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.Strategy;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.TradingRecord;
+import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
 public abstract class BaseStrategy implements TurbineStrategy {
 
   private final String name;
 
   private final TimeSeries series;
+
+  protected final ClosePriceIndicator closePriceIndicator;
 
   protected Strategy strategy;
 
@@ -49,9 +52,13 @@ public abstract class BaseStrategy implements TurbineStrategy {
 
   private double value = 0.0d;
 
-  public BaseStrategy(final TimeSeries series, final String name) {
+  public BaseStrategy(
+      final TimeSeries series,
+      final String name,
+      final ClosePriceIndicator closePriceIndicator) {
     this.series = series;
     this.name = name;
+    this.closePriceIndicator = closePriceIndicator;
   }
 
   @Override

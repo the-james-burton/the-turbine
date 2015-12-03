@@ -79,7 +79,7 @@ public class Stock {
     turbineIndicators.add(new SMA12(series, closePriceIndicator));
     turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
 
-    turbineStrategies.add(new CCICorrectionStrategy(series));
+    turbineStrategies.add(new CCICorrectionStrategy(series, closePriceIndicator));
     turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
   }
 

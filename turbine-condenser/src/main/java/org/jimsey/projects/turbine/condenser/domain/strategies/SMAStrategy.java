@@ -35,13 +35,10 @@ import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
 @EnableTurbineStrategy
 public class SMAStrategy extends BaseStrategy {
 
-  private final ClosePriceIndicator closePriceIndicator;
-
   private final SMAIndicator sma;
 
   public SMAStrategy(final TimeSeries series, final ClosePriceIndicator closePriceIndicator) {
-    super(series, "SMAStrategy");
-    this.closePriceIndicator = closePriceIndicator;
+    super(series, "SMAStrategy", closePriceIndicator);
 
     // setup this strategy...
     sma = new SMAIndicator(closePriceIndicator, 12);
