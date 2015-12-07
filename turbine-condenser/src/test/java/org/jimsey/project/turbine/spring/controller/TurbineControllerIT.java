@@ -24,7 +24,7 @@ package org.jimsey.project.turbine.spring.controller;
 
 import static org.junit.Assert.*;
 
-import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 
 import javax.validation.constraints.NotNull;
@@ -54,7 +54,7 @@ import org.springframework.web.client.RestTemplate;
 @ActiveProfiles("it")
 public class TurbineControllerIT {
 
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandle.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
 
   @Value("${local.server.port}")
   private int port;

@@ -24,6 +24,7 @@ package org.jimsey.project.turbine.spring.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
@@ -38,6 +39,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
@@ -54,6 +57,8 @@ import com.google.common.collect.Lists;
 @SpringApplicationConfiguration(classes = MockServletContext.class)
 @WebAppConfiguration
 public class TurbineControllerTest {
+
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @InjectMocks
   private TurbineController controller;
@@ -79,6 +84,7 @@ public class TurbineControllerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     mvc = MockMvcBuilders.standaloneSetup(controller).build();
+    logger.info(" *** ");
   }
 
   @Test

@@ -25,7 +25,7 @@ package org.jimsey.project.turbine.condenser.service;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.service.Ping;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class TurbineServiceTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandle.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @InjectMocks
   private TurbineService turbineService;
