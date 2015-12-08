@@ -1,14 +1,14 @@
 # the-turbine [![Build Status](https://api.travis-ci.org/the-james-burton/the-turbine.svg?branch=master)](https://travis-ci.org/the-james-burton/the-turbine)
 
-![architecture](https://github.com/the-james-burton/the-turbine/blob/master/docs/architecture.png "architecture")
-
 ## What is it?
 
-The turbine is a set of server-side components that perform automated technical analysis on stocks. It it not actually connected just yet to any real source of stock prices, instead, it currently generates random data so that the project can be further developed.
+The turbine is a set of server-side components that perform automated technical analysis on stocks. It it not actually connected just yet to any real source of stock prices, instead, it currently generates random data so that the project can be further developed. This data is also analysed with common technical indicators and trading strategies and the results of that analysis are persisted into Elasticsearch for further analysis downstream.
 
 ## What does it looks like?
 
-*(Screenshots of Kibana to follow)*
+This is a server-side only app and thus has no UI. However, it is easily possible (by design) to view the data in Kibana. Simple dashboards look like this...
+
+![kibana](https://github.com/the-james-burton/the-turbine/blob/master/docs/kibana.png "kibana")
 
 It is broken up into three main modules...
 
@@ -19,11 +19,24 @@ It is broken up into three main modules...
 
 ## How does it work?
 
+The coarse sequence of events flows like this...
+
 0. **The furnace creates stock 'ticks'** These 'tick' objects are simple and contain just a high, low, open and close price, plus a few co-ordinates (market/symbol) and a timestamp. These ticks are currently generated at random using a simple algorithm to ensure continuity in the data.
 0. **The furnace publishes the ticks to rabbitMQ** and that is the job of the furnace finished! It will do more work when it is connected to a source of real market data.
 0. **The condenser receives the ticks** via the rabbitMQ camel component.
 0. **The condenser does the indicator and strategy analysis** This is the meat of the work done by the condenser. It runs a suite of indicators (such as Bollinger bands) and trading strategies (such as CCI correction) and creates suitable objects for them.
 0. **The condenser publishes the ticks and analysis to elasticsearch and websockets (via rabbitMQ)** Once it has completed its work, the condenser will save the incoming ticks and the analysis results to elasticsearch, where generic tools such as Kibana can be used to chart the results. It will also publish them to websockets, via the webstomp plugin from RabbitMQ so that my *atacama* web client can receive them as an inbound message.
+
+The architecture looks like this...
+
+![architecture](https://github.com/the-james-burton/the-turbine/blob/master/docs/architecture.png "architecture")
+
+Everything is sent around as JSON. This makes it easy to persist in elasticsearch and use in a web app. Note how the *condenser* app is not client-facing. This is a less common design trait. I decided to make it this way because...
+
+0. **I didn't want to implement another bespoke elasticsearch API and client.** Why not just use the built-in REST API and factory client? Well, that's what I did.
+0. **RabbitMQ supports stomp over websockets!** and spring boot lets you plug it right in as a websocket broker. This lets rabbitMQ take control of *all* the asynchronous messaging.
+
+I believe a main concern with this design is security. To secure the connections to elasticsearch, I would most likely put ApiMan or similar over the top. To secure the rabbitMQ webstomp connections I am not so sure. I need to do more research. However it is very easy to stop using rabbitMQ as websocket broker and use the native spring support instead.
 
 ## How do I use it?
 
