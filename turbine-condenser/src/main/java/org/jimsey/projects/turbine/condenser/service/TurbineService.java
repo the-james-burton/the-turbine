@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.condenser.service;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,10 +40,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class TurbineService {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineService.class);
+
+  private static ObjectMapper json = new ObjectMapper();
 
   @Autowired
   @NotNull
@@ -55,12 +62,56 @@ public class TurbineService {
     logger.info("found strategies : {}", listStrategies().toString());
   }
 
-  public List<String> listStrategies() {
-    return findAnnotationUsage("org.jimsey.projects.turbine.condenser.domain.strategies", EnableTurbineStrategy.class);
+  public String listStocks(String market) {
+    List<Stocks> stocks = Arrays.stream(Stocks.values())
+        .filter(stock -> stock.getMarket().equals(market))
+        .collect(Collectors.toList());
+
+    // TODO is there a better way to push the list into a json property?
+    String result = null;
+    try {
+      result = json.writeValueAsString(new Object() {
+        @JsonProperty("stocks")
+        List<Stocks> stockz = stocks;
+      });
+    } catch (JsonProcessingException e) {
+      logger.error(e.getMessage(), e);
+    }
+    return result;
   }
 
-  public List<String> listIndicators() {
-    return findAnnotationUsage("org.jimsey.projects.turbine.condenser.domain.indicators", EnableTurbineIndicator.class);
+  public String listStrategies() {
+    List<String> strategies = findAnnotationUsage(
+        EnableTurbineStrategy.class.getPackage().getName(),
+        EnableTurbineStrategy.class);
+
+    String result = null;
+    try {
+      result = json.writeValueAsString(new Object() {
+        @JsonProperty("strategies")
+        List<String> strategiez = strategies;
+      });
+    } catch (JsonProcessingException e) {
+      logger.error(e.getMessage(), e);
+    }
+    return result;
+  }
+
+  public String listIndicators() {
+    List<String> indicators = findAnnotationUsage(
+        EnableTurbineIndicator.class.getPackage().getName(),
+        EnableTurbineIndicator.class);
+
+    String result = null;
+    try {
+      result = json.writeValueAsString(new Object() {
+        @JsonProperty("indicators")
+        List<String> indicatorz = indicators;
+      });
+    } catch (JsonProcessingException e) {
+      logger.error(e.getMessage(), e);
+    }
+    return result;
   }
 
   private List<String> findAnnotationUsage(String packageName, Class<? extends Annotation> annotation) {

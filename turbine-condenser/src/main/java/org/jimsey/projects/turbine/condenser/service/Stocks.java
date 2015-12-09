@@ -25,6 +25,10 @@ package org.jimsey.projects.turbine.condenser.service;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Stocks {
 
   ABC(Stocks.ftse),
@@ -44,10 +48,12 @@ public enum Stocks {
   }
 
   // --------------------------------
+  @JsonProperty("symbol")
   public String getSymbol() {
     return this.name();
   }
 
+  @JsonProperty("market")
   public String getMarket() {
     return this.market;
   }

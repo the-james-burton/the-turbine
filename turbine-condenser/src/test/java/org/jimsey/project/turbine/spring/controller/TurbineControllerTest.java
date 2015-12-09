@@ -22,6 +22,9 @@
  */
 package org.jimsey.project.turbine.spring.controller;
 
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.invoke.MethodHandles;
@@ -29,6 +32,7 @@ import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.Ping;
+import org.jimsey.projects.turbine.condenser.service.Stocks;
 import org.jimsey.projects.turbine.condenser.service.TurbineService;
 import org.jimsey.projects.turbine.condenser.web.PingResponse;
 import org.jimsey.projects.turbine.condenser.web.TurbineController;
@@ -37,7 +41,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +81,8 @@ public class TurbineControllerTest {
 
   private final List<String> strategies = Lists.newArrayList("strategy1", "strategy1");
 
+  private final List<Stocks> stocks = Lists.newArrayList(Stocks.ABC, Stocks.DEF);
+
   private final ObjectMapper json = new ObjectMapper();
 
   @Before
@@ -91,7 +96,7 @@ public class TurbineControllerTest {
   public void getPing() throws Exception {
     // use this for a spy...
     // Mockito.doReturn(123l).when(ping).ping();
-    Mockito.when(ping.ping()).thenReturn(pingTime);
+    when(ping.ping()).thenReturn(pingTime);
     PingResponse expected = new PingResponse(pingTime);
 
     mvc.perform(MockMvcRequestBuilders
@@ -103,25 +108,47 @@ public class TurbineControllerTest {
   }
 
   @Test
-  public void getIndicators() throws Exception {
-    Mockito.when(turbineSerivce.listIndicators()).thenReturn(indicators);
+  public void testGetSymbols() throws Exception {
+    String response = json.writeValueAsString(stocks);
+    logger.info("mock response : {}", response);
+    when(turbineSerivce.listStocks(anyString())).thenReturn(response);
+
+    mvc.perform(MockMvcRequestBuilders
+        .get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", Stocks.ABC.getMarket()))
+        .accept(MediaType.APPLICATION_JSON))
+        .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString(Stocks.ABC.getMarket())));
+
+    // TODO add test for stocks not in given market...
+  }
+
+  @Test
+  public void testGetIndicators() throws Exception {
+    String response = json.writeValueAsString(indicators);
+    logger.info("mock response : {}", response);
+    when(turbineSerivce.listIndicators()).thenReturn(response);
 
     mvc.perform(MockMvcRequestBuilders
         .get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "indicators"))
         .accept(MediaType.APPLICATION_JSON))
+        .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
-        .andExpect(content().json(json.writeValueAsString(indicators)));
+        .andExpect(content().string(containsString(indicators.get(0))));
   }
 
   @Test
-  public void getStrategies() throws Exception {
-    Mockito.when(turbineSerivce.listStrategies()).thenReturn(strategies);
+  public void testGetStrategies() throws Exception {
+    String response = json.writeValueAsString(strategies);
+    logger.info("mock response : {}", response);
+    when(turbineSerivce.listStrategies()).thenReturn(response);
 
     mvc.perform(MockMvcRequestBuilders
         .get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "strategies"))
         .accept(MediaType.APPLICATION_JSON))
+        .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
-        .andExpect(content().json(json.writeValueAsString(strategies)));
+        .andExpect(content().string(containsString(strategies.get(0))));
   }
 
 }

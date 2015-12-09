@@ -31,6 +31,7 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.Application;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.condenser.service.Stocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,7 +79,16 @@ public class TurbineControllerIT {
     logger.info("it should return nano time value...");
     String url = String.format("%s/%s", serviceUrl.toString(), "ping");
     ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("{}", response.getBody());
+    logger.info("ping: {}", response.getBody());
+    assertNotNull(response.getBody());
+  }
+
+  @Test
+  public void testListSymbols() throws Exception {
+    logger.info("it should return a list of symbols...");
+    String url = String.format("%s/%s/%s", serviceUrl.toString(), "stocks", Stocks.ABC.getMarket());
+    ResponseEntity<String> response = template.getForEntity(url, String.class);
+    logger.info("symbols: {}", response.getBody());
     assertNotNull(response.getBody());
   }
 
@@ -87,7 +97,7 @@ public class TurbineControllerIT {
     logger.info("it should return a list of indicators...");
     String url = String.format("%s/%s", serviceUrl.toString(), "indicators");
     ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("{}", response.getBody());
+    logger.info("indicators: {}", response.getBody());
     assertNotNull(response.getBody());
   }
 
@@ -96,7 +106,7 @@ public class TurbineControllerIT {
     logger.info("it should return a list of strategies...");
     String url = String.format("%s/%s", serviceUrl.toString(), "strategies");
     ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("{}", response.getBody());
+    logger.info("strategies: {}", response.getBody());
     assertNotNull(response.getBody());
   }
 

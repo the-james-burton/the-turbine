@@ -22,8 +22,6 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
@@ -34,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -67,14 +66,20 @@ public class TurbineController {
     return new PingResponse(ping.ping());
   }
 
+  @RequestMapping("/stocks/{market}")
+  public String stocks(@PathVariable String market) throws Exception {
+    logger.info("stocks({})", market);
+    return turbineService.listStocks(market);
+  }
+
   @RequestMapping("/indicators")
-  public List<String> indicators() throws Exception {
+  public String indicators() throws Exception {
     logger.info("indicators()");
     return turbineService.listIndicators();
   }
 
   @RequestMapping("/strategies")
-  public List<String> strategies() throws Exception {
+  public String strategies() throws Exception {
     logger.info("strategies()");
     return turbineService.listStrategies();
   }
