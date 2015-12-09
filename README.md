@@ -4,6 +4,8 @@
 
 The turbine is a set of server-side components that perform automated technical analysis on stocks. It it not actually connected just yet to any real source of stock prices, instead, it currently generates random data so that the project can be further developed. This data is also analysed with common technical indicators and trading strategies and the results of that analysis are persisted into Elasticsearch for further analysis downstream.
 
+> *DO NOT USE THIS APP FOR REAL TRADING !!*
+
 ## What does it looks like?
 
 This is a server-side only app and thus has no UI. However, it is easily possible (by design) to view the data in Kibana. Simple dashboards look like this...
