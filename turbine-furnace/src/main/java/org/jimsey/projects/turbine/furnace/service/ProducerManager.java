@@ -29,6 +29,7 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.apache.camel.CamelContext;
+import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.jimsey.projects.turbine.furnace.TickProducerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

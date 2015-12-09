@@ -32,10 +32,10 @@ import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.Ping;
-import org.jimsey.projects.turbine.condenser.service.Stocks;
 import org.jimsey.projects.turbine.condenser.service.TurbineService;
 import org.jimsey.projects.turbine.condenser.web.PingResponse;
 import org.jimsey.projects.turbine.condenser.web.TurbineController;
+import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.condenser.elasticsearch.repositories.IndicatorRepository;
+import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

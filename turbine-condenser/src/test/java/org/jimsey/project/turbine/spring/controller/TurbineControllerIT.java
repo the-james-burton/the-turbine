@@ -31,7 +31,7 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.Application;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.condenser.service.Stocks;
+import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
