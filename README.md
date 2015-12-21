@@ -95,6 +95,7 @@ It communicates with two principal back end components...
 * **config server** I want to have a look at externalising the configuration into a configuration server of some sort, perhaps spring-cloud-config-server.
 * **connect to real market data** Funnily enough, this is not a priority just now as I want to focus on core functionality. I can do that just fine with fake data for now.
 * **pricing** A very long term goal is to offer pricing for various instruments using JQuantLib. This opens up some interesting possibilities for further modeling, simulation and (in my wildest of dreams) maybe even arbitrage.
+* **google protocol buffers** Maybe. Just maybe. Weak link seems to be elasticsearch - I would still have to provide JSON format for it.
 
 ## What is unlikely to be done?
 
