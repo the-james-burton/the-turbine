@@ -119,7 +119,7 @@ public class TurbineService {
     Reflections reflections = new Reflections(packageName);
     Set<Class<?>> classes = reflections.getTypesAnnotatedWith(annotation);
     return classes.stream()
-        .map(clazz -> clazz.getName())
+        .map(clazz -> clazz.getSimpleName())
         .collect(Collectors.toList());
   }
 
