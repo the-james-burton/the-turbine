@@ -28,6 +28,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Indicates a class is a technical indicator suitable for use by the client.
  *
@@ -37,5 +39,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface EnableTurbineIndicator {
+
+  @JsonProperty
+  String name();
+
+  @JsonProperty
+  boolean isOverlay();
 
 }

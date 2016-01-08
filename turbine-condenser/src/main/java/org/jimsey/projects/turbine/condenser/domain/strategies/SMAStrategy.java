@@ -32,7 +32,7 @@ import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
 /**
  * based on an example in Ta4j itself
  */
-@EnableTurbineStrategy
+@EnableTurbineStrategy(name = "SMAStrategy")
 public class SMAStrategy extends BaseStrategy {
 
   private final SMAIndicator sma;

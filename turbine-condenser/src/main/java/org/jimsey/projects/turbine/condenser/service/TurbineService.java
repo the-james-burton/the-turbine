@@ -22,7 +22,6 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -82,15 +81,17 @@ public class TurbineService {
   }
 
   public String listStrategies() {
-    List<String> strategies = findAnnotationUsage(
-        EnableTurbineStrategy.class.getPackage().getName(),
-        EnableTurbineStrategy.class);
+    Reflections reflections = new Reflections(EnableTurbineStrategy.class.getPackage().getName());
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
+    List<EnableTurbineStrategy> strategies = classes.stream()
+        .map(c -> c.getDeclaredAnnotation(EnableTurbineStrategy.class))
+        .collect(Collectors.toList());
 
     String result = null;
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("strategies")
-        List<String> strategiez = strategies;
+        List<EnableTurbineStrategy> strategiez = strategies;
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
@@ -99,28 +100,22 @@ public class TurbineService {
   }
 
   public String listIndicators() {
-    List<String> indicators = findAnnotationUsage(
-        EnableTurbineIndicator.class.getPackage().getName(),
-        EnableTurbineIndicator.class);
+    Reflections reflections = new Reflections(EnableTurbineIndicator.class.getPackage().getName());
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
+    List<EnableTurbineIndicator> indicators = classes.stream()
+        .map(c -> c.getDeclaredAnnotation(EnableTurbineIndicator.class))
+        .collect(Collectors.toList());
 
     String result = null;
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("indicators")
-        List<String> indicatorz = indicators;
+        List<EnableTurbineIndicator> indicatorz = indicators;
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
     }
     return result;
-  }
-
-  private List<String> findAnnotationUsage(String packageName, Class<? extends Annotation> annotation) {
-    Reflections reflections = new Reflections(packageName);
-    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(annotation);
-    return classes.stream()
-        .map(clazz -> clazz.getSimpleName())
-        .collect(Collectors.toList());
   }
 
 }
