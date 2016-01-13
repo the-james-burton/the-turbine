@@ -29,13 +29,13 @@ import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
-@EnableTurbineIndicator(name = "SMA12", isOverlay = false)
+@EnableTurbineIndicator(name = "SMA12", isOverlay = true)
 public class SMA12 extends BaseIndicator {
 
   private final SMAIndicator smaIndicator;
 
   public SMA12(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, "SMA12", indicator);
+    super(12, series, SMA12.class.getSimpleName(), indicator);
 
     // setup this indicator...
     this.smaIndicator = new SMAIndicator(indicator, this.timeFrame);

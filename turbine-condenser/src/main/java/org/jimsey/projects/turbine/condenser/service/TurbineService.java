@@ -62,17 +62,36 @@ public class TurbineService {
     logger.info("found strategies : {}", listStrategies().toString());
   }
 
-  public String listStocks(String market) {
-    List<Stocks> stocks = Arrays.stream(Stocks.values())
+  public List<Stocks> getStocks(String market) {
+    return Arrays.stream(Stocks.values())
         .filter(stock -> stock.getMarket().equals(market))
         .collect(Collectors.toList());
+  }
+
+  public List<EnableTurbineStrategy> getStrategies() {
+    Reflections reflections = new Reflections(EnableTurbineStrategy.class.getPackage().getName());
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
+    return classes.stream()
+        .map(c -> c.getDeclaredAnnotation(EnableTurbineStrategy.class))
+        .collect(Collectors.toList());
+  }
+
+  public List<EnableTurbineIndicator> getIndicators() {
+    Reflections reflections = new Reflections(EnableTurbineIndicator.class.getPackage().getName());
+    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
+    return classes.stream()
+        .map(c -> c.getDeclaredAnnotation(EnableTurbineIndicator.class))
+        .collect(Collectors.toList());
+  }
+
+  public String listStocks(String market) {
 
     // TODO is there a better way to push the list into a json property?
     String result = null;
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("stocks")
-        List<Stocks> stockz = stocks;
+        List<Stocks> stockz = getStocks(market);
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
@@ -81,17 +100,11 @@ public class TurbineService {
   }
 
   public String listStrategies() {
-    Reflections reflections = new Reflections(EnableTurbineStrategy.class.getPackage().getName());
-    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
-    List<EnableTurbineStrategy> strategies = classes.stream()
-        .map(c -> c.getDeclaredAnnotation(EnableTurbineStrategy.class))
-        .collect(Collectors.toList());
-
     String result = null;
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("strategies")
-        List<EnableTurbineStrategy> strategiez = strategies;
+        List<EnableTurbineStrategy> strategiez = getStrategies();
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
@@ -100,17 +113,11 @@ public class TurbineService {
   }
 
   public String listIndicators() {
-    Reflections reflections = new Reflections(EnableTurbineIndicator.class.getPackage().getName());
-    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
-    List<EnableTurbineIndicator> indicators = classes.stream()
-        .map(c -> c.getDeclaredAnnotation(EnableTurbineIndicator.class))
-        .collect(Collectors.toList());
-
     String result = null;
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("indicators")
-        List<EnableTurbineIndicator> indicatorz = indicators;
+        List<EnableTurbineIndicator> indicatorz = getIndicators();
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);

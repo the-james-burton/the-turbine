@@ -38,7 +38,7 @@ import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 public class CCICorrectionStrategy extends BaseStrategy {
 
   public CCICorrectionStrategy(TimeSeries series, ClosePriceIndicator closePriceIndicator) {
-    super(series, "CCICorrectionStrategy", closePriceIndicator);
+    super(series, CCICorrectionStrategy.class.getSimpleName(), closePriceIndicator);
     if (series == null) {
       throw new IllegalArgumentException("Series cannot be null");
     }

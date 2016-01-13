@@ -38,7 +38,7 @@ public class SMAStrategy extends BaseStrategy {
   private final SMAIndicator sma;
 
   public SMAStrategy(final TimeSeries series, final ClosePriceIndicator closePriceIndicator) {
-    super(series, "SMAStrategy", closePriceIndicator);
+    super(series, SMAStrategy.class.getSimpleName(), closePriceIndicator);
 
     // setup this strategy...
     sma = new SMAIndicator(closePriceIndicator, 12);

@@ -22,20 +22,21 @@
  */
 package org.jimsey.projects.turbine.condenser.domain;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.apache.camel.CamelContext;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.condenser.domain.indicators.BollingerBands;
-import org.jimsey.projects.turbine.condenser.domain.indicators.SMA12;
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.indicators.TurbineIndicator;
-import org.jimsey.projects.turbine.condenser.domain.strategies.CCICorrectionStrategy;
-import org.jimsey.projects.turbine.condenser.domain.strategies.SMAStrategy;
+import org.jimsey.projects.turbine.condenser.domain.strategies.BaseStrategy;
+import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.condenser.domain.strategies.TurbineStrategy;
+import org.jimsey.projects.turbine.condenser.service.TurbineService;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class Stock {
 
   @Autowired
   @NotNull
-  private CamelContext camel;
+  private TurbineService turbineService;
 
   private String symbol;
 
@@ -74,17 +75,45 @@ public class Stock {
   public Stock(final String market, final String symbol) {
     this.market = market;
     this.symbol = symbol;
-
-    // TODO eventually we should only add indicators and strategies when a user requests them...
-    turbineIndicators.add(new SMA12(series, closePriceIndicator));
-    turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
-
-    turbineStrategies.add(new CCICorrectionStrategy(series, closePriceIndicator));
-    turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
   }
 
   @PostConstruct
   public void init() {
+    List<EnableTurbineIndicator> indicators = turbineService.getIndicators();
+    indicators.stream().forEach(i -> {
+      String className = String.format("%s.%s", EnableTurbineIndicator.class.getPackage().getName(), i.name());
+      BaseIndicator indicator = (BaseIndicator) instantiate(className);
+      turbineIndicators.add(indicator);
+    });
+
+    List<EnableTurbineStrategy> strategies = turbineService.getStrategies();
+    strategies.stream().forEach(i -> {
+      String className = String.format("%s.%s", EnableTurbineStrategy.class.getPackage().getName(), i.name());
+      BaseStrategy strategy = (BaseStrategy) instantiate(className);
+      turbineStrategies.add(strategy);
+    });
+
+    // TODO eventually we should only add indicators and strategies when a user requests them...
+    // turbineIndicators.add(new SMA12(series, closePriceIndicator));
+    // turbineIndicators.add(new BollingerBands(series, closePriceIndicator));
+
+    // turbineStrategies.add(new CCICorrectionStrategy(series, closePriceIndicator));
+    // turbineStrategies.add(new SMAStrategy(series, closePriceIndicator));
+  }
+
+  private Object instantiate(String name) {
+    Object result = null;
+    try {
+      Constructor<?> indicatorConstructor = Class.forName(name).getConstructor(TimeSeries.class,
+          ClosePriceIndicator.class);
+      result = indicatorConstructor.newInstance(series, closePriceIndicator);
+      logger.info("instantiated [{}, {}]: {}",
+          market, symbol, result.getClass().getName());
+    } catch (Exception e) {
+      logger.info("could not instantiate {} for [{}, {}]: {}",
+          name, market, symbol, e.getMessage());
+    }
+    return result;
   }
 
   public void receiveTick(TickJson tick) {
