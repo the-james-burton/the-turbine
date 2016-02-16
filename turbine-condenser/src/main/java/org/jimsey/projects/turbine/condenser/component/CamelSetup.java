@@ -44,9 +44,6 @@ public class CamelSetup {
   private static final Logger logger = LoggerFactory.getLogger(CamelSetup.class);
 
   @Autowired
-  private CamelContext camel;
-
-  @Autowired
   @NotNull
   private SimpMessagingTemplate websockets;
 
@@ -58,7 +55,7 @@ public class CamelSetup {
   }
 
   @Bean
-  CamelContextConfiguration contextConfiguration() {
+  CamelContextConfiguration camelContextConfiguration() {
     return new CamelContextConfiguration() {
       @Override
       public void beforeApplicationStart(CamelContext camel) {

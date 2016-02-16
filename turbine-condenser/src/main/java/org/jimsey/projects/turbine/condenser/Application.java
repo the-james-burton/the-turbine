@@ -26,9 +26,8 @@ import java.util.Arrays;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.camel.spring.javaconfig.CamelConfiguration;
+import org.apache.camel.spring.boot.FatJarRouter;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
-import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableScheduling
 @EnableSwagger2
 @EnableElasticsearchRepositories(basePackages = "org.jimsey.projects.turbine.condenser.elasticsearch.repositories")
-public class Application extends CamelConfiguration {
+public class Application extends FatJarRouter {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -63,14 +62,13 @@ public class Application extends CamelConfiguration {
   @NotNull
   Environment environment;
 
-  public static void main(final String[] args) {
-    ConfigurableApplicationContext spring = SpringApplication.run(
-        Application.class, args);
+  public static void main(final String... args) {
+    ConfigurableApplicationContext spring = SpringApplication.run(Application.class, args);
 
     // logBeanNames(spring);
-    Ping ping = (Ping) spring.getBean("ping");
-    long message = ping.ping();
-    logger.info(String.format("ping=%s", message));
+    // Ping ping = (Ping) spring.getBean("ping");
+    // long message = ping.ping();
+    // logger.info(String.format("ping=%s", message));
 
   }
 

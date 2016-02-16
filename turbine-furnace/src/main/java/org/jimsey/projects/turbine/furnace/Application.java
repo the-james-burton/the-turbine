@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.furnace;
 
-import org.apache.camel.spring.javaconfig.CamelConfiguration;
+import org.apache.camel.spring.boot.FatJarRouter;
 import org.jimsey.projects.turbine.furnace.service.TickProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ import com.sun.istack.NotNull;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableScheduling
-public class Application extends CamelConfiguration {
+public class Application extends FatJarRouter {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -50,9 +50,8 @@ public class Application extends CamelConfiguration {
   @NotNull
   Environment environment;
 
-  public static void main(final String[] args) {
-    ConfigurableApplicationContext spring = SpringApplication.run(
-        Application.class, args);
+  public static void main(final String... args) {
+    ConfigurableApplicationContext spring = SpringApplication.run(Application.class, args);
   }
 
   @Bean
