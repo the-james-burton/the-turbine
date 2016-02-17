@@ -32,17 +32,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.stereotype.Component;
-
 /**
- * TODO replace this with first-class CORS support in Spring 4.2GA when available in Spring boot
+ * Replaced with Application.corsConfigurer().
  * https://spring.io/blog/2015/06/08/cors-support-in-spring-framework
+ * https://spring.io/guides/gs/rest-service-cors/
  * @see <pre>CrossOrigin</pre>
  * 
  * @author jimsey
  */
 @Deprecated
-@Component
+// @Component
 public class SimpleCORSFilter implements Filter {
 
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {

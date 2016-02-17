@@ -41,6 +41,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -84,6 +87,21 @@ public class Application {
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   Stock runtimeStock(String market, String symbol) {
     return new Stock(market, symbol);
+  }
+
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurerAdapter() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        logger.info("adding CORS mappings...");
+        registry.addMapping("/**");
+        // .allowedOrigins("*")
+        // .allowedMethods("POST", "GET", "OPTIONS", "DELETE")
+        // .maxAge(3600)
+        // .allowedHeaders("x-requested-with");
+      }
+    };
   }
 
   @SuppressWarnings("unused")
