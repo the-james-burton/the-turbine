@@ -154,6 +154,11 @@
     <appender-ref ref="JSON" />
   </logger>
 
+  <!-- https://github.com/springfox/springfox/issues/1100 -->
+  <logger
+    name="io.swagger.models.parameters.AbstractSerializableParameter"
+    level="ERROR" />
+
   <!-- ================================================================ -->
   <root level="INFO">
     <appender-ref ref="CONSOLE" />

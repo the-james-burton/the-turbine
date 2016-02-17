@@ -48,6 +48,7 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.ApiKeyVehicle;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.UiConfiguration;
 
@@ -58,7 +59,6 @@ import springfox.documentation.swagger.web.UiConfiguration;
  */
 @Configuration
 public class SwaggerSetup {
-
   @Bean
   public Docket petApi() {
     return new Docket(DocumentationType.SWAGGER_2)
@@ -112,9 +112,12 @@ public class SwaggerSetup {
   SecurityConfiguration security() {
     return new SecurityConfiguration(
         "test-app-client-id",
+        "test-app-client-secret",
         "test-app-realm",
         "test-app",
-        "apiKey");
+        "apiKey",
+        ApiKeyVehicle.HEADER,
+        "," /* scope separator */);
   }
 
   @Bean
