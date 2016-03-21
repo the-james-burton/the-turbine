@@ -17,4 +17,10 @@ infrastructure:
   amqp-server: localhost:5672
   amqp-ticks-exchange: turbine.test1.market.ticks
   amqp-ticks-queue: turbine.test1.queue.ticks
+  elasticsearch-index-for-ticks: turbine-ticks
+  elasticsearch-index-for-indicators: turbine-indicators
+  elasticsearch-index-for-strategies: turbine-strategies
+  elasticsearch-type-for-ticks: turbine-tick
+  elasticsearch-type-for-indicators: turbine-indicator
+  elasticsearch-type-for-strategies: turbine-strategy
   

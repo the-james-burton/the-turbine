@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
 
+// TODO this annotation forces the use of constants...
 @Document(
     indexName = TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
     type = TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS)

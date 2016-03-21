@@ -36,6 +36,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// TODO this annotation forces the use of constants...
 @Document(
     indexName = TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_INDICATORS,
     type = TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_INDICATORS)

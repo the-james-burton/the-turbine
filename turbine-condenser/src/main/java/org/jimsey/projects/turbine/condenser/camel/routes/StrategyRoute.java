@@ -22,7 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.camel.routes;
 
-import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -32,9 +33,11 @@ public class StrategyRoute extends BaseRoute {
 
   private static final Logger logger = LoggerFactory.getLogger(StrategyRoute.class);
 
-  public StrategyRoute() {
-    super(TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_STRATEGIES,
-        TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_STRATEGIES);
+  @PostConstruct
+  public void init() {
+    super.setup(
+        infrastructureProperties.getElasticsearchIndexForStrategies(),
+        infrastructureProperties.getElasticsearchTypeForStrategies());
   }
 
   @Override

@@ -26,6 +26,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
@@ -56,9 +57,11 @@ public class TickController {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  @Autowired
   @NotNull
-  ElasticsearchService elasticsearch;
+  // @Autowired
+  // @Qualifier("elasticsearchServiceJestImpl")
+  @Resource(name = "elasticsearchNativeServiceImpl")
+  ElasticsearchService elasticsearchService;
 
   @Autowired
   private Ping ping;
@@ -69,7 +72,8 @@ public class TickController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    logger.info("this mornings getTicksAfter() : [{}]", getTicksAfter("ABC", sod));
+    logger.info("*** getTicks(ABC) : [{}]", getTicks("ABC"));
+    // logger.info("this mornings getTicksAfter(ABC) : [{}]", getTicksAfter("ABC", sod));
   }
 
   @RequestMapping("/ping")
@@ -81,13 +85,13 @@ public class TickController {
   @RequestMapping("/{symbol}")
   public String getTicks(@PathVariable String symbol) {
     logger.info("getTicks");
-    List<TickJson> ticks = elasticsearch.findTicksBySymbol(symbol);
+    List<TickJson> ticks = elasticsearchService.findTicksBySymbol(symbol);
     return Joiner.on(',').join(ticks);
   }
 
   @RequestMapping("/{symbol}/{date}")
   public String getTicksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
-    List<TickJson> ticks = elasticsearch.findTicksBySymbolAndDateGreaterThan(symbol, date);
+    List<TickJson> ticks = elasticsearchService.findTicksBySymbolAndDateGreaterThan(symbol, date);
     // return Joiner.on(',').join(ticks);
     // return objectToJson(ticks);
     // if (true) {

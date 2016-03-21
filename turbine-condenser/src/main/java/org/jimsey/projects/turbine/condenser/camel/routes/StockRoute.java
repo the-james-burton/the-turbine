@@ -33,11 +33,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class StockRoute extends BaseRoute {
 
-  public StockRoute() {
-    // not using elasticsearch...
-    super("", "");
-  }
-
   private static final Logger logger = LoggerFactory.getLogger(StockRoute.class);
 
   @Autowired

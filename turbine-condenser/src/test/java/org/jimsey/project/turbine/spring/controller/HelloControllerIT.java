@@ -22,7 +22,7 @@
  */
 package org.jimsey.project.turbine.spring.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.net.URL;
 
@@ -44,7 +44,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @IntegrationTest({ "server.port=48002" })
-@ActiveProfiles("consumer")
+@ActiveProfiles("it")
 public class HelloControllerIT {
 
   @Value("${local.server.port}")

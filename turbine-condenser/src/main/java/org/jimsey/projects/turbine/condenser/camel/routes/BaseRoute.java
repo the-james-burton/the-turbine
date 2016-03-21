@@ -30,15 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseRoute extends RouteBuilder {
 
-  private final String index;
+  private String index;
 
-  private final String type;
+  private String type;
 
   @Autowired
   @NotNull
   protected InfrastructureProperties infrastructureProperties;
 
-  public BaseRoute(String index, String type) {
+  public void setup(String index, String type) {
     this.index = index;
     this.type = type;
   }
@@ -48,7 +48,7 @@ public abstract class BaseRoute extends RouteBuilder {
         "%s://elasticsearch?ip=%s&port=%s&operation=INDEX&indexName=%s&indexType=%s",
         infrastructureProperties.getElasticsearchCamelComponent(),
         infrastructureProperties.getElasticsearchHost(),
-        infrastructureProperties.getElasticsearchPort(),
+        infrastructureProperties.getElasticsearchNativePort(),
         index, type);
   }
 

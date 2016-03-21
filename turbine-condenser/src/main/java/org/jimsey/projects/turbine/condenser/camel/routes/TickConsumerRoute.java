@@ -22,11 +22,10 @@
  */
 package org.jimsey.projects.turbine.condenser.camel.routes;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +40,11 @@ public class TickConsumerRoute extends BaseRoute {
   @NotNull
   private Processor tickProcessor;
 
-  @Autowired
-  @NotNull
-  private InfrastructureProperties infrstructureProperties;
-
-  public TickConsumerRoute() {
-    super(TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
-        TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS);
+  @PostConstruct
+  public void init() {
+    super.setup(
+        infrastructureProperties.getElasticsearchIndexForStrategies(),
+        infrastructureProperties.getElasticsearchTypeForTicks());
   }
 
   @Override

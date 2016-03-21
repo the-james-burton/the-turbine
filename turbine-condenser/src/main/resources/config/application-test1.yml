@@ -25,7 +25,14 @@ infrastructure:
   amqp-strategies-queue: turbine.test1.queue.strategies
   elasticsearch-camel-component: elasticsearch
   elasticsearch-host: localhost
-  elasticsearch-port: 9300
+  elasticsearch-native-port: 9300
+  elasticsearch-rest-port: 9200
+  elasticsearch-index-for-ticks: turbine-ticks
+  elasticsearch-index-for-indicators: turbine-indicators
+  elasticsearch-index-for-strategies: turbine-strategies
+  elasticsearch-type-for-ticks: turbine-tick
+  elasticsearch-type-for-indicators: turbine-indicator
+  elasticsearch-type-for-strategies: turbine-strategy
   websocket-camel-component: ssm
   websocket-ticks: /topic/ticks
   websocket-indicators: /topic/indicators

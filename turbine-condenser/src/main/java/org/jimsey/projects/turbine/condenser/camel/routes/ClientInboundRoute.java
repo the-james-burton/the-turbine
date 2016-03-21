@@ -35,10 +35,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClientInboundRoute extends BaseRoute {
 
-  public ClientInboundRoute() {
-    super("", "");
-  }
-
   private static final Logger logger = LoggerFactory.getLogger(ClientInboundRoute.class);
 
   @Autowired

@@ -15,7 +15,7 @@ server:
 infrastructure:
   environment-name: it
   amqp-camel-component: stub
-  amqp-server: nowhere:1
+  amqp-server: nowhere:60001
   amqp-ticks-exchange: turbine.it.market.ticks
   amqp-indicators-exchange: turbine.it.market.indicators
   amqp-strategies-exchange: turbine.it.market.strategies
@@ -23,8 +23,15 @@ infrastructure:
   amqp-indicators-queue: turbine.it.queue.indicators
   amqp-strategies-queue: turbine.it.queue.strategies
   elasticsearch-camel-component: stub
-  elasticsearch-host: nowhere
-  elasticsearch-port: 2
+  elasticsearch-host: localhost
+  elasticsearch-native-port: 9300
+  elasticsearch-rest-port: 9200
+  elasticsearch-index-for-ticks: turbine-ticks
+  elasticsearch-index-for-indicators: turbine-indicators
+  elasticsearch-index-for-strategies: turbine-strategies
+  elasticsearch-type-for-ticks: turbine-tick
+  elasticsearch-type-for-indicators: turbine-indicator
+  elasticsearch-type-for-strategies: turbine-strategy
   websocket-camel-component: stub
   websocket-ticks: /topic/ticks
   websocket-indicators: /topic/indicators

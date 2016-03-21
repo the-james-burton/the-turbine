@@ -16,4 +16,10 @@ infrastructure:
   amqp-server: nowhere:1
   amqp-ticks-exchange: turbine.it.market.ticks
   amqp-ticks-queue: turbine.it.queue.ticks
+  elasticsearch-index-for-ticks: turbine-ticks
+  elasticsearch-index-for-indicators: turbine-indicators
+  elasticsearch-index-for-strategies: turbine-strategies
+  elasticsearch-type-for-ticks: turbine-tick
+  elasticsearch-type-for-indicators: turbine-indicator
+  elasticsearch-type-for-strategies: turbine-strategy
   

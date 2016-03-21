@@ -24,6 +24,9 @@ package org.jimsey.projects.turbine.fuel.constants;
 
 public class TurbineFuelConstants {
 
+  // TODO these are ONLY for use in the @Document annotation, which will be removed
+  // when the native elasticsearch port is complete
+
   public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "turbine-ticks";
 
   public static final String ELASTICSEARCH_INDEX_FOR_INDICATORS = "turbine-indicators";

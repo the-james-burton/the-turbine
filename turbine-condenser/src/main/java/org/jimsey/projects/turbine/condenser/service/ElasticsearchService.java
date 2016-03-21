@@ -24,109 +24,21 @@ package org.jimsey.projects.turbine.condenser.service;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
-
-import org.jimsey.projects.turbine.condenser.elasticsearch.repositories.IndicatorRepository;
-import org.jimsey.projects.turbine.condenser.elasticsearch.repositories.TickRepository;
-import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.stereotype.Service;
 
-import com.google.common.base.Joiner;
+public interface ElasticsearchService {
 
-@Service
-public class ElasticsearchService {
+  String getAllTicks();
 
-  private static final Logger logger = LoggerFactory.getLogger(ElasticsearchService.class);
+  List<TickJson> findTicksBySymbol(String symbol);
 
-  @Autowired
-  @NotNull
-  private ElasticsearchOperations elasticsearch;
+  List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date);
 
-  @Autowired
-  @NotNull
-  private TickRepository tickRepository;
+  List<IndicatorJson> findIndicatorsBySymbol(String symbol);
 
-  @Autowired
-  @NotNull
-  private IndicatorRepository indicatorRepository;
+  List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date);
 
-  @PostConstruct
-  public void init() {
-    logger.info("ElasticsearchTemplate: {}", elasticsearch.getSetting(TickJson.class).toString());
-
-    // Instrument instrument = rdog.newInstrument();
-    // instrumentRepository.saveToIndex(instrument, "test-instrument");
-
-    // instrumentRepository.save(instrument);
-    // logger.info(Iterables.toString(instrumentRepository.findAll()));
-
-    // Quote quote = rdog.newQuote();
-    // quoteRepository.saveToIndex(quote, "test-quote");
-
-    // logger.info("getAllTicks() : [{}]", getAllTicks());
-    // logger.info("findBySymbol('DEF') : [{}]", tickRepository.findBySymbol("DEF"));
-    // logger.info("findBySymbol('ABC') : [{}]", tickRepository.findBySymbol("ABC"));
-
-  }
-
-  /*
-   * public String getAllQuotes() {
-   * NativeSearchQuery query = new NativeSearchQueryBuilder()
-   * .withIndices("test-*")
-   * .withTypes("quote")
-   * .build();
-   * Iterable<Quote> quotes = quoteRepository.search(query);
-   * return Joiner.on(',').join(quotes);
-   * }
-   */
-
-  public String getAllTicks() {
-    logger.info("getAllTicks");
-    NativeSearchQuery query = new NativeSearchQueryBuilder()
-        .withIndices(TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS)
-        .withTypes(TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
-        .withPageable(new PageRequest(0, Integer.MAX_VALUE))
-        .build();
-
-    Iterable<TickJson> ticks = tickRepository.search(query);
-
-    return Joiner.on(',').join(ticks);
-
-  }
-
-  public List<TickJson> findTicksBySymbol(String symbol) {
-    logger.info("findTicksBySymbol({})", symbol);
-    return tickRepository.findBySymbol(symbol);
-  }
-
-  public List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date) {
-    logger.info("findTicksBySymbolAndDateGreaterThan({}, {})", symbol, date);
-    return tickRepository.findBySymbolAndDateGreaterThan(symbol, date);
-  }
-
-  public List<IndicatorJson> findIndicatorsBySymbol(String symbol) {
-    logger.info("findIndicatorsBySymbol({})", symbol);
-    return indicatorRepository.findBySymbol(symbol);
-  }
-
-  public List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date) {
-    logger.info("findIndicatorsBySymbolAndDateGreaterThan({}, {})", symbol, date);
-    return indicatorRepository.findBySymbolAndDateGreaterThan(symbol, date);
-  }
-
-  public List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date) {
-    logger.info("findIndicatorsBySymbolAndDateGreaterThan({}, {}, {})", symbol, name, date);
-    return indicatorRepository.findBySymbolAndNameAndDateGreaterThan(symbol, name, date);
-  }
+  List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date);
 
 }

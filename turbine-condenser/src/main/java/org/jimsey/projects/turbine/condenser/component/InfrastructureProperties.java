@@ -73,7 +73,28 @@ public class InfrastructureProperties {
   private String elasticsearchHost;
 
   @NotNull
-  private String elasticsearchPort;
+  private Integer elasticsearchNativePort;
+
+  @NotNull
+  private Integer elasticsearchRestPort;
+
+  @NotNull
+  private String elasticsearchIndexForTicks;
+
+  @NotNull
+  private String elasticsearchIndexForIndicators;
+
+  @NotNull
+  private String elasticsearchIndexForStrategies;
+
+  @NotNull
+  private String elasticsearchTypeForTicks;
+
+  @NotNull
+  private String elasticsearchTypeForIndicators;
+
+  @NotNull
+  private String elasticsearchTypeForStrategies;
 
   @NotNull
   private String websocketTicks;
@@ -169,14 +190,6 @@ public class InfrastructureProperties {
     this.elasticsearchHost = elasticsearchHost;
   }
 
-  public String getElasticsearchPort() {
-    return elasticsearchPort;
-  }
-
-  public void setElasticsearchPort(String elasticsearchPort) {
-    this.elasticsearchPort = elasticsearchPort;
-  }
-
   public String getWebsocketTicks() {
     return websocketTicks;
   }
@@ -231,6 +244,70 @@ public class InfrastructureProperties {
 
   public void setWebsocketCamelComponent(String websocketCamelComponent) {
     this.websocketCamelComponent = websocketCamelComponent;
+  }
+
+  public Integer getElasticsearchNativePort() {
+    return elasticsearchNativePort;
+  }
+
+  public void setElasticsearchNativePort(Integer elasticsearchNativePort) {
+    this.elasticsearchNativePort = elasticsearchNativePort;
+  }
+
+  public Integer getElasticsearchRestPort() {
+    return elasticsearchRestPort;
+  }
+
+  public void setElasticsearchRestPort(Integer elasticsearchRestPort) {
+    this.elasticsearchRestPort = elasticsearchRestPort;
+  }
+
+  public String getElasticsearchIndexForTicks() {
+    return elasticsearchIndexForTicks;
+  }
+
+  public void setElasticsearchIndexForTicks(String elasticsearchIndexForTicks) {
+    this.elasticsearchIndexForTicks = elasticsearchIndexForTicks;
+  }
+
+  public String getElasticsearchIndexForStrategies() {
+    return elasticsearchIndexForStrategies;
+  }
+
+  public void setElasticsearchIndexForStrategies(String elasticsearchIndexForStrategies) {
+    this.elasticsearchIndexForStrategies = elasticsearchIndexForStrategies;
+  }
+
+  public String getElasticsearchIndexForIndicators() {
+    return elasticsearchIndexForIndicators;
+  }
+
+  public void setElasticsearchIndexForIndicators(String elasticsearchIndexForIndicators) {
+    this.elasticsearchIndexForIndicators = elasticsearchIndexForIndicators;
+  }
+
+  public String getElasticsearchTypeForTicks() {
+    return elasticsearchTypeForTicks;
+  }
+
+  public void setElasticsearchTypeForTicks(String elasticsearchTypeForTicks) {
+    this.elasticsearchTypeForTicks = elasticsearchTypeForTicks;
+  }
+
+  public String getElasticsearchTypeForIndicators() {
+    return elasticsearchTypeForIndicators;
+  }
+
+  public void setElasticsearchTypeForIndicators(String elasticsearchTypeForIndicators) {
+    this.elasticsearchTypeForIndicators = elasticsearchTypeForIndicators;
+  }
+
+  public String getElasticsearchTypeForStrategies() {
+    return elasticsearchTypeForStrategies;
+  }
+
+  public void setElasticsearchTypeForStrategies(String elasticsearchTypeForStrategies) {
+    this.elasticsearchTypeForStrategies = elasticsearchTypeForStrategies;
   }
 
 }

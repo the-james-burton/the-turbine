@@ -56,7 +56,7 @@ public class IndicatorController {
 
   @Autowired
   @NotNull
-  ElasticsearchService elasticsearch;
+  ElasticsearchService elasticsearchServiceImpl;
 
   @Autowired
   private Ping ping;
@@ -79,14 +79,14 @@ public class IndicatorController {
   @RequestMapping("/{symbol}")
   public String getIndicators(@PathVariable String symbol) {
     logger.info("getIndicators");
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsBySymbol(symbol);
+    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsBySymbol(symbol);
     return Joiner.on(',').join(indicators);
   }
 
   @RequestMapping("/{symbol}/{name}/{date}")
   public String getIndicatorsAfter(@PathVariable String symbol, @PathVariable String name, @PathVariable Long date)
       throws JsonProcessingException {
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsBySymbolAndNameAndDateGreaterThan(symbol, name, date);
+    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsBySymbolAndNameAndDateGreaterThan(symbol, name, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {
