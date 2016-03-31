@@ -22,27 +22,38 @@
  */
 package org.jimsey.project.turbine.condenser.service;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.qpid.util.FileUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.condenser.service.ElasticsearchNativeServiceImpl;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,16 +62,20 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MockServletContext.class)
 @ActiveProfiles("it")
-@Ignore
+// @Ignore
 public class ElasticsearchNativeServiceImplTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final String elasticsearchTmpDir = "./target/elasticsearch";
 
   @InjectMocks
   private ElasticsearchNativeServiceImpl service = new ElasticsearchNativeServiceImpl();
@@ -72,39 +87,106 @@ public class ElasticsearchNativeServiceImplTest {
 
   private final ObjectMapper json = new ObjectMapper();
 
-  private final Client elasticsearch;
+  private static Client elasticsearch;
 
-  private final int testTicks = 10;
+  private static Node node;
 
-  private final String indexForTicks = "turbine-ticks-test";
+  private static final Integer elasticsearchNativePort = 9305;
 
-  private final String typeForTicks = "turbine-tick-test";
+  private static final Integer elasticsearchRestPort = 9205;
+
+  private static final String elasticsearchCluster = "elasticsearch-test";
+
+  private static final String elasticsearchHost = "localhost";
+
+  private static final String indexForTicks = "turbine-ticks-test";
+
+  private static final String typeForTicks = "turbine-tick-test";
+
+  private boolean initialised = false;
+
+  private final int numberOfTicks = 12;
 
   private final Set<String> ids = new HashSet<>();
 
   public ElasticsearchNativeServiceImplTest() {
-    elasticsearch = NodeBuilder.nodeBuilder().clusterName("elasticsearch").client(true).node().client();
   }
 
   @Before
-  public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    Mockito.when(infrastructureProperties.getElasticsearchHost()).thenReturn("localhost");
-    Mockito.when(infrastructureProperties.getElasticsearchNativePort()).thenReturn(9300);
-    Mockito.when(infrastructureProperties.getElasticsearchIndexForTicks()).thenReturn(indexForTicks);
-    // TODO should I expect this @PostConstruct be called automaticaly for me?
-    service.init();
+  public void before() throws ElasticsearchException, JsonProcessingException, InterruptedException {
+
+    if (!initialised) {
+      MockitoAnnotations.initMocks(this);
+
+      // TODO these are also present in the application-it.yml files, how to consolidate?
+      when(infrastructureProperties.getElasticsearchCluster()).thenReturn(elasticsearchCluster);
+      when(infrastructureProperties.getElasticsearchHost()).thenReturn(elasticsearchHost);
+      when(infrastructureProperties.getElasticsearchNativePort()).thenReturn(elasticsearchNativePort);
+      when(infrastructureProperties.getElasticsearchRestPort()).thenReturn(elasticsearchRestPort);
+      when(infrastructureProperties.getElasticsearchIndexForTicks()).thenReturn(indexForTicks);
+      when(infrastructureProperties.getElasticsearchTypeForTicks()).thenReturn(typeForTicks);
+
+      // TODO should I expect this @PostConstruct be called automatically for me?
+      service.init();
+      initialised = true;
+    }
+
     int x = 0;
-    while (++x < testTicks) {
+    while (++x <= numberOfTicks) {
       ids.add(indexTick());
     }
+    // TODO too quick and the ES search returns nothing! can we flush ES?
+    Thread.sleep(1000);
+  }
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    logger.info("setup()");
+    FileUtils.delete(new File(elasticsearchTmpDir), true);
+
+    Settings settings = ImmutableSettings.builder()
+        .put("path.home", elasticsearchTmpDir)
+        .put("path.conf", elasticsearchTmpDir)
+        .put("path.data", elasticsearchTmpDir)
+        .put("path.work", elasticsearchTmpDir)
+        .put("path.logs", elasticsearchTmpDir)
+        .put("http.port", elasticsearchRestPort)
+        .put("transport.tcp.port", elasticsearchNativePort)
+        .put("index.number_of_shards", "1")
+        .put("index.number_of_replicas", "0")
+        .put("discovery.zen.ping.multicast.enabled", "false")
+        .build();
+
+    node = NodeBuilder.nodeBuilder()
+        .data(true)
+        .client(false)
+        .settings(settings)
+        .clusterName(elasticsearchCluster)
+        .node();
+    node.start();
+    elasticsearch = node.client();
+
   }
 
   @After
-  public void clearDown() {
+  public void tearDown() {
+    logger.info("tearDown()");
     ids.stream().forEach(id -> deleteTick(id));
   }
 
+  @Test
+  public void testGetAllticks() throws JsonParseException, JsonMappingException, IOException {
+    logger.info("it should return all ticks");
+    String result = service.getAllTicks();
+    logger.info(" *** getAllTicks(): {}", result);
+    @SuppressWarnings("unchecked")
+    List<TickJson> ticks = (List<TickJson>) json.readValue(result, List.class);
+    logger.info("expected:{}, actual:{}", numberOfTicks, ticks.size());
+    assertThat(ticks, hasSize(numberOfTicks));
+    assertThat(result, containsString("timestamp"));
+  }
+
+  // ------------------------------------------------------
   private String indexTick() throws ElasticsearchException, JsonProcessingException {
     IndexResponse response = elasticsearch
         .prepareIndex(
@@ -112,7 +194,7 @@ public class ElasticsearchNativeServiceImplTest {
             typeForTicks)
         .setSource(json.writeValueAsBytes(rdog.newTick()))
         .get();
-    logger.debug("successfully indexed new tick: index:{}, type:{}, id:{}",
+    logger.info("successfully indexed new tick: index:{}, type:{}, id:{}",
         response.getIndex(), response.getType(), response.getId());
     return response.getId();
   }
@@ -124,13 +206,8 @@ public class ElasticsearchNativeServiceImplTest {
             typeForTicks,
             id)
         .get();
-    logger.debug("successfully deleted tick: index:{}, type:{}, id:{}",
+    logger.info("successfully deleted tick: index:{}, type:{}, id:{}",
         response.getIndex(), response.getType(), response.getId());
-  }
-
-  @Test
-  public void testGetAllticks() {
-    logger.info("it should return all ticks");
   }
 
 }

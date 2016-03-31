@@ -16,10 +16,14 @@ infrastructure:
   amqp-server: nowhere:1
   amqp-ticks-exchange: turbine.it.market.ticks
   amqp-ticks-queue: turbine.it.queue.ticks
-  elasticsearch-index-for-ticks: turbine-ticks
-  elasticsearch-index-for-indicators: turbine-indicators
-  elasticsearch-index-for-strategies: turbine-strategies
-  elasticsearch-type-for-ticks: turbine-tick
-  elasticsearch-type-for-indicators: turbine-indicator
-  elasticsearch-type-for-strategies: turbine-strategy
+  elasticsearch-cluster: elasticsearch-test
+  elasticsearch-host: localhost
+  elasticsearch-native-port: 9305
+  elasticsearch-rest-port: 9205
+  elasticsearch-index-for-ticks: turbine-ticks-test
+  elasticsearch-index-for-indicators: turbine-indicators-test
+  elasticsearch-index-for-strategies: turbine-strategies-test
+  elasticsearch-type-for-ticks: turbine-tick-test
+  elasticsearch-type-for-indicators: turbine-indicator-test
+  elasticsearch-type-for-strategies: turbine-strategy-test
   

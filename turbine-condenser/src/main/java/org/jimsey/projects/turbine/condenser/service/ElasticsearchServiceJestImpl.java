@@ -38,8 +38,6 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
@@ -48,8 +46,9 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
 
-@Service
-@Profile("test1")
+@Deprecated
+// @Service
+// @Profile("test1")
 public class ElasticsearchServiceJestImpl implements ElasticsearchService {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

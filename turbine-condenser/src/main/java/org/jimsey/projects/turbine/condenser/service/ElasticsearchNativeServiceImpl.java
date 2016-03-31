@@ -63,33 +63,40 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
 
   private static ObjectMapper json = new ObjectMapper();
 
+  @NotNull
   private String indexForTicks;
 
+  @NotNull
   private String typeForTicks;
 
   @PostConstruct
   public void init() {
     // Node node = NodeBuilder.nodeBuilder().clusterName("elasticsearch").client(true).node();
-    Settings settings = ImmutableSettings.settingsBuilder()
-        .put("cluster.name", "elasticsearch").build();
-    elasticsearch = new TransportClient(settings);
     String host = infrastructureProperties.getElasticsearchHost();
+    String cluster = infrastructureProperties.getElasticsearchCluster();
     Integer port = infrastructureProperties.getElasticsearchNativePort();
     indexForTicks = infrastructureProperties.getElasticsearchIndexForTicks();
     typeForTicks = infrastructureProperties.getElasticsearchTypeForTicks();
-    logger.info(" *** connecting to : {}:{}", host, port);
+    Settings settings = ImmutableSettings.settingsBuilder()
+        .put("cluster.name", cluster)
+        .build();
+    elasticsearch = new TransportClient(settings);
+    logger.info(" *** connecting to : {}:{}:{}", cluster, host, port);
     elasticsearch.addTransportAddress(new InetSocketTransportAddress(host, port));
   }
 
   @Override
   public String getAllTicks() {
     QueryBuilder queryBuilder = matchAllQuery();
-    SearchResponse response = elasticsearch.prepareSearch(indexForTicks)
+    SearchResponse response = elasticsearch
+        .prepareSearch(indexForTicks)
         .setQuery(queryBuilder)
+        .setTypes(typeForTicks)
+        .setSize(5000)
         .execute().actionGet();
-    for (SearchHit hit : response.getHits().getHits()) {
-      System.out.println(hit.getSourceAsString());
-    }
+    // for (SearchHit hit : response.getHits().getHits()) {
+    // System.out.println(hit.getSourceAsString());
+    // }
     String results = Arrays.stream(response.getHits().getHits())
         .map(hit -> hit.getSourceAsString())
         .reduce((a, b) -> String.format("%s,%s", a, b)).orElse("");
@@ -139,20 +146,15 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   private SearchRequestBuilder createTickQuery(QueryBuilder query) {
-    return createQuery(query,
-        indexForTicks,
-        typeForTicks);
+    return createQuery(query, indexForTicks, typeForTicks);
   }
 
   private SearchRequestBuilder createIndicatorQuery(QueryBuilder query) {
-    return createQuery(query,
-        indexForTicks,
-        typeForTicks);
+    return createQuery(query, indexForTicks, typeForTicks);
   }
 
   private SearchRequestBuilder createQuery(QueryBuilder query, String type, String index) {
-    return elasticsearch.prepareSearch()
-        .setQuery(query).setTypes();
+    return elasticsearch.prepareSearch().setQuery(query).setTypes(type);
   }
 
   private <T> List<T> extractResults(SearchResponse response, Class<T> t) {

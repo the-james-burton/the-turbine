@@ -70,6 +70,9 @@ public class InfrastructureProperties {
   private String elasticsearchCamelComponent;
 
   @NotNull
+  private String elasticsearchCluster;
+
+  @NotNull
   private String elasticsearchHost;
 
   @NotNull
@@ -308,6 +311,14 @@ public class InfrastructureProperties {
 
   public void setElasticsearchTypeForStrategies(String elasticsearchTypeForStrategies) {
     this.elasticsearchTypeForStrategies = elasticsearchTypeForStrategies;
+  }
+
+  public String getElasticsearchCluster() {
+    return elasticsearchCluster;
+  }
+
+  public void setElasticsearchCluster(String elasticsearchCluster) {
+    this.elasticsearchCluster = elasticsearchCluster;
   }
 
 }

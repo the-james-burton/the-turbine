@@ -23,15 +23,16 @@ infrastructure:
   amqp-indicators-queue: turbine.it.queue.indicators
   amqp-strategies-queue: turbine.it.queue.strategies
   elasticsearch-camel-component: stub
+  elasticsearch-cluster: elasticsearch-test
   elasticsearch-host: localhost
-  elasticsearch-native-port: 9300
-  elasticsearch-rest-port: 9200
-  elasticsearch-index-for-ticks: turbine-ticks
-  elasticsearch-index-for-indicators: turbine-indicators
-  elasticsearch-index-for-strategies: turbine-strategies
-  elasticsearch-type-for-ticks: turbine-tick
-  elasticsearch-type-for-indicators: turbine-indicator
-  elasticsearch-type-for-strategies: turbine-strategy
+  elasticsearch-native-port: 9305
+  elasticsearch-rest-port: 9205
+  elasticsearch-index-for-ticks: turbine-ticks-test
+  elasticsearch-index-for-indicators: turbine-indicators-test
+  elasticsearch-index-for-strategies: turbine-strategies-test
+  elasticsearch-type-for-ticks: turbine-tick-test
+  elasticsearch-type-for-indicators: turbine-indicator-test
+  elasticsearch-type-for-strategies: turbine-strategy-test
   websocket-camel-component: stub
   websocket-ticks: /topic/ticks
   websocket-indicators: /topic/indicators
