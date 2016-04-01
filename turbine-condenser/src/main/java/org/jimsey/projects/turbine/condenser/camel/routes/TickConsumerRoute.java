@@ -43,7 +43,7 @@ public class TickConsumerRoute extends BaseRoute {
   @PostConstruct
   public void init() {
     super.setup(
-        infrastructureProperties.getElasticsearchIndexForStrategies(),
+        infrastructureProperties.getElasticsearchIndexForTicks(),
         infrastructureProperties.getElasticsearchTypeForTicks());
   }
 
