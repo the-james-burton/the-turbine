@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
@@ -62,9 +61,7 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,13 +74,21 @@ public class ElasticsearchNativeServiceImplTest {
 
   private static final String elasticsearchTmpDir = "./target/elasticsearch";
 
+  private static final String market = "FTSE100";
+
+  private static final String stockOne = "ABC";
+
+  private static final String StockTwo = "DEF";
+
   @InjectMocks
   private ElasticsearchNativeServiceImpl service = new ElasticsearchNativeServiceImpl();
 
   @Mock
   private InfrastructureProperties infrastructureProperties;
 
-  private final DomainObjectGenerator rdog = new RandomDomainObjectGenerator("FTSE100", "ABC");
+  private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(market, stockOne);
+
+  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(market, StockTwo);
 
   private final ObjectMapper json = new ObjectMapper();
 
@@ -104,8 +109,6 @@ public class ElasticsearchNativeServiceImplTest {
   private static final String typeForTicks = "turbine-tick-test";
 
   private boolean initialised = false;
-
-  private final int numberOfTicks = 12;
 
   private final Set<String> ids = new HashSet<>();
 
@@ -131,6 +134,9 @@ public class ElasticsearchNativeServiceImplTest {
       initialised = true;
     }
 
+  }
+
+  private void addTicks(DomainObjectGenerator rdog, int numberOfTicks) throws JsonProcessingException, InterruptedException {
     int x = 0;
     while (++x <= numberOfTicks) {
       ids.add(indexTick());
@@ -175,7 +181,10 @@ public class ElasticsearchNativeServiceImplTest {
   }
 
   @Test
-  public void testGetAllticks() throws JsonParseException, JsonMappingException, IOException {
+  public void testGetAllticks() throws Exception {
+    int numberOfTicks = 12;
+    logger.info("given any {} ticks");
+    addTicks(rdogOne, 12);
     logger.info("it should return all ticks");
     String result = service.getAllTicks();
     logger.info(" *** getAllTicks(): {}", result);
@@ -192,9 +201,9 @@ public class ElasticsearchNativeServiceImplTest {
         .prepareIndex(
             indexForTicks,
             typeForTicks)
-        .setSource(json.writeValueAsBytes(rdog.newTick()))
+        .setSource(json.writeValueAsBytes(rdogOne.newTick()))
         .get();
-    logger.info("successfully indexed new tick: index:{}, type:{}, id:{}",
+    logger.debug("successfully indexed new tick: index:{}, type:{}, id:{}",
         response.getIndex(), response.getType(), response.getId());
     return response.getId();
   }
@@ -206,7 +215,7 @@ public class ElasticsearchNativeServiceImplTest {
             typeForTicks,
             id)
         .get();
-    logger.info("successfully deleted tick: index:{}, type:{}, id:{}",
+    logger.debug("successfully deleted tick: index:{}, type:{}, id:{}",
         response.getIndex(), response.getType(), response.getId());
   }
 
