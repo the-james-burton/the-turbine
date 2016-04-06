@@ -28,8 +28,14 @@ public interface DomainObjectGenerator {
 
   TickJson newTick();
 
+  IndicatorJson newIndicator(String name);
+
+  StrategyJson newStrategy(String name);
+
   TickJson newTick(OffsetDateTime date);
 
   IndicatorJson newIndicator(OffsetDateTime date, String name);
+
+  StrategyJson newStrategy(OffsetDateTime date, String name);
 
 }

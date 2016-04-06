@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.apache.qpid.util.FileUtils;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
@@ -49,6 +50,7 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -78,7 +80,9 @@ public class ElasticsearchNativeServiceImplTest {
 
   private static final String stockOne = "ABC";
 
-  private static final String StockTwo = "DEF";
+  private static final String stockTwo = "DEF";
+
+  private static final String stockThree = "GHI";
 
   @InjectMocks
   private ElasticsearchNativeServiceImpl service = new ElasticsearchNativeServiceImpl();
@@ -88,7 +92,7 @@ public class ElasticsearchNativeServiceImplTest {
 
   private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(market, stockOne);
 
-  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(market, StockTwo);
+  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(market, stockTwo);
 
   private final ObjectMapper json = new ObjectMapper();
 
@@ -108,9 +112,17 @@ public class ElasticsearchNativeServiceImplTest {
 
   private static final String typeForTicks = "turbine-tick-test";
 
+  private static final String indexForIndicators = "turbine-indicators-test";
+
+  private static final String typeForIndicators = "turbine-indicators-test";
+
+  private static final String indexForStrategies = "turbine-strategies-test";
+
+  private static final String typeForStrategies = "turbine-strategies-test";
+
   private boolean initialised = false;
 
-  private final Set<String> ids = new HashSet<>();
+  private final Set<String> tickIds = new HashSet<>();
 
   public ElasticsearchNativeServiceImplTest() {
   }
@@ -134,15 +146,6 @@ public class ElasticsearchNativeServiceImplTest {
       initialised = true;
     }
 
-  }
-
-  private void addTicks(DomainObjectGenerator rdog, int numberOfTicks) throws JsonProcessingException, InterruptedException {
-    int x = 0;
-    while (++x <= numberOfTicks) {
-      ids.add(indexTick());
-    }
-    // TODO too quick and the ES search returns nothing! can we flush ES?
-    Thread.sleep(1000);
   }
 
   @BeforeClass
@@ -171,20 +174,21 @@ public class ElasticsearchNativeServiceImplTest {
         .node();
     node.start();
     elasticsearch = node.client();
-
   }
 
   @After
   public void tearDown() {
     logger.info("tearDown()");
-    ids.stream().forEach(id -> deleteTick(id));
+    tickIds.stream().forEach(id -> delete(indexForTicks, typeForTicks, id));
+    refreshElasticsearch();
   }
 
+  @Ignore
   @Test
-  public void testGetAllticks() throws Exception {
+  public void testGetAllTicks() throws Exception {
     int numberOfTicks = 12;
-    logger.info("given any {} ticks");
-    addTicks(rdogOne, 12);
+    logger.info("given any {} ticks", numberOfTicks);
+    populateElasticsearch(rdogOne, numberOfTicks, indexForTicks, typeForTicks, TickJson.class);
     logger.info("it should return all ticks");
     String result = service.getAllTicks();
     logger.info(" *** getAllTicks(): {}", result);
@@ -195,27 +199,124 @@ public class ElasticsearchNativeServiceImplTest {
     assertThat(result, containsString("timestamp"));
   }
 
+  @Test
+  public void testFindTicksBySymbol() throws Exception {
+    int numberOfTicksOne = 5;
+    int numberOfTicksTwo = 7;
+    logger.info("given {} {} ticks and {} {} ticks",
+        numberOfTicksOne, stockOne, numberOfTicksTwo, stockTwo);
+    populateElasticsearch(rdogOne, numberOfTicksOne, indexForTicks, typeForTicks, TickJson.class);
+    populateElasticsearch(rdogTwo, numberOfTicksTwo, indexForTicks, typeForTicks, TickJson.class);
+    logger.info("it should return {} {} ticks, {} {} ticks and 0 {} ticks",
+        numberOfTicksOne, stockOne, numberOfTicksTwo, stockTwo, stockThree);
+    List<TickJson> resultOne = service.findTicksBySymbol(stockOne);
+    List<TickJson> resultTwo = service.findTicksBySymbol(stockTwo);
+    List<TickJson> resultThree = service.findTicksBySymbol(stockThree);
+    logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
+        stockOne, resultOne.size(), numberOfTicksOne);
+    logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
+        stockTwo, resultTwo.size(), numberOfTicksTwo);
+    logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
+        stockThree, resultThree.size(), 0);
+    assertThat(resultOne, hasSize(numberOfTicksOne));
+    assertThat(resultTwo, hasSize(numberOfTicksTwo));
+    assertThat(resultThree, hasSize(0));
+  }
+
+  @Test
+  public void testFindTicksBySymbolAndDateGreaterThan() throws Exception {
+  }
+
   // ------------------------------------------------------
-  private String indexTick() throws ElasticsearchException, JsonProcessingException {
+
+  /**
+   * Populate elasticsearch with the given number of the given objects
+   * 
+   * @param rdog the RandomDomainObjectGenerator to use
+   * @param number how many objects to create
+   * @param t what type of objects to create
+   * @return the object in the middle of the populate, by timestamp
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  private <T> T populateElasticsearch(DomainObjectGenerator rdog, int number, String index, String type, Class<T> t)
+      throws Exception {
+    int x = 0;
+    int midpoint = (number / 2) + 1;
+    Object result = null;
+    while (++x <= number) {
+      switch (t.getSimpleName()) {
+      // TODO find a way to use class.getSimpleName() without the compiler complaining...
+      case "TickJson":
+        TickJson tick = rdog.newTick();
+        tickIds.add(index(index, type, tick));
+        if (x == midpoint) {
+          logger.info("midpoint: {}", x);
+          result = tick;
+        }
+        break;
+      case "IndicatorJson":
+        break;
+      case "StrategyJson":
+        break;
+      default:
+        throw new Exception(String.format("unsupported class: %s", t.getName()));
+      }
+    }
+    refreshElasticsearch();
+    return (T) result;
+  }
+
+  /**
+   * This will cause elasticsearch to 'flush' ensuring that queries return correctly.
+   * Should be called after every data population.
+   */
+  private void refreshElasticsearch() {
+    refreshElasticsearch(indexForTicks);
+    refreshElasticsearch(indexForIndicators);
+    refreshElasticsearch(indexForStrategies);
+  }
+
+  private void refreshElasticsearch(String index) {
+    try {
+      RefreshResponse refreshResponse = elasticsearch.admin().indices().prepareRefresh(index).get();
+      logger.info("failed: {}", refreshResponse.getFailedShards());
+      logger.info("succeeded: {}", refreshResponse.getSuccessfulShards());
+    } catch (Exception e) {
+      logger.warn(e.getMessage());
+    }
+  }
+
+  /**
+   * Index a given object into elasticsearch. The object must be serializable with Jackson.
+   *  
+   * @param index the elasticserch index to write the object into
+   * @param type the type of the object being written
+   * @param object the object to write into the index
+   * @return the id of the object indexed by elasticsearch
+   * @throws ElasticsearchException
+   * @throws JsonProcessingException
+   */
+  private String index(String index, String type, Object object) throws ElasticsearchException, JsonProcessingException {
     IndexResponse response = elasticsearch
-        .prepareIndex(
-            indexForTicks,
-            typeForTicks)
-        .setSource(json.writeValueAsBytes(rdogOne.newTick()))
+        .prepareIndex(index, type)
+        .setSource(json.writeValueAsBytes(object))
         .get();
-    logger.debug("successfully indexed new tick: index:{}, type:{}, id:{}",
-        response.getIndex(), response.getType(), response.getId());
+    logger.info("successfully indexed new object: index:{}, type:{}, id:{}, object:{}",
+        response.getIndex(), response.getType(), response.getId(), object);
     return response.getId();
   }
 
-  private void deleteTick(String id) {
-    DeleteResponse response = elasticsearch
-        .prepareDelete(
-            indexForTicks,
-            typeForTicks,
-            id)
-        .get();
-    logger.debug("successfully deleted tick: index:{}, type:{}, id:{}",
+  /**
+   * delete the object with the given id and type from the given index
+   *  
+   * @param index the elasticsearch index to delete from
+   * @param type the type of the object being deleted
+   * @param id the id of the object being deleted
+   */
+  private void delete(String index, String type, String id) {
+    DeleteResponse response = elasticsearch.prepareDelete(index, type, id).get();
+    logger.info("successfully deleted tick: index:{}, type:{}, id:{}",
         response.getIndex(), response.getType(), response.getId());
   }
 

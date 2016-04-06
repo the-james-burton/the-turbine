@@ -40,7 +40,9 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
   private TickJson tick;
 
-  private IndicatorJson stock;
+  private IndicatorJson indicator;
+
+  private StrategyJson strategy;
 
   public RandomDomainObjectGenerator(String market, String symbol) {
     this.market = market;
@@ -80,16 +82,44 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     indicators.put("bollingerBandsLowerIndicator", RandomUtils.nextDouble(Math.max(0, open - variation), open));
     indicators.put("bollingerBandsMiddleIndicator", RandomUtils.nextDouble(Math.max(0, low), high));
 
-    stock = new IndicatorJson(
+    indicator = new IndicatorJson(
         date, closePriceIndicator, indicators,
         this.symbol, this.market, name, OffsetDateTime.now().toString());
-    return stock;
+    return indicator;
+  }
+
+  @Override
+  public StrategyJson newStrategy(OffsetDateTime date, String name) {
+
+    final double variation = 3.0d;
+
+    double close = tick.getClose();
+    String action = "none";
+    Integer amount = 0;
+    Integer position = 0;
+    Double cash = 250d;
+    Double value = 0d;
+
+    strategy = new StrategyJson(
+        date, this.market, this.symbol, close,
+        name, action, amount, position, cash, value, OffsetDateTime.now().toString());
+    return strategy;
   }
 
   @Override
   public TickJson newTick() {
     tick = newTick(OffsetDateTime.now());
     return tick;
+  }
+
+  @Override
+  public IndicatorJson newIndicator(String name) {
+    return newIndicator(OffsetDateTime.now(), name);
+  }
+
+  @Override
+  public StrategyJson newStrategy(String name) {
+    return newStrategy(OffsetDateTime.now(), name);
   }
 
 }

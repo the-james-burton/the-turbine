@@ -32,12 +32,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
@@ -55,6 +55,8 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private final int size = 5000;
+
   @Autowired
   @NotNull
   private InfrastructureProperties infrastructureProperties;
@@ -69,6 +71,18 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   @NotNull
   private String typeForTicks;
 
+  @NotNull
+  private String indexForIndicators;
+
+  @NotNull
+  private String typeForIndicators;
+
+  @NotNull
+  private String indexForStrategies;
+
+  @NotNull
+  private String typeForStrategies;
+
   @PostConstruct
   public void init() {
     // Node node = NodeBuilder.nodeBuilder().clusterName("elasticsearch").client(true).node();
@@ -77,6 +91,10 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     Integer port = infrastructureProperties.getElasticsearchNativePort();
     indexForTicks = infrastructureProperties.getElasticsearchIndexForTicks();
     typeForTicks = infrastructureProperties.getElasticsearchTypeForTicks();
+    indexForIndicators = infrastructureProperties.getElasticsearchIndexForIndicators();
+    typeForIndicators = infrastructureProperties.getElasticsearchTypeForIndicators();
+    indexForStrategies = infrastructureProperties.getElasticsearchIndexForStrategies();
+    typeForStrategies = infrastructureProperties.getElasticsearchTypeForStrategies();
     Settings settings = ImmutableSettings.settingsBuilder()
         .put("cluster.name", cluster)
         .build();
@@ -92,8 +110,8 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
         .prepareSearch(indexForTicks)
         .setQuery(queryBuilder)
         .setTypes(typeForTicks)
-        .setSize(5000)
-        .execute().actionGet();
+        .setSize(size)
+        .get();
     // for (SearchHit hit : response.getHits().getHits()) {
     // System.out.println(hit.getSourceAsString());
     // }
@@ -105,38 +123,29 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
 
   @Override
   public List<TickJson> findTicksBySymbol(String symbol) {
-    QueryBuilder query = boolQuery()
-        .must(matchQuery("symbol", symbol));
-    System.out.println(query.toString());
-    SearchResponse response = createTickQuery(query).execute().actionGet();
-    List<TickJson> results = extractResults(response, TickJson.class);
-    return results;
-  }
-
-  @Override
-  public List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date) {
-    QueryBuilder query = boolQuery()
-        .must(matchQuery("symbol", symbol))
-        .must(rangeQuery("date").from(date));
-    System.out.println(query.toString());
-    SearchResponse response = createTickQuery(query).execute().actionGet();
-    List<TickJson> results = extractResults(response, TickJson.class);
-    return results;
+    // return queryFindBySymbol(symbol, TickJson.class);
+    return queryElasticsearch(indexForTicks, typeForTicks, symbol, TickJson.class,
+        matchQuery("symbol", symbol));
   }
 
   @Override
   public List<IndicatorJson> findIndicatorsBySymbol(String symbol) {
-    QueryBuilder query = boolQuery().must(matchQuery("symbol", symbol));
-    System.out.println(query.toString());
-    SearchResponse response = createIndicatorQuery(query).execute().actionGet();
-    List<IndicatorJson> results = extractResults(response, IndicatorJson.class);
-    return results;
+    return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
+        matchQuery("symbol", symbol));
+  }
+
+  @Override
+  public List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date) {
+    return queryElasticsearch(indexForTicks, typeForTicks, symbol, TickJson.class,
+        matchQuery("symbol", symbol),
+        rangeQuery("date").from(date));
   }
 
   @Override
   public List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date) {
-    // TODO Auto-generated method stub
-    return null;
+    return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
+        matchQuery("symbol", symbol),
+        rangeQuery("date").from(date));
   }
 
   @Override
@@ -145,16 +154,21 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     return null;
   }
 
-  private SearchRequestBuilder createTickQuery(QueryBuilder query) {
-    return createQuery(query, indexForTicks, typeForTicks);
-  }
-
-  private SearchRequestBuilder createIndicatorQuery(QueryBuilder query) {
-    return createQuery(query, indexForTicks, typeForTicks);
-  }
-
-  private SearchRequestBuilder createQuery(QueryBuilder query, String type, String index) {
-    return elasticsearch.prepareSearch().setQuery(query).setTypes(type);
+  private <T> List<T> queryElasticsearch(String index, String type, String symbol, Class<T> t, QueryBuilder... queries) {
+    BoolQueryBuilder query = boolQuery();
+    for (QueryBuilder q : queries) {
+      // .must(matchQuery("symbol", symbol));
+      query.must(q);
+    }
+    System.out.println(query.toString());
+    SearchResponse response = elasticsearch.prepareSearch()
+        .setIndices(index)
+        .setTypes(type)
+        .setQuery(query)
+        .setSize(size)
+        .get();
+    List<T> results = extractResults(response, t);
+    return results;
   }
 
   private <T> List<T> extractResults(SearchResponse response, Class<T> t) {
