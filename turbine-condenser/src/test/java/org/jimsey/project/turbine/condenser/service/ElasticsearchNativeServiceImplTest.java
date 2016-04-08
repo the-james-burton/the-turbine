@@ -28,14 +28,13 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.lang.invoke.MethodHandles;
-import java.util.HashSet;
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.qpid.util.FileUtils;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
-import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -45,12 +44,13 @@ import org.elasticsearch.node.NodeBuilder;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.condenser.service.ElasticsearchNativeServiceImpl;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -60,7 +60,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -68,7 +67,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MockServletContext.class)
-@ActiveProfiles("it")
 // @Ignore
 public class ElasticsearchNativeServiceImplTest {
 
@@ -122,8 +120,6 @@ public class ElasticsearchNativeServiceImplTest {
 
   private boolean initialised = false;
 
-  private final Set<String> tickIds = new HashSet<>();
-
   public ElasticsearchNativeServiceImplTest() {
   }
 
@@ -140,6 +136,10 @@ public class ElasticsearchNativeServiceImplTest {
       when(infrastructureProperties.getElasticsearchRestPort()).thenReturn(elasticsearchRestPort);
       when(infrastructureProperties.getElasticsearchIndexForTicks()).thenReturn(indexForTicks);
       when(infrastructureProperties.getElasticsearchTypeForTicks()).thenReturn(typeForTicks);
+      when(infrastructureProperties.getElasticsearchIndexForIndicators()).thenReturn(indexForIndicators);
+      when(infrastructureProperties.getElasticsearchTypeForIndicators()).thenReturn(typeForIndicators);
+      when(infrastructureProperties.getElasticsearchIndexForStrategies()).thenReturn(indexForStrategies);
+      when(infrastructureProperties.getElasticsearchTypeForStrategies()).thenReturn(typeForStrategies);
 
       // TODO should I expect this @PostConstruct be called automatically for me?
       service.init();
@@ -178,53 +178,121 @@ public class ElasticsearchNativeServiceImplTest {
 
   @After
   public void tearDown() {
-    logger.info("tearDown()");
-    tickIds.stream().forEach(id -> delete(indexForTicks, typeForTicks, id));
+    logger.debug("tearDown()");
+    // TODO delete whole index, not each id...
+    deleteElasticsearch(indexForTicks);
+    deleteElasticsearch(indexForIndicators);
+    deleteElasticsearch(indexForStrategies);
     refreshElasticsearch();
   }
 
-  @Ignore
   @Test
   public void testGetAllTicks() throws Exception {
-    int numberOfTicks = 12;
-    logger.info("given any {} ticks", numberOfTicks);
-    populateElasticsearch(rdogOne, numberOfTicks, indexForTicks, typeForTicks, TickJson.class);
+    int number = 12;
+    logger.info("given any {} ticks", number);
+    populateElasticsearch(rdogOne, number, indexForTicks, typeForTicks, null, TickJson.class);
     logger.info("it should return all ticks");
     String result = service.getAllTicks();
     logger.info(" *** getAllTicks(): {}", result);
     @SuppressWarnings("unchecked")
     List<TickJson> ticks = (List<TickJson>) json.readValue(result, List.class);
-    logger.info("expected:{}, actual:{}", numberOfTicks, ticks.size());
-    assertThat(ticks, hasSize(numberOfTicks));
+    logger.info("expected:{}, actual:{}", number, ticks.size());
+    assertThat(ticks, hasSize(number));
     assertThat(result, containsString("timestamp"));
   }
 
   @Test
   public void testFindTicksBySymbol() throws Exception {
-    int numberOfTicksOne = 5;
-    int numberOfTicksTwo = 7;
+    int numberOne = 5;
+    int numberTwo = 7;
     logger.info("given {} {} ticks and {} {} ticks",
-        numberOfTicksOne, stockOne, numberOfTicksTwo, stockTwo);
-    populateElasticsearch(rdogOne, numberOfTicksOne, indexForTicks, typeForTicks, TickJson.class);
-    populateElasticsearch(rdogTwo, numberOfTicksTwo, indexForTicks, typeForTicks, TickJson.class);
+        numberOne, stockOne, numberTwo, stockTwo);
+    populateElasticsearch(rdogOne, numberOne, indexForTicks, typeForTicks, null, TickJson.class);
+    populateElasticsearch(rdogTwo, numberTwo, indexForTicks, typeForTicks, null, TickJson.class);
     logger.info("it should return {} {} ticks, {} {} ticks and 0 {} ticks",
-        numberOfTicksOne, stockOne, numberOfTicksTwo, stockTwo, stockThree);
+        numberOne, stockOne, numberTwo, stockTwo, stockThree);
     List<TickJson> resultOne = service.findTicksBySymbol(stockOne);
     List<TickJson> resultTwo = service.findTicksBySymbol(stockTwo);
     List<TickJson> resultThree = service.findTicksBySymbol(stockThree);
     logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
-        stockOne, resultOne.size(), numberOfTicksOne);
+        stockOne, resultOne.size(), numberOne);
     logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
-        stockTwo, resultTwo.size(), numberOfTicksTwo);
+        stockTwo, resultTwo.size(), numberTwo);
     logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
         stockThree, resultThree.size(), 0);
-    assertThat(resultOne, hasSize(numberOfTicksOne));
-    assertThat(resultTwo, hasSize(numberOfTicksTwo));
+    assertThat(resultOne, hasSize(numberOne));
+    assertThat(resultTwo, hasSize(numberTwo));
+    assertThat(resultThree, hasSize(0));
+  }
+
+  @Test
+  public void testFindIndicatorsBySymbol() throws Exception {
+    int numberOne = 5;
+    int numberTwo = 7;
+    logger.info("given {} {} indicators and {} {} indicators",
+        numberOne, stockOne, numberTwo, stockTwo);
+    String name = "indicator-name";
+    populateElasticsearch(rdogOne, numberOne, indexForIndicators, typeForIndicators, name, IndicatorJson.class);
+    populateElasticsearch(rdogTwo, numberTwo, indexForIndicators, typeForIndicators, name, IndicatorJson.class);
+    logger.info("it should return {} {} indictors, {} {} indicators and 0 {} indicators",
+        numberOne, stockOne, numberTwo, stockTwo, stockThree);
+    List<IndicatorJson> resultOne = service.findIndicatorsBySymbol(stockOne);
+    List<IndicatorJson> resultTwo = service.findIndicatorsBySymbol(stockTwo);
+    List<IndicatorJson> resultThree = service.findIndicatorsBySymbol(stockThree);
+    logger.info(" *** findIndicatorsBySymbol({}): {}, expected: {}",
+        stockOne, resultOne.size(), numberOne);
+    logger.info(" *** findIndicatorsBySymbol({}): {}, expected: {}",
+        stockTwo, resultTwo.size(), numberTwo);
+    logger.info(" *** findIndicatorsBySymbol({}): {}, expected: {}",
+        stockThree, resultThree.size(), 0);
+    assertThat(resultOne, hasSize(numberOne));
+    assertThat(resultTwo, hasSize(numberTwo));
     assertThat(resultThree, hasSize(0));
   }
 
   @Test
   public void testFindTicksBySymbolAndDateGreaterThan() throws Exception {
+    int number = 7;
+    int expected = 4;
+    logger.info("given {} {} ticks", number, stockOne);
+    long midpoint = populateElasticsearch(rdogOne, number, indexForTicks, typeForTicks, null, TickJson.class).getDate();
+    logger.info("it should return only {} {} ticks after the midpoint", expected, stockOne);
+    List<TickJson> result = service.findTicksBySymbolAndDateGreaterThan(stockOne, midpoint);
+    logger.info(" *** findTicksBySymbolAndDateGreaterThan({}, {}): {}, expected: {}",
+        stockOne, midpoint, result.size(), expected);
+    assertThat(result, hasSize(expected));
+  }
+
+  @Test
+  public void testFindIndicatorsBySymbolAndDateGreaterThan() throws Exception {
+    int number = 7;
+    int expected = 4;
+    logger.info("given {} {} indicators", number, stockOne);
+    long midpoint = populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, null,
+        IndicatorJson.class).getDate();
+    logger.info("it should return only {} {} indicators after the midpoint", expected, stockOne);
+    List<IndicatorJson> result = service.findIndicatorsBySymbolAndDateGreaterThan(stockOne, midpoint);
+    logger.info(" *** findIndicatorsBySymbolAndDateGreaterThan({}, {}): {}, expected: {}",
+        stockOne, midpoint, result.size(), expected);
+    assertThat(result, hasSize(expected));
+  }
+
+  @Test
+  public void testFindIndicatorsBySymbolAndNameAndDateGreaterThan() throws Exception {
+    int number = 7;
+    int expected = 7;
+    final String nameOne = "indicator-one";
+    final String nameTwo = "indicator-two";
+    logger.info("given {} {} {} indicators and {} {} {} indicators",
+        number, stockOne, nameOne, number, stockOne, nameTwo);
+    populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, nameOne, IndicatorJson.class);
+    long midpoint = OffsetDateTime.now().toInstant().toEpochMilli();
+    populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, nameTwo, IndicatorJson.class);
+    logger.info("it should return only {} {} {} indicators after the midpoint", expected, nameOne, stockOne);
+    List<IndicatorJson> result = service.findIndicatorsBySymbolAndNameAndDateGreaterThan(stockOne, nameOne, midpoint);
+    logger.info(" *** findIndicatorsBySymbolAndNameAndDateGreaterThan({}, {}, {}): {}, expected: {}",
+        stockOne, nameOne, midpoint, result.size(), expected);
+    assertThat(result, hasSize(expected));
   }
 
   // ------------------------------------------------------
@@ -234,35 +302,42 @@ public class ElasticsearchNativeServiceImplTest {
    * 
    * @param rdog the RandomDomainObjectGenerator to use
    * @param number how many objects to create
+   * @param index the index to use in elasticsearch
+   * @param type the type to use in elasticsearch
+   * @param name the name of the indicator or strategy (ignored for ticks)
    * @param t what type of objects to create
    * @return the object in the middle of the populate, by timestamp
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private <T> T populateElasticsearch(DomainObjectGenerator rdog, int number, String index, String type, Class<T> t)
+  private <T> T populateElasticsearch(
+      DomainObjectGenerator rdog, int number, String index, String type, String name, Class<T> t)
       throws Exception {
     int x = 0;
     int midpoint = (number / 2) + 1;
     Object result = null;
+    Object current = null;
     while (++x <= number) {
-      switch (t.getSimpleName()) {
-      // TODO find a way to use class.getSimpleName() without the compiler complaining...
-      case "TickJson":
-        TickJson tick = rdog.newTick();
-        tickIds.add(index(index, type, tick));
-        if (x == midpoint) {
-          logger.info("midpoint: {}", x);
-          result = tick;
-        }
-        break;
-      case "IndicatorJson":
-        break;
-      case "StrategyJson":
-        break;
-      default:
+      // cannot use switch statement easily here due to generics...
+      if (TickJson.class.getName().equals(t.getName())) {
+        current = rdog.newTick();
+      }
+      if (IndicatorJson.class.getName().equals(t.getName())) {
+        current = rdog.newIndicator(name);
+      }
+      if (StrategyJson.class.getName().equals(t.getName())) {
+        current = rdog.newStrategy(name);
+      }
+      if (current == null) {
         throw new Exception(String.format("unsupported class: %s", t.getName()));
       }
+      index(index, type, current);
+      if (x == midpoint) {
+        logger.debug("midpoint: {}", x);
+        result = current;
+      }
     }
+
     refreshElasticsearch();
     return (T) result;
   }
@@ -280,8 +355,8 @@ public class ElasticsearchNativeServiceImplTest {
   private void refreshElasticsearch(String index) {
     try {
       RefreshResponse refreshResponse = elasticsearch.admin().indices().prepareRefresh(index).get();
-      logger.info("failed: {}", refreshResponse.getFailedShards());
-      logger.info("succeeded: {}", refreshResponse.getSuccessfulShards());
+      logger.debug("failed: {}", refreshResponse.getFailedShards());
+      logger.debug("succeeded: {}", refreshResponse.getSuccessfulShards());
     } catch (Exception e) {
       logger.warn(e.getMessage());
     }
@@ -302,22 +377,26 @@ public class ElasticsearchNativeServiceImplTest {
         .prepareIndex(index, type)
         .setSource(json.writeValueAsBytes(object))
         .get();
-    logger.info("successfully indexed new object: index:{}, type:{}, id:{}, object:{}",
+    logger.debug("successfully indexed new object: index:{}, type:{}, id:{}, object:{}",
         response.getIndex(), response.getType(), response.getId(), object);
     return response.getId();
   }
 
   /**
-   * delete the object with the given id and type from the given index
+   * removes all known indexes from the in-process elasticsearch
    *  
    * @param index the elasticsearch index to delete from
    * @param type the type of the object being deleted
    * @param id the id of the object being deleted
    */
-  private void delete(String index, String type, String id) {
-    DeleteResponse response = elasticsearch.prepareDelete(index, type, id).get();
-    logger.info("successfully deleted tick: index:{}, type:{}, id:{}",
-        response.getIndex(), response.getType(), response.getId());
+  private void deleteElasticsearch(String index) {
+    DeleteIndexResponse response = null;
+    try {
+      response = elasticsearch.admin().indices().prepareDelete(index).get();
+      logger.debug("successfully deleted: index:{}, headers:{}", index, response.getHeaders());
+    } catch (Exception e) {
+      logger.warn(e.getMessage());
+    }
   }
 
 }

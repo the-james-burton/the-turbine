@@ -78,9 +78,9 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
     Map<String, Double> indicators = new HashMap<>();
 
-    indicators.put("bollingerBandsUpperIndicator", RandomUtils.nextDouble(open, open + variation));
-    indicators.put("bollingerBandsLowerIndicator", RandomUtils.nextDouble(Math.max(0, open - variation), open));
-    indicators.put("bollingerBandsMiddleIndicator", RandomUtils.nextDouble(Math.max(0, low), high));
+    indicators.put("upper", RandomUtils.nextDouble(open, open + variation));
+    indicators.put("lower", RandomUtils.nextDouble(Math.max(0, open - variation), open));
+    indicators.put("middle", RandomUtils.nextDouble(Math.max(0, low), high));
 
     indicator = new IndicatorJson(
         date, closePriceIndicator, indicators,

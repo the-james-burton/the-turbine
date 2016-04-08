@@ -150,17 +150,19 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
 
   @Override
   public List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date) {
-    // TODO Auto-generated method stub
-    return null;
+    return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
+        matchQuery("symbol", symbol),
+        matchQuery("name", name),
+        rangeQuery("date").from(date));
   }
 
   private <T> List<T> queryElasticsearch(String index, String type, String symbol, Class<T> t, QueryBuilder... queries) {
     BoolQueryBuilder query = boolQuery();
     for (QueryBuilder q : queries) {
-      // .must(matchQuery("symbol", symbol));
       query.must(q);
     }
-    System.out.println(query.toString());
+    logger.debug("queryElasticsearch({}, {}, {}, {})...\n{}",
+        index, type, symbol, t.getSimpleName(), query.toString());
     SearchResponse response = elasticsearch.prepareSearch()
         .setIndices(index)
         .setTypes(type)
@@ -175,9 +177,13 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     List<T> results = new ArrayList<>();
     try {
       for (SearchHit hit : response.getHits().getHits()) {
-        System.out.println(hit.getSourceAsString());
         results.add(json.readValue(hit.getSourceAsString(), t));
       }
+      // this map reduce is just to get the results on their own lines in the file...
+      logger.debug("extractResults({})...\n{}", t.getSimpleName(),
+          results.stream()
+              .map(i -> i.toString())
+              .reduce((a, b) -> String.format("%s\n%s", a, b)).orElse(""));
     } catch (Exception e) {
       logger.error("error parsing to TickJson: [{}]", e.getMessage());
     }
