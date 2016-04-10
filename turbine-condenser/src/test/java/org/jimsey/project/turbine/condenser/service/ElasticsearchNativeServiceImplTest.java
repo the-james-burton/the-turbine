@@ -60,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -67,6 +68,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MockServletContext.class)
+@ActiveProfiles("it")
 // @Ignore
 public class ElasticsearchNativeServiceImplTest {
 
@@ -179,7 +181,7 @@ public class ElasticsearchNativeServiceImplTest {
   @After
   public void tearDown() {
     logger.debug("tearDown()");
-    // TODO delete whole index, not each id...
+    // delete whole index, not each id...
     deleteElasticsearch(indexForTicks);
     deleteElasticsearch(indexForIndicators);
     deleteElasticsearch(indexForStrategies);

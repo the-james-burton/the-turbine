@@ -39,7 +39,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -56,7 +55,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAutoConfiguration
 @EnableScheduling
 @EnableSwagger2
-@EnableElasticsearchRepositories(basePackages = "org.jimsey.projects.turbine.condenser.elasticsearch.repositories")
+// @EnableElasticsearchRepositories(basePackages = "org.jimsey.projects.turbine.condenser.elasticsearch.repositories")
 public class Application {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);

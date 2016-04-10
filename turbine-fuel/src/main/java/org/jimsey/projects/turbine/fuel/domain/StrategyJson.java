@@ -27,18 +27,16 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
-import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// TODO this annotation forces the use of constants...
-@Document(
-    indexName = TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_STRATEGIES,
-    type = TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_STRATEGIES)
+// TODO this annotation (spring-data-elasticsearch only) forces the use of constants...
+// @Document(
+// indexName = TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_STRATEGIES,
+// type = TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_STRATEGIES)
 public class StrategyJson extends Entity implements Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -27,13 +27,10 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
-import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -45,10 +42,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
 
-// TODO this annotation forces the use of constants...
-@Document(
-    indexName = TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
-    type = TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
+// TODO this annotation (spring-data-elasticsearch only) forces the use of constants...
+// @Document(
+// indexName = TurbineFuelConstants.ELASTICSEARCH_INDEX_FOR_TICKS,
+// type = TurbineFuelConstants.ELASTICSEARCH_TYPE_FOR_TICKS)
 @JsonAutoDetect(
     fieldVisibility = Visibility.NONE,
     getterVisibility = Visibility.NONE,
@@ -65,7 +62,7 @@ public class TickJson extends Tick implements Serializable {
   private static ObjectMapper json = new ObjectMapper();
 
   // TODO need a better id...
-  @Id
+  // @Id
   private Long date;
 
   private OffsetDateTime timestamp;

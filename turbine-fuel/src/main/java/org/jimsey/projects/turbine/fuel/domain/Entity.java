@@ -27,7 +27,6 @@ import java.time.OffsetDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -51,7 +50,7 @@ public abstract class Entity implements Serializable {
   private static ObjectMapper json = new ObjectMapper();
 
   // TODO need a better id...
-  @Id
+  // @Id
   private Long date;
 
   private OffsetDateTime timestamp;

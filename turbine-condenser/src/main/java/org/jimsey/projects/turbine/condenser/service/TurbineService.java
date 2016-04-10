@@ -28,16 +28,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
-import org.jimsey.projects.turbine.condenser.elasticsearch.repositories.IndicatorRepository;
 import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -51,9 +48,9 @@ public class TurbineService {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  @Autowired
-  @NotNull
-  private IndicatorRepository indicatorRepository;
+  // @Autowired
+  // @NotNull
+  // private IndicatorRepository indicatorRepository;
 
   @PostConstruct
   public void init() {
