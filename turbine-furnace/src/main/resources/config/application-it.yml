@@ -12,7 +12,7 @@ server:
   
 infrastructure:
   environment-name: it
-  amqp-camel-component: rabbitmq
+  amqp-camel-component: stub
   amqp-server: localhost:5672
   amqp-ticks-exchange: turbine.it.market.ticks
   amqp-ticks-queue: turbine.it.queue.ticks
