@@ -51,7 +51,7 @@ import org.springframework.web.client.RestTemplate;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest({ "server.port=48002" })
+@IntegrationTest
 @ActiveProfiles("it")
 public class TurbineControllerIT {
 
