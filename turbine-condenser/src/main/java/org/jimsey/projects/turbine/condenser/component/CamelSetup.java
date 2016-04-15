@@ -75,6 +75,12 @@ public class CamelSetup {
 
         logger.info("beforeApplicationStart hook completed");
       }
+
+      @Override
+      public void afterApplicationStart(CamelContext camelContext) {
+        // TODO Auto-generated method stub
+
+      }
     };
   }
 }

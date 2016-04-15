@@ -61,6 +61,7 @@ public class TurbineController {
   }
 
   @RequestMapping(path = "/ping", produces = "application/json")
+  // @CrossOrigin(origins = "*", maxAge = 3600)
   public PingResponse ping() throws Exception {
     logger.info("ping()");
     return new PingResponse(ping.ping());

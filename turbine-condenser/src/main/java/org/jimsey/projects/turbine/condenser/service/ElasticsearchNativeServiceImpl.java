@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.condenser.service;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.lang.invoke.MethodHandles;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,9 +33,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -95,12 +96,16 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     typeForIndicators = infrastructureProperties.getElasticsearchTypeForIndicators();
     indexForStrategies = infrastructureProperties.getElasticsearchIndexForStrategies();
     typeForStrategies = infrastructureProperties.getElasticsearchTypeForStrategies();
-    Settings settings = ImmutableSettings.settingsBuilder()
+    Settings settings = Settings.settingsBuilder()
         .put("cluster.name", cluster)
         .build();
-    elasticsearch = new TransportClient(settings);
+    // elasticsearch = new TransportClient(settings);
+    elasticsearch = TransportClient.builder().settings(settings).build();
     logger.info(" *** connecting to : {}:{}:{}", cluster, host, port);
-    elasticsearch.addTransportAddress(new InetSocketTransportAddress(host, port));
+
+    InetSocketAddress address = new InetSocketAddress(host, port);
+    InetSocketTransportAddress transport = new InetSocketTransportAddress(address);
+    elasticsearch.addTransportAddress(transport);
   }
 
   @Override
@@ -163,13 +168,18 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     }
     logger.debug("queryElasticsearch({}, {}, {}, {})...\n{}",
         index, type, symbol, t.getSimpleName(), query.toString());
-    SearchResponse response = elasticsearch.prepareSearch()
-        .setIndices(index)
-        .setTypes(type)
-        .setQuery(query)
-        .setSize(size)
-        .get();
-    List<T> results = extractResults(response, t);
+    List<T> results = null;
+    try {
+      SearchResponse response = elasticsearch.prepareSearch()
+          .setIndices(index)
+          .setTypes(type)
+          .setQuery(query)
+          .setSize(size)
+          .get();
+      results = extractResults(response, t);
+    } catch (ElasticsearchException e) {
+      logger.error("unable to query elasticsearch: {}", query.toString());
+    }
     return results;
   }
 

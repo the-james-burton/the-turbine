@@ -84,13 +84,17 @@ public class TickController {
 
   @RequestMapping("/{symbol}")
   public String getTicks(@PathVariable String symbol) {
-    logger.info("getTicks");
+    logger.info("getTicks({})", symbol);
     List<TickJson> ticks = elasticsearchService.findTicksBySymbol(symbol);
-    return Joiner.on(',').join(ticks);
+    if (ticks == null) {
+      return null;
+    }
+    return Joiner.on(',').useForNull("").join(ticks);
   }
 
   @RequestMapping("/{symbol}/{date}")
   public String getTicksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
+    logger.info("getTicksAfter({}, {})", symbol, date);
     List<TickJson> ticks = elasticsearchService.findTicksBySymbolAndDateGreaterThan(symbol, date);
     // return Joiner.on(',').join(ticks);
     // return objectToJson(ticks);

@@ -1,3 +1,5 @@
 http.cors.enabled: true
 http.cors.allow-credentials: true
-path.data: /home/jimsey/Development/installs/elasticsearch-data
+http.cors.allow-origin: /http?:\/\/localhost(:[0-9]+)?/
+http.cors.allow-headers: "X-Requested-With, Content-Type, Content-Length, X-User"
+index.search.slowlog.threshold.query.info: 0ms

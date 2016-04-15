@@ -37,7 +37,6 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -155,7 +154,7 @@ public class ElasticsearchNativeServiceImplTest {
     logger.info("setup()");
     FileUtils.delete(new File(elasticsearchTmpDir), true);
 
-    Settings settings = ImmutableSettings.builder()
+    Settings settings = Settings.builder()
         .put("path.home", elasticsearchTmpDir)
         .put("path.conf", elasticsearchTmpDir)
         .put("path.data", elasticsearchTmpDir)

@@ -1,0 +1,30 @@
+5432:M 13 Apr 08:00:41.734 # Current maximum open files is 4096. maxclients has been reduced to 4064 to compensate for low ulimit. If you need higher maxclients increase 'ulimit -n'.
+
+http://stackoverflow.com/questions/21515463/how-to-increase-maximum-file-open-limit-ulimit-in-ubuntu
+
+Add the following lines to the file: /etc/security/limits.conf
+* soft  nofile 65536
+* hard  nofile 65536
+
+And then add following line in the file: /etc/pam.d/common-session
+session required pam_limits.so
+
+--------------------------------------------------------
+5432:M 13 Apr 08:00:41.736 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+
+http://serverfault.com/questions/271380/how-can-i-increase-the-value-of-somaxconn
+
+net.core.somaxconn=1024 to /etc/sysctl.conf
+
+--------------------------------------------------------
+5432:M 13 Apr 08:00:41.736 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+
+vm.overcommit_memory = 1 to /etc/sysctl.conf
+
+--------------------------------------------------------
+5432:M 13 Apr 08:00:41.736 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.
+
+add this line to /etc/rc.local, above 'exit 0'
+
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+
