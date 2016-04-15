@@ -359,7 +359,7 @@ public class ElasticsearchNativeServiceImplTest {
       logger.debug("failed: {}", refreshResponse.getFailedShards());
       logger.debug("succeeded: {}", refreshResponse.getSuccessfulShards());
     } catch (Exception e) {
-      logger.warn(e.getMessage());
+      logger.debug(e.getMessage());
     }
   }
 
@@ -396,7 +396,7 @@ public class ElasticsearchNativeServiceImplTest {
       response = elasticsearch.admin().indices().prepareDelete(index).get();
       logger.debug("successfully deleted: index:{}, headers:{}", index, response.getHeaders());
     } catch (Exception e) {
-      logger.warn(e.getMessage());
+      logger.debug(e.getMessage());
     }
   }
 
