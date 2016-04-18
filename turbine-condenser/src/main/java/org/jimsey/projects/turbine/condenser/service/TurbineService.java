@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class TurbineService {
 
-  private static final Logger logger = LoggerFactory.getLogger(TurbineService.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static ObjectMapper json = new ObjectMapper();
 

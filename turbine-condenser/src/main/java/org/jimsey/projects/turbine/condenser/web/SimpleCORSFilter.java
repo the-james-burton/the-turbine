@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.condenser.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -31,6 +32,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Replaced with Application.corsConfigurer().
@@ -44,7 +48,10 @@ import javax.servlet.http.HttpServletResponse;
 // @Component
 public class SimpleCORSFilter implements Filter {
 
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+    logger.info("doFilter...");
     HttpServletResponse response = (HttpServletResponse) res;
     response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");

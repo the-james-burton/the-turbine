@@ -60,6 +60,12 @@ public class TurbineController {
     logger.info("TurbineController: initialised");
   }
 
+  /*
+   * ...with spring security, atacama fails when @CrossOrigin is used with
+   * No 'Access-Control-Allow-Origin' header is present on the requested resource.
+   * Origin 'http://localhost:3000' is therefore not allowed access.
+   */
+
   @RequestMapping(path = "/ping", produces = "application/json")
   // @CrossOrigin(origins = "*", maxAge = 3600)
   public PingResponse ping() throws Exception {
@@ -68,18 +74,21 @@ public class TurbineController {
   }
 
   @RequestMapping("/stocks/{market}")
+  // @CrossOrigin(origins = "*", maxAge = 3600)
   public String stocks(@PathVariable String market) throws Exception {
     logger.info("stocks({})", market);
     return turbineService.listStocks(market);
   }
 
   @RequestMapping("/indicators")
+  // @CrossOrigin(origins = "*", maxAge = 3600)
   public String indicators() throws Exception {
     logger.info("indicators()");
     return turbineService.listIndicators();
   }
 
   @RequestMapping("/strategies")
+  // @CrossOrigin(origins = "*", maxAge = 3600)
   public String strategies() throws Exception {
     logger.info("strategies()");
     return turbineService.listStrategies();
