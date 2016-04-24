@@ -22,17 +22,23 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
+import java.lang.invoke.MethodHandles;
+import java.security.Principal;
+
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.service.Ping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@EnableAutoConfiguration
-public class HelloController {
+// @EnableAutoConfiguration
+public class StatusController {
+
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Autowired
   @NotNull
@@ -43,4 +49,9 @@ public class HelloController {
     return ping.ping();
   }
 
+  @RequestMapping("/user")
+  public Principal user(Principal user) {
+    logger.info("user: {}", user);
+    return user;
+  }
 }

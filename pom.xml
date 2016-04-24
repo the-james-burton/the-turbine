@@ -85,6 +85,10 @@
 <!--     <lucene.version>4.10.4</lucene.version> -->
     <lucene.version>5.5.0</lucene.version>
 
+    <javaslang.version>2.0.2</javaslang.version>
+    
+    <cyclops.react.version>1.0.0-RC3</cyclops.react.version>
+
     <!-- overrides -->
     <!-- <spring.data.elasticsearch>1.2.1.RELEASE</spring.data.elasticsearch> -->
 
@@ -214,7 +218,31 @@
         <artifactId>jest</artifactId>
         <version>2.0.1</version>
       </dependency>
-     
+  
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang</artifactId>
+        <version>${javaslang.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang-pure</artifactId>
+        <version>${javaslang.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang-jackson</artifactId>
+        <version>${javaslang.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.aol.simplereact</groupId>
+        <artifactId>cyclops-react</artifactId>
+        <version>${cyclops.react.version}</version>
+      </dependency>
+
 <!--       <dependency> -->
 <!--         <groupId>org.projectreactor</groupId> -->
 <!--         <artifactId>reactor-net</artifactId> -->
@@ -371,12 +399,20 @@
         <version>${lucene.version}</version>
         <scope>test</scope>
       </dependency>
+
       <dependency>
         <groupId>org.elasticsearch</groupId>
         <artifactId>elasticsearch</artifactId>
         <version>${elasticsearch.version}</version>
         <scope>test</scope>
         <type>test-jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang-test</artifactId>
+        <version>${javaslang.version}</version>
+        <scope>test</scope>
       </dependency>
     
       <!-- <dependency> -->

@@ -33,6 +33,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -43,20 +48,61 @@ public class SecuritySetup extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    CorsFilter corsFilter = TurbineCorsFilter.newCorsFilter();
+
+    // http
+    // // http://stackoverflow.com/questions/31724994/spring-data-rest-and-cors
+    // .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
+    // // .csrf().disable()
+    // .antMatcher("/turbine/**")
+    // .authorizeRequests()
+    // .anyRequest()
+    // .hasAnyRole("USER")
+    // .and()
+    // .httpBasic();
+    // // .anyRequest()
+    // // .permitAll();
 
     http
-        // http://stackoverflow.com/questions/31724994/spring-data-rest-and-cors
-        .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
-        // .csrf().disable()
-        .antMatcher("/turbine/**")
+        .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
+        .httpBasic()
+        .and()
         .authorizeRequests()
-        // .anyRequest()
-        // .hasAnyRole("USER")
-        // .and()
-        // .httpBasic();
         .anyRequest()
-        .permitAll();
+        // .antMatchers("/index.html", "/home.html", "/login.html", "/", "turbine/**", "/user")
+        .permitAll()
+        // .anyRequest().authenticated()
+        .and()
+        .csrf().csrfTokenRepository(csrfTokenRepository())
+        .and()
+        .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
+
+  }
+
+  private CsrfTokenRepository csrfTokenRepository() {
+    HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+    repository.setHeaderName("X-XSRF-TOKEN");
+    return repository;
+  }
+
+  /*
+   * With Spring Security, automatic registration is still expected
+   * by spring Boot when annotated with @Bean but it DOES NOT WORK
+   * Instead, this filter is registered in the configure() method above
+   * http://stackoverflow.com/questions/31724994/spring-data-rest-and-cors
+   */
+  public static CorsFilter corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true); // you USUALLY want this
+    config.addAllowedOrigin("*");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("GET");
+    config.addAllowedMethod("POST");
+    config.addAllowedMethod("OPTIONS");
+    config.addAllowedMethod("DELETE");
+    config.addAllowedMethod("PUT");
+    source.registerCorsConfiguration("/**", config);
+    return new CorsFilter(source);
   }
 
   @Autowired
@@ -65,4 +111,55 @@ public class SecuritySetup extends WebSecurityConfigurerAdapter {
         .inMemoryAuthentication()
         .withUser("user").password("password").roles("USER");
   }
+
+  /*
+   * ...with spring security, atacama fails with
+   * No 'Access-Control-Allow-Origin' header is present on the requested resource.
+   * Origin 'http://localhost:3000' is therefore not allowed access.
+   */
+  // @Bean
+  // public FilterRegistrationBean corsFilter() {
+  // logger.info("corsFilter init...");
+  // UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+  // CorsConfiguration config = new CorsConfiguration();
+  // config.setAllowCredentials(true);
+  // config.addAllowedOrigin("*");
+  // config.addAllowedHeader("*");
+  // config.addAllowedMethod("OPTIONS");
+  // config.addAllowedMethod("HEAD");
+  // config.addAllowedMethod("GET");
+  // config.addAllowedMethod("PUT");
+  // config.addAllowedMethod("POST");
+  // config.addAllowedMethod("DELETE");
+  // config.addAllowedMethod("PATCH");
+  // source.registerCorsConfiguration("/**", config);
+  // // return new CorsFilter(source);
+  // final FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+  // bean.setOrder(0);
+  // return bean;
+  // }
+
+  /*
+   * ...with spring security, atacama fails with
+   * No 'Access-Control-Allow-Origin' header is present on the requested resource.
+   * Origin 'http://localhost:3000' is therefore not allowed access.
+   */
+  // @Bean
+  // public WebMvcConfigurer corsConfigurer() {
+  // logger.info("corsConfigurer init...");
+  // return new WebMvcConfigurerAdapter() {
+  // @Override
+  // public void addCorsMappings(CorsRegistry registry) {
+  // logger.info("adding CORS mappings...");
+  // registry
+  // .addMapping("/**")
+  // .allowCredentials(true);
+  //
+  // // .allowedOrigins("*")
+  // // .allowedMethods("POST", "GET", "OPTIONS", "DELETE")
+  // // .maxAge(3600)
+  // // .allowedHeaders("x-requested-with");
+  // }
+  // };
+  // }
 }

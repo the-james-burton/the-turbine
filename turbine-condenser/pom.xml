@@ -210,6 +210,26 @@
       <artifactId>jolokia-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.javaslang</groupId>
+      <artifactId>javaslang</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>io.javaslang</groupId>
+      <artifactId>javaslang-pure</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>io.javaslang</groupId>
+      <artifactId>javaslang-jackson</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.aol.simplereact</groupId>
+      <artifactId>cyclops-react</artifactId>
+    </dependency>
+
     <!-- I can't find JQuantLib in any public repo, so let's reference it directly
       to allow travis-ci to work -->
     <dependency>
@@ -282,6 +302,12 @@
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
+    <dependency>
+      <groupId>io.javaslang</groupId>
+      <artifactId>javaslang-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
 
     <dependency>
       <groupId>org.scala-lang</groupId>

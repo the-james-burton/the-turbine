@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.jimsey.projects.turbine.condenser.service.Ping;
-import org.jimsey.projects.turbine.condenser.web.HelloController;
+import org.jimsey.projects.turbine.condenser.web.StatusController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +50,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class HelloControllerTest {
 
   @InjectMocks
-  private HelloController controller;
+  private StatusController controller;
 
   // @Spy
   @Mock
