@@ -49,6 +49,18 @@ public class StatusController {
     return ping.ping();
   }
 
+  /**
+   * https://spring.io/guides/tutorials/spring-security-and-angular-js/
+   * 
+   * "This is a useful trick in a Spring Security application.
+   * If the "/user" resource is reachable then it will return the
+   * currently authenticated user (an Authentication), and otherwise
+   * Spring Security will intercept the request and send a 401
+   * response through an AuthenticationEntryPoint."
+   * 
+   * @param user
+   * @return
+   */
   @RequestMapping("/user")
   public Principal user(Principal user) {
     logger.info("user: {}", user);

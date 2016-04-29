@@ -49,21 +49,10 @@ public class SecuritySetup extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    // http
     // // http://stackoverflow.com/questions/31724994/spring-data-rest-and-cors
-    // .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
-    // // .csrf().disable()
-    // .antMatcher("/turbine/**")
-    // .authorizeRequests()
-    // .anyRequest()
-    // .hasAnyRole("USER")
-    // .and()
-    // .httpBasic();
-    // // .anyRequest()
-    // // .permitAll();
 
     http
-        .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
+        .addFilterBefore(newCorsFilter(), ChannelProcessingFilter.class)
         .httpBasic()
         .and()
         .authorizeRequests()
@@ -73,30 +62,54 @@ public class SecuritySetup extends WebSecurityConfigurerAdapter {
         .hasAnyRole("USER")
         // .authenticated()
         .and()
-        .csrf().csrfTokenRepository(csrfTokenRepository())
+        .csrf().csrfTokenRepository(newCsrfTokenRepository())
         .and()
         .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
 
   }
 
-  private CsrfTokenRepository csrfTokenRepository() {
+  /**
+   * https://spring.io/guides/tutorials/spring-security-and-angular-js/
+   * 
+   * "The other thing we have to do on the server is tell Spring Security to
+   * expect the CSRF token in the format that Angular wants to send it back
+   * (a header called "X-XRSF-TOKEN" instead of the default "X-CSRF-TOKEN").
+   * We do this by customizing the CSRF filter:"
+   * 
+   * @return
+   */
+  private CsrfTokenRepository newCsrfTokenRepository() {
     HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
     repository.setHeaderName("X-XSRF-TOKEN");
     return repository;
   }
 
-  /*
-   * With Spring Security, automatic registration is still expected
+  /**
+   * https://spring.io/guides/tutorials/spring-security-and-angular-js/
+   * 
+   * "The browser tries to negotiate with our resource server to find out
+   * if it is allowed to access it according to the Cross Origin Resource
+   * Sharing protocol. It’s not an Angular JS responsibility, so just like
+   * the cookie contract it will work like this with all JavaScript in the
+   * browser. The two servers do not declare that they have a common
+   * origin, so the browser declines to send the request and the UI is broken.
+   *
+   * To fix that we need to support the CORS protocol which involves a
+   * "pre-flight" OPTIONS request and some headers to list the allowed
+   * behaviour of the caller."
+   *
+   * NOTE: With Spring Security, automatic registration is still expected
    * by spring Boot when annotated with @Bean but it DOES NOT WORK
    * Instead, this filter is registered in the configure() method above
    * http://stackoverflow.com/questions/31724994/spring-data-rest-and-cors
    */
-  public static CorsFilter corsFilter() {
+  public static CorsFilter newCorsFilter() {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true); // you USUALLY want this
     config.addAllowedOrigin("*");
     config.addAllowedHeader("*");
+    config.addAllowedMethod("HEAD");
     config.addAllowedMethod("GET");
     config.addAllowedMethod("POST");
     config.addAllowedMethod("OPTIONS");
@@ -113,37 +126,16 @@ public class SecuritySetup extends WebSecurityConfigurerAdapter {
         .withUser("user").password("password").roles("USER");
   }
 
-  /*
-   * ...with spring security, atacama fails with
-   * No 'Access-Control-Allow-Origin' header is present on the requested resource.
-   * Origin 'http://localhost:3000' is therefore not allowed access.
-   */
-  // @Bean
-  // public FilterRegistrationBean corsFilter() {
-  // logger.info("corsFilter init...");
-  // UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-  // CorsConfiguration config = new CorsConfiguration();
-  // config.setAllowCredentials(true);
-  // config.addAllowedOrigin("*");
-  // config.addAllowedHeader("*");
-  // config.addAllowedMethod("OPTIONS");
-  // config.addAllowedMethod("HEAD");
-  // config.addAllowedMethod("GET");
-  // config.addAllowedMethod("PUT");
-  // config.addAllowedMethod("POST");
-  // config.addAllowedMethod("DELETE");
-  // config.addAllowedMethod("PATCH");
-  // source.registerCorsConfiguration("/**", config);
-  // // return new CorsFilter(source);
-  // final FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-  // bean.setOrder(0);
-  // return bean;
-  // }
+  // ------------------------------------------------------------------------
 
   /*
-   * ...with spring security, atacama fails with
+   * https://spring.io/guides/gs/rest-service-cors/
+   * This is the technique described as 'Global CORS configuration" on the
+   * link above. However, with spring security, atacama fails with
    * No 'Access-Control-Allow-Origin' header is present on the requested resource.
    * Origin 'http://localhost:3000' is therefore not allowed access.
+   * Instead, this class configures CORS by manually adding a filter as you
+   * can see in the code above.
    */
   // @Bean
   // public WebMvcConfigurer corsConfigurer() {
