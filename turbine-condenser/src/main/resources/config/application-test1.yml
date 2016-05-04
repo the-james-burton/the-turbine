@@ -12,6 +12,11 @@ spring:
 
 server:
   port: 48002
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: changeit
+    keyStoreType: PKCS12
+    keyAlias: tomcat
 
 infrastructure:
   environment-name: test1
