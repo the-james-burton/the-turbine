@@ -40,6 +40,32 @@ Everything is sent around as JSON. This makes it easy to persist in elasticsearc
 
 I believe a main concern with this design is security. To secure the connections to elasticsearch, I would most likely put ApiMan or similar over the top. To secure the rabbitMQ webstomp connections I am not so sure. I need to do more research. However it is very easy to stop using rabbitMQ as websocket broker and use the native spring support instead.
 
+
+## Do I need anything installed?
+
+Yes, this is intended to be considered as an _enterprise_ app and it expects a number of services to be available on the host machine
+
+### Elasticsearch 2.3.2
+
+This DOES need to be 2.3.2 because of [#17483](https://github.com/elastic/elasticsearch/issues/17483) affecting 2.3.1.
+
+0. Copy the contents of the [elasticsearch.yml](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/elk/elasticsearch.yml) file into your elasticsearch.yml file to make sure that CORS support is enabled correctly to allow [atacama](https://github.com/the-james-burton/atacama) to connect.
+0. **COMING SOON** Install the [search-guard-sll](https://github.com/floragunncom/search-guard-ssl) elasticsearch plugin to enable SSL (https)
+on your elasticsearch server. You can do this thus...
+`bin/plugin install com.floragunn/search-guard-ssl/2.3.2.9`
+
+### Kibana 4.5.0
+
+It is not strictly necessary to install Kibana, but it will let you view the results without needing to get my atacama project running.
+
+### RabbitMQ 3.6.x
+
+Will also work with RabbitMQ 3.5.x and maybe lower versions too. Development is continuing with RabbitMQ 3.6.x so I advise you to use the same.
+
+0. Install the [web-stomp](https://www.rabbitmq.com/web-stomp.html) RabbitMQ plugin to enable support for Stomp over Websockets within rabbitMQ. You can do this by running the following command:`bin/rabbitmq-plugins enable rabbitmq_web_stomp`
+0. Configure CORS support in RabbitMQ by running the following command: `./rabbitmqctl set_permissions -p /localhost guest ".*" ".*" ".*"`
+0. Copy the [rabbitmq.config](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/rabbit/rabbitmq.config), [certificate.crt](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) and [certificate.key](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) files and the into a `etc/rabbitmq` directory inside your RabbitMQ install dir (or merge the contents). This may need to go somewhere else for you depending on how you installed RabbitMQ - check your RabbitMQ logs as they will tell you where it looked for the `rabbitmq.config` file. You could generate your own certificates instead, if you wanted to.
+
 ## How do I use it?
 
 The only way at present to get it up and running is to clone this repo, build it then run it in eclipse using the provided launch configurations. Make sure you have java 8, maven, rabbitMQ (with the webstomp plugin), elasticsearch and kibana installed then run something like the following...
@@ -67,6 +93,11 @@ It communicates with two principal back end components...
 * **elasticsearch** Using the spring-data-elasticsearch client. Elasticsearch is used as primary persistence in this project. There is no traditional RDBMS. Historic data can be fetched from elasticsearch for back-populating stock history if needed. Although my *atacama* client project communicates directly with elasticsearch, spring provides a very easy way to write a REST API to do similar if I need to.
 * **rabbitMQ** As the AMQP backbone of the project, RabbitMQ is the interconnect between the *furnace* and the *condenser* and my *atacama* client (through the magic of the webstomp plugin).
 
+## What new-ish things have been done?
+
+* **replace spring-data-elasticsearch** I was using spring data elasticsearch. However, the rate of change of elasticsearch seems very high, so I took control back and just used the ES Java client directly. Robust testing was put in place to provide solid foundations for future dev.
+* **spring-security** the entire rest API is now secured with spring-security. This gives me HTTP basic authentication, which I have wrapped in HTTPS with a self-signed certificate.
+
 ## What is already done?
 
 * **multi-module separation** There is reasonable separation of functionality into different modules. This will continue and be strengthened as I continue developing.
@@ -76,15 +107,17 @@ It communicates with two principal back end components...
 
 ## What is going to be done soon?
 
+* **authentication, authorisation and registration** Spring-security is now in place so more security services can be built on top.
+* **evaluate [cyclops-react](https://github.com/aol/cyclops-react) as potential Apache Camel replacement for internal routes** This is a very interesting library indeed and may provide a next-generation way to write internal async processing streams.
+* **evaluate [javaslang](https://github.com/javaslang/javaslang) for better functional programming**. This also appears to integrate into cyclops-react. It should help me get better at functional programming in general.
 * **more indicators** A more complete range of indicators as provided by Ta4J will be implemented.
 * **more strategies** I will implement more trading strategies with the help of stockcharts chart school.
 * **more refactoring** I tend to deliver early, let code evolve and refactor later as patterns emerge. This works well when trying new technologies, which I am doing all the time in the project.
 * **multithreading** As this project expands and more stocks are added, performance will be addressed. I expect camel to provide a lot of the scalability via SEDA routes and other asynchronous patterns.
-* **mvc tests** Spring testing is already used in some places and I will try and ensure that more of the code is tested.
+* **rest API tests** Spring testing is already used in some places and I will try and ensure that more of the code is tested.
 * **integration tests** Spring support for integration testing is done for some controllers, but not all.
 * **client interface** The skeleton is in place, but there are currently no methods for the client to control the server.
 * **packaging** Being able to easily deploy this software to a server is something I want to provide. I will follow spring boot best practice where possible.
-* **replace spring-data-elasticsearch?** That project appears to be falling behind and does not support ES 2.0. I may therefore be forced to look at alternatives, such as JEST.
 * **javadoc** Although this is an application and not library code, I still want to have a minimum level of documentation to make sure I understand it when I come back from any future break I decide to take.
 * **semantic logging into elasticsearch** As well as the data, I want the entire application to log into elasticsearch too. This may be accompanied by a GrayLog2 implementation too.
 * **logo and branding**
@@ -99,7 +132,7 @@ It communicates with two principal back end components...
 
 ## What is unlikely to be done?
 
-* **replace spring boot** It is unlikely that I will replace spring boot in this project as it does so much for me just now.
+* **replace spring boot** It is unlikely that I will replace spring boot in this project as it does so much for me just now. Having said that, things like [dropwizard](https://github.com/dropwizard/dropwizard) and [jodd](https://github.com/oblac/jodd) do look fascinating.
 * **distributed processing** Things like Apache Spark look very interesting, but they remain beyond the horizon at the moment. I would rather have a look at Docker/Kubernetes first as that may be a more interesting and generalised scalability option.
 
 ## Where did the names come from?
