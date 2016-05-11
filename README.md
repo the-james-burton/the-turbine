@@ -50,7 +50,7 @@ Yes, this is intended to be considered as an _enterprise_ app and it expects a n
 This DOES need to be 2.3.2 because of [#17483](https://github.com/elastic/elasticsearch/issues/17483) affecting 2.3.1.
 
 0. Copy the contents of the [elasticsearch.yml](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/elk/elasticsearch.yml) file into your elasticsearch.yml file to make sure that CORS support is enabled correctly to allow [atacama](https://github.com/the-james-burton/atacama) to connect.
-0. **COMING SOON** Install the [search-guard-sll](https://github.com/floragunncom/search-guard-ssl) elasticsearch plugin to enable SSL (https)
+0. **COMING SOON** Install the [search-guard-ssl](https://github.com/floragunncom/search-guard-ssl) elasticsearch plugin to enable SSL (https)
 on your elasticsearch server. You can do this thus...
 `bin/plugin install com.floragunn/search-guard-ssl/2.3.2.9`
 
@@ -64,7 +64,9 @@ Will also work with RabbitMQ 3.5.x and maybe lower versions too. Development is 
 
 0. Install the [web-stomp](https://www.rabbitmq.com/web-stomp.html) RabbitMQ plugin to enable support for Stomp over Websockets within rabbitMQ. You can do this by running the following command:`bin/rabbitmq-plugins enable rabbitmq_web_stomp`
 0. Configure CORS support in RabbitMQ by running the following command: `./rabbitmqctl set_permissions -p /localhost guest ".*" ".*" ".*"`
-0. Copy the [rabbitmq.config](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/rabbit/rabbitmq.config), [certificate.crt](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) and [certificate.key](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) files and the into a `etc/rabbitmq` directory inside your RabbitMQ install dir (or merge the contents). This may need to go somewhere else for you depending on how you installed RabbitMQ - check your RabbitMQ logs as they will tell you where it looked for the `rabbitmq.config` file. You could generate your own certificates instead, if you wanted to.
+0. Copy the [rabbitmq.config](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/rabbit/rabbitmq.config) file and the into a `etc/rabbitmq` directory inside your RabbitMQ install dir (or merge the contents). This may need to go somewhere else for you depending on how you installed RabbitMQ - check your RabbitMQ logs as they will tell you where it looked for the `rabbitmq.config` file.
+0. Copy the [certificate.crt](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) and [certificate.key](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) files and the into the same `etc/rabbitmq` directory. You could generate your own certificates instead, if you wanted to. Some help is in this [README.md](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/README.md) file.
+0. Edit your copy of the `rabbitmq.config` file that you took above and update the properties that reference the certificate.* files so that they are prefixed with the full path to them on your system.
 
 ## How do I use it?
 
