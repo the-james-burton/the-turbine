@@ -225,16 +225,6 @@
       <artifactId>javaslang-jackson</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.aol.simplereact</groupId>
-      <artifactId>cyclops-react</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.aol.cyclops</groupId>
-      <artifactId>cyclops-javaslang</artifactId>
-    </dependency>
-
     <!-- I can't find JQuantLib in any public repo, so let's reference it directly
       to allow travis-ci to work -->
     <dependency>
