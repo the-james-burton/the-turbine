@@ -78,6 +78,15 @@ cd the-turbine
 mvn clean install
 ```
 
+### Get your browser to trust the HTTPS URLs
+
+There is some use of HTTPS with self-signed certs. It is very likely you will need to trust the following URLs in your browser. In chrome, you can do this by simply browsing to the URLs, clicking 'advanced' and then trusting them.
+
+```
+https://localhost:15671/stomp/info
+https://localhost:48002/user
+```
+
 Then open the project in Eclipse and run the launch configurations in *ide/eclipse/launch*. You need to start the condenser and then the furnace. If working, you should see logging activity as the furnace generates random stock ticks and the condenser analyses them. You should then browse to your kibana dashboard and see if you have any data in the *turbine-\** indicies.
 
 At some point I will provide an easier way of installing and running this app using spring boot packaging best practice, but it remains a development project for now.
