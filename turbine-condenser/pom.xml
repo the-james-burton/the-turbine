@@ -8,7 +8,7 @@
   <!-- ==================================== -->
   <!-- TODO -->
   <!-- ==================================== -->
-
+ 
   <parent>
     <groupId>org.jimsey.projects</groupId>
     <artifactId>turbine-engine-hall</artifactId>
@@ -66,20 +66,20 @@
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
 
-<!--     <dependency> -->
-<!--       <groupId>org.springframework.session</groupId> -->
-<!--       <artifactId>spring-session</artifactId> -->
-<!--     </dependency> -->
-    
-<!--     <dependency> -->
-<!--       <groupId>org.springframework.boot</groupId> -->
-<!--       <artifactId>spring-boot-starter-redis</artifactId> -->
-<!--     </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.springframework.session</groupId> -->
+    <!-- <artifactId>spring-session</artifactId> -->
+    <!-- </dependency> -->
 
-<!--     <dependency> -->
-<!--       <groupId>org.springframework.boot</groupId> -->
-<!--       <artifactId>spring-boot-starter-data-elasticsearch</artifactId> -->
-<!--     </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.springframework.boot</groupId> -->
+    <!-- <artifactId>spring-boot-starter-redis</artifactId> -->
+    <!-- </dependency> -->
+
+    <!-- <dependency> -->
+    <!-- <groupId>org.springframework.boot</groupId> -->
+    <!-- <artifactId>spring-boot-starter-data-elasticsearch</artifactId> -->
+    <!-- </dependency> -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -96,6 +96,32 @@
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-net</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-bus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-stream</artifactId>
+    </dependency>
+
+<!--     <dependency> -->
+<!--       <groupId>io.projectreactor</groupId> -->
+<!--       <artifactId>reactor-io</artifactId> -->
+<!--     </dependency> -->
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-net</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>io.netty</groupId>
@@ -179,11 +205,11 @@
     </dependency>
 
     <!-- needed for spring-data-elasticsearch -->
-<!--     <dependency> -->
-<!--       <groupId>commons-lang</groupId> -->
-<!--       <artifactId>commons-lang</artifactId> -->
-<!--       <version>2.6</version> -->
-<!--     </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>commons-lang</groupId> -->
+    <!-- <artifactId>commons-lang</artifactId> -->
+    <!-- <version>2.6</version> -->
+    <!-- </dependency> -->
 
     <dependency>
       <groupId>commons-collections</groupId>
@@ -214,12 +240,12 @@
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang-pure</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang-jackson</artifactId>
@@ -247,8 +273,8 @@
     </dependency>
 
     <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
     </dependency>
 
     <!-- <dependency> -->
@@ -291,20 +317,20 @@
       <artifactId>lucene-test-framework</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
-    
+
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang-test</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
 </project>
