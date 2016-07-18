@@ -66,7 +66,7 @@ public class IndicatorController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("ABC", "BollingerBands", sod));
+    logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("FTSE100", "ABC", "BollingerBands", sod));
   }
 
   @RequestMapping("/ping")
@@ -75,17 +75,25 @@ public class IndicatorController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/{symbol}")
-  public String getIndicators(@PathVariable String symbol) {
-    logger.info("getIndicators");
-    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsBySymbol(symbol);
+  @RequestMapping("/{market}/{symbol}")
+  public String getIndicators(
+      @PathVariable String market,
+      @PathVariable String symbol) {
+    logger.info("getIndicators({}, {})", market, symbol);
+    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsByMarketAndSymbol(market, symbol);
     return Joiner.on(',').join(indicators);
   }
 
-  @RequestMapping("/{symbol}/{name}/{date}")
-  public String getIndicatorsAfter(@PathVariable String symbol, @PathVariable String name, @PathVariable Long date)
+  @RequestMapping("/{market}/{symbol}/{name}/{date}")
+  public String getIndicatorsAfter(
+      @PathVariable String market,
+      @PathVariable String symbol,
+      @PathVariable String name, 
+      @PathVariable Long date)
       throws JsonProcessingException {
-    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsBySymbolAndNameAndDateGreaterThan(symbol, name, date);
+    logger.info("getIndicatorsAfter({}, {}, {}, {})", market, symbol, name, date);
+    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
+        market, symbol, name, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {

@@ -93,8 +93,8 @@ public class IndicatorControllerTest {
   @Test
   public void testGetAllStocksGreaterThanDate() throws Exception {
     Mockito.when(elasticsearch
-        .findIndicatorsBySymbolAndNameAndDateGreaterThan(
-            Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class)))
+        .findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
+            Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class)))
         .thenReturn(indicators);
 
     String expected = json.writeValueAsString(new Object() {
@@ -104,8 +104,8 @@ public class IndicatorControllerTest {
 
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
 
-    String restUri = String.format("%s/%s/%s/%s",
-        TurbineCondenserConstants.REST_ROOT_INDICATORS, "symbol", "testName", date);
+    String restUri = String.format("%s/%s/%s/%s/%s",
+        TurbineCondenserConstants.REST_ROOT_INDICATORS, "market", "symbol", "testName", date);
 
     mvc.perform(MockMvcRequestBuilders.get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

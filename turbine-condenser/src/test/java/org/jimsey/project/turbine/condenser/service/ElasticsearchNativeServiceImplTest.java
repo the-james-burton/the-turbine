@@ -203,7 +203,7 @@ public class ElasticsearchNativeServiceImplTest {
   }
 
   @Test
-  public void testFindTicksBySymbol() throws Exception {
+  public void testFindTicksByMarketAndSymbol() throws Exception {
     int numberOne = 5;
     int numberTwo = 7;
     logger.info("given {} {} ticks and {} {} ticks",
@@ -212,14 +212,14 @@ public class ElasticsearchNativeServiceImplTest {
     populateElasticsearch(rdogTwo, numberTwo, indexForTicks, typeForTicks, null, TickJson.class);
     logger.info("it should return {} {} ticks, {} {} ticks and 0 {} ticks",
         numberOne, stockOne, numberTwo, stockTwo, stockThree);
-    List<TickJson> resultOne = service.findTicksBySymbol(stockOne);
-    List<TickJson> resultTwo = service.findTicksBySymbol(stockTwo);
-    List<TickJson> resultThree = service.findTicksBySymbol(stockThree);
-    logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
+    List<TickJson> resultOne = service.findTicksByMarketAndSymbol(market, stockOne);
+    List<TickJson> resultTwo = service.findTicksByMarketAndSymbol(market, stockTwo);
+    List<TickJson> resultThree = service.findTicksByMarketAndSymbol(market, stockThree);
+    logger.info(" *** findTicksByMarketAndSymbol({}): {}, expected: {}",
         stockOne, resultOne.size(), numberOne);
-    logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
+    logger.info(" *** findTicksByMarketAndSymbol({}): {}, expected: {}",
         stockTwo, resultTwo.size(), numberTwo);
-    logger.info(" *** findTicksBySymbol({}): {}, expected: {}",
+    logger.info(" *** findTicksByMarketAndSymbol({}): {}, expected: {}",
         stockThree, resultThree.size(), 0);
     assertThat(resultOne, hasSize(numberOne));
     assertThat(resultTwo, hasSize(numberTwo));
@@ -227,7 +227,7 @@ public class ElasticsearchNativeServiceImplTest {
   }
 
   @Test
-  public void testFindIndicatorsBySymbol() throws Exception {
+  public void testFindIndicatorsByMarketAndSymbol() throws Exception {
     int numberOne = 5;
     int numberTwo = 7;
     logger.info("given {} {} indicators and {} {} indicators",
@@ -237,14 +237,14 @@ public class ElasticsearchNativeServiceImplTest {
     populateElasticsearch(rdogTwo, numberTwo, indexForIndicators, typeForIndicators, name, IndicatorJson.class);
     logger.info("it should return {} {} indictors, {} {} indicators and 0 {} indicators",
         numberOne, stockOne, numberTwo, stockTwo, stockThree);
-    List<IndicatorJson> resultOne = service.findIndicatorsBySymbol(stockOne);
-    List<IndicatorJson> resultTwo = service.findIndicatorsBySymbol(stockTwo);
-    List<IndicatorJson> resultThree = service.findIndicatorsBySymbol(stockThree);
-    logger.info(" *** findIndicatorsBySymbol({}): {}, expected: {}",
+    List<IndicatorJson> resultOne = service.findIndicatorsByMarketAndSymbol(market, stockOne);
+    List<IndicatorJson> resultTwo = service.findIndicatorsByMarketAndSymbol(market, stockTwo);
+    List<IndicatorJson> resultThree = service.findIndicatorsByMarketAndSymbol(market, stockThree);
+    logger.info(" *** findIndicatorsByMarketAndSymbol({}): {}, expected: {}",
         stockOne, resultOne.size(), numberOne);
-    logger.info(" *** findIndicatorsBySymbol({}): {}, expected: {}",
+    logger.info(" *** findIndicatorsByMarketAndSymbol({}): {}, expected: {}",
         stockTwo, resultTwo.size(), numberTwo);
-    logger.info(" *** findIndicatorsBySymbol({}): {}, expected: {}",
+    logger.info(" *** findIndicatorsByMarketAndSymbol({}): {}, expected: {}",
         stockThree, resultThree.size(), 0);
     assertThat(resultOne, hasSize(numberOne));
     assertThat(resultTwo, hasSize(numberTwo));
@@ -252,34 +252,34 @@ public class ElasticsearchNativeServiceImplTest {
   }
 
   @Test
-  public void testFindTicksBySymbolAndDateGreaterThan() throws Exception {
+  public void testFindTicksByMarketAndSymbolAndDateGreaterThan() throws Exception {
     int number = 7;
     int expected = 4;
     logger.info("given {} {} ticks", number, stockOne);
     long midpoint = populateElasticsearch(rdogOne, number, indexForTicks, typeForTicks, null, TickJson.class).getDate();
     logger.info("it should return only {} {} ticks after the midpoint", expected, stockOne);
-    List<TickJson> result = service.findTicksBySymbolAndDateGreaterThan(stockOne, midpoint);
-    logger.info(" *** findTicksBySymbolAndDateGreaterThan({}, {}): {}, expected: {}",
+    List<TickJson> result = service.findTicksByMarketAndSymbolAndDateGreaterThan(market, stockOne, midpoint);
+    logger.info(" *** findTicksByMarketAndSymbolAndDateGreaterThan({}, {}): {}, expected: {}",
         stockOne, midpoint, result.size(), expected);
     assertThat(result, hasSize(expected));
   }
 
   @Test
-  public void testFindIndicatorsBySymbolAndDateGreaterThan() throws Exception {
+  public void testFindIndicatorsByMarketAndSymbolAndDateGreaterThan() throws Exception {
     int number = 7;
     int expected = 4;
     logger.info("given {} {} indicators", number, stockOne);
     long midpoint = populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, null,
         IndicatorJson.class).getDate();
     logger.info("it should return only {} {} indicators after the midpoint", expected, stockOne);
-    List<IndicatorJson> result = service.findIndicatorsBySymbolAndDateGreaterThan(stockOne, midpoint);
-    logger.info(" *** findIndicatorsBySymbolAndDateGreaterThan({}, {}): {}, expected: {}",
+    List<IndicatorJson> result = service.findIndicatorsByMarketAndSymbolAndDateGreaterThan(market, stockOne, midpoint);
+    logger.info(" *** findIndicatorsByMarketAndSymbolAndDateGreaterThan({}, {}): {}, expected: {}",
         stockOne, midpoint, result.size(), expected);
     assertThat(result, hasSize(expected));
   }
 
   @Test
-  public void testFindIndicatorsBySymbolAndNameAndDateGreaterThan() throws Exception {
+  public void testFindIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan() throws Exception {
     int number = 7;
     int expected = 7;
     final String nameOne = "indicator-one";
@@ -290,8 +290,8 @@ public class ElasticsearchNativeServiceImplTest {
     long midpoint = OffsetDateTime.now().toInstant().toEpochMilli();
     populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, nameTwo, IndicatorJson.class);
     logger.info("it should return only {} {} {} indicators after the midpoint", expected, nameOne, stockOne);
-    List<IndicatorJson> result = service.findIndicatorsBySymbolAndNameAndDateGreaterThan(stockOne, nameOne, midpoint);
-    logger.info(" *** findIndicatorsBySymbolAndNameAndDateGreaterThan({}, {}, {}): {}, expected: {}",
+    List<IndicatorJson> result = service.findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(market, stockOne, nameOne, midpoint);
+    logger.info(" *** findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan({}, {}, {}): {}, expected: {}",
         stockOne, nameOne, midpoint, result.size(), expected);
     assertThat(result, hasSize(expected));
   }

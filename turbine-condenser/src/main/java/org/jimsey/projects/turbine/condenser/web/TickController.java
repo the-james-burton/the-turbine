@@ -71,7 +71,8 @@ public class TickController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    logger.info("*** getTicks(ABC) : [{}]", getTicks("ABC"));
+    String ticks = getTicks("FTSE100", "ABC");
+    logger.info("*** getTicks(FTSE100, ABC) : [{}]", ticks);
     // logger.info("this mornings getTicksAfter(ABC) : [{}]", getTicksAfter("ABC", sod));
   }
 
@@ -81,20 +82,25 @@ public class TickController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/{symbol}")
-  public String getTicks(@PathVariable String symbol) {
-    logger.info("getTicks({})", symbol);
-    List<TickJson> ticks = elasticsearchService.findTicksBySymbol(symbol);
+  @RequestMapping("/{market}/{symbol}")
+  public String getTicks(
+      @PathVariable String market,
+      @PathVariable String symbol) {
+    logger.info("getTicks({}, {})", market, symbol);
+    List<TickJson> ticks = elasticsearchService.findTicksByMarketAndSymbol(market, symbol);
     if (ticks == null) {
       return null;
     }
     return Joiner.on(',').useForNull("").join(ticks);
   }
 
-  @RequestMapping("/{symbol}/{date}")
-  public String getTicksAfter(@PathVariable String symbol, @PathVariable Long date) throws JsonProcessingException {
-    logger.info("getTicksAfter({}, {})", symbol, date);
-    List<TickJson> ticks = elasticsearchService.findTicksBySymbolAndDateGreaterThan(symbol, date);
+  @RequestMapping("/{market}/{symbol}/{date}")
+  public String getTicksAfter(
+      @PathVariable String market,
+      @PathVariable String symbol,
+      @PathVariable Long date) throws JsonProcessingException {
+    logger.info("getTicksAfter({}, {}, {})", market, symbol, date);
+    List<TickJson> ticks = elasticsearchService.findTicksByMarketAndSymbolAndDateGreaterThan(market, symbol, date);
     // return Joiner.on(',').join(ticks);
     // return objectToJson(ticks);
     // if (true) {

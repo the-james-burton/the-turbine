@@ -95,7 +95,7 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksBySymbol(String symbol) {
+  public List<TickJson> findTicksByMarketAndSymbol(String market, String symbol) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(QueryBuilders.matchQuery("symbol", symbol));
 
@@ -135,25 +135,25 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date) {
+  public List<TickJson> findTicksByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsBySymbol(String symbol) {
+  public List<IndicatorJson> findIndicatorsByMarketAndSymbol(String market, String symbol) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date) {
+  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date) {
+  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(String market, String symbol, String name, Long date) {
     // TODO Auto-generated method stub
     return null;
   }

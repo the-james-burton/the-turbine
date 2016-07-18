@@ -31,14 +31,14 @@ public interface ElasticsearchService {
 
   String getAllTicks();
 
-  List<TickJson> findTicksBySymbol(String symbol);
+  List<TickJson> findTicksByMarketAndSymbol(String market, String symbol);
 
-  List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date);
+  List<TickJson> findTicksByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date);
 
-  List<IndicatorJson> findIndicatorsBySymbol(String symbol);
+  List<IndicatorJson> findIndicatorsByMarketAndSymbol(String market, String symbol);
 
-  List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date);
+  List<IndicatorJson> findIndicatorsByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date);
 
-  List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date);
+  List<IndicatorJson> findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(String market, String symbol, String name, Long date);
 
 }

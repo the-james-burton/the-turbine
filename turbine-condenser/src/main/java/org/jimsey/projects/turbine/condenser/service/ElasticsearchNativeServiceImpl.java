@@ -127,35 +127,40 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksBySymbol(String symbol) {
+  public List<TickJson> findTicksByMarketAndSymbol(String market, String symbol) {
     // return queryFindBySymbol(symbol, TickJson.class);
     return queryElasticsearch(indexForTicks, typeForTicks, symbol, TickJson.class,
+        matchQuery("market", market),
         matchQuery("symbol", symbol));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsBySymbol(String symbol) {
+  public List<IndicatorJson> findIndicatorsByMarketAndSymbol(String market, String symbol) {
     return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
+        matchQuery("market", market),
         matchQuery("symbol", symbol));
   }
 
   @Override
-  public List<TickJson> findTicksBySymbolAndDateGreaterThan(String symbol, Long date) {
+  public List<TickJson> findTicksByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
     return queryElasticsearch(indexForTicks, typeForTicks, symbol, TickJson.class,
+        matchQuery("market", market),
         matchQuery("symbol", symbol),
         rangeQuery("date").from(date));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsBySymbolAndDateGreaterThan(String symbol, Long date) {
+  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
     return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
+        matchQuery("market", market),
         matchQuery("symbol", symbol),
         rangeQuery("date").from(date));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsBySymbolAndNameAndDateGreaterThan(String symbol, String name, Long date) {
+  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(String market, String symbol, String name, Long date) {
     return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
+        matchQuery("market", market),
         matchQuery("symbol", symbol),
         matchQuery("name", name),
         rangeQuery("date").from(date));
