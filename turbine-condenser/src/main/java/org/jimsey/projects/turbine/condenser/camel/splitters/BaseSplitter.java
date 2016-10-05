@@ -46,6 +46,9 @@ public abstract class BaseSplitter {
   protected MarketsManager marketsManager;
 
   protected Message createMessage(final Entity entity, final Map<String, Object> headers) {
+    if (entity == null) {
+      return null;
+    }
     DefaultMessage message = new DefaultMessage();
     message.getHeaders().putAll(headers);
     message.setBody(entity);

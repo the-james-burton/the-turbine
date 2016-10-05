@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.strategies;
 
+import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
@@ -67,13 +68,13 @@ public abstract class BaseStrategy implements TurbineStrategy {
     double close = series.getLastTick().getClosePrice().toDouble();
     boolean shouldEnter = strategy.shouldEnter(index, tradingRecord);
     boolean shouldExit = strategy.shouldExit(index, tradingRecord);
-    String action = "none";
+    String action = TurbineCondenserConstants.ACTION_NONE;
     int thisTradeSize = tradeSize;
     if (shouldEnter && cash > (close * tradeSize)) {
       position += tradeSize;
       cash -= close * tradeSize;
       tradingRecord.enter(index, Decimal.valueOf(close), Decimal.valueOf(thisTradeSize));
-      action = "enter";
+      action = TurbineCondenserConstants.ACTION_ENTER;
     }
     // TODO handle negative (short) positions..?
     if (shouldExit && position > 0) {
@@ -81,18 +82,27 @@ public abstract class BaseStrategy implements TurbineStrategy {
       cash += close * tradeSize;
       thisTradeSize = -tradeSize;
       tradingRecord.exit(index, Decimal.valueOf(close), Decimal.valueOf(thisTradeSize));
-      action = "exit";
+      action = TurbineCondenserConstants.ACTION_EXIT;
     }
     value = close * position;
 
     // by returning null, we can suppress non-operating strategy output if we wish...
-    return new StrategyJson(
-        tick.getDate(),
-        tick.getSymbol(),
-        tick.getMarket(),
-        tick.getClose(),
-        name, action, thisTradeSize, position, cash, value,
-        tick.getTimestamp());
+    // the problem then is how to produce a decent visualisation in the UI...
+    StrategyJson result = null;
+    // if (action != TurbineCondenserConstants.ACTION_NONE) {
+      result = new StrategyJson(
+          tick.getDate(),
+          tick.getSymbol(),
+          tick.getMarket(),
+          tick.getClose(),
+          name, action, thisTradeSize, position, cash, value,
+          tick.getTimestamp());
+    // }
+    
+    // sadly, we can't use Optional here because of this compiler error...
+    // "The method createMessage(Optional<Entity>, Map<String,Object>) in the type BaseSplitter
+    // is not applicable for the arguments (Optional<StrategyJson>, Map<String,Object>)
+    return result;
   }
 
   // ---------------------------------
