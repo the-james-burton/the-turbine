@@ -2,14 +2,14 @@ logging:
   file: logs/furnace.log
 spring:
   jmx:
-    port: 49001
+    port: 49009
   data:
     elasticsearch:
       cluster-nodes: localhost:9300
       repositories:
         enabled: false
 server:
-  port: 48001
+  port: 48009
   
 infrastructure:
   environment-name: test1

@@ -37,6 +37,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import com.fasterxml.classmate.TypeResolver;
 
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
@@ -45,6 +46,7 @@ import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -59,6 +61,7 @@ import springfox.documentation.swagger.web.UiConfiguration;
  */
 @Configuration
 public class SwaggerSetup {
+
   @Bean
   public Docket petApi() {
     return new Docket(DocumentationType.SWAGGER_2)
@@ -83,7 +86,18 @@ public class SwaggerSetup {
                 .build()))
         .securitySchemes(newArrayList(apiKey()))
         .securityContexts(newArrayList(securityContext()))
-        .enableUrlTemplating(true);
+        .enableUrlTemplating(true)
+    // .globalOperationParameters(
+    // newArrayList(new ParameterBuilder()
+    // .name("someGlobalParameter")
+    // .description("Description of someGlobalParameter")
+    // .modelRef(new ModelRef("string"))
+    // .parameterType("query")
+    // .required(true)
+    // .build()))
+    // .tags(new Tag("Pet Service", "All apis relating to pets"))
+    // .additionalModels(typeResolver.resolve(AdditionalModel.class))
+    ;
   }
 
   @Autowired
@@ -117,13 +131,20 @@ public class SwaggerSetup {
         "test-app",
         "apiKey",
         ApiKeyVehicle.HEADER,
+        "api_key",
         "," /* scope separator */);
   }
 
   @Bean
   UiConfiguration uiConfig() {
     return new UiConfiguration(
-        "validatorUrl");
+        "validatorUrl", // url
+        "none", // docExpansion => none | list
+        "alpha", // apiSorter => alpha
+        "schema", // defaultModelRendering => schema
+        UiConfiguration.Constants.DEFAULT_SUBMIT_METHODS,
+        false, // enableJsonEditor => true | false
+        true); // showRequestHeaders => true | false
   }
 
 }
