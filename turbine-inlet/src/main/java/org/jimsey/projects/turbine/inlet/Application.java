@@ -20,36 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser;
+package org.jimsey.projects.turbine.inlet;
+
+import java.lang.invoke.MethodHandles;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Constants for this application.
+ * Runtime entry point to the application. Contains the main method and runtime factories.
  *
  * @author the-james-burton
  */
-public class TurbineCondenserConstants {
+@SpringBootApplication
+@EnableAutoConfiguration
+@EnableScheduling
+public class Application {
 
-  public static final long PRODUCER_PERIOD = 2000;
-  // public static final long PRODUCER_PERIOD = Long.MAX_VALUE;
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public static final String REST_ROOT_TURBINE = "/turbine";
+  public static void main(final String... args) {
+    ConfigurableApplicationContext spring = SpringApplication.run(Application.class, args);
+  }
 
-  public static final String REST_ROOT_TICKS = "/tick";
-
-  public static final String REST_ROOT_INDICATORS = "/indicator";
-
-  public static final String REST_ROOT_STRATEGIES = "/strategy";
-
-  public static final String REST_ROOT_TEST = "/test";
-
-  public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
-
-  public static final String ACTION_ENTER = "enter";
-
-  public static final String ACTION_EXIT = "exit";
-
-  public static final String ACTION_NONE = "none";
-
-  
-  
 }

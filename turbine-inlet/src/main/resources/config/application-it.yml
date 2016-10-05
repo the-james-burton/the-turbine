@@ -1,0 +1,8 @@
+logging:
+  file: logs/inlet-it.log
+spring:
+  jmx:
+    port: 49005
+server:
+  port: 48005
+

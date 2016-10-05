@@ -3,6 +3,6 @@
 /.project
 .project
 .settings
-/turbine/.classpath
+/.classpath
 /.idea/
 /*.iml

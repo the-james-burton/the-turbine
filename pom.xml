@@ -56,6 +56,7 @@
     <module>turbine-fuel</module>
     <module>turbine-furnace</module>
     <module>turbine-condenser</module>
+    <module>turbine-inlet</module>
   </modules>
 
   <properties>

@@ -20,36 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser;
+package org.jimsey.projects.turbine.inlet.web;
 
-/**
- * Constants for this application.
- *
- * @author the-james-burton
- */
-public class TurbineCondenserConstants {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-  public static final long PRODUCER_PERIOD = 2000;
-  // public static final long PRODUCER_PERIOD = Long.MAX_VALUE;
+@Controller
+public class TestController {
 
-  public static final String REST_ROOT_TURBINE = "/turbine";
+  private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
-  public static final String REST_ROOT_TICKS = "/tick";
+  @RequestMapping("/ping")
+  public HttpEntity<String> test() {
+    String result = Long.toString(System.nanoTime());
+    HttpEntity<String> response = new HttpEntity<>(result);
+    return response;
+  }
 
-  public static final String REST_ROOT_INDICATORS = "/indicator";
+  @RequestMapping("/ping/{message}")
+  public HttpEntity<String> test(
+      @PathVariable String message) {
+    String result = String.format("%s: %s", message, Long.toString(System.nanoTime()));
+    HttpEntity<String> response = new HttpEntity<>(result);
+    return response;
+  }
 
-  public static final String REST_ROOT_STRATEGIES = "/strategy";
-
-  public static final String REST_ROOT_TEST = "/test";
-
-  public static final String HEADER_FOR_OBJECT_TYPE = "objectType";
-
-  public static final String ACTION_ENTER = "enter";
-
-  public static final String ACTION_EXIT = "exit";
-
-  public static final String ACTION_NONE = "none";
-
-  
-  
 }
