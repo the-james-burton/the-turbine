@@ -50,9 +50,6 @@ Yes, this is intended to be considered as an _enterprise_ app and it expects a n
 This DOES need to be 2.3.2 because of [#17483](https://github.com/elastic/elasticsearch/issues/17483) affecting 2.3.1.
 
 0. Copy the contents of the [elasticsearch.yml](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/elk/elasticsearch.yml) file into your elasticsearch.yml file to make sure that CORS support is enabled correctly to allow [atacama](https://github.com/the-james-burton/atacama) to connect.
-0. **COMING SOON** Install the [search-guard-ssl](https://github.com/floragunncom/search-guard-ssl) elasticsearch plugin to enable SSL (https)
-on your elasticsearch server. You can do this thus...
-`bin/plugin install com.floragunn/search-guard-ssl/2.3.2.9`
 
 ### Kibana 4.5.0
 
@@ -62,8 +59,11 @@ It is not strictly necessary to install Kibana, but it will let you view the res
 
 Will also work with RabbitMQ 3.5.x and maybe lower versions too. Development is continuing with RabbitMQ 3.6.x so I advise you to use the same.
 
-0. Install the [web-stomp](https://www.rabbitmq.com/web-stomp.html) RabbitMQ plugin to enable support for Stomp over Websockets within rabbitMQ. You can do this by running the following command:`bin/rabbitmq-plugins enable rabbitmq_web_stomp`
-0. Configure CORS support in RabbitMQ by running the following command: `./rabbitmqctl set_permissions -p /localhost guest ".*" ".*" ".*"`
+0. Install the [web-stomp](https://www.rabbitmq.com/web-stomp.html) RabbitMQ plugin to enable support for Stomp over Websockets within rabbitMQ. You can do this by running the following command:`./sbin/rabbitmq-plugins enable rabbitmq_web_stomp`
+0. Configure CORS support in RabbitMQ by running the following command: `./sbin/rabbitmqctl set_permissions -p /localhost guest ".*" ".*" ".*"`
+
+#### Optional extra config for SSL (not needed by default)
+
 0. Copy the [rabbitmq.config](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/rabbit/rabbitmq.config) file and the into a `etc/rabbitmq` directory inside your RabbitMQ install dir (or merge the contents). This may need to go somewhere else for you depending on how you installed RabbitMQ - check your RabbitMQ logs as they will tell you where it looked for the `rabbitmq.config` file.
 0. Copy the [certificate.crt](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) and [certificate.key](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/certificate.key) files and the into the same `etc/rabbitmq` directory. You could generate your own certificates instead, if you wanted to. Some help is in this [README.md](https://github.com/the-james-burton/the-turbine/blob/master/turbine-condenser/src/main/resources/security/README.md) file.
 0. Edit your copy of the `rabbitmq.config` file that you took above and update the properties that reference the certificate.* files so that they are prefixed with the full path to them on your system.
@@ -78,18 +78,18 @@ cd the-turbine
 mvn clean install
 ```
 
-### Get your browser to trust the HTTPS URLs
+Then open the project in Eclipse and run the launch configurations in *ide/eclipse/launch*. You need to start the condenser and then the furnace. If working, you should see logging activity as the furnace generates random stock ticks and the condenser analyses them. You should then browse to your kibana dashboard and see if you have any data in the *turbine-\** indicies.
 
-There is some use of HTTPS with self-signed certs. It is very likely you will need to trust the following URLs in your browser. In chrome, you can do this by simply browsing to the URLs, clicking 'advanced' and then trusting them.
+At some point I will provide an easier way of installing and running this app using spring boot packaging best practice, but it remains a development project for now.
+
+### Help, I get 'insecure response' errors! 
+
+You may see this if you have turned on SSL/HTTPS. If oyu do, then you need to tell your browser to trust these HTTPS URLs. In chrome, you can do this by simply browsing to the URLs, clicking 'advanced' and then trusting them.
 
 ```
 https://localhost:15671/stomp/info
 https://localhost:48002/user
 ```
-
-Then open the project in Eclipse and run the launch configurations in *ide/eclipse/launch*. You need to start the condenser and then the furnace. If working, you should see logging activity as the furnace generates random stock ticks and the condenser analyses them. You should then browse to your kibana dashboard and see if you have any data in the *turbine-\** indicies.
-
-At some point I will provide an easier way of installing and running this app using spring boot packaging best practice, but it remains a development project for now.
 
 ## What is it built on?
 
