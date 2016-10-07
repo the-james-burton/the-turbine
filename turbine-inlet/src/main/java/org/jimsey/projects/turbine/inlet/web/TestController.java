@@ -25,6 +25,10 @@ package org.jimsey.projects.turbine.inlet.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +52,15 @@ public class TestController {
     HttpEntity<String> response = new HttpEntity<>(result);
     return response;
   }
+
+  @RequestMapping("/attachment")
+  public ResponseEntity<String> attachment() {
+    String result = String.format("text: %s", Long.toString(System.nanoTime()));
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    ResponseEntity<String> response = new ResponseEntity<>(result, headers, HttpStatus.OK);
+    return response;
+  }
+
 
 }
