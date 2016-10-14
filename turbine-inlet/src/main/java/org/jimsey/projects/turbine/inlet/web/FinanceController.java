@@ -23,9 +23,14 @@
 package org.jimsey.projects.turbine.inlet.web;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.inlet.domain.MarketSymbolKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -36,11 +41,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Maps;
+
 @Controller
 @RequestMapping("/finance")
 public class FinanceController {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  
+  private final Map<MarketSymbolKey, DomainObjectGenerator> manager = Maps.newHashMap();
   
   /**
    * NOTE: javadoc quirk: replace &amp; with just an ampersand to make the link work...
@@ -53,12 +63,15 @@ public class FinanceController {
    * 
    * @return
    */
-  @RequestMapping("/yahoo/realtime/{symbols}")
-  public ResponseEntity<String> yahooFinanceRealtime(@PathVariable @NotNull String symbols) {
-    logger.info("yahooFinanceRealtime(%s)", symbols);
+  @RequestMapping("/yahoo/realtime/{listOfSymbols}")
+  public ResponseEntity<String> yahooFinanceRealtime(@PathVariable @NotNull String listOfSymbols) {
+    logger.info("yahooFinanceRealtime({})", listOfSymbols);
+    List<String> symbols = Splitter.on('+').splitToList(listOfSymbols);
+    logger.info(symbols.toString());
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-    ResponseEntity<String> response = new ResponseEntity<>("test", headers, HttpStatus.OK);
+    headers.setContentDispositionFormData("file", "quotes.csv");
+    ResponseEntity<String> response = new ResponseEntity<>(symbols.toString(), headers, HttpStatus.OK);
     return response;
   }
 

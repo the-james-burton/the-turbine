@@ -69,7 +69,9 @@
 
     <!-- for dependencies... -->
     <spring.boot.version>1.4.1.RELEASE</spring.boot.version>
-    <camel.version>2.17.3</camel.version>
+<!--     <camel.version>2.17.3</camel.version> -->
+    <camel.version>2.18.0</camel.version>
+
     <camel-spring-simple-messaging.version>1.0.0</camel-spring-simple-messaging.version>
 
     <!-- <activemq.version>5.11.1</activemq.version> -->
@@ -297,6 +299,12 @@
       <!-- <groupId>org.springframework.amqp</groupId> -->
       <!-- <artifactId>spring-rabbit</artifactId> -->
       <!-- </dependency> -->
+
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-http-starter</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.camel</groupId>

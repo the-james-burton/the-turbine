@@ -42,10 +42,6 @@ import org.junit.runner.RunWith;
  * Pull request #572: Ensuring no-generic-type-parms validator called/tested for theories
  *
  * Tests theory on comparable instances.
- *
- * @param <T> the type of the comparable to test here.
- * @author <a href="mailto:robert.reiner@smartics.de">Robert Reiner</a>
- * @version $Revision:591 $
  */
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 @RunWith(Theories.class)

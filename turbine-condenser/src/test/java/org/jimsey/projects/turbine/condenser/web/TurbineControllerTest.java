@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.project.turbine.spring.controller;
+package org.jimsey.projects.turbine.condenser.web;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.*;

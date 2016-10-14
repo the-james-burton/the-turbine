@@ -20,24 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.project.turbine.spring.controller;
+package org.jimsey.projects.turbine.condenser.web;
 
 import static org.junit.Assert.*;
 
-import java.lang.invoke.MethodHandles;
 import java.net.URL;
 
-import javax.validation.constraints.NotNull;
-
 import org.jimsey.projects.turbine.condenser.Application;
-import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
-import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -51,63 +43,26 @@ import org.springframework.web.client.RestTemplate;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest
+@IntegrationTest({ "server.port=48002" })
 @ActiveProfiles("it")
-public class TurbineControllerIT {
-
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
+public class HelloControllerIT {
 
   @Value("${local.server.port}")
   private int port;
 
-  private URL serviceUrl;
+  private URL base;
 
   private RestTemplate template;
 
-  @Autowired
-  @NotNull
-  private InfrastructureProperties infrastructureProperties;
-
   @Before
   public void setUp() throws Exception {
-    this.serviceUrl = new URL(String.format("http://localhost:%s/turbine/", port));
+    this.base = new URL("http://localhost:" + port + "/ping");
     template = new TestRestTemplate();
   }
 
   @Test
-  public void testPing() throws Exception {
-    logger.info("it should return nano time value...");
-    String url = String.format("%s/%s", serviceUrl.toString(), "ping");
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("ping: {}", response.getBody());
+  public void getHello() throws Exception {
+    ResponseEntity<String> response = template.getForEntity(base.toString(), String.class);
     assertNotNull(response.getBody());
   }
-
-  @Test
-  public void testListSymbols() throws Exception {
-    logger.info("it should return a list of symbols...");
-    String url = String.format("%s/%s/%s", serviceUrl.toString(), "stocks", Stocks.ABC.getMarket());
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("symbols: {}", response.getBody());
-    assertNotNull(response.getBody());
-  }
-
-  @Test
-  public void testListIndicators() throws Exception {
-    logger.info("it should return a list of indicators...");
-    String url = String.format("%s/%s", serviceUrl.toString(), "indicators");
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("indicators: {}", response.getBody());
-    assertNotNull(response.getBody());
-  }
-
-  @Test
-  public void testListStrategies() throws Exception {
-    logger.info("it should return a list of strategies...");
-    String url = String.format("%s/%s", serviceUrl.toString(), "strategies");
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
-    logger.info("strategies: {}", response.getBody());
-    assertNotNull(response.getBody());
-  }
-
 }

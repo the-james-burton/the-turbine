@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.project.turbine.condenser.service;
+package org.jimsey.projects.turbine.condenser.service;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
