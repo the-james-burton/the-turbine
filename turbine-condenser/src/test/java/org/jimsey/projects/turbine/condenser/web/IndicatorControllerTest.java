@@ -26,6 +26,8 @@ package org.jimsey.projects.turbine.condenser.web;
 // import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
@@ -35,7 +37,7 @@ import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.ElasticsearchService;
-import org.jimsey.projects.turbine.condenser.web.IndicatorController;
+import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
@@ -44,34 +46,30 @@ import org.jimsey.projects.turbine.spring.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MockServletContext.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@WebMvcTest(IndicatorController.class)
+@ActiveProfiles("it")
 public class IndicatorControllerTest {
 
-  @InjectMocks
-  private IndicatorController controller;
-
-  // @Spy
-  @Mock
+  @MockBean
   private ElasticsearchService elasticsearch;
 
+  @MockBean
+  private Ping ping;
+  
+  @Autowired
   private MockMvc mvc;
 
   private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(
@@ -83,8 +81,6 @@ public class IndicatorControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    mvc = MockMvcBuilders.standaloneSetup(controller).build();
     indicators = new ArrayList<IndicatorJson>();
     TickJson tick = rdog.newTick();
     indicators.add(rdog.newIndicator(tick.getTimestampAsObject(), "testName"));
@@ -92,10 +88,10 @@ public class IndicatorControllerTest {
 
   @Test
   public void testGetAllStocksGreaterThanDate() throws Exception {
-    Mockito.when(elasticsearch
+    given(elasticsearch
         .findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
             Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class)))
-        .thenReturn(indicators);
+        .willReturn(indicators);
 
     String expected = json.writeValueAsString(new Object() {
       @JsonProperty("indicators")
@@ -107,7 +103,7 @@ public class IndicatorControllerTest {
     String restUri = String.format("%s/%s/%s/%s/%s",
         TurbineCondenserConstants.REST_ROOT_INDICATORS, "market", "symbol", "testName", date);
 
-    mvc.perform(MockMvcRequestBuilders.get(restUri).accept(MediaType.APPLICATION_JSON))
+    mvc.perform(get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().string(equalTo(expected)));
   }

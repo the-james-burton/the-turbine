@@ -25,12 +25,7 @@ package org.jimsey.projects.turbine.condenser.web;
 import static org.junit.Assert.*;
 
 import java.lang.invoke.MethodHandles;
-import java.net.URL;
 
-import javax.validation.constraints.NotNull;
-
-import org.jimsey.projects.turbine.condenser.Application;
-import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,47 +33,36 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.TestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@IntegrationTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("it")
 public class TurbineControllerIT {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
 
-  @Value("${local.server.port}")
-  private int port;
-
-  private URL serviceUrl;
-
-  private RestTemplate template;
+  private final String path = "/turbine";
 
   @Autowired
-  @NotNull
-  private InfrastructureProperties infrastructureProperties;
+  private TestRestTemplate rest;
 
   @Before
   public void setUp() throws Exception {
-    this.serviceUrl = new URL(String.format("http://localhost:%s/turbine/", port));
-    template = new TestRestTemplate();
+    logger.info("given a full running system, authenticated");
+    rest = rest.withBasicAuth("user", "password");
   }
 
   @Test
   public void testPing() throws Exception {
     logger.info("it should return nano time value...");
-    String url = String.format("%s/%s", serviceUrl.toString(), "ping");
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
+    String url = String.format("%s/%s", path, "ping");
+    ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("ping: {}", response.getBody());
     assertNotNull(response.getBody());
   }
@@ -86,8 +70,8 @@ public class TurbineControllerIT {
   @Test
   public void testListSymbols() throws Exception {
     logger.info("it should return a list of symbols...");
-    String url = String.format("%s/%s/%s", serviceUrl.toString(), "stocks", Stocks.ABC.getMarket());
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
+    String url = String.format("%s/%s/%s", path, "stocks", Stocks.ABC.getMarket());
+    ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("symbols: {}", response.getBody());
     assertNotNull(response.getBody());
   }
@@ -95,8 +79,8 @@ public class TurbineControllerIT {
   @Test
   public void testListIndicators() throws Exception {
     logger.info("it should return a list of indicators...");
-    String url = String.format("%s/%s", serviceUrl.toString(), "indicators");
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
+    String url = String.format("%s/%s", path, "indicators");
+    ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("indicators: {}", response.getBody());
     assertNotNull(response.getBody());
   }
@@ -104,8 +88,8 @@ public class TurbineControllerIT {
   @Test
   public void testListStrategies() throws Exception {
     logger.info("it should return a list of strategies...");
-    String url = String.format("%s/%s", serviceUrl.toString(), "strategies");
-    ResponseEntity<String> response = template.getForEntity(url, String.class);
+    String url = String.format("%s/%s", path, "strategies");
+    ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("strategies: {}", response.getBody());
     assertNotNull(response.getBody());
   }

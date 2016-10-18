@@ -23,8 +23,10 @@
 package org.jimsey.projects.turbine.condenser.web;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.invoke.MethodHandles;
@@ -33,49 +35,40 @@ import java.util.List;
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.jimsey.projects.turbine.condenser.service.TurbineService;
-import org.jimsey.projects.turbine.condenser.web.PingResponse;
-import org.jimsey.projects.turbine.condenser.web.TurbineController;
 import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MockServletContext.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@WebMvcTest(TurbineController.class)
+@ActiveProfiles("it")
 public class TurbineControllerTest {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @InjectMocks
-  private TurbineController controller;
-
-  @Mock
+  @MockBean
   private TurbineService turbineSerivce;
 
-  // @Spy
-  @Mock
+  @MockBean
   private Ping ping;
 
-  private final long pingTime = 123l;
-
+  @Autowired
   private MockMvc mvc;
+
+  private final long pingTime = 123l;
 
   private final List<String> indicators = Lists.newArrayList("indicator1", "indicator2");
 
@@ -87,20 +80,16 @@ public class TurbineControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    mvc = MockMvcBuilders.standaloneSetup(controller).build();
     logger.info(" *** ");
   }
 
   @Test
   public void getPing() throws Exception {
-    // use this for a spy...
-    // Mockito.doReturn(123l).when(ping).ping();
-    when(ping.ping()).thenReturn(pingTime);
+    given(ping.ping()).willReturn(pingTime);
     PingResponse expected = new PingResponse(pingTime);
 
-    mvc.perform(MockMvcRequestBuilders
-        .get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "ping"))
+    mvc.perform(
+        get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "ping"))
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().json(json.writeValueAsString(expected)));
@@ -113,8 +102,8 @@ public class TurbineControllerTest {
     logger.info("mock response : {}", response);
     when(turbineSerivce.listStocks(anyString())).thenReturn(response);
 
-    mvc.perform(MockMvcRequestBuilders
-        .get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", Stocks.ABC.getMarket()))
+    mvc.perform(
+        get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", Stocks.ABC.getMarket()))
         .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
@@ -129,8 +118,8 @@ public class TurbineControllerTest {
     logger.info("mock response : {}", response);
     when(turbineSerivce.listIndicators()).thenReturn(response);
 
-    mvc.perform(MockMvcRequestBuilders
-        .get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "indicators"))
+    mvc.perform(
+        get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "indicators"))
         .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
@@ -143,8 +132,8 @@ public class TurbineControllerTest {
     logger.info("mock response : {}", response);
     when(turbineSerivce.listStrategies()).thenReturn(response);
 
-    mvc.perform(MockMvcRequestBuilders
-        .get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "strategies"))
+    mvc.perform(
+        get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "strategies"))
         .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())

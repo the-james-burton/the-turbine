@@ -22,47 +22,52 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
-import java.net.URL;
+import java.lang.invoke.MethodHandles;
 
-import org.jimsey.projects.turbine.condenser.Application;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.TestRestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@IntegrationTest({ "server.port=48002" })
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("it")
 public class HelloControllerIT {
 
-  @Value("${local.server.port}")
-  private int port;
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private URL base;
-
-  private RestTemplate template;
-
+  @Autowired
+  private TestRestTemplate rest;
+  
   @Before
   public void setUp() throws Exception {
-    this.base = new URL("http://localhost:" + port + "/ping");
-    template = new TestRestTemplate();
+    logger.info("given a full running system, authenticated");
+    rest = rest.withBasicAuth("user", "password");
   }
 
   @Test
-  public void getHello() throws Exception {
-    ResponseEntity<String> response = template.getForEntity(base.toString(), String.class);
-    assertNotNull(response.getBody());
+  public void testPingAsString() throws Exception {
+    logger.info("when /ping is called");
+    ResponseEntity<String> response = rest.getForEntity("/ping", String.class);
+    logger.info("then the response body should not be null [body:{}]", response.getBody());
+    assertThat(response.getBody()).isNotNull();
+  }
+
+  @Test
+  public void testPingAsRepsonse() throws Exception {
+    logger.info("when /ping is called");
+    ResponseEntity<PingResponse> response = rest.getForEntity("/ping", PingResponse.class);
+    logger.info("then the response body should not be null [body:{}]", response.getBody());
+    assertThat(response.getBody()).isNotNull();
   }
 }

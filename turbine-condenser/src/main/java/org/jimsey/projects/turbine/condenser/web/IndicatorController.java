@@ -55,7 +55,7 @@ public class IndicatorController {
 
   @Autowired
   @NotNull
-  ElasticsearchService elasticsearchServiceImpl;
+  ElasticsearchService elasticsearch;
 
   @Autowired
   private Ping ping;
@@ -80,7 +80,7 @@ public class IndicatorController {
       @PathVariable String market,
       @PathVariable String symbol) {
     logger.info("getIndicators({}, {})", market, symbol);
-    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsByMarketAndSymbol(market, symbol);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByMarketAndSymbol(market, symbol);
     return Joiner.on(',').join(indicators);
   }
 
@@ -92,7 +92,7 @@ public class IndicatorController {
       @PathVariable Long date)
       throws JsonProcessingException {
     logger.info("getIndicatorsAfter({}, {}, {}, {})", market, symbol, name, date);
-    List<IndicatorJson> indicators = elasticsearchServiceImpl.findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
         market, symbol, name, date);
 
     // TODO can do this with java 8 lambdas?

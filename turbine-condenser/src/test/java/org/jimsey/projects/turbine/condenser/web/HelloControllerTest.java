@@ -22,55 +22,45 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.jimsey.projects.turbine.condenser.service.Ping;
-import org.jimsey.projects.turbine.condenser.web.StatusController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MockServletContext.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@WebMvcTest(StatusController.class)
+@AutoConfigureMockMvc
+@ActiveProfiles("it")
 public class HelloControllerTest {
 
-  @InjectMocks
-  private StatusController controller;
-
-  // @Spy
-  @Mock
+  @MockBean
   private Ping ping;
 
+  @Autowired
   private MockMvc mvc;
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    mvc = MockMvcBuilders.standaloneSetup(controller).build();
+    // we need to mock beans when running a @WebMvcTest...
+    given(ping.ping()).willReturn(123l);
   }
 
   @Test
-  public void getHello() throws Exception {
-    // use this for a spy...
-    // Mockito.doReturn(123l).when(ping).ping();
-    Mockito.when(ping.ping()).thenReturn(123l);
-
-    mvc.perform(MockMvcRequestBuilders.get("/ping").accept(MediaType.APPLICATION_JSON))
+  public void testPing() throws Exception {
+    mvc.perform(get("/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().string(equalTo("123")));
   }

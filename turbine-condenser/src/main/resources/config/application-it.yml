@@ -9,6 +9,9 @@ spring:
       repositories:
         enabled: false
 
+# this does not seem to affect the @SpringBootTest with @ActiveProfiles("it")
+# but it does for @WebMvcTest
+# meanwhile, the TestrestTemplate.withBasicAuth appears to work as expected...
 security:
   basic:
     enabled: false

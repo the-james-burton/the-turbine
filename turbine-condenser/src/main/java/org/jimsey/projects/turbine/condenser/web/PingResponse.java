@@ -22,16 +22,34 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class PingResponse {
 
   private Long time;
 
+  @JsonCreator
   public PingResponse(long time) {
     this.time = time;
   }
 
+  @JsonProperty
   public Long getTime() {
     return time;
   }
 
+  @Override
+  public String toString() {
+    try {
+      return new ObjectMapper().writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  
+  
 }

@@ -26,6 +26,8 @@ package org.jimsey.projects.turbine.condenser.web;
 // import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
@@ -35,7 +37,7 @@ import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.ElasticsearchService;
-import org.jimsey.projects.turbine.condenser.web.TickController;
+import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
@@ -43,36 +45,34 @@ import org.jimsey.projects.turbine.spring.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MockServletContext.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@WebMvcTest(TickController.class)
+@ActiveProfiles("it")
 public class TickControllerTest {
 
-  @InjectMocks
-  private TickController controller;
-
-  // @Spy
-  @Mock
+  @MockBean
   private ElasticsearchService elasticsearch;
 
+  @MockBean
+  private Ping ping;
+  
+  @Autowired
   private MockMvc mvc;
-
+  
   private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(
       TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
 
@@ -82,8 +82,6 @@ public class TickControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    mvc = MockMvcBuilders.standaloneSetup(controller).build();
     ticks = new ArrayList<TickJson>();
     ticks.add(rdog.newTick());
   }
@@ -98,8 +96,8 @@ public class TickControllerTest {
     // {\"date\":1437757455156,\"open\":95.20691875293008,\"high\":96.33109747791707,\"low\":95.03864535693057,\"close\":95.76421881828955,\"volume\":104.54628090784864,\"symbol\":\"ABC\",\"market\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:15.156+01:00\"},
     // {\"date\":1437757459179,\"open\":95.30416761402581,\"high\":95.88765706158829,\"low\":92.37627010410178,\"close\":93.31372449905724,\"volume\":92.83201741698048,\"symbol\":\"ABC\",\"market\":\"FTSE100\",\"timestamp\":\"2015-07-24T18:04:19.179+01:00\"}";
 
-    Mockito.when(elasticsearch.findTicksByMarketAndSymbolAndDateGreaterThan(
-        Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class))).thenReturn(ticks);
+    given(elasticsearch.findTicksByMarketAndSymbolAndDateGreaterThan(
+        anyString(), anyString(), Mockito.any(Long.class))).willReturn(ticks);
 
     String expected = json.writeValueAsString(new Object() {
       @JsonProperty("ticks")

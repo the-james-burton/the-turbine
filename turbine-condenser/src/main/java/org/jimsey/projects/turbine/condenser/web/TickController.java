@@ -57,10 +57,10 @@ public class TickController {
   private static ObjectMapper json = new ObjectMapper();
 
   @NotNull
-  // @Autowired
+  @Autowired
   // @Qualifier("elasticsearchServiceJestImpl")
-  @Resource(name = "elasticsearchNativeServiceImpl")
-  ElasticsearchService elasticsearchService;
+  // @Resource(name = "elasticsearchNativeServiceImpl")
+  ElasticsearchService elasticsearch;
 
   @Autowired
   private Ping ping;
@@ -87,7 +87,7 @@ public class TickController {
       @PathVariable String market,
       @PathVariable String symbol) {
     logger.info("getTicks({}, {})", market, symbol);
-    List<TickJson> ticks = elasticsearchService.findTicksByMarketAndSymbol(market, symbol);
+    List<TickJson> ticks = elasticsearch.findTicksByMarketAndSymbol(market, symbol);
     if (ticks == null) {
       return null;
     }
@@ -100,7 +100,7 @@ public class TickController {
       @PathVariable String symbol,
       @PathVariable Long date) throws JsonProcessingException {
     logger.info("getTicksAfter({}, {}, {})", market, symbol, date);
-    List<TickJson> ticks = elasticsearchService.findTicksByMarketAndSymbolAndDateGreaterThan(market, symbol, date);
+    List<TickJson> ticks = elasticsearch.findTicksByMarketAndSymbolAndDateGreaterThan(market, symbol, date);
     // return Joiner.on(',').join(ticks);
     // return objectToJson(ticks);
     // if (true) {

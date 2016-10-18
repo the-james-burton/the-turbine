@@ -1,11 +1,9 @@
 package org.jimsey.projects.turbine.inlet.web;
 
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +15,19 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @WebMvcTest(TestController.class)
 public class TestControllerTest {
-    
-    // @Autowired
-    // private TestRestTemplate restTemplate;
+
+  // @Autowired
+  // private TestRestTemplate restTemplate;
 
   @Autowired
   private MockMvc mvc;
 
   // @MockBean
   // private Ping ping;
-  
+
   @Test
   public void testPing() throws Exception {
-   // given(ping.ping()).willReturn(123l);
+    // given(ping.ping()).willReturn(123l);
 
     // TODO how to do numeric comparison on string return..?
     mvc.perform(get("/ping").accept(MediaType.TEXT_PLAIN))
