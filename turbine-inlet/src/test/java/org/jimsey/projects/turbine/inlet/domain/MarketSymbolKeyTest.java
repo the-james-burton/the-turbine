@@ -23,7 +23,7 @@
 package org.jimsey.projects.turbine.inlet.domain;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 
@@ -47,56 +47,69 @@ public class MarketSymbolKeyTest {
 
   @Test
   public void testConstructor() {
-    assertThat(mskAB, hasProperty(market, equalTo(A)));
-    assertThat(mskAB, hasProperty(symbol, equalTo(B)));
+    // assertThat(mskAB, hasProperty(symbol, equalTo(B)));
+    assertThat(mskAB).hasFieldOrPropertyWithValue(market, A);
+    assertThat(mskAB).hasFieldOrPropertyWithValue(symbol, B);
   }
 
   @Test
   public void testHashCode() {
-    assertThat(mskAA.hashCode(), equalTo(new MarketSymbolKey(A, A).hashCode()));
-    assertThat(new MarketSymbolKey(A, A).hashCode(), equalTo(mskAA.hashCode()));
+    // assertThat(mskAA.hashCode(), equalTo(new MarketSymbolKey(A, A).hashCode()));
+    assertThat(mskAA.hashCode()).isEqualTo(new MarketSymbolKey(A, A).hashCode());
+    assertThat(new MarketSymbolKey(A, A).hashCode()).isEqualTo(mskAA.hashCode());
 
-    assertThat(mskAA.hashCode(), not(equalTo(mskAB.hashCode())));
-    assertThat(mskAA.hashCode(), not(equalTo(mskBA.hashCode())));
-    assertThat(mskAA.hashCode(), not(equalTo(mskBB.hashCode())));
-    assertThat(mskAB.hashCode(), not(equalTo(mskBA.hashCode())));
-    assertThat(mskAB.hashCode(), not(equalTo(mskBB.hashCode())));
-    assertThat(mskBA.hashCode(), not(equalTo(mskBB.hashCode())));
+    // assertThat(mskAA.hashCode(), not(equalTo(mskAB.hashCode())));
+    assertThat(mskAA.hashCode()).isNotEqualTo(equalTo(mskAB.hashCode()));
+    assertThat(mskAA.hashCode()).isNotEqualTo(mskBA.hashCode());
+    assertThat(mskAA.hashCode()).isNotEqualTo(mskBB.hashCode());
+    assertThat(mskAB.hashCode()).isNotEqualTo(mskBA.hashCode());
+    assertThat(mskAB.hashCode()).isNotEqualTo(mskBB.hashCode());
+    assertThat(mskBA.hashCode()).isNotEqualTo(mskBB.hashCode());
   }
 
   @Test
   public void testEquals() {
     // reflexive
-    assertThat(mskAA, equalTo(mskAA));
+    assertThat(mskAA).isEqualTo(mskAA);
     
     // symmetric
-    assertThat(mskAA, equalTo(new MarketSymbolKey(A, A)));
-    assertThat(new MarketSymbolKey(A, A), equalTo(mskAA));
+    assertThat(mskAA).isEqualTo(new MarketSymbolKey(A, A));
+    assertThat(new MarketSymbolKey(A, A)).isEqualTo(mskAA);
 
     // consistent
-    assertThat(mskAA, equalTo(new MarketSymbolKey(A, A)));
-    assertThat(new MarketSymbolKey(A, A), equalTo(mskAA));
+    assertThat(mskAA).isEqualTo(new MarketSymbolKey(A, A));
+    assertThat(new MarketSymbolKey(A, A)).isEqualTo(mskAA);
     
-    assertThat(mskAA, not(equalTo(null)));
+    assertThat(mskAA).isNotEqualTo(null);
     
-    assertThat(mskAA, not(equalTo(mskAB)));
-    assertThat(mskAA, not(equalTo(mskBA)));
-    assertThat(mskAA, not(equalTo(mskBB)));
-    assertThat(mskAB, not(equalTo(mskBA)));
-    assertThat(mskAB, not(equalTo(mskBB)));
-    assertThat(mskBA, not(equalTo(mskBB)));
+    assertThat(mskAA).isNotEqualTo(mskAB);
+    assertThat(mskAA).isNotEqualTo(mskBA);
+    assertThat(mskAA).isNotEqualTo(mskBB);
+    assertThat(mskAB).isNotEqualTo(mskBA);
+    assertThat(mskAB).isNotEqualTo(mskBB);
+    assertThat(mskBA).isNotEqualTo(mskBB);
   }
 
   @Test
   public void testCompareTo() {
-    assertThat(mskAA, equalTo(new MarketSymbolKey(A, A)));
+    assertThat(mskAA).isEqualTo(new MarketSymbolKey(A, A));
+    assertThat(mskAB).isEqualTo(new MarketSymbolKey(A, B));
+    assertThat(mskBA).isEqualTo(new MarketSymbolKey(B, A));
+    assertThat(mskBB).isEqualTo(new MarketSymbolKey(B, B));
 
-    assertThat(mskAA, lessThan(mskAB));
-    assertThat(mskAA, lessThan(mskBA));
-    assertThat(mskAA, lessThan(mskBB));
-    assertThat(mskAB, lessThan(mskBA));
-    assertThat(mskAB, lessThan(mskBB));
-    assertThat(mskBA, lessThan(mskBB));
-  }
+    assertThat(mskAA).isLessThan(mskAB);
+    assertThat(mskAA).isLessThan(mskBA);
+    assertThat(mskAA).isLessThan(mskBB);
+    assertThat(mskAB).isLessThan(mskBA);
+    assertThat(mskAB).isLessThan(mskBB);
+    assertThat(mskBA).isLessThan(mskBB);
+
+    assertThat(mskAB).isGreaterThan(mskAA);
+    assertThat(mskBA).isGreaterThan(mskAA);
+    assertThat(mskBB).isGreaterThan(mskAA);
+    assertThat(mskBA).isGreaterThan(mskAB);
+    assertThat(mskBB).isGreaterThan(mskAB);
+    assertThat(mskBB).isGreaterThan(mskBA);
+}
 
 }

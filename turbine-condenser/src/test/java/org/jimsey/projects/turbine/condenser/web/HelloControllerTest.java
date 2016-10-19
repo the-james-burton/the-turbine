@@ -60,6 +60,7 @@ public class HelloControllerTest {
 
   @Test
   public void testPing() throws Exception {
+    // note that this part of spring boot testing requires Hamcrest matchers... 
     mvc.perform(get("/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().string(equalTo("123")));
