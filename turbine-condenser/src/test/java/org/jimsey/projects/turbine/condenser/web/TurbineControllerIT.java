@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
 
@@ -60,38 +60,42 @@ public class TurbineControllerIT {
 
   @Test
   public void testPing() throws Exception {
-    logger.info("it should return nano time value...");
     String url = String.format("%s/%s", path, "ping");
+    logger.info("when {} is called...", url);
     ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("ping: {}", response.getBody());
-    assertNotNull(response.getBody());
+    logger.info("then it should return nano time value...");
+    assertThat(response.getBody()).isNotNull();
   }
 
   @Test
   public void testListSymbols() throws Exception {
-    logger.info("it should return a list of symbols...");
     String url = String.format("%s/%s/%s", path, "stocks", Stocks.ABC.getMarket());
+    logger.info("when {} is called...", url);
     ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("symbols: {}", response.getBody());
-    assertNotNull(response.getBody());
+    logger.info("then it should return a list of symbols...");
+    assertThat(response.getBody()).isNotNull();
   }
 
   @Test
   public void testListIndicators() throws Exception {
-    logger.info("it should return a list of indicators...");
     String url = String.format("%s/%s", path, "indicators");
+    logger.info("when {} is called...", url);
     ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("indicators: {}", response.getBody());
-    assertNotNull(response.getBody());
+    logger.info("then it should return a list of indicators...");
+    assertThat(response.getBody()).isNotNull();
   }
 
   @Test
   public void testListStrategies() throws Exception {
-    logger.info("it should return a list of strategies...");
     String url = String.format("%s/%s", path, "strategies");
+    logger.info("when {} is called...", url);
     ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("strategies: {}", response.getBody());
-    assertNotNull(response.getBody());
+    logger.info("then it should return a list of strategies...");
+    assertThat(response.getBody()).isNotNull();
   }
 
 }
