@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -196,8 +196,8 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     @SuppressWarnings("unchecked")
     List<TickJson> ticks = (List<TickJson>) json.readValue(result, List.class);
     logger.info("expected:{}, actual:{}", number, ticks.size());
-    assertThat(ticks, hasSize(number));
-    assertThat(result, containsString("timestamp"));
+    assertThat(ticks).hasSize(number);
+    assertThat(result).contains("timestamp");
   }
 
   @Test
@@ -219,9 +219,9 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
         stockTwo, resultTwo.size(), numberTwo);
     logger.info(" *** findTicksByMarketAndSymbol({}): {}, expected: {}",
         stockThree, resultThree.size(), 0);
-    assertThat(resultOne, hasSize(numberOne));
-    assertThat(resultTwo, hasSize(numberTwo));
-    assertThat(resultThree, hasSize(0));
+    assertThat(resultOne).hasSize(numberOne);
+    assertThat(resultTwo).hasSize(numberTwo);
+    assertThat(resultThree).hasSize(0);
   }
 
   @Test
@@ -244,9 +244,9 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
         stockTwo, resultTwo.size(), numberTwo);
     logger.info(" *** findIndicatorsByMarketAndSymbol({}): {}, expected: {}",
         stockThree, resultThree.size(), 0);
-    assertThat(resultOne, hasSize(numberOne));
-    assertThat(resultTwo, hasSize(numberTwo));
-    assertThat(resultThree, hasSize(0));
+    assertThat(resultOne).hasSize(numberOne);
+    assertThat(resultTwo).hasSize(numberTwo);
+    assertThat(resultThree).hasSize(0);
   }
 
   @Test
@@ -259,7 +259,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     List<TickJson> result = service.findTicksByMarketAndSymbolAndDateGreaterThan(market, stockOne, midpoint);
     logger.info(" *** findTicksByMarketAndSymbolAndDateGreaterThan({}, {}): {}, expected: {}",
         stockOne, midpoint, result.size(), expected);
-    assertThat(result, hasSize(expected));
+    assertThat(result).hasSize(expected);
   }
 
   @Test
@@ -273,7 +273,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     List<IndicatorJson> result = service.findIndicatorsByMarketAndSymbolAndDateGreaterThan(market, stockOne, midpoint);
     logger.info(" *** findIndicatorsByMarketAndSymbolAndDateGreaterThan({}, {}): {}, expected: {}",
         stockOne, midpoint, result.size(), expected);
-    assertThat(result, hasSize(expected));
+    assertThat(result).hasSize(expected);
   }
 
   @Test
@@ -291,7 +291,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     List<IndicatorJson> result = service.findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(market, stockOne, nameOne, midpoint);
     logger.info(" *** findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan({}, {}, {}): {}, expected: {}",
         stockOne, nameOne, midpoint, result.size(), expected);
-    assertThat(result, hasSize(expected));
+    assertThat(result).hasSize(expected);
   }
 
   // ------------------------------------------------------
