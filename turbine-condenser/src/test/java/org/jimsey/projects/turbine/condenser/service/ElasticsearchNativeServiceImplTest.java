@@ -23,7 +23,6 @@
 package org.jimsey.projects.turbine.condenser.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
