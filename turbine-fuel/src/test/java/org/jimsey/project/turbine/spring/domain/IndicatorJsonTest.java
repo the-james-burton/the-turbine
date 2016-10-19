@@ -23,6 +23,7 @@
 package org.jimsey.project.turbine.spring.domain;
 
 import static org.junit.Assert.*;
+import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -30,7 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.Before;
@@ -65,10 +65,10 @@ public class IndicatorJsonTest {
   @Test
   public void testJsonConstructor() {
     indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
+        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
     String jsonConstructor = indicator.toString();
     indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
+        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
     String stockConstructor = indicator.toString();
     logger.info(jsonConstructor);
     logger.info(stockConstructor);
@@ -79,7 +79,7 @@ public class IndicatorJsonTest {
   @Test
   public void testJson() throws IOException {
     indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
+        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(indicator);
     indicator = json.readValue(text, IndicatorJson.class);
     logger.info(text);
@@ -92,7 +92,7 @@ public class IndicatorJsonTest {
   @Test
   public void testSerializable() throws IOException {
     indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET, name, OffsetDateTime.now().toString());
+        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(indicator);
     TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(indicator.toString());

@@ -22,13 +22,13 @@
  */
 package org.jimsey.project.turbine.spring.domain;
 
+import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -55,10 +55,10 @@ public class TickJsonTest {
   @Test
   public void testJsonConstructor() {
     tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL, OffsetDateTime.now().toString());
+        MARKET, SYMBOL, OffsetDateTime.now().toString());
     String jsonConstructor = tick.toString();
     tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL, OffsetDateTime.now().toString());
+        MARKET, SYMBOL, OffsetDateTime.now().toString());
     String tickConstructor = tick.toString();
     logger.info(jsonConstructor);
     logger.info(tickConstructor);
@@ -69,7 +69,7 @@ public class TickJsonTest {
   @Test
   public void testJson() throws IOException {
     tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL, OffsetDateTime.now().toString());
+        MARKET, SYMBOL, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(tick);
     tick = json.readValue(text, TickJson.class);
     logger.info(text);
@@ -82,7 +82,7 @@ public class TickJsonTest {
   @Test
   public void testSerializable() throws IOException {
     tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL, OffsetDateTime.now().toString());
+        MARKET, SYMBOL, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(tick);
     TickJson tick2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(tick.toString());

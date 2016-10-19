@@ -22,13 +22,14 @@
  */
 package org.jimsey.project.turbine.spring.domain;
 
+import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
+
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.jimsey.project.turbine.spring.TurbineTestConstants;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.Before;
@@ -55,11 +56,11 @@ public class StrategyJsonTest {
   @Test
   public void testJsonConstructor() {
     strategy = new StrategyJson(1401174943825l,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET,
+        SYMBOL, MARKET,
         100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
     String jsonConstructor = strategy.toString();
     strategy = new StrategyJson(OffsetDateTime.now(),
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET,
+        SYMBOL, MARKET,
         100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
     String strategyConstructor = strategy.toString();
     logger.info(jsonConstructor);
@@ -71,8 +72,7 @@ public class StrategyJsonTest {
   @Test
   public void testJson() throws IOException {
     strategy = new StrategyJson(1401174943825l,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET,
-        100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
+        SYMBOL, MARKET, 100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(strategy);
     strategy = json.readValue(text, StrategyJson.class);
     logger.info(text);
@@ -85,8 +85,7 @@ public class StrategyJsonTest {
   @Test
   public void testSerializable() throws IOException {
     strategy = new StrategyJson(1401174943825l,
-        TurbineTestConstants.SYMBOL, TurbineTestConstants.MARKET,
-        100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
+        SYMBOL, MARKET, 100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(strategy);
     TickJson strategy2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(strategy.toString());

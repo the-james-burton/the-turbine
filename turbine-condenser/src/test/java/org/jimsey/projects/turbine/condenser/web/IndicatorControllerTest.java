@@ -25,6 +25,8 @@ package org.jimsey.projects.turbine.condenser.web;
 // import static org.hamcrest.Matchers.*;
 // import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
+
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,7 +44,6 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,8 +73,7 @@ public class IndicatorControllerTest {
   @Autowired
   private MockMvc mvc;
 
-  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(
-      TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
+  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(MARKET, SYMBOL);
 
   private List<IndicatorJson> indicators = new ArrayList<IndicatorJson>();
 

@@ -22,12 +22,14 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
+import static org.hamcrest.Matchers.*;
+
 // import static org.hamcrest.Matchers.*;
 // import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
 import static org.mockito.BDDMockito.*;
+import static org.mockito.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
@@ -41,13 +43,11 @@ import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.spring.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -73,8 +73,7 @@ public class TickControllerTest {
   @Autowired
   private MockMvc mvc;
   
-  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(
-      TurbineTestConstants.MARKET, TurbineTestConstants.SYMBOL);
+  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(MARKET, SYMBOL);
 
   private List<TickJson> ticks = new ArrayList<TickJson>();
 

@@ -22,6 +22,8 @@
  */
 package eu.verdelhan.ta4j;
 
+import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class TradingRecordTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TradingRecordTest.class);
 
-  DomainObjectGenerator rdog = new RandomDomainObjectGenerator("FTSE100", "ABC");
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(MARKET, SYMBOL);
 
   TimeSeries series;
 
