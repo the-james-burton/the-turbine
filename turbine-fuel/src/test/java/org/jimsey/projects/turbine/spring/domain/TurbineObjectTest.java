@@ -20,9 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.project.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
-import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
+import static org.jimsey.projects.turbine.fuel.constants.TurbineTestConstants.*;
+
 import java.io.IOException;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;

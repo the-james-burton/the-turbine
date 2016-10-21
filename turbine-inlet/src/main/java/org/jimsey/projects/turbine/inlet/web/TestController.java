@@ -39,14 +39,14 @@ public class TestController {
   private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
   @RequestMapping("/ping")
-  public HttpEntity<String> test() {
+  public HttpEntity<String> ping() {
     String result = Long.toString(System.nanoTime());
     HttpEntity<String> response = new HttpEntity<>(result);
     return response;
   }
 
   @RequestMapping("/ping/{message}")
-  public HttpEntity<String> test(
+  public HttpEntity<String> ping(
       @PathVariable String message) {
     String result = String.format("%s: %s", message, Long.toString(System.nanoTime()));
     HttpEntity<String> response = new HttpEntity<>(result);

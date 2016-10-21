@@ -22,7 +22,7 @@
  */
 package eu.verdelhan.ta4j;
 
-import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
+import static org.jimsey.projects.turbine.fuel.constants.TurbineTestConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;

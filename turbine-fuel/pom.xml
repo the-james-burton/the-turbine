@@ -78,6 +78,18 @@
       <artifactId>camel-core</artifactId>
       <version>2.15.3</version>
     </dependency>
+    
+    <dependency>
+      <groupId>io.javaslang</groupId>
+      <artifactId>javaslang</artifactId>
+      <version>2.0.4</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
+    </dependency>    
 
     <!-- spring boot version managed dependencies -->
     <dependency>

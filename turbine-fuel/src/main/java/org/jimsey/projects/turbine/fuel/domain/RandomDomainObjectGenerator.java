@@ -25,18 +25,25 @@ package org.jimsey.projects.turbine.fuel.domain;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RandomDomainObjectGenerator implements DomainObjectGenerator {
+import com.google.common.collect.ComparisonChain;
+
+import javaslang.collection.CharSeq;
+
+public class RandomDomainObjectGenerator implements DomainObjectGenerator, Comparable<DomainObjectGenerator> {
 
   private static final Logger logger = LoggerFactory.getLogger(RandomDomainObjectGenerator.class);
 
-  private final String market;
+  private final CharSeq market;
 
-  private final String symbol;
+  private final CharSeq symbol;
 
   private TickJson tick;
 
@@ -45,10 +52,19 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
   private StrategyJson strategy;
 
   public RandomDomainObjectGenerator(String market, String symbol) {
+    this(CharSeq.of(market), CharSeq.of(symbol));
+  }
+
+  public RandomDomainObjectGenerator(CharSeq market, CharSeq symbol) {
     this.market = market;
     this.symbol = symbol;
-    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol, this.market,
-        OffsetDateTime.now().toString());
+    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol.toString(), this.market.toString(),
+        OffsetDateTime.now().toString());    
+  }
+  
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
   }
 
   @Override
@@ -62,7 +78,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(90, 110);
 
-    tick = new TickJson(date, open, high, low, close, volume, this.symbol, this.market, OffsetDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, symbol.toString(), market.toString(), OffsetDateTime.now().toString());
     return tick;
   }
 
@@ -84,7 +100,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
 
     indicator = new IndicatorJson(
         date, closePriceIndicator, indicators,
-        this.symbol, this.market, name, OffsetDateTime.now().toString());
+        symbol.toString(), market.toString(), name, OffsetDateTime.now().toString());
     return indicator;
   }
 
@@ -101,7 +117,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
     Double value = 0d;
 
     strategy = new StrategyJson(
-        date, this.market, this.symbol, close,
+        date, market.toString(), symbol.toString(), close,
         name, action, amount, position, cash, value, OffsetDateTime.now().toString());
     return strategy;
   }
@@ -120,6 +136,39 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator {
   @Override
   public StrategyJson newStrategy(String name) {
     return newStrategy(OffsetDateTime.now(), name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(market, symbol);
+  }
+
+  @Override
+  public boolean equals(Object key) {
+    if (key == null || !(key instanceof RandomDomainObjectGenerator)) {
+      return false;
+    }
+    RandomDomainObjectGenerator that = (RandomDomainObjectGenerator) key;
+    return Objects.equals(this.market, that.market)
+        && Objects.equals(this.symbol, that.symbol);
+  }
+
+  @Override
+  public int compareTo(DomainObjectGenerator that) {
+    return ComparisonChain.start()
+        .compare(this.market.toString(), that.getMarket().toString())
+        .compare(this.symbol.toString(), that.getSymbol().toString())
+        .result();
+  }
+
+  @Override
+  public CharSeq getMarket() {
+    return market;
+  }
+
+  @Override
+  public CharSeq getSymbol() {
+    return symbol;
   }
 
 }

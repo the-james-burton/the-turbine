@@ -20,18 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.project.turbine.spring.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
+import static org.jimsey.projects.turbine.fuel.constants.TurbineTestConstants.*;
 import static org.junit.Assert.*;
-import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -41,62 +39,56 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class IndicatorJsonTest {
+public class StrategyJsonTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TurbineObjectTest.class);
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private IndicatorJson indicator;
-
-  private final Map<String, Double> indicators = new HashMap<>();
-
-  private final String name = "testName";
+  private StrategyJson strategy;
 
   @Before
   public void before() {
-    // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
-    // this.stock = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
-    indicators.put("testval1", 1234.0d);
-    indicators.put("testval2", 2345.0d);
-    indicators.put("testval13", 3456.0d);
+    // {"date":1401174943825,"symbol":"ABC","market":"FTSE100","close":100.0,"action":"enter","amount":1,"position":6,"cost":11.0,"value":14.0,"timestamp":"2015-11-06T18:21:47.263Z"}
   }
 
   @Test
   public void testJsonConstructor() {
-    indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
-    String jsonConstructor = indicator.toString();
-    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
-    String stockConstructor = indicator.toString();
+    strategy = new StrategyJson(1401174943825l,
+        SYMBOL, MARKET,
+        100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
+    String jsonConstructor = strategy.toString();
+    strategy = new StrategyJson(OffsetDateTime.now(),
+        SYMBOL, MARKET,
+        100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
+    String strategyConstructor = strategy.toString();
     logger.info(jsonConstructor);
-    logger.info(stockConstructor);
+    logger.info(strategyConstructor);
     assertNotNull(jsonConstructor);
-    assertNotNull(stockConstructor);
+    assertNotNull(strategyConstructor);
   }
 
   @Test
   public void testJson() throws IOException {
-    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
-    String text = json.writeValueAsString(indicator);
-    indicator = json.readValue(text, IndicatorJson.class);
+    strategy = new StrategyJson(1401174943825l,
+        SYMBOL, MARKET, 100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
+    String text = json.writeValueAsString(strategy);
+    strategy = json.readValue(text, StrategyJson.class);
     logger.info(text);
-    logger.info(indicator.toString());
-    assertEquals(text, indicator.toString());
+    logger.info(strategy.toString());
+    assertEquals(text, strategy.toString());
 
   }
 
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
-    byte[] bytes = SerializationUtils.serialize(indicator);
-    TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);
-    logger.info(indicator.toString());
-    logger.info(stock2.toString());
+    strategy = new StrategyJson(1401174943825l,
+        SYMBOL, MARKET, 100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
+    byte[] bytes = SerializationUtils.serialize(strategy);
+    TickJson strategy2 = (TickJson) SerializationUtils.deserialize(bytes);
+    logger.info(strategy.toString());
+    logger.info(strategy2.toString());
   }
 
 }

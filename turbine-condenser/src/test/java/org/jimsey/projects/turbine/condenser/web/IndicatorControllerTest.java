@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
-// import static org.hamcrest.Matchers.*;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static org.jimsey.project.turbine.spring.TurbineTestConstants.*;
-
 import static org.hamcrest.Matchers.*;
+import static org.jimsey.projects.turbine.fuel.constants.TurbineTestConstants.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
