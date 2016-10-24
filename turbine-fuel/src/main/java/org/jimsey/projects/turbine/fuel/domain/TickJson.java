@@ -124,8 +124,8 @@ public class TickJson extends Tick implements Serializable {
   }
 
   @JsonProperty("volume")
-  public double getVol() {
-    return super.getVolume().toDouble();
+  public long getVol() {
+    return Math.round(super.getVolume().toDouble());
   }
 
   @JsonProperty("low")
