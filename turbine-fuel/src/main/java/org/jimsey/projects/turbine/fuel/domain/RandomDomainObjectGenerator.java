@@ -58,7 +58,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
   public RandomDomainObjectGenerator(CharSeq market, CharSeq symbol) {
     this.market = market;
     this.symbol = symbol;
-    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 100.0d, this.symbol.toString(), this.market.toString(),
+    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d, this.symbol.toString(), this.market.toString(),
         OffsetDateTime.now().toString());    
   }
   
@@ -76,7 +76,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     double high = RandomUtils.nextDouble(open, open + variation);
     double low = RandomUtils.nextDouble(Math.max(0, open - variation), open);
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
-    double volume = RandomUtils.nextDouble(90, 110);
+    double volume = RandomUtils.nextDouble(4000, 6000);
 
     tick = new TickJson(date, open, high, low, close, volume, symbol.toString(), market.toString(), OffsetDateTime.now().toString());
     return tick;
@@ -106,8 +106,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   @Override
   public StrategyJson newStrategy(OffsetDateTime date, String name) {
-
-    final double variation = 3.0d;
 
     double close = tick.getClose();
     String action = "none";
