@@ -20,16 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.fuel.constants;
+package org.jimsey.projects.turbine.inspector.matchers;
+
+import org.hamcrest.Matcher;
+import org.jimsey.projects.turbine.inspector.matchers.library.IsNumeric;
 
 /**
- * TODO this should be in a shared test dependency...
- * @author jimsey
+ * custom matchers for the turbine
+ * 
+ * @author the-james-burton
  */
-public class TurbineTestConstants {
+public class TurbineMatchers {
 
-  public static final String MARKET = "FTSE100";
-
-  public static final String SYMBOL = "ABC";
+  /**
+   * Creates a matcher of {@link String} that matches when NumberUtils.isNumber() is true for the examined string
+   * <p/>
+   * For example:
+   * <pre>assertThat("123", isNumeric())</pre>
+   */
+  public static Matcher<String> isNumeric() {
+    return IsNumeric.isNumeric();
+  }
 
 }

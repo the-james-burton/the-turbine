@@ -57,6 +57,7 @@
     <module>turbine-furnace</module>
     <module>turbine-condenser</module>
     <module>turbine-inlet</module>
+    <module>turbine-inspector</module>
   </modules>
 
   <properties>
@@ -459,6 +460,13 @@
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>${assertj.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jimsey.projects</groupId>
+        <artifactId>turbine-inspector</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
 

@@ -3,6 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>turbine-inlet</artifactId>
 
+  <name>${project.artifactId}</name>
+  <description>Mocks of external web services</description>
+
   <parent>
     <groupId>org.jimsey.projects</groupId>
     <artifactId>turbine-engine-hall</artifactId>
@@ -84,6 +87,12 @@
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jimsey.projects</groupId>
+      <artifactId>turbine-inspector</artifactId>
       <scope>test</scope>
     </dependency>
 

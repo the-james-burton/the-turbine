@@ -22,14 +22,13 @@
  */
 package org.jimsey.projects.turbine.inlet.web;
 
-import static javaslang.Predicates.*;
+// import static javaslang.Predicates.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
 
 import javax.validation.constraints.NotNull;
 
-import org.assertj.core.api.AbstractIterableAssert;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.slf4j.Logger;
@@ -44,10 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javaslang.Function2;
 import javaslang.collection.CharSeq;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
-import javaslang.collection.Seq;
-import javaslang.control.Try;
 
 @Controller
 @RequestMapping("/finance")
@@ -59,12 +55,39 @@ public class FinanceController {
 
   private List<DomainObjectGenerator> dogs = List.empty();
 
+  /**
+   * given a list of dogs and a list of symbols
+   * then will return the symbols that are not found in the given list of dogs
+   */
   private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<CharSeq>> findMissingSymbols =
     (dogs, symbols) -> symbols.filter(symbol -> !dogs.exists(dog -> symbol.eq(dog.getSymbol())));
 
+  /**
+   * given a list of dogs and a list of symbols
+   * then will return a list of dogs with new dogs added for the given symbols
+   */
   private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<DomainObjectGenerator>> createAndAddNewDogs =
-    (dogs, symbols) -> dogs.appendAll(symbols.map(symbol -> new RandomDomainObjectGenerator(market, symbol.toString())));
+      (dogs, symbols) -> dogs.appendAll(findMissingSymbols.apply(dogs, symbols).map(symbol -> new RandomDomainObjectGenerator(market, symbol.toString())));
+            
+  /**
+   * given a list of dogs and a list of symbols
+   * then will return a list of dogs with new dogs added for the given symbols
+   */
+  private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<DomainObjectGenerator>> FindMissingAndCreateAndAddNewDogs =
+      (dogs, symbols) -> dogs.appendAll(symbols.map(symbol -> new RandomDomainObjectGenerator(market, symbol.toString())));
       
+      /**
+   * given a list of dogs and a list of symbols
+   * then will return a list of dogs for just the given symbols
+   */
+  private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<DomainObjectGenerator>> findMyDogs =
+      (dogs, symbols) -> dogs.filter(dog -> symbols.contains(dog.getSymbol()));
+              
+  /**
+   * given a list of dogs and a list of symbols
+   * then will throw an exception if the list of dogs contains more or less dogs than for the given list of symbols
+   */
+  // TODO this function throws and exception instead of return value, how best to handle? Use a Try?
   private Function2<List<DomainObjectGenerator>, List<CharSeq>, Object> assertThatDogsContainSymbols =
     (dogs, symbols) -> assertThat(dogs.map(dog -> dog.getSymbol())).containsExactlyInAnyOrder(symbols.toJavaArray(CharSeq.class));
 
@@ -90,7 +113,7 @@ public class FinanceController {
     dogs = createAndAddNewDogs.apply(dogs, missing);
 
     // get the dogs for the requested symbols...
-    List<DomainObjectGenerator> myDogs = dogs.filter(dog -> symbols.contains(dog.getSymbol()));
+    List<DomainObjectGenerator> myDogs = findMyDogs.apply(dogs,  symbols);
 
     // require that the list of dogs is complete for all symbols...
     // NOTE an exception my be thrown here
@@ -100,6 +123,7 @@ public class FinanceController {
     logger.info("dogs:{}", myDogs.toJavaList());
     logger.info("missing:{}", missing.toJavaList());
 
+    // format the results specific to this mock API...
     CharSeq results = dogs
         .map(dog -> dog.newTick())
         .map(tick -> String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%s",
@@ -109,6 +133,7 @@ public class FinanceController {
     
     logger.info("results:{}", results.toString());
 
+    // create the return type required by this mock API...
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
     headers.setContentDispositionFormData("file", "quotes.csv");

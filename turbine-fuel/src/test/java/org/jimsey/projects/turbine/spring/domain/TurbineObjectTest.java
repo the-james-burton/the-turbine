@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
-import static org.jimsey.projects.turbine.fuel.constants.TurbineTestConstants.*;
+import static org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants.*;
 
 import java.io.IOException;
 

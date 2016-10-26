@@ -342,6 +342,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.jimsey.projects</groupId>
+      <artifactId>turbine-inspector</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
