@@ -31,17 +31,20 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.inlet.domain.SymbolMetadataProvider;
+import org.jimsey.projects.turbine.inlet.domain.YahooFinanceRealtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javaslang.Function2;
+import javaslang.Tuple;
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
 
@@ -55,6 +58,9 @@ public class FinanceController {
 
   private List<DomainObjectGenerator> dogs = List.empty();
 
+  @Autowired
+  private SymbolMetadataProvider symbolMetadataProvider;
+  
   /**
    * given a list of dogs and a list of symbols
    * then will return the symbols that are not found in the given list of dogs
@@ -123,22 +129,43 @@ public class FinanceController {
     logger.info("dogs:{}", myDogs.toJavaList());
     logger.info("missing:{}", missing.toJavaList());
 
+    
+    // this.metadata = symbolMetadataProvider.findMetadataForMarketAndSymbol(tick.getMarket(), tick.getSymbol());
+    
+    
+    
     // format the results specific to this mock API...
     CharSeq results = dogs
         .map(dog -> dog.newTick())
-        .map(tick -> String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%s",
-            tick.getSymbol(), tick.getSymbol(), tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol()))
+        .map(tick -> Tuple.of(symbolMetadataProvider.findMetadataForMarketAndSymbol(tick.getMarket(), tick.getSymbol()), tick))
+        .map(tuple -> {return new YahooFinanceRealtime(tuple._1, tuple._2);})
+        .map(yfr -> yfr.toString())
         .map(CharSeq::of)
         .reduce((xs, x) -> xs.append('\n').appendAll(x));
+    
+//    CharSeq results = dogs
+//        .map(dog -> dog.newTick())
+//        .map(tick -> String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%s",
+//            tick.getSymbol(), tick.getSymbol(), tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol()))
+//        .map(CharSeq::of)
+//        .reduce((xs, x) -> xs.append('\n').appendAll(x));
     
     logger.info("results:{}", results.toString());
 
     // create the return type required by this mock API...
     HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-    headers.setContentDispositionFormData("file", "quotes.csv");
+    // headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    // headers.setContentDispositionFormData("file", "quotes.csv");
     ResponseEntity<String> response = new ResponseEntity<>(results.toString(), headers, HttpStatus.OK);
     return response;
+  }
+
+  public SymbolMetadataProvider getSymbolMetadataProvider() {
+    return symbolMetadataProvider;
+  }
+
+  public void setSymbolMetadataProvider(SymbolMetadataProvider symbolMetadataProvider) {
+    this.symbolMetadataProvider = symbolMetadataProvider;
   }
 
 }

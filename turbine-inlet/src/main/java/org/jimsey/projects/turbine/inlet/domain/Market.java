@@ -20,23 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inspector.constants;
+package org.jimsey.projects.turbine.inlet.domain;
 
-/**
- * TODO this should be in a shared test dependency...
- * @author jimsey
- */
-public class TurbineTestConstants {
+public enum Market {
 
-  public static final String MARKET = "FTSE100";
-
-  public static final String SYMBOL = "ABC";
+  FTSE100("FTSE100name", ".L"),
+  ASX("ASXname", ".AX"),
+  LSE("LSEname", ".L"),
+  NMS("NMSname", ""); 
   
-  public static final String FTSE100 = "FTSE100";
+  private final String name;
 
-  public static final String ABC = "ABC";
+  private final String extension;
+  
+  private Market(String name, String extension) {
+    this.name = name;
+    this.extension = extension;
+  }
 
-  public static final String DEF = "DEF";
+  public String getName() {
+    return name;
+  }
 
+  public String getExtension() {
+    return extension;
+  }
 
+  
+  
 }

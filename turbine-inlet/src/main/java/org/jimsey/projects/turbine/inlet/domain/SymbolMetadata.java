@@ -20,23 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inspector.constants;
+package org.jimsey.projects.turbine.inlet.domain;
 
-/**
- * TODO this should be in a shared test dependency...
- * @author jimsey
- */
-public class TurbineTestConstants {
+public class SymbolMetadata {
 
-  public static final String MARKET = "FTSE100";
+  private final String symbol;
 
-  public static final String SYMBOL = "ABC";
+  private final String name;
   
-  public static final String FTSE100 = "FTSE100";
+  private final Market market;
 
-  public static final String ABC = "ABC";
+  public SymbolMetadata(String symbol, String name, Market market) {
+    this.symbol = symbol;
+    this.name = name;
+    this.market = market;
+  }
 
-  public static final String DEF = "DEF";
+  @Override
+  public String toString() {
+    return name + market.getExtension();
+  }
 
+  public String getSymbol() {
+    return symbol;
+  }
 
+  public String getName() {
+    return name;
+  }
+
+  public Market getMarket() {
+    return market;
+  }
+
+  
 }

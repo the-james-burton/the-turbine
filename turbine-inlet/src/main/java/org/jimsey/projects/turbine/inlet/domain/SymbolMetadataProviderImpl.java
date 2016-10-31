@@ -20,23 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inspector.constants;
+package org.jimsey.projects.turbine.inlet.domain;
 
-/**
- * TODO this should be in a shared test dependency...
- * @author jimsey
- */
-public class TurbineTestConstants {
+import java.util.Map;
 
-  public static final String MARKET = "FTSE100";
+import org.springframework.stereotype.Service;
 
-  public static final String SYMBOL = "ABC";
+import com.google.common.collect.Maps;
+
+@Service
+public class SymbolMetadataProviderImpl implements SymbolMetadataProvider {
+
+  Map<String, SymbolMetadata> metadata = Maps.newHashMap();
   
-  public static final String FTSE100 = "FTSE100";
+  // TODO make this return/lookup real data...
+  public SymbolMetadataProviderImpl() {
+    metadata.put("ABC.L", new SymbolMetadata("ABC", "ABCName", Market.FTSE100));
+    metadata.put("DEF.L", new SymbolMetadata("DEF", "DEFName", Market.FTSE100));
+  }
 
-  public static final String ABC = "ABC";
+  
+  @Override
+  public SymbolMetadata findMetadataForTicker(String ticker) {
+    return metadata.get(ticker);
+  }
 
-  public static final String DEF = "DEF";
-
+  @Override
+  public SymbolMetadata findMetadataForMarketAndSymbol(String market, String symbol) {
+    String ticker = String.format("%s%s", symbol, Market.valueOf(market).getExtension());
+    return findMetadataForTicker(ticker);
+  }
 
 }
