@@ -149,6 +149,10 @@
     level="INFO" />
 
   <logger
+    name="org.jimsey.projects.turbine.condenser.service.ElasticsearchNativeServiceImpl"
+    level="INFO" />
+
+  <logger
     name="json"
     additivity="false">
     <appender-ref ref="JSON" />
