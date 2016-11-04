@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
@@ -29,14 +30,14 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.google.common.collect.ComparisonChain;
-
 public class MarketSymbolKey implements Comparable<MarketSymbolKey> {
 
   private final String market;
 
   private final String symbol;
 
+  private final Comparator<MarketSymbolKey> comparator = Comparator.comparing(MarketSymbolKey::getMarket).thenComparing(MarketSymbolKey::getSymbol);
+  
   public MarketSymbolKey(@NotNull String market, @NotNull String symbol) {
     this.market = market;
     this.symbol = symbol;
@@ -59,10 +60,7 @@ public class MarketSymbolKey implements Comparable<MarketSymbolKey> {
 
   @Override
   public int compareTo(MarketSymbolKey that) {
-    return ComparisonChain.start()
-        .compare(this.getMarket(), that.getMarket())
-        .compare(this.getSymbol(), that.getSymbol())
-        .result();
+    return comparator.compare(this, that);
   }
 
   @Override

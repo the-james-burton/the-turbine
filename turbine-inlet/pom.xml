@@ -66,10 +66,10 @@
       <artifactId>javaslang-jackson</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>com.google.guava</groupId> -->
+<!--       <artifactId>guava</artifactId> -->
+<!--     </dependency> -->
 
     <!-- we will use assertj for some precondition checks in methods -->
     <dependency>

@@ -22,7 +22,10 @@
  */
 package org.jimsey.projects.turbine.fuel.domain;
 
+import static java.util.Comparator.*;
+
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -32,8 +35,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ComparisonChain;
 
 import javaslang.collection.CharSeq;
 
@@ -51,17 +52,25 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   private StrategyJson strategy;
 
+  // NOTE: for some reason, Eclipse or Java does not like this comparator builder on one line, hence the split...
+  private final Comparator<DomainObjectGenerator> c1 = comparing(dog -> dog.getMarket().toString());
+
+  private final Comparator<DomainObjectGenerator> comparator = c1.thenComparing(dog -> dog.getSymbol().toString());
+
   public RandomDomainObjectGenerator(String market, String symbol) {
     this(CharSeq.of(market), CharSeq.of(symbol));
   }
 
   public RandomDomainObjectGenerator(CharSeq market, CharSeq symbol) {
+    Objects.requireNonNull(market);
+    Objects.requireNonNull(symbol);
     this.market = market;
     this.symbol = symbol;
-    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d, this.symbol.toString(), this.market.toString(),
-        OffsetDateTime.now().toString());    
+    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d, this.symbol.toString(),
+        this.market.toString(),
+        OffsetDateTime.now().toString());
   }
-  
+
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
@@ -78,7 +87,8 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(4000, 6000);
 
-    tick = new TickJson(date, open, high, low, close, volume, symbol.toString(), market.toString(), OffsetDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, symbol.toString(), market.toString(),
+        OffsetDateTime.now().toString());
     return tick;
   }
 
@@ -153,10 +163,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   @Override
   public int compareTo(DomainObjectGenerator that) {
-    return ComparisonChain.start()
-        .compare(this.market.toString(), that.getMarket().toString())
-        .compare(this.symbol.toString(), that.getSymbol().toString())
-        .result();
+    return comparator.compare(this, that);
   }
 
   @Override

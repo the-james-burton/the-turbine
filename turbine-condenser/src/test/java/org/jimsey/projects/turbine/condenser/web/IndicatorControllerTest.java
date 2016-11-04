@@ -83,7 +83,7 @@ public class IndicatorControllerTest {
   }
 
   @Test
-  public void testGetAllStocksGreaterThanDate() throws Exception {
+  public void testGetIndicatorsAfter() throws Exception {
     given(elasticsearch
         .findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
             Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class)))

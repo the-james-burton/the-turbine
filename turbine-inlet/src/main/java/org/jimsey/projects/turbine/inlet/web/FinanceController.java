@@ -26,6 +26,7 @@ package org.jimsey.projects.turbine.inlet.web;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javaslang.Function2;
+import javaslang.Predicates;
 import javaslang.Tuple;
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
@@ -82,7 +84,7 @@ public class FinanceController {
   private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<DomainObjectGenerator>> FindMissingAndCreateAndAddNewDogs =
       (dogs, symbols) -> dogs.appendAll(symbols.map(symbol -> new RandomDomainObjectGenerator(market, symbol.toString())));
       
-      /**
+  /**
    * given a list of dogs and a list of symbols
    * then will return a list of dogs for just the given symbols
    */
@@ -128,27 +130,16 @@ public class FinanceController {
     logger.info("manager:{}", dogs.toJavaList());
     logger.info("dogs:{}", myDogs.toJavaList());
     logger.info("missing:{}", missing.toJavaList());
-
-    
-    // this.metadata = symbolMetadataProvider.findMetadataForMarketAndSymbol(tick.getMarket(), tick.getSymbol());
-    
-    
     
     // format the results specific to this mock API...
-    CharSeq results = dogs
+    CharSeq results = myDogs
         .map(dog -> dog.newTick())
         .map(tick -> Tuple.of(symbolMetadataProvider.findMetadataForMarketAndSymbol(tick.getMarket(), tick.getSymbol()), tick))
+        .filter(tuple -> Objects.nonNull(tuple._1()))
         .map(tuple -> {return new YahooFinanceRealtime(tuple._1, tuple._2);})
         .map(yfr -> yfr.toString())
         .map(CharSeq::of)
         .reduce((xs, x) -> xs.append('\n').appendAll(x));
-    
-//    CharSeq results = dogs
-//        .map(dog -> dog.newTick())
-//        .map(tick -> String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%s",
-//            tick.getSymbol(), tick.getSymbol(), tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol()))
-//        .map(CharSeq::of)
-//        .reduce((xs, x) -> xs.append('\n').appendAll(x));
     
     logger.info("results:{}", results.toString());
 

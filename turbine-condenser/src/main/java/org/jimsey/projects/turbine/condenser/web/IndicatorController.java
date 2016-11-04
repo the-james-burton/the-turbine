@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.web;
 
+import static java.lang.String.*;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -81,7 +83,8 @@ public class IndicatorController {
       @PathVariable String symbol) {
     logger.info("getIndicators({}, {})", market, symbol);
     List<IndicatorJson> indicators = elasticsearch.findIndicatorsByMarketAndSymbol(market, symbol);
-    return Joiner.on(',').join(indicators);
+    // return Joiner.on(',').join(indicators);
+    return indicators.stream().map(i -> i.toString()).reduce((l,r)-> format("%s,%s", l,r)).orElse("");
   }
 
   @RequestMapping("/{market}/{symbol}/{name}/{date}")

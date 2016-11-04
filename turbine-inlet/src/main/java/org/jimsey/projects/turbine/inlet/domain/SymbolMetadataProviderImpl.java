@@ -22,16 +22,15 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Maps;
-
 @Service
 public class SymbolMetadataProviderImpl implements SymbolMetadataProvider {
 
-  Map<String, SymbolMetadata> metadata = Maps.newHashMap();
+  Map<String, SymbolMetadata> metadata = new HashMap<>();
   
   // TODO make this return/lookup real data...
   public SymbolMetadataProviderImpl() {

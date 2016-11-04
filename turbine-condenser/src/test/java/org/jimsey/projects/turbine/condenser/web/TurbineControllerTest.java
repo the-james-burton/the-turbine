@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
@@ -50,7 +51,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(TurbineController.class)
@@ -70,11 +70,11 @@ public class TurbineControllerTest {
 
   private final long pingTime = 123l;
 
-  private final List<String> indicators = Lists.newArrayList("indicator1", "indicator2");
+  private final List<String> indicators = Arrays.asList("indicator1", "indicator2");
 
-  private final List<String> strategies = Lists.newArrayList("strategy1", "strategy1");
+  private final List<String> strategies = Arrays.asList("strategy1", "strategy1");
 
-  private final List<Stocks> stocks = Lists.newArrayList(Stocks.ABC, Stocks.DEF);
+  private final List<Stocks> stocks = Arrays.asList(Stocks.ABC, Stocks.DEF);
 
   private final ObjectMapper json = new ObjectMapper();
 

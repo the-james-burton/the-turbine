@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.inlet.domain;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
@@ -48,6 +49,8 @@ public class YahooFinanceRealtime {
    */
   public YahooFinanceRealtime(SymbolMetadata metadata, TickJson tick) {
     // this.metadata = symbolMetadataProvider.findMetadataForMarketAndSymbol(tick.getMarket(), tick.getSymbol());
+    Objects.requireNonNull(metadata, "metadata must be provided");
+    Objects.requireNonNull(tick, "tick must be provided");
     this.metadata = metadata;
     this.tick = tick;
   }

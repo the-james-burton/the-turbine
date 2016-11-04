@@ -72,7 +72,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Stopwatch;
 
 public class EquityOptionsTest {
 
@@ -188,11 +187,14 @@ public class EquityOptionsTest {
     return result;
   }
 
+  // TODO issue #15 replace Guava Stopwatch with JMH...
   private void price(final VanillaOption option, final PricingEngine engine) {
-    Stopwatch clock = Stopwatch.createStarted();
+    // Stopwatch clock = Stopwatch.createStarted();
+    long started = System.nanoTime();
     option.setPricingEngine(engine);
     Double value = option.NPV();
-    long elapsed = clock.elapsed(java.util.concurrent.TimeUnit.MILLISECONDS);
+    // long elapsed = clock.elapsed(java.util.concurrent.TimeUnit.MILLISECONDS);
+    long elapsed = System.nanoTime() - started;
     Result result = new Result(option.getClass().getSimpleName(), engineName(engine), value, elapsed);
     logger.info(result.toString());
   }
