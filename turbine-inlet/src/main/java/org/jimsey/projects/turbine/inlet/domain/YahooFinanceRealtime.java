@@ -75,11 +75,23 @@ public class YahooFinanceRealtime {
 
   @Override
   public String toString() {
-    return String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%s",
+    return String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
         metadata.getName(), metadata.getMarket().toString(),
         getOpen(), getHigh(), getLow(), getClose(), getVol());
   }
 
+  public String getName() {
+    return metadata.getName();
+  }
+  
+  public String getSymbol() {
+    return metadata.getSymbol();
+  }
+  
+  public Market getMarket() {
+    return metadata.getMarket();
+  }
+  
   public double getOpen() {
     return tick.getOpen();
   }

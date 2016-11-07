@@ -47,23 +47,52 @@ public class YahooFinanceRealtimeTest {
   public void testRoundTripForString() {
     OffsetDateTime date = OffsetDateTime.now();
     SymbolMetadata metadata = smp.findMetadataForTicker("ABC.L");
-    String expected = String.format("\"%s\",\"%s\",114.43,114.56,113.51,113.87,13523517", metadata.getName(), metadata.getMarket());
-    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, FTSE100, ABC, expected);
-    String actual = yfr.toString();
-    assertThat(actual).isEqualTo(expected);
+    double open = 114.43;
+    double high = 114.56;
+    double low = 113.51;
+    double close = 113.87;
+    long vol = 13523517;
+    String line = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
+        metadata.getName(), metadata.getMarket(), open, high, low, close, vol);
+    logger.info(line);
+    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, FTSE100, ABC, line);
+
+    // check the individual properties...
+    assertThat(yfr.getName()).isEqualTo(metadata.getName());
+    assertThat(yfr.getMarket()).isEqualTo(metadata.getMarket());
+    assertThat(yfr.getSymbol()).isEqualTo(metadata.getSymbol());
+    assertThat(yfr.getOpen()).isEqualTo(open);
+    assertThat(yfr.getHigh()).isEqualTo(high);
+    assertThat(yfr.getLow()).isEqualTo(low);
+    assertThat(yfr.getClose()).isEqualTo(close);
+    assertThat(yfr.getVol()).isEqualTo(vol);
+
+    // check the formatted output string...
+    assertThat(yfr.toString()).isEqualTo(line);
   }
   
   @Test
   public void testRoundTripForTickJson() {
-    OffsetDateTime date = OffsetDateTime.now();
     TickJson tick = dog.newTick(); 
     SymbolMetadata metadata = smp.findMetadataForTicker("ABC.L");
-    String expected = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%s",
+    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, tick);
+
+    // check the individual properties...
+    assertThat(yfr.getName()).isEqualTo(metadata.getName());
+    assertThat(yfr.getMarket()).isEqualTo(metadata.getMarket());
+    assertThat(yfr.getSymbol()).isEqualTo(metadata.getSymbol());
+    assertThat(yfr.getOpen()).isEqualTo(tick.getOpen());
+    assertThat(yfr.getHigh()).isEqualTo(tick.getHigh());
+    assertThat(yfr.getLow()).isEqualTo(tick.getLow());
+    assertThat(yfr.getClose()).isEqualTo(tick.getClose());
+    assertThat(yfr.getVol()).isEqualTo(tick.getVol());
+
+    // check the formatted output string...
+    String expected = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
         metadata.getName(), metadata.getMarket(),
         tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol());
-    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, FTSE100, ABC, expected);
-    String actual = yfr.toString();
-    assertThat(actual).isEqualTo(expected);
+    assertThat(yfr.toString()).isEqualTo(expected);
+
   }
   
 }

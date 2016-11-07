@@ -81,7 +81,7 @@ public class FinanceController {
    * given a list of dogs and a list of symbols
    * then will return a list of dogs with new dogs added for the given symbols
    */
-  private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<DomainObjectGenerator>> FindMissingAndCreateAndAddNewDogs =
+  private Function2<List<DomainObjectGenerator>, List<CharSeq>, List<DomainObjectGenerator>> findMissingAndCreateAndAddNewDogs =
       (dogs, symbols) -> dogs.appendAll(symbols.map(symbol -> new RandomDomainObjectGenerator(market, symbol.toString())));
       
   /**
