@@ -80,16 +80,8 @@ public class YahooFinanceRealtime {
         getOpen(), getHigh(), getLow(), getClose(), getVol());
   }
 
-  public String getName() {
-    return metadata.getName();
-  }
-  
-  public String getSymbol() {
-    return metadata.getSymbol();
-  }
-  
-  public Market getMarket() {
-    return metadata.getMarket();
+  public SymbolMetadata getMetadata() {
+    return metadata;
   }
   
   public double getOpen() {

@@ -34,11 +34,10 @@ public class SymbolMetadataProviderImpl implements SymbolMetadataProvider {
   
   // TODO make this return/lookup real data...
   public SymbolMetadataProviderImpl() {
-    metadata.put("ABC.L", new SymbolMetadata("ABC", "ABCName", Market.FTSE100));
-    metadata.put("DEF.L", new SymbolMetadata("DEF", "DEFName", Market.FTSE100));
+    metadata.put("ABC.L", new SymbolMetadata(Market.FTSE100, "ABC", "ABCName"));
+    metadata.put("DEF.L", new SymbolMetadata(Market.FTSE100, "DEF", "DEFName"));
   }
 
-  
   @Override
   public SymbolMetadata findMetadataForTicker(String ticker) {
     return metadata.get(ticker);

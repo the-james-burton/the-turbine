@@ -24,8 +24,8 @@ package org.jimsey.projects.turbine.inlet.domain;
 
 public enum Market {
 
-  FTSE100("FTSE100name", ".L"),
   ASX("ASXname", ".AX"),
+  FTSE100("FTSE100name", ".L"),
   LSE("LSEname", ".L"),
   NMS("NMSname", ""); 
   

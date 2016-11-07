@@ -58,9 +58,7 @@ public class YahooFinanceRealtimeTest {
     YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, FTSE100, ABC, line);
 
     // check the individual properties...
-    assertThat(yfr.getName()).isEqualTo(metadata.getName());
-    assertThat(yfr.getMarket()).isEqualTo(metadata.getMarket());
-    assertThat(yfr.getSymbol()).isEqualTo(metadata.getSymbol());
+    assertThat(yfr.getMetadata()).isEqualTo(metadata);
     assertThat(yfr.getOpen()).isEqualTo(open);
     assertThat(yfr.getHigh()).isEqualTo(high);
     assertThat(yfr.getLow()).isEqualTo(low);
@@ -78,9 +76,7 @@ public class YahooFinanceRealtimeTest {
     YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, tick);
 
     // check the individual properties...
-    assertThat(yfr.getName()).isEqualTo(metadata.getName());
-    assertThat(yfr.getMarket()).isEqualTo(metadata.getMarket());
-    assertThat(yfr.getSymbol()).isEqualTo(metadata.getSymbol());
+    assertThat(yfr.getMetadata()).isEqualTo(metadata);
     assertThat(yfr.getOpen()).isEqualTo(tick.getOpen());
     assertThat(yfr.getHigh()).isEqualTo(tick.getHigh());
     assertThat(yfr.getLow()).isEqualTo(tick.getLow());

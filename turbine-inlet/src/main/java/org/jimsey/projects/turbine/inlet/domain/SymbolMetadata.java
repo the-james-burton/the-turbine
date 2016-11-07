@@ -22,22 +22,62 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-public class SymbolMetadata {
+import java.util.Comparator;
+import java.util.Objects;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+public class SymbolMetadata implements Comparable<SymbolMetadata> {
+
+  private final Market market;
 
   private final String symbol;
 
   private final String name;
-  
-  private final Market market;
 
-  public SymbolMetadata(String symbol, String name, Market market) {
+  private final Comparator<SymbolMetadata> comparator = Comparator
+      .comparing(SymbolMetadata::getMarket)
+      .thenComparing(SymbolMetadata::getSymbol)
+      .thenComparing(SymbolMetadata::getName);
+
+  public SymbolMetadata(Market market, String symbol, String name) {
     this.symbol = symbol;
     this.name = name;
     this.market = market;
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(getMarket(), getSymbol(), getName());
+  }
+
+  @Override
+  public boolean equals(Object key) {
+    if (key == null || !(key instanceof SymbolMetadata)) {
+      return false;
+    }
+    SymbolMetadata that = (SymbolMetadata) key;
+    return Objects.equals(this.getMarket(), that.getMarket())
+        && Objects.equals(this.getSymbol(), that.getSymbol())
+        && Objects.equals(this.getName(), that.getName());
+  }
+
+  @Override
+  public int compareTo(SymbolMetadata that) {
+    return comparator.compare(this, that);
+  }
+
+  @Override
   public String toString() {
+    return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+  }
+
+  /**
+   * returns a dot symbol code for this metadata
+   * @return dot symbol code, eg. "ABC.L"
+   */
+  public String toDotSymbol() {
     return name + market.getExtension();
   }
 
@@ -53,5 +93,4 @@ public class SymbolMetadata {
     return market;
   }
 
-  
 }

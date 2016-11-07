@@ -22,25 +22,28 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-import org.jimsey.projects.turbine.inlet.test.CompareToTheory;
+import org.jimsey.projects.turbine.inlet.test.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 
-public class MarketSymbolKeyCompareToTest extends CompareToTheory {
+public class SymbolMetadataKeyTheoryTest extends ObjectTheories {
 
   public static final String A = "A";
 
   public static final String B = "B";
 
   @DataPoint
-  public static final MarketSymbolKey MIN = new MarketSymbolKey(A, A);
+  public static final SymbolMetadata MIN_MIN_MIN = new SymbolMetadata(Market.ASX, A, A);
 
   @DataPoint
-  public static final MarketSymbolKey MIN_MAX = new MarketSymbolKey(A, B);
+  public static final SymbolMetadata MIN_MIN_MAX = new SymbolMetadata(Market.ASX, A, B);
 
   @DataPoint
-  public static final MarketSymbolKey MAX = new MarketSymbolKey(B, B);
+  public static final SymbolMetadata MIN_MAX_MIN = new SymbolMetadata(Market.ASX, B, A);
 
   @DataPoint
-  public static final MarketSymbolKey EQUAL = new MarketSymbolKey(B, B);
+  public static final SymbolMetadata MAX_MIN_MIN = new SymbolMetadata(Market.FTSE100, A, A);
+
+  @DataPoint
+  public static final SymbolMetadata EQUAL = new SymbolMetadata(Market.ASX, A, A);
 
 }

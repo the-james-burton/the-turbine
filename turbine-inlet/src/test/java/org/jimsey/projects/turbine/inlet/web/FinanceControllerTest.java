@@ -54,7 +54,7 @@ public class FinanceControllerTest {
   @Before
   public void setUp() throws Exception {
     // we need to mock beans when running a @WebMvcTest...
-    SymbolMetadata metadata = new SymbolMetadata("testSymbol", "testName", Market.FTSE100);
+    SymbolMetadata metadata = new SymbolMetadata(Market.FTSE100, "testSymbol", "testName");
     given(SymbolMetadataProvider.findMetadataForMarketAndSymbol(any(String.class), any(String.class))).willReturn(metadata);
   }
   
