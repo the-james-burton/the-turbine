@@ -34,7 +34,7 @@ public class IsNumeric extends BaseMatcher<String> {
 
   @Override
   public boolean matches(Object item) {
-    return item != null && item instanceof String && NumberUtils.isNumber(((String) item));
+    return item != null && item instanceof String && NumberUtils.isParsable(((String) item));
   }
 
   @Override
@@ -43,7 +43,7 @@ public class IsNumeric extends BaseMatcher<String> {
   }
 
   /**
-   * Creates a matcher of {@link String} that matches when NumberUtils.isNumber() is true for the examined string
+   * Creates a matcher of {@link String} that matches when NumberUtils.isParsable() is true for the examined string
    * <p/>
    * For example:
    * <pre>assertThat("123", isNumeric())</pre>

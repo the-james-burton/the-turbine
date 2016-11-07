@@ -21,8 +21,8 @@ public class TurbineMatchersTest {
     assertThat("", not(isNumeric()));
     assertThat(null, not(isNumeric()));
     
-    // interesting result...
-    assertThat("001.2", not(isNumeric()));
+    // will fail if matcher is using NumberUtils.isNumber()
+    assertThat("001.2", isNumeric());
 
   }
   

@@ -33,7 +33,7 @@ import org.jimsey.projects.turbine.inspector.matchers.library.IsNumeric;
 public class TurbineMatchers {
 
   /**
-   * Creates a matcher of {@link String} that matches when NumberUtils.isNumber() is true for the examined string
+   * Creates a matcher of {@link String} that matches when NumberUtils.isParsable() is true for the examined string
    * <p/>
    * For example:
    * <pre>assertThat("123", isNumeric())</pre>
