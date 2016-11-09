@@ -62,7 +62,7 @@ public class YahooFinanceRealtime {
    * @param symbol symbol
    * @param line  in this format: "ABCName","FTSE100",114.43,114.56,113.51,113.87,13523517
    */
-  public YahooFinanceRealtime(SymbolMetadata metadata, OffsetDateTime date, String market, String symbol, String line) {
+  public YahooFinanceRealtime(SymbolMetadata metadata, OffsetDateTime date, String line) {
     String[] parts = line.split(",");
     double open = Double.parseDouble(parts[2]);
     double high = Double.parseDouble(parts[3]);
@@ -70,7 +70,8 @@ public class YahooFinanceRealtime {
     double close = Double.parseDouble(parts[5]);
     double volume = Double.parseDouble(parts[6]);
     this.metadata = metadata;
-    this.tick = new TickJson(date, open, high, low, close, volume, market, symbol, date.toString());
+    this.tick = new TickJson(date, open, high, low, close, volume,
+        metadata.getMarket().toString(), metadata.getSymbol(), date.toString());
   }
 
   @Override

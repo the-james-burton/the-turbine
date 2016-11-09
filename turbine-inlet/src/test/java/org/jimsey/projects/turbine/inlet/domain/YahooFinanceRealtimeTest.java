@@ -55,7 +55,7 @@ public class YahooFinanceRealtimeTest {
     String line = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
         metadata.getName(), metadata.getMarket(), open, high, low, close, vol);
     logger.info(line);
-    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, FTSE100, ABC, line);
+    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, line);
 
     // check the individual properties...
     assertThat(yfr.getMetadata()).isEqualTo(metadata);
