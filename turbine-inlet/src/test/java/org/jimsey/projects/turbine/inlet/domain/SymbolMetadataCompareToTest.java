@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-import org.jimsey.projects.turbine.inlet.test.CompareToTheory;
+import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
 import org.junit.experimental.theories.DataPoint;
 
 public class SymbolMetadataCompareToTest extends CompareToTheory {

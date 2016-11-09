@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-import org.jimsey.projects.turbine.inlet.test.ObjectTheories;
+import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 
 public class SymbolMetadataTheoryTest extends ObjectTheories {
