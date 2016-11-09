@@ -22,10 +22,10 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-import org.jimsey.projects.turbine.inlet.test.ObjectTheories;
+import org.jimsey.projects.turbine.inlet.test.CompareToTheory;
 import org.junit.experimental.theories.DataPoint;
 
-public class SymbolMetadataKeyTheoryTest extends ObjectTheories {
+public class SymbolMetadataCompareToTest extends CompareToTheory {
 
   public static final String A = "A";
 
