@@ -77,7 +77,7 @@ public class FinanceControllerTest {
   public void testYahooFinanceRealtime() throws Exception {
     MvcResult result = mvc
         .perform(get(format("/finance/yahoo/realtime/%s", symbol))
-        .accept(MediaType.TEXT_PLAIN))
+        .accept(MediaType.APPLICATION_OCTET_STREAM))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().string(not(isEmptyOrNullString())))

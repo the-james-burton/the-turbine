@@ -58,8 +58,6 @@ public class YahooFinanceRealtime {
   /**
    * @param metadata the metadata to use
    * @param date the date
-   * @param market market 
-   * @param symbol symbol
    * @param line  in this format: "ABCName","FTSE100",114.43,114.56,113.51,113.87,13523517
    */
   public YahooFinanceRealtime(SymbolMetadata metadata, OffsetDateTime date, String line) {
