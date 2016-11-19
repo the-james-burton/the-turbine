@@ -26,6 +26,9 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+
+import javaslang.collection.CharSeq;
 
 /**
  * NOTE: javadoc quirk: replace &amp; with just an ampersand to make the link work...
@@ -41,13 +44,13 @@ public class YahooFinanceRealtime {
 
   private final TickJson tick;
 
-  private final SymbolMetadata metadata;
+  private final TickerMetadata metadata;
 
   /**
    * @param metadata the metadata to use
    * @param tick the tick to base this object on
    */
-  public YahooFinanceRealtime(SymbolMetadata metadata, TickJson tick) {
+  public YahooFinanceRealtime(TickerMetadata metadata, TickJson tick) {
     // this.metadata = symbolMetadataProvider.findMetadataForMarketAndSymbol(tick.getMarket(), tick.getSymbol());
     Objects.requireNonNull(metadata, "metadata must be provided");
     Objects.requireNonNull(tick, "tick must be provided");
@@ -55,12 +58,17 @@ public class YahooFinanceRealtime {
     this.tick = tick;
   }
 
+  public static YahooFinanceRealtime of(TickerMetadata metadata, TickJson tick) {
+    return new YahooFinanceRealtime(metadata, tick);
+  }
+
+  
   /**
    * @param metadata the metadata to use
    * @param date the date
    * @param line  in this format: "ABCName","FTSE100",114.43,114.56,113.51,113.87,13523517
    */
-  public YahooFinanceRealtime(SymbolMetadata metadata, OffsetDateTime date, String line) {
+  public YahooFinanceRealtime(TickerMetadata metadata, OffsetDateTime date, String line) {
     String[] parts = line.split(",");
     double open = Double.parseDouble(parts[2]);
     double high = Double.parseDouble(parts[3]);
@@ -69,17 +77,20 @@ public class YahooFinanceRealtime {
     double volume = Double.parseDouble(parts[6]);
     this.metadata = metadata;
     this.tick = new TickJson(date, open, high, low, close, volume,
-        metadata.getMarket().toString(), metadata.getSymbol(), date.toString());
+        metadata.getTicker().getMarket().toString(),
+        metadata.getTicker().getSymbol().toString(),
+        date.toString());
   }
 
   @Override
   public String toString() {
     return String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        metadata.getName(), metadata.getMarket().toString(),
+        metadata.getName(),
+        metadata.getTicker().getMarket().toString(),
         getOpen(), getHigh(), getLow(), getClose(), getVol());
   }
 
-  public SymbolMetadata getMetadata() {
+  public TickerMetadata getMetadata() {
     return metadata;
   }
   

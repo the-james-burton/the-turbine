@@ -20,30 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.fuel.domain;
+package org.jimsey.projects.turbine.inlet.domain;
 
-import java.time.OffsetDateTime;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
-import javaslang.collection.CharSeq;
+import javaslang.control.Option;
 
-public interface DomainObjectGenerator {
-  
-  Ticker getTicker();
+public interface TickerMetadataProvider {
 
-  MarketEnum getMarket();
+  /**
+   * @param ticker e.g. Ticker.of("ABC.L")
+   * @return the metadata
+   */
+  void addMetadata(TickerMetadata name);
 
-  CharSeq getSymbol();
+  /**
+   * @param ticker e.g. Ticker.of("ABC.L")
+   * @return the metadata
+   */
+  Option<TickerMetadata> findMetadataForTicker(Ticker ticker);
 
-  TickJson newTick();
+  /**
+   * @param ticker e.g. Ticker.of("ABC.L")
+   * @return the metadata
+   */
+  Option<TickerMetadata> findMetadataForTicker(String ticker);
 
-  IndicatorJson newIndicator(String name);
-
-  StrategyJson newStrategy(String name);
-
-  TickJson newTick(OffsetDateTime date);
-
-  IndicatorJson newIndicator(OffsetDateTime date, String name);
-
-  StrategyJson newStrategy(OffsetDateTime date, String name);
+  /**
+   * 
+   * @param market e.g. "FTSE100"
+   * @param symbol e.g. "ABC"
+   * @return the metadata
+   */
+  Option<TickerMetadata> findMetadataForMarketAndSymbol(String market, String symbol);
 
 }

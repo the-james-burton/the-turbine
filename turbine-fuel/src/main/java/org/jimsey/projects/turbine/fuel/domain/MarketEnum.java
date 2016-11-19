@@ -20,22 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inlet.domain;
+package org.jimsey.projects.turbine.fuel.domain;
 
-public interface SymbolMetadataProvider {
 
-  /**
-   * @param ticker e.g. "ABC.L"
-   * @return the metadata
-   */
-  SymbolMetadata findMetadataForTicker(String ticker);
+import javaslang.collection.CharSeq;
+import javaslang.collection.Stream;
+import javaslang.control.Option;
 
-  /**
-   * 
-   * @param market e.g. "FTSE100"
-   * @param symbol e.g. "ABC"
-   * @return the metadata
-   */
-  SymbolMetadata findMetadataForMarketAndSymbol(String market, String symbol);
+public enum MarketEnum {
 
+  ASX("ASXname", "AX"),
+  FTSE100("FTSE100name", "L");
+  
+  private final CharSeq name;
+
+  private final CharSeq extension;
+  
+  private MarketEnum(CharSeq name, CharSeq extension) {
+    this.name = name;
+    this.extension = extension;
+  }
+
+  private MarketEnum(String name, String extension) {
+    this.name = CharSeq.of(name);
+    this.extension = CharSeq.of(extension);
+  }
+
+  public static Option<MarketEnum> fromExtension(CharSeq extension) {
+    return Stream.of(values()).find(m -> m.getExtension().eq(extension));
+  }
+  
+  public CharSeq getName() {
+    return name;
+  }
+
+  public CharSeq getExtension() {
+    return extension;
+  }
+
+  
+  
 }

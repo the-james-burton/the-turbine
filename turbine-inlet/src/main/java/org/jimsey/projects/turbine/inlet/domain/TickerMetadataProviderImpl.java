@@ -25,27 +25,43 @@ package org.jimsey.projects.turbine.inlet.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.springframework.stereotype.Service;
 
-@Service
-public class SymbolMetadataProviderImpl implements SymbolMetadataProvider {
+import javaslang.control.Option;
 
-  Map<String, SymbolMetadata> metadata = new HashMap<>();
+@Service
+public class TickerMetadataProviderImpl implements TickerMetadataProvider {
+
+  Map<Ticker, TickerMetadata> metadata = new HashMap<>();
   
   // TODO make this return/lookup real data...
-  public SymbolMetadataProviderImpl() {
-    metadata.put("ABC.L", new SymbolMetadata(Market.FTSE100, "ABC", "ABCName"));
-    metadata.put("DEF.L", new SymbolMetadata(Market.FTSE100, "DEF", "DEFName"));
+  public TickerMetadataProviderImpl() {
+    Ticker ABC_L = Ticker.of("ABC.L");
+    Ticker DEF_L = Ticker.of("DEF.L");
+    addMetadata(TickerMetadata.of(ABC_L, "ABCName"));
+    addMetadata(TickerMetadata.of(DEF_L, "DEFName"));
   }
 
   @Override
-  public SymbolMetadata findMetadataForTicker(String ticker) {
-    return metadata.get(ticker);
+  public void addMetadata(TickerMetadata tickerMetadata) {
+    metadata.put(tickerMetadata.getTicker(), tickerMetadata);
+  }
+  
+  @Override
+  public Option<TickerMetadata> findMetadataForTicker(Ticker ticker) {
+    return Option.of(metadata.get(ticker));
   }
 
   @Override
-  public SymbolMetadata findMetadataForMarketAndSymbol(String market, String symbol) {
-    String ticker = String.format("%s%s", symbol, Market.valueOf(market).getExtension());
+  public Option<TickerMetadata> findMetadataForTicker(String ticker) {
+    return Option.of(metadata.get(Ticker.of(ticker)));
+  }
+
+  @Override
+  public Option<TickerMetadata> findMetadataForMarketAndSymbol(String market, String symbol) {
+    String ticker = String.format("%s.%s", symbol, MarketEnum.valueOf(market).getExtension());
     return findMetadataForTicker(ticker);
   }
 

@@ -27,44 +27,55 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
-public class SymbolMetadata implements Comparable<SymbolMetadata> {
+import javaslang.collection.CharSeq;
 
-  private final Market market;
+public class TickerMetadata implements Comparable<TickerMetadata> {
 
-  private final String symbol;
+  private final Ticker ticker;
 
-  private final String name;
+  private final CharSeq name;
 
-  private final Comparator<SymbolMetadata> comparator = Comparator
-      .comparing(SymbolMetadata::getMarket)
-      .thenComparing(SymbolMetadata::getSymbol)
-      .thenComparing(SymbolMetadata::getName);
-
-  public SymbolMetadata(Market market, String symbol, String name) {
-    this.symbol = symbol;
+  // NOTE: for some reason, Eclipse or Java does not like this comparator builder on one line, hence the split...
+  private final Comparator<TickerMetadata> c1 = Comparator.comparing(t -> t.getTicker().toString());
+  private final Comparator<TickerMetadata> comparator = c1.thenComparing(t -> t.getName().toString());
+  
+  public TickerMetadata(Ticker ticker, CharSeq name) {
+    this.ticker = ticker;
     this.name = name;
-    this.market = market;
+  }
+  
+  public TickerMetadata(Ticker ticker, String name) {
+    this.ticker = ticker;
+    this.name = CharSeq.of(name);
+  }
+  
+  public static TickerMetadata of(Ticker ticker, CharSeq name) {
+    return new TickerMetadata(ticker, name);
+  }
+
+  public static TickerMetadata of(Ticker ticker, String name) {
+    return new TickerMetadata(ticker, name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getMarket(), getSymbol(), getName());
+    return Objects.hash(getTicker(), getName());
   }
 
   @Override
   public boolean equals(Object key) {
-    if (key == null || !(key instanceof SymbolMetadata)) {
+    if (key == null || !(key instanceof TickerMetadata)) {
       return false;
     }
-    SymbolMetadata that = (SymbolMetadata) key;
-    return Objects.equals(this.getMarket(), that.getMarket())
-        && Objects.equals(this.getSymbol(), that.getSymbol())
-        && Objects.equals(this.getName(), that.getName());
+    TickerMetadata that = (TickerMetadata) key;
+    return Objects.equals(this.ticker, that.ticker)
+        && Objects.equals(this.name, that.name);
   }
 
   @Override
-  public int compareTo(SymbolMetadata that) {
+  public int compareTo(TickerMetadata that) {
     return comparator.compare(this, that);
   }
 
@@ -73,24 +84,12 @@ public class SymbolMetadata implements Comparable<SymbolMetadata> {
     return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
   }
 
-  /**
-   * returns a dot symbol code for this metadata
-   * @return dot symbol code, eg. "ABC.L"
-   */
-  public String toDotSymbol() {
-    return name + market.getExtension();
+  public Ticker getTicker() {
+    return ticker;
   }
 
-  public String getSymbol() {
-    return symbol;
-  }
-
-  public String getName() {
+  public CharSeq getName() {
     return name;
-  }
-
-  public Market getMarket() {
-    return market;
   }
 
 }

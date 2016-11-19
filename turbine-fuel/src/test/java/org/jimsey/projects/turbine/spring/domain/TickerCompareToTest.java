@@ -20,32 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inlet.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
-public enum Market {
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
+import org.junit.experimental.theories.DataPoint;
 
-  ASX("ASXname", ".AX"),
-  FTSE100("FTSE100name", ".L"),
-  LSE("LSEname", ".L"),
-  NMS("NMSname", ""); 
-  
-  private final String name;
+public class TickerCompareToTest extends CompareToTheory {
 
-  private final String extension;
-  
-  private Market(String name, String extension) {
-    this.name = name;
-    this.extension = extension;
-  }
+  @DataPoint
+  public static final Ticker ABC_L = Ticker.of("ABC.L");
 
-  public String getName() {
-    return name;
-  }
+  @DataPoint
+  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
 
-  public String getExtension() {
-    return extension;
-  }
+  @DataPoint
+  public static final Ticker DEF_L = Ticker.of("DEF.L");
 
-  
-  
+  @DataPoint
+  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
+
 }
+

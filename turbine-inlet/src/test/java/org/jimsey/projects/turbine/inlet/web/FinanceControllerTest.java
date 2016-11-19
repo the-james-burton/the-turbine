@@ -33,11 +33,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.OffsetDateTime;
 
-import org.jimsey.projects.turbine.inlet.domain.Market;
-import org.jimsey.projects.turbine.inlet.domain.SymbolMetadata;
-import org.jimsey.projects.turbine.inlet.domain.SymbolMetadataProvider;
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inlet.domain.TickerMetadata;
+import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
 import org.jimsey.projects.turbine.inlet.domain.YahooFinanceRealtime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,20 +51,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import javaslang.control.Option;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(FinanceController.class)
 public class FinanceControllerTest {
 
-  private final Market market = Market.FTSE100;
+  private final MarketEnum market = MarketEnum.FTSE100;
   
-  private final String symbol = "testSymbol";
+  private final String symbol = "TEST";
       
-  private final String name = "testName"; 
-      
-  private final SymbolMetadata metadata = new SymbolMetadata(market, symbol, name);
+  private final String name = "TESTName"; 
+
+  private final Ticker ticker = Ticker.of(symbol, market);
+
+  private final TickerMetadata metadata = new TickerMetadata(ticker, name);
 
   @MockBean
-  private SymbolMetadataProvider SymbolMetadataProvider;
+  private TickerMetadataProvider SymbolMetadataProvider;
   
   @Autowired
   private MockMvc mvc;
@@ -70,9 +76,18 @@ public class FinanceControllerTest {
   @Before
   public void setUp() throws Exception {
     // we need to mock beans when running a @WebMvcTest...
-    given(SymbolMetadataProvider.findMetadataForMarketAndSymbol(market.toString(), symbol)).willReturn(metadata);
+    given(SymbolMetadataProvider.findMetadataForMarketAndSymbol(market.toString(), symbol)).willReturn(Option.of(metadata));
+    given(SymbolMetadataProvider.findMetadataForTicker(ticker)).willReturn(Option.of(metadata));
   }
   
+  /**
+   * There appears to be no easy way to use a real bean in a @WebMvcTest.
+   * This means that a 'real' DogKennel' instance cannot be given to the FinanceController.
+   * It is not practical to mock the entire DogKennel,
+   * therefore this test is ignored in favour of @SpringBootTest FinanceControllerIT
+   * @throws Exception
+   */
+  @Ignore
   @Test
   public void testYahooFinanceRealtime() throws Exception {
     MvcResult result = mvc

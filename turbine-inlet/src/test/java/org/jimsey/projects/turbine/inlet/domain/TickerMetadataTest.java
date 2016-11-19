@@ -27,95 +27,102 @@ import static org.hamcrest.Matchers.*;
 
 import java.lang.invoke.MethodHandles;
 
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SymbolMetadataTest {
+import javaslang.collection.CharSeq;
+
+public class TickerMetadataTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public static final String A = "A";
+  public static final String NAME1 = "NAME1";
 
-  public static final String B = "B";
-  
-  private final SymbolMetadata smAAA = new SymbolMetadata(Market.ASX, A, A);
+  public static final String NAME2 = "NAME2";
 
-  private final SymbolMetadata smAAB = new SymbolMetadata(Market.ASX, A, B);
+  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
 
-  private final SymbolMetadata smABA = new SymbolMetadata(Market.ASX, B, A);
-  
-  private final SymbolMetadata smBAA = new SymbolMetadata(Market.FTSE100, A, A);
+  public static final Ticker DEF_L = Ticker.of("DEF.L");
+
+  private final TickerMetadata smAA = TickerMetadata.of(ABC_AX, NAME1);
+
+  private final TickerMetadata smAB = TickerMetadata.of(ABC_AX, NAME2);
+
+  private final TickerMetadata smBA = TickerMetadata.of(DEF_L, NAME1);
+
+  private final TickerMetadata smBB = TickerMetadata.of(DEF_L, NAME2);
 
   
   @Test
   public void testMarketCompareTo() {
     // make sure the ordering is correct in our enum...
-    assertThat(Market.ASX).isLessThan(Market.FTSE100);
+    assertThat(MarketEnum.ASX).isLessThan(MarketEnum.FTSE100);
   }
   
   @Test
   public void testConstructor() {
     // check that the constructor correctly sets all properties...
-    assertThat(smAAA).hasFieldOrPropertyWithValue("market", Market.ASX);
-    assertThat(smAAA).hasFieldOrPropertyWithValue("symbol", A);
-    assertThat(smAAA).hasFieldOrPropertyWithValue("name", A);
+    assertThat(smAA).hasFieldOrPropertyWithValue("ticker", ABC_AX);
+    assertThat(smAA).hasFieldOrPropertyWithValue("name", CharSeq.of(NAME1));
   }
 
   @Test
   public void testHashCode() {
     // check that the hash code is consistent across objects...
-    assertThat(smAAA.hashCode()).isEqualTo(new SymbolMetadata(Market.ASX, A, A).hashCode());
-    assertThat(new SymbolMetadata(Market.ASX, A, A).hashCode()).isEqualTo(smAAA.hashCode());
+    assertThat(smAA.hashCode()).isEqualTo(new TickerMetadata(ABC_AX, NAME1).hashCode());
+    assertThat(new TickerMetadata(ABC_AX, NAME1).hashCode()).isEqualTo(smAA.hashCode());
 
     // check that all fields are part of the hash code...
-    assertThat(smAAA.hashCode()).isNotEqualTo(equalTo(smAAB.hashCode()));
-    assertThat(smAAA.hashCode()).isNotEqualTo(smABA.hashCode());
-    assertThat(smAAA.hashCode()).isNotEqualTo(smBAA.hashCode());
+    assertThat(smAA.hashCode()).isNotEqualTo(smAB.hashCode());
+    assertThat(smAA.hashCode()).isNotEqualTo(smBA.hashCode());
+    assertThat(smAA.hashCode()).isNotEqualTo(smBB.hashCode());
   }
 
   @Test
   public void testEquals() {
     // reflexive...
-    assertThat(smAAA).isEqualTo(smAAA);
+    assertThat(smAA).isEqualTo(smAA);
     
     // symmetric...
-    assertThat(smAAA).isEqualTo(new SymbolMetadata(Market.ASX, A, A));
-    assertThat(new SymbolMetadata(Market.ASX, A, A)).isEqualTo(smAAA);
+    assertThat(smAA).isEqualTo(new TickerMetadata(ABC_AX, NAME1));
+    assertThat(new TickerMetadata(ABC_AX, NAME1)).isEqualTo(smAA);
 
     // consistent (same checks again)...
-    assertThat(smAAA).isEqualTo(new SymbolMetadata(Market.ASX, A, A));
-    assertThat(new SymbolMetadata(Market.ASX, A, A)).isEqualTo(smAAA);
+    assertThat(smAA).isEqualTo(new TickerMetadata(ABC_AX, NAME1));
+    assertThat(new TickerMetadata(ABC_AX, NAME1)).isEqualTo(smAA);
     
     // transitive...
-    SymbolMetadata smAAA2 = new SymbolMetadata(Market.ASX, A, A);
-    SymbolMetadata smAAA3 = new SymbolMetadata(Market.ASX, A, A);
+    TickerMetadata smAA2 = new TickerMetadata(ABC_AX, NAME1);
+    TickerMetadata smAA3 = new TickerMetadata(ABC_AX, NAME1);
     
-    assertThat(smAAA).isEqualTo(smAAA2);
-    assertThat(smAAA2).isEqualTo(smAAA3);
-    assertThat(smAAA).isEqualTo(smAAA3);
+    assertThat(smAA).isEqualTo(smAA2);
+    assertThat(smAA2).isEqualTo(smAA3);
+    assertThat(smAA).isEqualTo(smAA3);
     
     // check not equal to null...
-    assertThat(smAAA).isNotEqualTo(null);
+    assertThat(smAA).isNotEqualTo(null);
     
     // check all properties are included in equals...
-    assertThat(smAAA).isNotEqualTo(smAAB);
-    assertThat(smAAA).isNotEqualTo(smABA);
-    assertThat(smAAA).isNotEqualTo(smBAA);
+    assertThat(smAA).isNotEqualTo(smAB);
+    assertThat(smAA).isNotEqualTo(smAB);
+    assertThat(smAA).isNotEqualTo(smBB);
   }
 
   @Test
   public void testCompareTo() {
     
     // check that all fields participate in compareTo...
-    assertThat(smAAA).isLessThan(smAAB);
-    assertThat(smAAA).isLessThan(smABA);
-    assertThat(smAAA).isLessThan(smBAA);
+    assertThat(smAA).isLessThan(smAB);
+    assertThat(smAA).isLessThan(smBA);
+    assertThat(smAA).isLessThan(smBB);
 
     // check that the reverse is also true...
-    assertThat(smAAB).isGreaterThan(smAAA);
-    assertThat(smABA).isGreaterThan(smAAA);
-    assertThat(smBAA).isGreaterThan(smAAA);
+    assertThat(smAB).isGreaterThan(smAA);
+    assertThat(smBA).isGreaterThan(smAA);
+    assertThat(smBB).isGreaterThan(smAA);
 }
 
 }

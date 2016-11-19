@@ -22,28 +22,31 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 
-public class SymbolMetadataCompareToTest extends CompareToTheory {
+public class TickerMetadataTheoryTest extends ObjectTheories {
 
-  public static final String A = "A";
 
-  public static final String B = "B";
+  public static final Ticker ABC_L = Ticker.of("ABC.L");
 
-  @DataPoint
-  public static final SymbolMetadata MIN_MIN_MIN = new SymbolMetadata(Market.ASX, A, A);
+  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
 
-  @DataPoint
-  public static final SymbolMetadata MIN_MIN_MAX = new SymbolMetadata(Market.ASX, A, B);
+  public static final Ticker DEF_L = Ticker.of("DEF.L");
 
-  @DataPoint
-  public static final SymbolMetadata MIN_MAX_MIN = new SymbolMetadata(Market.ASX, B, A);
+  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
 
   @DataPoint
-  public static final SymbolMetadata MAX_MIN_MIN = new SymbolMetadata(Market.FTSE100, A, A);
+  public static final TickerMetadata DP_ABC_L = TickerMetadata.of(ABC_L, "ABC_L_Name");
 
   @DataPoint
-  public static final SymbolMetadata EQUAL = new SymbolMetadata(Market.ASX, A, A);
+  public static final TickerMetadata DP_ABC_AX = TickerMetadata.of(ABC_AX, "ABC_AX_Name");
+
+  @DataPoint
+  public static final TickerMetadata DP_DEF_L = TickerMetadata.of(DEF_L, "DEF_L_Name");
+
+  @DataPoint
+  public static final TickerMetadata DP_GHI_AX = TickerMetadata.of(GHI_AX, "GHI_AX_Name");
 
 }

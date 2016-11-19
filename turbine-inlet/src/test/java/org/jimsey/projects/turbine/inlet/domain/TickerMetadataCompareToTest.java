@@ -20,30 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.fuel.domain;
+package org.jimsey.projects.turbine.inlet.domain;
 
-import java.time.OffsetDateTime;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
+import org.junit.experimental.theories.DataPoint;
 
-import javaslang.collection.CharSeq;
+public class TickerMetadataCompareToTest extends CompareToTheory {
 
-public interface DomainObjectGenerator {
-  
-  Ticker getTicker();
+  public static final Ticker ABC_L = Ticker.of("ABC.L");
 
-  MarketEnum getMarket();
+  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
 
-  CharSeq getSymbol();
+  public static final Ticker DEF_L = Ticker.of("DEF.L");
 
-  TickJson newTick();
+  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
 
-  IndicatorJson newIndicator(String name);
+  @DataPoint
+  public static final TickerMetadata DP_ABC_L = TickerMetadata.of(ABC_L, "ABC_L_Name");
 
-  StrategyJson newStrategy(String name);
+  @DataPoint
+  public static final TickerMetadata DP_ABC_AX = TickerMetadata.of(ABC_AX, "ABC_AX_Name");
 
-  TickJson newTick(OffsetDateTime date);
+  @DataPoint
+  public static final TickerMetadata DP_DEF_L = TickerMetadata.of(DEF_L, "DEF_L_Name");
 
-  IndicatorJson newIndicator(OffsetDateTime date, String name);
-
-  StrategyJson newStrategy(OffsetDateTime date, String name);
+  @DataPoint
+  public static final TickerMetadata DP_GHI_AX = TickerMetadata.of(GHI_AX, "GHI_AX_Name");
 
 }

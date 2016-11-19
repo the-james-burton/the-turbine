@@ -23,7 +23,9 @@
 package org.jimsey.projects.turbine.fuel.domain;
 
 import static java.util.Comparator.*;
+import static java.lang.String.*;
 
+import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,14 +38,21 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javaslang.Function1;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import javaslang.collection.CharSeq;
 
 public class RandomDomainObjectGenerator implements DomainObjectGenerator, Comparable<DomainObjectGenerator> {
 
-  private static final Logger logger = LoggerFactory.getLogger(RandomDomainObjectGenerator.class);
+  private static final String parsingExceptionText = "unable to parse %s as a valid ticker, it should be in the format 'ABC.L' where the L is a valid market in MarketEnum";
 
-  private final CharSeq market;
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private final Ticker ticker;
+  
+  private final MarketEnum market;
+  
   private final CharSeq symbol;
 
   private TickJson tick;
@@ -57,17 +66,45 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   private final Comparator<DomainObjectGenerator> comparator = c1.thenComparing(dog -> dog.getSymbol().toString());
 
+  /**
+   * given a string, this function will return a RuntimeException with a suitable message
+   * to indicate that parsing the given string as a ticker failed
+   */
+  private final Function1<String, RuntimeException> parsingException = (m) -> new RuntimeException(format(parsingExceptionText, m));
+  
   public RandomDomainObjectGenerator(String market, String symbol) {
-    this(CharSeq.of(market), CharSeq.of(symbol));
+    this(MarketEnum.valueOf(market), CharSeq.of(symbol));
   }
 
-  public RandomDomainObjectGenerator(CharSeq market, CharSeq symbol) {
+  public RandomDomainObjectGenerator(Ticker ticker) {
+    this.ticker = ticker;
+    this.symbol = ticker.getSymbol();
+    this.market = ticker.getMarket();
+    this.tick = createTick(this.market, this.symbol);
+  }
+
+  public RandomDomainObjectGenerator(String ticker) {
+    // TODO same as function in DogKennel...
+    CharSeq[] split = CharSeq.of(ticker).split("\\.");
+    Tuple2<CharSeq, MarketEnum> tuple = Tuple.of(split[0], MarketEnum.fromExtension(split[1]).getOrElseThrow(() -> parsingException.apply(ticker)));
+    this.symbol = tuple._1;
+    this.market = tuple._2;
+    this.ticker = Ticker.of(this.symbol, this.market);
+    this.tick = createTick(this.market, this.symbol);
+  }
+
+  public RandomDomainObjectGenerator(MarketEnum market, CharSeq symbol) {
     Objects.requireNonNull(market);
     Objects.requireNonNull(symbol);
     this.market = market;
     this.symbol = symbol;
-    this.tick = new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d, this.symbol.toString(),
-        this.market.toString(),
+    this.ticker = Ticker.of(this.symbol, this.market);
+    this.tick = createTick(this.market, this.symbol);
+  }
+
+  private TickJson createTick(MarketEnum market, CharSeq symbol) {
+    return new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d, symbol.toString(),
+        market.toString(),
         OffsetDateTime.now().toString());
   }
 
@@ -166,14 +203,21 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     return comparator.compare(this, that);
   }
 
+  
+  
   @Override
-  public CharSeq getMarket() {
+  public MarketEnum getMarket() {
     return market;
   }
 
   @Override
   public CharSeq getSymbol() {
     return symbol;
+  }
+
+  @Override
+  public Ticker getTicker() {
+    return ticker;
   }
 
 }

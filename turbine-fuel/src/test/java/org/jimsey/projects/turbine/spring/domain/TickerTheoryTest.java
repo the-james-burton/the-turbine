@@ -20,30 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inlet.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 
-public class SymbolMetadataTheoryTest extends ObjectTheories {
-
-  public static final String A = "A";
-
-  public static final String B = "B";
+public class TickerTheoryTest extends ObjectTheories {
 
   @DataPoint
-  public static final SymbolMetadata MIN_MIN_MIN = new SymbolMetadata(Market.ASX, A, A);
+  public static final Ticker ABC_L = Ticker.of("ABC.L");
 
   @DataPoint
-  public static final SymbolMetadata MIN_MIN_MAX = new SymbolMetadata(Market.ASX, A, B);
+  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
 
   @DataPoint
-  public static final SymbolMetadata MIN_MAX_MIN = new SymbolMetadata(Market.ASX, B, A);
+  public static final Ticker DEF_L = Ticker.of("DEF.L");
 
   @DataPoint
-  public static final SymbolMetadata MAX_MIN_MIN = new SymbolMetadata(Market.FTSE100, A, A);
-
-  @DataPoint
-  public static final SymbolMetadata EQUAL = new SymbolMetadata(Market.ASX, A, A);
+  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
 
 }
+

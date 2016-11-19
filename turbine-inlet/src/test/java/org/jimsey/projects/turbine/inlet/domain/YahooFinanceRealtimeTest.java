@@ -39,21 +39,21 @@ public class YahooFinanceRealtimeTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final SymbolMetadataProvider smp = new SymbolMetadataProviderImpl();
+  private static final TickerMetadataProvider tmp = new TickerMetadataProviderImpl();
   
   private final DomainObjectGenerator dog = new RandomDomainObjectGenerator(FTSE100, ABC);
   
   @Test
   public void testRoundTripForString() {
     OffsetDateTime date = OffsetDateTime.now();
-    SymbolMetadata metadata = smp.findMetadataForTicker("ABC.L");
+    TickerMetadata metadata = tmp.findMetadataForTicker("ABC.L").getOrElseThrow(() -> new RuntimeException("ABC.L not in TickerMetadataProvider"));
     double open = 114.43;
     double high = 114.56;
     double low = 113.51;
     double close = 113.87;
     long vol = 13523517;
     String line = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        metadata.getName(), metadata.getMarket(), open, high, low, close, vol);
+        metadata.getName(), metadata.getTicker().getMarket(), open, high, low, close, vol);
     logger.info(line);
     YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, line);
 
@@ -72,7 +72,7 @@ public class YahooFinanceRealtimeTest {
   @Test
   public void testRoundTripForTickJson() {
     TickJson tick = dog.newTick(); 
-    SymbolMetadata metadata = smp.findMetadataForTicker("ABC.L");
+    TickerMetadata metadata = tmp.findMetadataForTicker("ABC.L").getOrElseThrow(() -> new RuntimeException("ABC.L not in TickerMetadataProvider"));
     YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, tick);
 
     // check the individual properties...
@@ -85,7 +85,7 @@ public class YahooFinanceRealtimeTest {
 
     // check the formatted output string...
     String expected = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        metadata.getName(), metadata.getMarket(),
+        metadata.getName(), metadata.getTicker().getMarket(),
         tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol());
     assertThat(yfr.toString()).isEqualTo(expected);
 
