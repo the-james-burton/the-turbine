@@ -7,6 +7,13 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-dependencies</artifactId>
+    <version>1.4.1.RELEASE</version>
+    <relativePath></relativePath>
+  </parent>
+
   <modules>
     <module>turbine-fuel</module>
     <module>turbine-inspector</module>
@@ -20,6 +27,15 @@
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
 
       <plugin>
         <groupId>com.mycila</groupId>
