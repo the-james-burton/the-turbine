@@ -29,7 +29,7 @@ import javaslang.control.Option;
 public interface TickerMetadataProvider {
 
   /**
-   * @param ticker e.g. Ticker.of("ABC.L")
+   * @param metadata e.g. TickerMetadata.of(Ticker.of("ABC.L"), "ABCName")
    * @return the metadata
    */
   void addMetadata(TickerMetadata name);
@@ -41,7 +41,7 @@ public interface TickerMetadataProvider {
   Option<TickerMetadata> findMetadataForTicker(Ticker ticker);
 
   /**
-   * @param ticker e.g. Ticker.of("ABC.L")
+   * @param ticker e.g. "ABC.L"
    * @return the metadata
    */
   Option<TickerMetadata> findMetadataForTicker(String ticker);

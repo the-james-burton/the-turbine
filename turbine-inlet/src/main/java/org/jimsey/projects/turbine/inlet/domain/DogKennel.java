@@ -52,37 +52,37 @@ public class DogKennel {
   public Function1<String, List<Ticker>> parseTickersString = tickers -> Stream.of(CharSeq.of(tickers).split("\\+")).map(t -> Ticker.of(t)).toList();
 
   /**
-   * given a list of dogs and a list of symbols
-   * then will return the symbols that are not found in the given list of dogs
+   * given a list of dogs and a list of tickers
+   * then will return the tickers that are not found in the given list of dogs
    */
   public Function2<List<DomainObjectGenerator>, List<Ticker>, List<Ticker>> findMissingTickers = (dogs, tickers) -> tickers
       .filter(ticker -> !dogs.exists(dog -> ticker.equals(dog.getTicker())));
 
   /**
-   * given a list of dogs and a list of symbols
-   * then will return a list of dogs with new dogs added for the given symbols
+   * given a list of dogs and a list of tickers
+   * then will return a list of dogs with new dogs added for the given tickers
    */
   public Function2<List<DomainObjectGenerator>, List<Ticker>, List<DomainObjectGenerator>> createAndAddNewDogs = (dogs,
       tickers) -> dogs.appendAll(
           findMissingTickers.apply(dogs, tickers).map(ticker -> new RandomDomainObjectGenerator(ticker)));
 
   /**
-   * given a list of dogs and a list of symbols
-   * then will return a list of dogs with new dogs added for the given symbols
+   * given a list of dogs and a list of tickers
+   * then will return a list of dogs with new dogs added for the given tickers
    */
   public Function2<List<DomainObjectGenerator>, List<Ticker>, List<DomainObjectGenerator>> findMissingAndCreateAndAddNewDogs = (
       dogs, tickers) -> dogs.appendAll(tickers.map(ticker -> new RandomDomainObjectGenerator(ticker)));
 
   /**
-   * given a list of dogs and a list of symbols
-   * then will return a list of dogs for just the given symbols
+   * given a list of dogs and a list of tickers
+   * then will return a list of dogs for just the given tickers
    */
   public Function2<List<DomainObjectGenerator>, List<Ticker>, List<DomainObjectGenerator>> findMyDogs = (dogs, tickers) -> dogs
       .filter(dog -> tickers.contains(dog.getTicker()));
 
   /**
-   * given a list of dogs and a list of symbols
-   * then will throw an exception if the list of dogs contains more or less dogs than for the given list of symbols
+   * given a list of dogs and a list of tickers
+   * then will throw an exception if the list of dogs contains more or less dogs than for the given list of tickers
    */
   // TODO this function throws an exception instead of return value, how best to handle? Use a Try?
   public Function2<List<DomainObjectGenerator>, List<Ticker>, Object> assertThatDogsContainTickers = (dogs,

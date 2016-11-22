@@ -70,7 +70,7 @@ public class FinanceController {
    */
 
   /** 
-   * @param tickersString a '+' separated list of symbols with extension, e.g. ABC.L+DEF.L 
+   * @param tickersString a '+' separated list of tickers with extension, e.g. ABC.L+DEF.L 
    * @return an attachment containing a CSV string of name,market,open,high,low,close,volume
    */
   @RequestMapping("/yahoo/realtime/{tickersString:.+}")
@@ -87,7 +87,7 @@ public class FinanceController {
   }
 
   /** 
-   * @param tickersString a '+' separated list of symbols with extension, e.g. ABC.L+DEF.L 
+   * @param tickersString a '+' separated list of tickers with extension, e.g. ABC.L+DEF.L 
    * @return a CSV string of name,market,open,high,low,close,volume
    */
   @RequestMapping("/yahoo/realtime/direct/{tickersString:.+}")
@@ -107,14 +107,14 @@ public class FinanceController {
   private CharSeq doNextTickForYahooFinanceRealtime(final List<Ticker> tickers) {
     logger.info("tickers:{}", tickers.toString());
 
-    // create dogs for any new symbols...
+    // create dogs for any new tickers...
     List<Ticker> missing = kennel.findMissingTickers.apply(kennel.dogs, tickers);
     kennel.dogs = kennel.createAndAddNewDogs.apply(kennel.dogs, missing);
 
-    // get the dogs for the requested symbols...
+    // get the dogs for the requested tickers...
     List<DomainObjectGenerator> myDogs = kennel.findMyDogs.apply(kennel.dogs, tickers);
 
-    // require that the list of dogs is complete for all symbols...
+    // require that the list of dogs is complete for all tickers...
     // NOTE an exception my be thrown here
     kennel.assertThatDogsContainTickers.apply(myDogs, tickers);
 
@@ -139,8 +139,8 @@ public class FinanceController {
     return tickerMetadataProvider;
   }
 
-  public void setSymbolMetadataProvider(TickerMetadataProvider symbolMetadataProvider) {
-    this.tickerMetadataProvider = symbolMetadataProvider;
+  public void setSymbolMetadataProvider(TickerMetadataProvider tickerMetadataProvider) {
+    this.tickerMetadataProvider = tickerMetadataProvider;
   }
 
   public DogKennel getKennel() {
