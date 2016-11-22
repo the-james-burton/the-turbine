@@ -118,12 +118,6 @@
 <!--     </dependency> -->
 
     <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-net</artifactId>
-    </dependency>
-
-
-    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
     </dependency>
@@ -261,15 +255,15 @@
     <dependency>
       <groupId>org.jquantlib</groupId>
       <artifactId>jquantlib</artifactId>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/jquantlib/jquantlib-0.2.4.jar</systemPath>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${basedir}/../lib/jquantlib/jquantlib-0.2.4.jar</systemPath> -->
     </dependency>
 
     <dependency>
       <groupId>org.jquantlib</groupId>
       <artifactId>jquantlib-helpers</artifactId>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/jquantlib/jquantlib-helpers-0.2.4.jar</systemPath>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${basedir}/../lib/jquantlib/jquantlib-helpers-0.2.4.jar</systemPath> -->
     </dependency>
 
     <dependency>
