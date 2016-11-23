@@ -12,29 +12,17 @@
   <name>${project.artifactId}</name>
   <description>A test library for the turbine</description>
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
   <dependencies>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.4</version>
     </dependency>
 
+    <!-- hamcrest and JUnit are needed at main compile, since we have a custom hamcrest matcher -->
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>3.5.2</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
