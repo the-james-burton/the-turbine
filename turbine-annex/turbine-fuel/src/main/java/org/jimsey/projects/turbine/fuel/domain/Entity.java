@@ -55,9 +55,7 @@ public abstract class Entity implements Serializable {
 
   private OffsetDateTime timestamp;
 
-  private final String market;
-
-  private final String symbol;
+  private final Ticker ticker;
 
   private final Double close;
 
@@ -66,14 +64,12 @@ public abstract class Entity implements Serializable {
   public Entity(
       OffsetDateTime date,
       double close,
-      String symbol,
-      String market,
+      Ticker ticker,
       String name,
       String timestamp) {
     this.timestamp = date;
     this.close = close;
-    this.symbol = symbol;
-    this.market = market;
+    this.ticker = ticker;
     this.name = name;
     try {
       this.date = date.toInstant().toEpochMilli();
@@ -110,14 +106,9 @@ public abstract class Entity implements Serializable {
     return date;
   }
 
-  @JsonProperty("market")
-  public String getMarket() {
-    return market;
-  }
-
-  @JsonProperty("symbol")
-  public String getSymbol() {
-    return symbol;
+  @JsonProperty("ticker")
+  public String getTicker() {
+    return ticker.toString();
   }
 
   @JsonProperty("timestamp")
@@ -138,6 +129,11 @@ public abstract class Entity implements Serializable {
   @JsonIgnore
   public OffsetDateTime getTimestampAsObject() {
     return timestamp;
+  }
+
+  @JsonIgnore
+  public Ticker getTickerAsObject() {
+    return ticker;
   }
 
 }

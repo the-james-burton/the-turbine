@@ -38,7 +38,7 @@ public class StrategySplitter extends BaseSplitter {
 
   public List<Message> split(@Headers Map<String, Object> headers, @Body TickJson tick) {
     logger.debug(" ---- in strategy splitter");
-    Stock stock = marketsManager.findMarket(tick.getMarket()).findSymbol(tick.getSymbol());
+    Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findTicker(tick.getTickerAsObject());
     return stock.getStrategies().stream()
         .map(strategy -> createMessage(strategy.run(tick), headers))
         .collect(Collectors.toList());

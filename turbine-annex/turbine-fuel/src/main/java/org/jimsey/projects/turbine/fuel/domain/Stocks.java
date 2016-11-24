@@ -26,19 +26,18 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Stocks {
 
-  ABC(Stocks.ftse),
-  DEF(Stocks.ftse);
+  ABC(MarketEnum.FTSE100),
+  DEF(MarketEnum.FTSE100);
 
-  private static final String ftse = "FTSE100";
+  private final MarketEnum market;
 
-  private final String market;
-
-  private Stocks(String market) {
+  private Stocks(MarketEnum market) {
     this.market = market;
   }
 
@@ -55,6 +54,11 @@ public enum Stocks {
 
   @JsonProperty("market")
   public String getMarket() {
+    return this.market.toString();
+  }
+
+  @JsonIgnore
+  public MarketEnum getMarketAsObject() {
     return this.market;
   }
 

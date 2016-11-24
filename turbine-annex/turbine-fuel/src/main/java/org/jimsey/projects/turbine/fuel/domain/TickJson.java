@@ -67,16 +67,16 @@ public class TickJson extends Tick implements Serializable {
 
   private OffsetDateTime timestamp;
 
-  private String symbol;
+  private Ticker ticker;
 
-  private String market;
-
-  public TickJson(OffsetDateTime date, double open, double high, double low, double close, double volume, String symbol,
-      String market, String timestamp) {
+  public TickJson(
+      OffsetDateTime date,
+      double open, double high, double low, double close, double volume,
+      Ticker ticker,
+      String timestamp) {
     super(DateTime.parse(date.toString(), ISODateTimeFormat.dateTimeParser()), open, high, low, close, volume);
     this.timestamp = date;
-    this.symbol = symbol;
-    this.market = market;
+    this.ticker = ticker;
     try {
       this.date = date.toInstant().toEpochMilli();
     } catch (Exception e) {
@@ -96,11 +96,10 @@ public class TickJson extends Tick implements Serializable {
       @JsonProperty("low") double low,
       @JsonProperty("close") double close,
       @JsonProperty("volume") double volume,
-      @JsonProperty("symbol") String symbol,
-      @JsonProperty("market") String market,
+      @JsonProperty("ticker") String ticker,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        open, high, low, close, volume, symbol, market, timestamp);
+        open, high, low, close, volume, Ticker.of(ticker), timestamp);
   }
 
   @JsonProperty("date")
@@ -133,14 +132,9 @@ public class TickJson extends Tick implements Serializable {
     return super.getMinPrice().toDouble();
   }
 
-  @JsonProperty("symbol")
-  public String getSymbol() {
-    return symbol;
-  }
-
-  @JsonProperty("market")
-  public String getMarket() {
-    return market;
+  @JsonProperty("ticker")
+  public String getTicker() {
+    return ticker.toString();
   }
 
   @JsonProperty("timestamp")
@@ -151,6 +145,11 @@ public class TickJson extends Tick implements Serializable {
   @JsonIgnore
   public OffsetDateTime getTimestampAsObject() {
     return timestamp;
+  }
+
+  @JsonIgnore
+  public Ticker getTickerAsObject() {
+    return ticker;
   }
 
   @Override

@@ -50,8 +50,8 @@ public class StockProcessor implements Processor {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     logger.info(tick.toString());
-    Market market = marketsManager.findMarket(tick.getMarket());
-    Stock stock = market.findSymbol(tick.getSymbol());
+    Market market = marketsManager.findMarket(tick.getTickerAsObject().getMarket());
+    Stock stock = market.findTicker(tick.getTickerAsObject());
     stock.receiveTick(tick);
     logger.info("stock: {}", stock.toString());
   }

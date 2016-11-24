@@ -127,52 +127,46 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksByMarketAndSymbol(String market, String symbol) {
-    // return queryFindBySymbol(symbol, TickJson.class);
-    return queryElasticsearch(indexForTicks, typeForTicks, symbol, TickJson.class,
-        matchQuery("market", market),
-        matchQuery("symbol", symbol));
+  public List<TickJson> findTicksByTicker(String ticker) {
+    return queryElasticsearch(indexForTicks, typeForTicks, TickJson.class,
+        matchQuery("ticker", ticker));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByMarketAndSymbol(String market, String symbol) {
-    return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
-        matchQuery("market", market),
-        matchQuery("symbol", symbol));
+  public List<IndicatorJson> findIndicatorsByTicker(String ticker) {
+    return queryElasticsearch(indexForIndicators, typeForIndicators, IndicatorJson.class,
+        matchQuery("ticker", ticker));
   }
 
   @Override
-  public List<TickJson> findTicksByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
-    return queryElasticsearch(indexForTicks, typeForTicks, symbol, TickJson.class,
-        matchQuery("market", market),
-        matchQuery("symbol", symbol),
+  public List<TickJson> findTicksByTickerAndDateGreaterThan(String ticker, Long date) {
+    return queryElasticsearch(indexForTicks, typeForTicks, TickJson.class,
+        matchQuery("ticker", ticker),
         rangeQuery("date").from(date));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
-    return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
-        matchQuery("market", market),
-        matchQuery("symbol", symbol),
+  public List<IndicatorJson> findIndicatorsByTickerAndDateGreaterThan(String ticker, Long date) {
+    return queryElasticsearch(indexForIndicators, typeForIndicators, IndicatorJson.class,
+        matchQuery("ticker", ticker),
         rangeQuery("date").from(date));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(String market, String symbol, String name, Long date) {
-    return queryElasticsearch(indexForIndicators, typeForIndicators, symbol, IndicatorJson.class,
-        matchQuery("market", market),
-        matchQuery("symbol", symbol),
+  public List<IndicatorJson> findIndicatorsByTickerAndNameAndDateGreaterThan(String ticker, String name, Long date) {
+    return queryElasticsearch(indexForIndicators, typeForIndicators, IndicatorJson.class,
+        matchQuery("ticker", ticker),
         matchQuery("name", name),
         rangeQuery("date").from(date));
   }
 
-  private <T> List<T> queryElasticsearch(String index, String type, String symbol, Class<T> t, QueryBuilder... queries) {
+  private <T> List<T> queryElasticsearch(String index, String type, Class<T> t, QueryBuilder... queries) {
     BoolQueryBuilder query = boolQuery();
     for (QueryBuilder q : queries) {
       query.must(q);
     }
-    logger.debug("queryElasticsearch({}, {}, {}, {})...\n{}",
-        index, type, symbol, t.getSimpleName(), query.toString());
+    logger.debug("queryElasticsearch({}, {}, {})...\n{}",
+        index, type, t.getSimpleName(), query.toString());
     List<T> results = null;
     try {
       SearchResponse response = elasticsearch.prepareSearch()

@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.StockFactory;
 import org.jimsey.projects.turbine.condenser.domain.Market;
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,14 +40,14 @@ public class MarketsManager {
   private StockFactory stockFactory;
 
   // TODO need a better implementation of some sort..?
-  private ConcurrentHashMap<String, Market> markets = new ConcurrentHashMap<>();
+  private ConcurrentHashMap<MarketEnum, Market> markets = new ConcurrentHashMap<>();
 
-  public Market findMarket(String name) {
-    markets.computeIfAbsent(name, key -> {
+  public Market findMarket(MarketEnum market) {
+    markets.computeIfAbsent(market, key -> {
       // TODO upfront setup of markets and stocks...
-      return new Market(key, stockFactory);
+      return new Market(stockFactory);
     });
-    return markets.get(name);
+    return markets.get(market);
   }
 
 }

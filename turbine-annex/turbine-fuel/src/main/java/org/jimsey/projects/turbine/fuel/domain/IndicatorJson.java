@@ -50,11 +50,10 @@ public class IndicatorJson extends Entity implements Serializable {
       OffsetDateTime date,
       double close,
       Map<String, Double> indicators,
-      String symbol,
-      String market,
+      Ticker ticker,
       String name,
       String timestamp) {
-    super(date, close, symbol, market, name, timestamp);
+    super(date, close, ticker, name, timestamp);
     this.indicators = indicators;
   }
 
@@ -63,12 +62,11 @@ public class IndicatorJson extends Entity implements Serializable {
       @JsonProperty("date") long date,
       @JsonProperty("close") double close,
       @JsonProperty("indicators") Map<String, Double> indicators,
-      @JsonProperty("symbol") String symbol,
-      @JsonProperty("market") String market,
+      @JsonProperty("ticker") String ticker,
       @JsonProperty("name") String name,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        close, indicators, symbol, market, name, timestamp);
+        close, indicators, Ticker.of(ticker), name, timestamp);
   }
 
   // -----------------------

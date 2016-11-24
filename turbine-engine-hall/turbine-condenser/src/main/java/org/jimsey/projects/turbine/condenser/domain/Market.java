@@ -25,23 +25,21 @@ package org.jimsey.projects.turbine.condenser.domain;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jimsey.projects.turbine.condenser.StockFactory;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
 public class Market {
 
-  private final String market;
-
   private final StockFactory stockFactory;
 
-  private ConcurrentHashMap<String, Stock> stocks = new ConcurrentHashMap<>();
+  private ConcurrentHashMap<Ticker, Stock> stocks = new ConcurrentHashMap<>();
 
-  public Market(String market, StockFactory stockFactory) {
-    this.market = market;
+  public Market(StockFactory stockFactory) {
     this.stockFactory = stockFactory;
   }
 
-  public Stock findSymbol(String symbol) {
-    Stock stock = stocks.computeIfAbsent(symbol, key -> {
-      return stockFactory.createStock(market, key);
+  public Stock findTicker(Ticker ticker) {
+    Stock stock = stocks.computeIfAbsent(ticker, key -> {
+      return stockFactory.createStock(key);
     });
     return stock;
   }

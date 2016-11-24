@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.condenser;
 
 import org.jimsey.projects.turbine.condenser.domain.Stock;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
 /**
  * Interface for runtime-created StockFactory beans.
@@ -31,6 +32,6 @@ import org.jimsey.projects.turbine.condenser.domain.Stock;
  */
 public interface StockFactory {
 
-  Stock createStock(String market, String symbol);
+  Stock createStock(Ticker ticker);
 
 }

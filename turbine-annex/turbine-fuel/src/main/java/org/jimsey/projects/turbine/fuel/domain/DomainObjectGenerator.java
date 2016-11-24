@@ -30,10 +30,6 @@ public interface DomainObjectGenerator {
   
   Ticker getTicker();
 
-  MarketEnum getMarket();
-
-  CharSeq getSymbol();
-
   TickJson newTick();
 
   IndicatorJson newIndicator(String name);

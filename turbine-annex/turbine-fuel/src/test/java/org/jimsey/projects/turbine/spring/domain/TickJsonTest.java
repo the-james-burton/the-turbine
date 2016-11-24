@@ -30,6 +30,7 @@ import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class TickJsonTest {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private TickJson tick;
+  private final Ticker TICKER = Ticker.of(SYMBOL, MARKET);
 
   @Before
   public void before() {
@@ -53,23 +54,27 @@ public class TickJsonTest {
   }
 
   @Test
-  public void testJsonConstructor() {
-    tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        MARKET, SYMBOL, OffsetDateTime.now().toString());
-    String jsonConstructor = tick.toString();
-    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        MARKET, SYMBOL, OffsetDateTime.now().toString());
-    String tickConstructor = tick.toString();
-    logger.info(jsonConstructor);
-    logger.info(tickConstructor);
-    assertNotNull(jsonConstructor);
-    assertNotNull(tickConstructor);
+  public void testJsonCreator() {
+    TickJson tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
+        TICKER.toString(), OffsetDateTime.now().toString());
+    String jsonCreator = tick.toString();
+    logger.info(jsonCreator);
+    assertNotNull(jsonCreator);
+  }
+
+  @Test
+  public void testConstructor() {
+    TickJson tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
+        TICKER, OffsetDateTime.now().toString());
+    String constructor = tick.toString();
+    logger.info(constructor);
+    assertNotNull(constructor);
   }
 
   @Test
   public void testJson() throws IOException {
-    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        MARKET, SYMBOL, OffsetDateTime.now().toString());
+    TickJson tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
+        TICKER, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(tick);
     tick = json.readValue(text, TickJson.class);
     logger.info(text);
@@ -81,8 +86,8 @@ public class TickJsonTest {
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        MARKET, SYMBOL, OffsetDateTime.now().toString());
+    TickJson tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
+        TICKER, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(tick);
     TickJson tick2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(tick.toString());

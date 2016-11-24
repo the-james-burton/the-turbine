@@ -38,7 +38,7 @@ public class IndicatorSplitter extends BaseSplitter {
 
   public List<Message> split(@Headers Map<String, Object> headers, @Body TickJson tick) {
     logger.debug(" ---- in indicator splitter");
-    Stock stock = marketsManager.findMarket(tick.getMarket()).findSymbol(tick.getSymbol());
+    Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findTicker(tick.getTickerAsObject());
     return stock.getIndicators().stream()
         .map(indicator -> createMessage(indicator.run(tick), headers))
         .collect(Collectors.toList());

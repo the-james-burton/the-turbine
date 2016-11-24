@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,12 +48,12 @@ public class IndicatorJsonTest {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private IndicatorJson indicator;
-
   private final Map<String, Double> indicators = new HashMap<>();
 
-  private final String name = "testName";
+  private final String name = "testIndicatorName";
 
+  private final Ticker TICKER = Ticker.of(SYMBOL, MARKET);
+  
   @Before
   public void before() {
     // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
@@ -63,23 +64,27 @@ public class IndicatorJsonTest {
   }
 
   @Test
-  public void testJsonConstructor() {
-    indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
-    String jsonConstructor = indicator.toString();
-    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
-    String stockConstructor = indicator.toString();
-    logger.info(jsonConstructor);
-    logger.info(stockConstructor);
-    assertNotNull(jsonConstructor);
-    assertNotNull(stockConstructor);
+  public void testJsonCreator() {
+    IndicatorJson indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
+        TICKER.toString(), name, OffsetDateTime.now().toString());
+    String jsonCreator = indicator.toString();
+    logger.info(jsonCreator);
+    assertNotNull(jsonCreator);
+  }
+
+  @Test
+  public void testConstructor() {
+    IndicatorJson indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
+        TICKER, name, OffsetDateTime.now().toString());
+    String constructor = indicator.toString();
+    logger.info(constructor);
+    assertNotNull(constructor);
   }
 
   @Test
   public void testJson() throws IOException {
-    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
+    IndicatorJson indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
+        TICKER, name, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(indicator);
     indicator = json.readValue(text, IndicatorJson.class);
     logger.info(text);
@@ -91,8 +96,8 @@ public class IndicatorJsonTest {
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
-        SYMBOL, MARKET, name, OffsetDateTime.now().toString());
+    IndicatorJson indicator = new IndicatorJson(OffsetDateTime.now(), 100.0d, indicators,
+        TICKER, name, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(indicator);
     TickJson stock2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(indicator.toString());

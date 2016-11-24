@@ -76,9 +76,7 @@ public class YahooFinanceRealtime {
     double volume = Double.parseDouble(parts[6]);
     this.metadata = metadata;
     this.tick = new TickJson(date, open, high, low, close, volume,
-        metadata.getTicker().getMarket().toString(),
-        metadata.getTicker().getSymbol().toString(),
-        date.toString());
+        metadata.getTicker(), date.toString());
   }
 
   @Override

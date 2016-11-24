@@ -38,6 +38,7 @@ import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStra
 import org.jimsey.projects.turbine.condenser.domain.strategies.TurbineStrategy;
 import org.jimsey.projects.turbine.condenser.service.TurbineService;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 public class Stock {
 
   private static final Logger logger = LoggerFactory.getLogger(Stock.class);
-
+  
   @Autowired
   @NotNull
   protected InfrastructureProperties infrastructureProperties;
@@ -60,10 +61,6 @@ public class Stock {
   @NotNull
   private TurbineService turbineService;
 
-  private String symbol;
-
-  private String market;
-
   private final TimeSeries series = new TimeSeries(new ArrayList<Tick>());
 
   private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
@@ -71,10 +68,11 @@ public class Stock {
   private final List<TurbineIndicator> turbineIndicators = new ArrayList<>();
 
   private final List<TurbineStrategy> turbineStrategies = new ArrayList<>();
+  
+  private final Ticker ticker;
 
-  public Stock(final String market, final String symbol) {
-    this.market = market;
-    this.symbol = symbol;
+  public Stock(final Ticker ticker) {
+    this.ticker = ticker;
   }
 
   @PostConstruct
@@ -107,17 +105,16 @@ public class Stock {
       Constructor<?> indicatorConstructor = Class.forName(name).getConstructor(TimeSeries.class,
           ClosePriceIndicator.class);
       result = indicatorConstructor.newInstance(series, closePriceIndicator);
-      logger.info("instantiated [{}, {}]: {}",
-          market, symbol, result.getClass().getName());
+      logger.info("instantiated [{}]: {}", ticker, result.getClass().getName());
     } catch (Exception e) {
-      logger.info("could not instantiate {} for [{}, {}]: {}",
-          name, market, symbol, e.getMessage());
+      logger.info("could not instantiate {} for [{}]: {}",
+          name, ticker, e.getMessage());
     }
     return result;
   }
 
   public void receiveTick(TickJson tick) {
-    logger.debug("market: {}, symbol: {}, receiveTick: {}", market, symbol, tick.getTimestamp());
+    logger.debug("ticker: {}, receiveTick: {}", ticker, tick.getTimestamp());
     series.addTick(tick);
   }
 

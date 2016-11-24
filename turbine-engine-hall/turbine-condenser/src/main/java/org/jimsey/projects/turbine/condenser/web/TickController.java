@@ -26,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +70,7 @@ public class TickController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    String ticks = getTicks("FTSE100", "ABC");
+    String ticks = getTicks("ABC.L");
     logger.info("*** getTicks(FTSE100, ABC) : [{}]", ticks);
     // logger.info("this mornings getTicksAfter(ABC) : [{}]", getTicksAfter("ABC", sod));
   }
@@ -82,25 +81,23 @@ public class TickController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/{market}/{symbol}")
+  @RequestMapping("/{ticker}")
   public String getTicks(
-      @PathVariable String market,
-      @PathVariable String symbol) {
-    logger.info("getTicks({}, {})", market, symbol);
-    List<TickJson> ticks = elasticsearch.findTicksByMarketAndSymbol(market, symbol);
+      @PathVariable String ticker) {
+    logger.info("getTicks({}, {})", ticker);
+    List<TickJson> ticks = elasticsearch.findTicksByTicker(ticker);
     if (ticks == null) {
       return null;
     }
     return Joiner.on(',').useForNull("").join(ticks);
   }
 
-  @RequestMapping("/{market}/{symbol}/{date}")
+  @RequestMapping("/{ticker}/{date}")
   public String getTicksAfter(
-      @PathVariable String market,
-      @PathVariable String symbol,
+      @PathVariable String ticker,
       @PathVariable Long date) throws JsonProcessingException {
-    logger.info("getTicksAfter({}, {}, {})", market, symbol, date);
-    List<TickJson> ticks = elasticsearch.findTicksByMarketAndSymbolAndDateGreaterThan(market, symbol, date);
+    logger.info("getTicksAfter({}, {}, {})", ticker, date);
+    List<TickJson> ticks = elasticsearch.findTicksByTickerAndDateGreaterThan(ticker, date);
     // return Joiner.on(',').join(ticks);
     // return objectToJson(ticks);
     // if (true) {

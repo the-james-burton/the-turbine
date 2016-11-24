@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.condenser.service.Ping;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,16 +75,16 @@ public class Application {
   @Bean
   public StockFactory stockFactory() {
     return new StockFactory() {
-      public Stock createStock(String market, String symbol) {
-        return runtimeStock(market, symbol);
+      public Stock createStock(Ticker ticker) {
+        return runtimeStock(ticker);
       }
     };
   }
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  Stock runtimeStock(String market, String symbol) {
-    return new Stock(market, symbol);
+  Stock runtimeStock(Ticker ticker) {
+    return new Stock(ticker);
   }
 
   @SuppressWarnings("unused")

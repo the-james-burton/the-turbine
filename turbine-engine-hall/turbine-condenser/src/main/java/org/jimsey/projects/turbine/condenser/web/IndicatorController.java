@@ -68,7 +68,7 @@ public class IndicatorController {
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("FTSE100", "ABC", "BollingerBands", sod));
+    logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("ABC.L", "BollingerBands", sod));
   }
 
   @RequestMapping("/ping")
@@ -77,26 +77,24 @@ public class IndicatorController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/{market}/{symbol}")
+  @RequestMapping("/{ticker}")
   public String getIndicators(
-      @PathVariable String market,
-      @PathVariable String symbol) {
-    logger.info("getIndicators({}, {})", market, symbol);
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByMarketAndSymbol(market, symbol);
+      @PathVariable String ticker) {
+    logger.info("getIndicators({}, {})", ticker);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByTicker(ticker);
     // return Joiner.on(',').join(indicators);
     return indicators.stream().map(i -> i.toString()).reduce((l,r)-> format("%s,%s", l,r)).orElse("");
   }
 
-  @RequestMapping("/{market}/{symbol}/{name}/{date}")
+  @RequestMapping("/{ticker}/{name}/{date}")
   public String getIndicatorsAfter(
-      @PathVariable String market,
-      @PathVariable String symbol,
+      @PathVariable String ticker,
       @PathVariable String name, 
       @PathVariable Long date)
       throws JsonProcessingException {
-    logger.info("getIndicatorsAfter({}, {}, {}, {})", market, symbol, name, date);
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
-        market, symbol, name, date);
+    logger.info("getIndicatorsAfter({}, {}, {}, {})", ticker, name, date);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByTickerAndNameAndDateGreaterThan(
+        ticker, name, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {

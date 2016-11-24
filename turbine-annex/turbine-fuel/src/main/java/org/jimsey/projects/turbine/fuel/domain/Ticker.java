@@ -75,6 +75,10 @@ public class Ticker implements Comparable<Ticker>{
     return new Ticker(CharSeq.of(symbol), market);
   }
 
+  public static Ticker of(String symbol, String market) {
+    return new Ticker(CharSeq.of(symbol), MarketEnum.valueOf(market));
+  }
+
 
   // ----------------------------
   private final Comparator<Ticker> comparator = Comparator

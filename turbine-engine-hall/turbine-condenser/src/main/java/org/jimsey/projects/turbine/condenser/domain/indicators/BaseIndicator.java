@@ -58,8 +58,7 @@ public abstract class BaseIndicator implements TurbineIndicator {
         tick.getTimestampAsObject(),
         tick.getClose(),
         computeValues(),
-        tick.getSymbol(),
-        tick.getMarket(),
+        tick.getTickerAsObject(),
         name,
         tick.getTimestamp());
   };

@@ -91,9 +91,8 @@ public abstract class BaseStrategy implements TurbineStrategy {
     StrategyJson result = null;
     // if (action != TurbineCondenserConstants.ACTION_NONE) {
       result = new StrategyJson(
-          tick.getDate(),
-          tick.getSymbol(),
-          tick.getMarket(),
+          tick.getTimestampAsObject(),
+          tick.getTickerAsObject(),
           tick.getClose(),
           name, action, thisTradeSize, position, cash, value,
           tick.getTimestamp());

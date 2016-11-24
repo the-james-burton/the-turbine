@@ -54,8 +54,8 @@ public abstract class BaseSplitter {
     message.setBody(entity);
     message.setHeader(TurbineCondenserConstants.HEADER_FOR_OBJECT_TYPE, entity.getClass().getName());
     message.setHeader(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s.%s.%s",
-            entity.getMarket(), entity.getSymbol(), entity.getName()));
+        String.format(".%s.%s",
+            entity.getTicker(), entity.getName()));
 
     logger.info("entity: [body: {}, headers: {}]", entity.toString(), new JSONObject(message.getHeaders()));
 

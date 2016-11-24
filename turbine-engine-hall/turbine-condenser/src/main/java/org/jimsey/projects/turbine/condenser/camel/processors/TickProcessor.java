@@ -46,7 +46,7 @@ public class TickProcessor implements Processor {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
     message.getHeaders().put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s.%s", tick.getMarket(), tick.getSymbol()));
+        String.format(".%s", tick.getTicker()));
     logger.info("tick: {}", tick.toString());
   }
 

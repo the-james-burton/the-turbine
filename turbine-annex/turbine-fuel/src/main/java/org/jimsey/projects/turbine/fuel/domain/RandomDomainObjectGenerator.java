@@ -51,20 +51,13 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   private final Ticker ticker;
   
-  private final MarketEnum market;
-  
-  private final CharSeq symbol;
-
   private TickJson tick;
 
   private IndicatorJson indicator;
 
   private StrategyJson strategy;
 
-  // NOTE: for some reason, Eclipse or Java does not like this comparator builder on one line, hence the split...
-  private final Comparator<DomainObjectGenerator> c1 = comparing(dog -> dog.getMarket().toString());
-
-  private final Comparator<DomainObjectGenerator> comparator = c1.thenComparing(dog -> dog.getSymbol().toString());
+  private final Comparator<DomainObjectGenerator> comparator = comparing(dog -> dog.getTicker());
 
   /**
    * given a string, this function will return a RuntimeException with a suitable message
@@ -78,34 +71,27 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   public RandomDomainObjectGenerator(Ticker ticker) {
     this.ticker = ticker;
-    this.symbol = ticker.getSymbol();
-    this.market = ticker.getMarket();
-    this.tick = createTick(this.market, this.symbol);
+    this.tick = createTick(ticker);
   }
 
   public RandomDomainObjectGenerator(String ticker) {
     // TODO same as function in DogKennel...
     CharSeq[] split = CharSeq.of(ticker).split("\\.");
     Tuple2<CharSeq, MarketEnum> tuple = Tuple.of(split[0], MarketEnum.fromExtension(split[1]).getOrElseThrow(() -> parsingException.apply(ticker)));
-    this.symbol = tuple._1;
-    this.market = tuple._2;
-    this.ticker = Ticker.of(this.symbol, this.market);
-    this.tick = createTick(this.market, this.symbol);
+    this.ticker = Ticker.of(tuple._1, tuple._2);
+    this.tick = createTick(this.ticker);
   }
 
   public RandomDomainObjectGenerator(MarketEnum market, CharSeq symbol) {
     Objects.requireNonNull(market);
     Objects.requireNonNull(symbol);
-    this.market = market;
-    this.symbol = symbol;
-    this.ticker = Ticker.of(this.symbol, this.market);
-    this.tick = createTick(this.market, this.symbol);
+    this.ticker = Ticker.of(symbol, market);
+    this.tick = createTick(ticker);
   }
 
-  private TickJson createTick(MarketEnum market, CharSeq symbol) {
-    return new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d, symbol.toString(),
-        market.toString(),
-        OffsetDateTime.now().toString());
+  private TickJson createTick(Ticker ticker) {
+    return new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d,
+        ticker, OffsetDateTime.now().toString());
   }
 
   @Override
@@ -124,7 +110,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(4000, 6000);
 
-    tick = new TickJson(date, open, high, low, close, volume, symbol.toString(), market.toString(),
+    tick = new TickJson(date, open, high, low, close, volume, ticker,
         OffsetDateTime.now().toString());
     return tick;
   }
@@ -147,7 +133,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
     indicator = new IndicatorJson(
         date, closePriceIndicator, indicators,
-        symbol.toString(), market.toString(), name, OffsetDateTime.now().toString());
+        ticker, name, OffsetDateTime.now().toString());
     return indicator;
   }
 
@@ -162,7 +148,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     Double value = 0d;
 
     strategy = new StrategyJson(
-        date, market.toString(), symbol.toString(), close,
+        date, ticker, close,
         name, action, amount, position, cash, value, OffsetDateTime.now().toString());
     return strategy;
   }
@@ -185,7 +171,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
 
   @Override
   public int hashCode() {
-    return Objects.hash(market, symbol);
+    return Objects.hash(ticker);
   }
 
   @Override
@@ -194,8 +180,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
       return false;
     }
     RandomDomainObjectGenerator that = (RandomDomainObjectGenerator) key;
-    return Objects.equals(this.market, that.market)
-        && Objects.equals(this.symbol, that.symbol);
+    return Objects.equals(this.ticker, that.ticker);
   }
 
   @Override
@@ -203,17 +188,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     return comparator.compare(this, that);
   }
 
-  
-  
-  @Override
-  public MarketEnum getMarket() {
-    return market;
-  }
-
-  @Override
-  public CharSeq getSymbol() {
-    return symbol;
-  }
 
   @Override
   public Ticker getTicker() {

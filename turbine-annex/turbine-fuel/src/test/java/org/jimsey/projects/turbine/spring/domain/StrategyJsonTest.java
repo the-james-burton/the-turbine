@@ -31,6 +31,7 @@ import java.time.OffsetDateTime;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class StrategyJsonTest {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private StrategyJson strategy;
+  private final Ticker TICKER = Ticker.of(SYMBOL, MARKET);
 
   @Before
   public void before() {
@@ -53,25 +54,27 @@ public class StrategyJsonTest {
   }
 
   @Test
-  public void testJsonConstructor() {
-    strategy = new StrategyJson(1401174943825l,
-        SYMBOL, MARKET,
+  public void testJsonCreator() {
+    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.toString(),
         100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
-    String jsonConstructor = strategy.toString();
-    strategy = new StrategyJson(OffsetDateTime.now(),
-        SYMBOL, MARKET,
+    String jsonCreator = strategy.toString();
+    logger.info(jsonCreator);
+    assertNotNull(jsonCreator);
+  }
+
+  @Test
+  public void testConstructor() {
+    StrategyJson  strategy = new StrategyJson(OffsetDateTime.now(), TICKER,
         100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
-    String strategyConstructor = strategy.toString();
-    logger.info(jsonConstructor);
-    logger.info(strategyConstructor);
-    assertNotNull(jsonConstructor);
-    assertNotNull(strategyConstructor);
+    String constructor = strategy.toString();
+    logger.info(constructor);
+    assertNotNull(constructor);
   }
 
   @Test
   public void testJson() throws IOException {
-    strategy = new StrategyJson(1401174943825l,
-        SYMBOL, MARKET, 100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
+    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.toString(),
+        100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(strategy);
     strategy = json.readValue(text, StrategyJson.class);
     logger.info(text);
@@ -83,8 +86,8 @@ public class StrategyJsonTest {
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    strategy = new StrategyJson(1401174943825l,
-        SYMBOL, MARKET, 100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
+    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.toString(),
+        100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(strategy);
     TickJson strategy2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(strategy.toString());

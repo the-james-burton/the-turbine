@@ -85,8 +85,8 @@ public class IndicatorControllerTest {
   @Test
   public void testGetIndicatorsAfter() throws Exception {
     given(elasticsearch
-        .findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(
-            Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class)))
+        .findIndicatorsByTickerAndNameAndDateGreaterThan(
+            Mockito.anyString(), Mockito.anyString(), Mockito.any(Long.class)))
         .willReturn(indicators);
 
     String expected = json.writeValueAsString(new Object() {
@@ -96,8 +96,8 @@ public class IndicatorControllerTest {
 
     long date = Instant.now().minus(1, ChronoUnit.MINUTES).toEpochMilli();
 
-    String restUri = String.format("%s/%s/%s/%s/%s",
-        TurbineCondenserConstants.REST_ROOT_INDICATORS, "market", "symbol", "testName", date);
+    String restUri = String.format("%s/%s/%s/%s",
+        TurbineCondenserConstants.REST_ROOT_INDICATORS, "ticker", "testName", date);
 
     mvc.perform(get(restUri).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

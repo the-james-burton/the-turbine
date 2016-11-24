@@ -40,9 +40,7 @@ public class TickPojo {
 
   double volume;
 
-  String symbol;
-
-  String market;
+  String ticker;
 
   String timestamp;
 
@@ -94,20 +92,12 @@ public class TickPojo {
     this.volume = volume;
   }
 
-  public String getSymbol() {
-    return symbol;
+  public String getTicker() {
+    return ticker;
   }
 
-  public void setSymbol(String symbol) {
-    this.symbol = symbol;
-  }
-
-  public String getMarket() {
-    return market;
-  }
-
-  public void setMarket(String market) {
-    this.market = market;
+  public void setTicker(String ticker) {
+    this.ticker = ticker;
   }
 
   public String getTimestamp() {

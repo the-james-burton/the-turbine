@@ -95,9 +95,9 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksByMarketAndSymbol(String market, String symbol) {
+  public List<TickJson> findTicksByTicker(String ticker) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-    searchSourceBuilder.query(QueryBuilders.matchQuery("symbol", symbol));
+    searchSourceBuilder.query(QueryBuilders.matchQuery("ticker", ticker));
 
     Search search = new Search.Builder(searchSourceBuilder.toString())
         .addIndex(infrastructureProperties.getElasticsearchIndexForTicks())
@@ -135,25 +135,25 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
+  public List<TickJson> findTicksByTickerAndDateGreaterThan(String ticker, Long date) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByMarketAndSymbol(String market, String symbol) {
+  public List<IndicatorJson> findIndicatorsByTicker(String ticker) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndDateGreaterThan(String market, String symbol, Long date) {
+  public List<IndicatorJson> findIndicatorsByTickerAndDateGreaterThan(String ticker, Long date) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByMarketAndSymbolAndNameAndDateGreaterThan(String market, String symbol, String name, Long date) {
+  public List<IndicatorJson> findIndicatorsByTickerAndNameAndDateGreaterThan(String ticker, String name, Long date) {
     // TODO Auto-generated method stub
     return null;
   }
