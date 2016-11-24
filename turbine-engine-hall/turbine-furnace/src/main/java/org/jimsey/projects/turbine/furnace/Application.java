@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.furnace;
 
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.service.TickProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,16 +57,16 @@ public class Application {
   @Bean
   public TickProducerFactory tickProcuderFactory() {
     return new TickProducerFactory() {
-      public TickProducer createTickProducer(String market, String symbol) {
-        return runtimeTickProducer(market, symbol);
+      public TickProducer createTickProducer(Ticker ticker) {
+        return runtimeTickProducer(ticker);
       }
     };
   }
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  TickProducer runtimeTickProducer(String market, String symbol) {
-    return new TickProducer(market, symbol);
+  TickProducer runtimeTickProducer(Ticker ticker) {
+    return new TickProducer(ticker);
   }
 
 }

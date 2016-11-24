@@ -22,10 +22,11 @@
  */
 package org.jimsey.projects.turbine.furnace;
 
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.service.TickProducer;
 
 public interface TickProducerFactory {
 
-  TickProducer createTickProducer(String market, String symbol);
+  TickProducer createTickProducer(Ticker ticker);
 
 }

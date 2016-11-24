@@ -22,12 +22,15 @@
  */
 package eu.verdelhan.ta4j;
 
+import static org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants.*;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -40,7 +43,7 @@ public class Ta4jBasicTest {
 
   private static final Logger logger = LoggerFactory.getLogger(Ta4jBasicTest.class);
 
-  DomainObjectGenerator rdog = new RandomDomainObjectGenerator("FTSE100", "ABC");
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(ABC);
 
   List<Tick> ticks;
 

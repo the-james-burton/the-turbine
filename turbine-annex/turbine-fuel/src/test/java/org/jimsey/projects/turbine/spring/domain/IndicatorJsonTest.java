@@ -52,7 +52,7 @@ public class IndicatorJsonTest {
 
   private final String name = "testIndicatorName";
 
-  private final Ticker TICKER = Ticker.of(SYMBOL, MARKET);
+  private final Ticker TICKER = Ticker.of(ABC);
   
   @Before
   public void before() {

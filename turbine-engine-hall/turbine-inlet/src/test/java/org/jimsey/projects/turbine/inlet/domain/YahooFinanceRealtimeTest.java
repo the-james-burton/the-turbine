@@ -41,7 +41,7 @@ public class YahooFinanceRealtimeTest {
 
   private static final TickerMetadataProvider tmp = new TickerMetadataProviderImpl();
   
-  private final DomainObjectGenerator dog = new RandomDomainObjectGenerator(FTSE100, ABC);
+  private final DomainObjectGenerator dog = new RandomDomainObjectGenerator(ABC);
   
   @Test
   public void testRoundTripForString() {

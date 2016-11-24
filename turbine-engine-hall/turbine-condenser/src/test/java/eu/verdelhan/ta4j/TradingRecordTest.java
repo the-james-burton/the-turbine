@@ -38,7 +38,7 @@ public class TradingRecordTest {
 
   private static final Logger logger = LoggerFactory.getLogger(TradingRecordTest.class);
 
-  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(MARKET, SYMBOL);
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(ABC);
 
   TimeSeries series;
 

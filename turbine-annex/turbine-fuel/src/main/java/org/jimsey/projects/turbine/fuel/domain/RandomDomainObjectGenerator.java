@@ -65,10 +65,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
    */
   private final Function1<String, RuntimeException> parsingException = (m) -> new RuntimeException(format(parsingExceptionText, m));
   
-  public RandomDomainObjectGenerator(String market, String symbol) {
-    this(MarketEnum.valueOf(market), CharSeq.of(symbol));
-  }
-
   public RandomDomainObjectGenerator(Ticker ticker) {
     this.ticker = ticker;
     this.tick = createTick(ticker);

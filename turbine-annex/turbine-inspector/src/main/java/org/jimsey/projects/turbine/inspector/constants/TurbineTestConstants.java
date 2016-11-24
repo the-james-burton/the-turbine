@@ -28,15 +28,9 @@ package org.jimsey.projects.turbine.inspector.constants;
  */
 public class TurbineTestConstants {
 
-  public static final String MARKET = "FTSE100";
+  public static final String ABC = "ABC.L";
 
-  public static final String SYMBOL = "ABC";
-  
-  public static final String FTSE100 = "FTSE100";
-
-  public static final String ABC = "ABC";
-
-  public static final String DEF = "DEF";
+  public static final String DEF = "DEF.L";
 
 
 }

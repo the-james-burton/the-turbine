@@ -69,7 +69,7 @@ public class IndicatorControllerTest {
   @Autowired
   private MockMvc mvc;
 
-  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(MARKET, SYMBOL);
+  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(ABC);
 
   private List<IndicatorJson> indicators = new ArrayList<IndicatorJson>();
 

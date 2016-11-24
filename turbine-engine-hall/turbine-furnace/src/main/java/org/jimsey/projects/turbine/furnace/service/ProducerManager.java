@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.furnace.service;
 
+import static java.lang.String.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.camel.CamelContext;
 import org.jimsey.projects.turbine.fuel.domain.Stocks;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.TickProducerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,18 +64,18 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
-    for (Stocks symbol : Stocks.values()) {
-      logger.info("creating TickProducer {}", symbol);
-      TickProducer producer = tickProducerFactory.createTickProducer(symbol.getMarket(), symbol.getSymbol());
+    for (Stocks stock : Stocks.values()) {
+      logger.info("creating TickProducer {}", stock);
+      TickProducer producer = tickProducerFactory.createTickProducer(Ticker.of(stock.getSymbol(), stock.getMarket()));
       producers.add(producer);
     }
   }
 
   @ManagedOperation
-  public void produceTick(String market, String symbol) {
+  public void produceTick(Ticker ticker) {
     producers.stream()
         .filter(producer -> {
-          return market.equals(producer.getMarket()) && symbol.equals(producer.getSymbol());
+          return ticker.equals(producer.getTicker());
         })
         .forEach(producer -> producer.produce());
   }
@@ -81,7 +84,7 @@ public class ProducerManager {
   public String showProducers() {
     Optional<String> result = producers.stream()
         .map(TickProducer::toString)
-        .reduce((p1, p2) -> String.format("%s,%s", p1, p2));
+        .reduce((p1, p2) -> format("%s,%s", p1, p2));
     return result.toString();
   }
 

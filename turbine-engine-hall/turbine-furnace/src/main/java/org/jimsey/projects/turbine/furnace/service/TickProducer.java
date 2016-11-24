@@ -34,6 +34,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.furnace.camel.routes.TickPublishingRoute;
 import org.json.JSONObject;
@@ -54,18 +55,15 @@ public class TickProducer {
   @NotNull
   private CamelContext camel;
 
-  private final String market;
-
-  private final String symbol;
+  private final Ticker ticker;
 
   private final DomainObjectGenerator rdog;
 
   private ProducerTemplate producer;
 
-  public TickProducer(String market, String symbol) {
-    this.market = market;
-    this.symbol = symbol;
-    this.rdog = new RandomDomainObjectGenerator(market, symbol);
+  public TickProducer(Ticker ticker) {
+    this.ticker = ticker;
+    this.rdog = new RandomDomainObjectGenerator(ticker);
   }
 
   @PostConstruct
@@ -96,12 +94,8 @@ public class TickProducer {
     producer.sendBodyAndHeaders(TickPublishingRoute.IN, text, headers);
   }
 
-  public String getMarket() {
-    return market;
-  }
-
-  public String getSymbol() {
-    return symbol;
+  public Ticker getTicker() {
+    return ticker;
   }
 
   @Override

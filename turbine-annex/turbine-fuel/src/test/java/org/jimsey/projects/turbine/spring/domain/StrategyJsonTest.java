@@ -46,7 +46,7 @@ public class StrategyJsonTest {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private final Ticker TICKER = Ticker.of(SYMBOL, MARKET);
+  private final Ticker TICKER = Ticker.of(ABC);
 
   @Before
   public void before() {
