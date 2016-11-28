@@ -31,12 +31,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.Ping;
+import org.jimsey.projects.turbine.condenser.service.TickerManager;
 import org.jimsey.projects.turbine.condenser.service.TurbineService;
-import org.jimsey.projects.turbine.fuel.domain.Stocks;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +69,9 @@ public class TurbineControllerTest {
   @MockBean
   private Ping ping;
 
+  @MockBean
+  private TickerManager tickerManager;
+  
   @Autowired
   private MockMvc mvc;
 
@@ -74,18 +81,22 @@ public class TurbineControllerTest {
 
   private final List<String> strategies = Arrays.asList("strategy1", "strategy1");
 
-  private final List<Stocks> stocks = Arrays.asList(Stocks.ABC, Stocks.DEF);
-
   private final ObjectMapper json = new ObjectMapper();
 
+  private Set<Ticker> tickers;
+  
   @Before
   public void setUp() throws Exception {
     logger.info(" *** ");
+    tickers = new HashSet<>();
+    tickers.add(Ticker.of("ABC.L"));
+    tickers.add(Ticker.of("DEF.L"));
   }
 
   @Test
   public void getPing() throws Exception {
     given(ping.ping()).willReturn(pingTime);
+    given(tickerManager.getTickers()).willReturn(tickers);
     PingResponse expected = new PingResponse(pingTime);
 
     mvc.perform(
@@ -98,16 +109,16 @@ public class TurbineControllerTest {
 
   @Test
   public void testGetSymbols() throws Exception {
-    String response = json.writeValueAsString(stocks);
+    String response = json.writeValueAsString(tickers);
     logger.info("mock response : {}", response);
     when(turbineSerivce.listStocks(anyString())).thenReturn(response);
 
     mvc.perform(
-        get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", Stocks.ABC.getMarket()))
+        get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", TurbineTestConstants.FTSE100))
         .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
-        .andExpect(content().string(containsString(Stocks.ABC.getMarket())));
+        .andExpect(content().string(containsString(TurbineTestConstants.FTSE100)));
 
     // TODO add test for stocks not in given market...
   }

@@ -1,6 +1,6 @@
 /**
  * The MIT License
- * Copyright (c) 2015 the-james-burton
+ * Copyright (c) ${project.inceptionYear} the-james-burton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,46 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.fuel.domain;
+package org.jimsey.projects.turbine.condenser.service;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.springframework.stereotype.Service;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum Stocks {
+@Service
+public class TickerManager {
 
-  ABC(MarketEnum.FTSE100),
-  DEF(MarketEnum.FTSE100);
+  private final Set<Ticker> tickers = new HashSet<>();
 
-  private final MarketEnum market;
-
-  private Stocks(MarketEnum market) {
-    this.market = market;
+  public void addTick(Ticker ticker) {
+    tickers.add(ticker);
   }
-
-  @Override
-  public String toString() {
-    return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
-  }
-
-  // --------------------------------
-  @JsonProperty("symbol")
-  public String getSymbol() {
-    return this.name();
-  }
-
-  @JsonProperty("market")
-  public String getMarket() {
-    return this.market.toString();
-  }
-
-  @JsonIgnore
-  public MarketEnum getMarketAsObject() {
-    return this.market;
+  
+  // --------------------------------------
+  public Set<Ticker> getTickers() {
+    return tickers;
   }
 
 }

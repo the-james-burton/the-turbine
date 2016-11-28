@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
 
-import org.jimsey.projects.turbine.fuel.domain.Stocks;
+import org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +70,7 @@ public class TurbineControllerIT {
 
   @Test
   public void testListSymbols() throws Exception {
-    String url = String.format("%s/%s/%s", path, "stocks", Stocks.ABC.getMarket());
+    String url = String.format("%s/%s/%s", path, "stocks", TurbineTestConstants.FTSE100);
     logger.info("when {} is called...", url);
     ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("symbols: {}", response.getBody());

@@ -32,6 +32,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javaslang.collection.CharSeq;
 
 public class TickerTest {
@@ -52,12 +55,14 @@ public class TickerTest {
 
   public final Ticker DEF_L = Ticker.of("DEF.L");
 
+  private final ObjectMapper json = new ObjectMapper();
+
   @Test
   public void testMarketCompareTo() {
     // make sure the ordering is correct in our enum...
     assertThat(MarketEnum.ASX).isLessThan(MarketEnum.FTSE100);
   }
-  
+
   @Test
   public void testConstructor() {
     // check that the constructor correctly sets all properties...
@@ -82,7 +87,7 @@ public class TickerTest {
   public void testEquals() {
     // reflexive...
     assertThat(ABC_AX).isEqualTo(ABC_AX);
-    
+
     // symmetric...
     assertThat(ABC_AX).isEqualTo(new Ticker(ABC, AX));
     assertThat(new Ticker(ABC, AX)).isEqualTo(ABC_AX);
@@ -90,18 +95,18 @@ public class TickerTest {
     // consistent (same checks again)...
     assertThat(ABC_AX).isEqualTo(new Ticker(ABC, AX));
     assertThat(new Ticker(ABC, AX)).isEqualTo(ABC_AX);
-    
+
     // transitive...
     Ticker ABC_AX2 = new Ticker(ABC, AX);
     Ticker ABC_AX3 = new Ticker(ABC, AX);
-    
+
     assertThat(ABC_AX).isEqualTo(ABC_AX2);
     assertThat(ABC_AX2).isEqualTo(ABC_AX3);
     assertThat(ABC_AX).isEqualTo(ABC_AX3);
-    
+
     // check not equal to null...
     assertThat(ABC_AX).isNotEqualTo(null);
-    
+
     // check all properties are included in equals...
     assertThat(ABC_AX).isNotEqualTo(ABC_L);
     assertThat(ABC_AX).isNotEqualTo(DEF_AX);
@@ -110,7 +115,7 @@ public class TickerTest {
 
   @Test
   public void testCompareTo() {
-    
+
     // check that all fields participate in compareTo...
     assertThat(ABC_AX).isLessThan(ABC_L);
     assertThat(ABC_AX).isLessThan(DEF_AX);
@@ -120,6 +125,12 @@ public class TickerTest {
     assertThat(ABC_L).isGreaterThan(ABC_AX);
     assertThat(DEF_AX).isGreaterThan(ABC_AX);
     assertThat(DEF_L).isGreaterThan(ABC_AX);
-}
+  }
 
+  @Test
+  public void testJsonSerialise() throws JsonProcessingException {
+    String result = json.writeValueAsString(ABC_L);
+    logger.info(result);
+  }
+  
 }

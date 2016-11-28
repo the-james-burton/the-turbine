@@ -22,13 +22,17 @@
  */
 package org.jimsey.projects.turbine.condenser.camel.processors;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
+import org.jimsey.projects.turbine.condenser.service.TickerManager;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,6 +45,9 @@ public class TickProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
 
+  @Autowired @NotNull
+  private TickerManager tickerManager;
+
   @Override
   public void process(final Exchange exchange) throws Exception {
     Message message = exchange.getIn();
@@ -48,6 +55,8 @@ public class TickProcessor implements Processor {
     message.getHeaders().put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
         String.format(".%s", tick.getTicker()));
     logger.info("tick: {}", tick.toString());
+    tickerManager.addTick(tick.getTickerAsObject());
   }
+
 
 }

@@ -23,19 +23,21 @@
 package org.jimsey.projects.turbine.condenser.service;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
-import org.jimsey.projects.turbine.fuel.domain.Stocks;
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -49,6 +51,10 @@ public class TurbineService {
 
   private static ObjectMapper json = new ObjectMapper();
 
+   @Autowired
+   @NotNull
+   private TickerManager tickerManager;
+    
   // @Autowired
   // @NotNull
   // private IndicatorRepository indicatorRepository;
@@ -60,9 +66,9 @@ public class TurbineService {
     logger.info("found strategies : {}", listStrategies().toString());
   }
 
-  public List<Stocks> getStocks(String market) {
-    return Arrays.stream(Stocks.values())
-        .filter(stock -> stock.getMarket().equals(market))
+  public List<Ticker> getTickers(MarketEnum market) {
+    return tickerManager.getTickers().stream()
+        .filter(ticker -> ticker.getMarket().equals(market))
         .collect(Collectors.toList());
   }
 
@@ -89,7 +95,7 @@ public class TurbineService {
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("stocks")
-        List<Stocks> stockz = getStocks(market);
+        List<Ticker> stockz = getTickers(MarketEnum.valueOf(market));
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);

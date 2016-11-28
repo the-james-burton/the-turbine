@@ -25,11 +25,22 @@ package org.jimsey.projects.turbine.fuel.domain;
 import java.util.Comparator;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.CharSeq;
 import javaslang.control.Try;
 
+@JsonAutoDetect(
+    fieldVisibility = Visibility.NONE,
+    getterVisibility = Visibility.NONE,
+    isGetterVisibility = Visibility.NONE,
+    creatorVisibility = Visibility.NONE,
+    setterVisibility = Visibility.NONE)
 public class Ticker implements Comparable<Ticker>{
 
   private final CharSeq ticker;
@@ -110,14 +121,32 @@ public class Ticker implements Comparable<Ticker>{
   }
 
   // ----------------------------
+  @JsonProperty("ticker")
+  public String getTickerAsString() {
+    return ticker.toString();
+  }
+
+  @JsonProperty("symbol")
+  public String getSymbolAsString() {
+    return symbol.toString();
+  }
+
+  @JsonProperty("market")
+  public String getMarketAsString() {
+    return market.toString();
+  }
+
+  @JsonIgnore
   public CharSeq getTicker() {
     return ticker;
   }
 
+  @JsonIgnore
   public CharSeq getSymbol() {
     return symbol;
   }
 
+  @JsonIgnore
   public MarketEnum getMarket() {
     return market;
   }

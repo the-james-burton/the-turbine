@@ -22,20 +22,22 @@
  */
 package org.jimsey.projects.turbine.fuel.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javaslang.collection.CharSeq;
 import javaslang.collection.Stream;
 import javaslang.control.Option;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum MarketEnum {
 
   ASX("ASXname", "AX"),
   FTSE100("FTSE100name", "L");
-  
+
   private final CharSeq name;
 
   private final CharSeq extension;
-  
+
   private MarketEnum(CharSeq name, CharSeq extension) {
     this.name = name;
     this.extension = extension;
@@ -49,7 +51,7 @@ public enum MarketEnum {
   public static Option<MarketEnum> fromExtension(CharSeq extension) {
     return Stream.of(values()).find(m -> m.getExtension().eq(extension));
   }
-  
+
   public CharSeq getName() {
     return name;
   }
@@ -58,6 +60,4 @@ public enum MarketEnum {
     return extension;
   }
 
-  
-  
 }

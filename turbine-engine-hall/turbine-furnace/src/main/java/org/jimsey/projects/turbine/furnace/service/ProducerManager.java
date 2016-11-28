@@ -31,7 +31,6 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.apache.camel.CamelContext;
-import org.jimsey.projects.turbine.fuel.domain.Stocks;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.TickProducerFactory;
 import org.slf4j.Logger;
@@ -60,13 +59,21 @@ public class ProducerManager {
   private TickProducerFactory tickProducerFactory;
 
   /** */
-  private List<TickProducer> producers = new ArrayList<>();
+  private final List<TickProducer> producers = new ArrayList<>();
 
+  private final List<Ticker> tickers = new ArrayList<>();
+  
+  public ProducerManager() {
+    // TODO issue #5 replace this with an import of external stock market list
+    getTickers().add(Ticker.of("ABC.L"));
+    getTickers().add(Ticker.of("DEF.L"));
+  }
+  
   @PostConstruct
   public void init() {
-    for (Stocks stock : Stocks.values()) {
-      logger.info("creating TickProducer {}", stock);
-      TickProducer producer = tickProducerFactory.createTickProducer(Ticker.of(stock.getSymbol(), stock.getMarket()));
+    for (Ticker ticker : getTickers()) {
+      logger.info("creating TickProducer {}", ticker);
+      TickProducer producer = tickProducerFactory.createTickProducer(ticker);
       producers.add(producer);
     }
   }
@@ -86,6 +93,10 @@ public class ProducerManager {
         .map(TickProducer::toString)
         .reduce((p1, p2) -> format("%s,%s", p1, p2));
     return result.toString();
+  }
+
+  public List<Ticker> getTickers() {
+    return tickers;
   }
 
 }
