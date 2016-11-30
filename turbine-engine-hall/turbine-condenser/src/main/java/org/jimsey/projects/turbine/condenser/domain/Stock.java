@@ -75,6 +75,10 @@ public class Stock {
     this.ticker = ticker;
   }
 
+  public static Stock of(final Ticker ticker) {
+    return new Stock(ticker);
+  }
+  
   @PostConstruct
   public void init() {
     List<EnableTurbineIndicator> indicators = turbineService.getIndicators();
@@ -105,16 +109,16 @@ public class Stock {
       Constructor<?> indicatorConstructor = Class.forName(name).getConstructor(TimeSeries.class,
           ClosePriceIndicator.class);
       result = indicatorConstructor.newInstance(series, closePriceIndicator);
-      logger.info("instantiated [{}]: {}", ticker, result.getClass().getName());
+      logger.info("instantiated [{}]: {}", getTicker(), result.getClass().getName());
     } catch (Exception e) {
       logger.info("could not instantiate {} for [{}]: {}",
-          name, ticker, e.getMessage());
+          name, getTicker(), e.getMessage());
     }
     return result;
   }
 
   public void receiveTick(TickJson tick) {
-    logger.debug("ticker: {}, receiveTick: {}", ticker, tick.getTimestamp());
+    logger.debug("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
     series.addTick(tick);
   }
 
@@ -124,6 +128,10 @@ public class Stock {
 
   public List<TurbineStrategy> getStrategies() {
     return turbineStrategies;
+  }
+
+  public Ticker getTicker() {
+    return ticker;
   }
 
 }

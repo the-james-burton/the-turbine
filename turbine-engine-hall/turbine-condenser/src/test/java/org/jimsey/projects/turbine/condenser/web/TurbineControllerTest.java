@@ -31,9 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.service.Ping;
@@ -55,6 +53,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javaslang.collection.HashSet;
+import javaslang.collection.Set;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(TurbineController.class)
@@ -88,9 +89,7 @@ public class TurbineControllerTest {
   @Before
   public void setUp() throws Exception {
     logger.info(" *** ");
-    tickers = new HashSet<>();
-    tickers.add(Ticker.of("ABC.L"));
-    tickers.add(Ticker.of("DEF.L"));
+    tickers = HashSet.of(Ticker.of("ABC.L"), Ticker.of("DEF.L"));
   }
 
   @Test
@@ -109,7 +108,7 @@ public class TurbineControllerTest {
 
   @Test
   public void testGetSymbols() throws Exception {
-    String response = json.writeValueAsString(tickers);
+    String response = json.writeValueAsString(tickers.toJavaList());
     logger.info("mock response : {}", response);
     when(turbineSerivce.listStocks(anyString())).thenReturn(response);
 

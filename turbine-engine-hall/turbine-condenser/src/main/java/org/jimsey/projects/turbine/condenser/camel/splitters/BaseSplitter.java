@@ -30,7 +30,7 @@ import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultMessage;
 import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
-import org.jimsey.projects.turbine.condenser.component.MarketsManager;
+import org.jimsey.projects.turbine.condenser.service.TickerManager;
 import org.jimsey.projects.turbine.fuel.domain.Entity;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -41,9 +41,12 @@ public abstract class BaseSplitter {
 
   protected static final Logger logger = LoggerFactory.getLogger(BaseSplitter.class);
 
-  @Autowired
-  @NotNull
-  protected MarketsManager marketsManager;
+//  @Autowired
+//  @NotNull
+//  protected MarketsManager marketsManager;
+
+  @Autowired  @NotNull
+  protected TickerManager tickerManager;
 
   protected Message createMessage(final Entity entity, final Map<String, Object> headers) {
     if (entity == null) {

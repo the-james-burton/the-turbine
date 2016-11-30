@@ -27,10 +27,10 @@ import javax.validation.constraints.NotNull;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.jimsey.projects.turbine.condenser.component.MarketsManager;
-import org.jimsey.projects.turbine.condenser.domain.Market;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
+import org.jimsey.projects.turbine.condenser.service.TickerManager;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,17 +41,22 @@ public class StockProcessor implements Processor {
 
   private static final Logger logger = LoggerFactory.getLogger(StockProcessor.class);
 
-  @Autowired
-  @NotNull
-  private MarketsManager marketsManager;
+//  @Autowired
+//  @NotNull
+//  private MarketsManager marketsManager;
+
+  @Autowired  @NotNull
+  private TickerManager tickerManager;
 
   @Override
   public void process(Exchange exchange) throws Exception {
     Message message = exchange.getIn();
     TickJson tick = message.getMandatoryBody(TickJson.class);
+    Ticker ticker = tick.getTickerAsObject();
     logger.info(tick.toString());
-    Market market = marketsManager.findMarket(tick.getTickerAsObject().getMarket());
-    Stock stock = market.findTicker(tick.getTickerAsObject());
+    // Market market = marketsManager.findMarket(tick.getTickerAsObject().getMarket());
+    // Stock stock = market.findStock(tick.getTickerAsObject());
+    Stock stock = tickerManager.findStock(ticker);
     stock.receiveTick(tick);
     logger.info("stock: {}", stock.toString());
   }

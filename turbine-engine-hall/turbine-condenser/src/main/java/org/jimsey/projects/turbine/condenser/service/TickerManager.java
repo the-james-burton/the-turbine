@@ -22,24 +22,54 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
-import java.util.HashSet;
-import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
+import org.jimsey.projects.turbine.condenser.StockFactory;
+import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javaslang.Function0;
+import javaslang.collection.HashSet;
+import javaslang.collection.Set;
 
 @Service
 public class TickerManager {
 
-  private final Set<Ticker> tickers = new HashSet<>();
+  @Autowired
+  @NotNull
+  private StockFactory stockFactory;
+
+  private Set<Stock> stocks = HashSet.empty();
+    
+  Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
+  
+  Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
   public void addTick(Ticker ticker) {
-    tickers.add(ticker);
+    if (!stocks.map(s -> s.getTicker()).contains(ticker)) {
+      stocks = stocks.add(getStockFactory().createStock(ticker));
+      tickerCache = Function0.of(tickers).memoized();
+    };
+  }
+  
+  public Stock findStock(Ticker ticker) {
+    return stocks.filter(stock -> stock.getTicker().equals(ticker)).get();
   }
   
   // --------------------------------------
   public Set<Ticker> getTickers() {
-    return tickers;
+    return tickerCache.apply();
+  }
+
+  public StockFactory getStockFactory() {
+    return stockFactory;
+  }
+
+  public void setStockFactory(StockFactory stockFactory) {
+    this.stockFactory = stockFactory;
   }
 
 }

@@ -31,6 +31,7 @@ import org.apache.camel.Headers;
 import org.apache.camel.Message;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,7 +39,9 @@ public class IndicatorSplitter extends BaseSplitter {
 
   public List<Message> split(@Headers Map<String, Object> headers, @Body TickJson tick) {
     logger.debug(" ---- in indicator splitter");
-    Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findTicker(tick.getTickerAsObject());
+    // Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findStock(tick.getTickerAsObject());
+    Ticker ticker = tick.getTickerAsObject();
+    Stock stock = tickerManager.findStock(ticker);
     return stock.getIndicators().stream()
         .map(indicator -> createMessage(indicator.run(tick), headers))
         .collect(Collectors.toList());

@@ -67,9 +67,9 @@ public class TurbineService {
   }
 
   public List<Ticker> getTickers(MarketEnum market) {
-    return tickerManager.getTickers().stream()
+    return tickerManager.getTickers()
         .filter(ticker -> ticker.getMarket().equals(market))
-        .collect(Collectors.toList());
+        .toJavaList();
   }
 
   public List<EnableTurbineStrategy> getStrategies() {
