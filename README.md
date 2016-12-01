@@ -113,7 +113,7 @@ It communicates with two principal back end components...
 
 * **multi-module separation** There is reasonable separation of functionality into different modules. This will continue and be strengthened as I continue developing.
 * **camel for all integration** Camel contols all flow and integration with external components.
-* **unit tests** Not complete by any means, but JUnit, Mockito and Hamcrest are being used for effective unit testing.
+* **unit tests** Not complete by any means, but JUnit, Mockito, Hamcrest and AssertJ are being used for effective unit testing.
 * **api docs** Swagger is in place, delivered by the excellent springfox project. This gives me advanced APIs docs, although I don't see the API being very large for this project as 1) it is primarily a business application and 2) clients get the data from elasticsearch.
 
 ## What is going to be done soon?
