@@ -108,6 +108,7 @@ It communicates with two principal back end components...
 
 * **replace spring-data-elasticsearch** I was using spring data elasticsearch. However, the rate of change of elasticsearch seems very high, so I took control back and just used the ES Java client directly. Robust testing was put in place to provide solid foundations for future dev.
 * **spring-security** the entire rest API is now secured with spring-security. This gives me HTTP basic authentication, which I have wrapped in HTTPS with a self-signed certificate.
+* **javaslang** I have started using this library in earnest in the new *turbine-inlet* module and it has been very successful indeed. I plan to extend use of it throught this project. I have learned a lot from using it.
 
 ## What is already done?
 
@@ -118,6 +119,7 @@ It communicates with two principal back end components...
 
 ## What is going to be done soon?
 
+* **turbine-inlet** A new module that will simulate the external finance APIs such as those provided by Google and Yahoo. It is initially another Spring Boot project using javaslang, but may be a possible candidate for a Haskell/Yesod implementation (to give me an excuse to learn those!).
 * **authentication, authorisation and registration** Spring-security is now in place so more security services can be built on top.
 * **evaluate [cyclops-react](https://github.com/aol/cyclops-react) as potential Apache Camel replacement for internal routes** This is a very interesting library indeed and may provide a next-generation way to write internal async processing streams.
 * **evaluate [javaslang](https://github.com/javaslang/javaslang) for better functional programming**. This also appears to integrate into cyclops-react. It should help me get better at functional programming in general.
