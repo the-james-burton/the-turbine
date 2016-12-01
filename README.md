@@ -12,12 +12,15 @@ This is a server-side only app and thus has no UI. However, it is easily possibl
 
 ![kibana](https://github.com/the-james-burton/the-turbine/blob/master/docs/kibana.png "kibana")
 
-It is broken up into three main modules...
+It is broken up into modules...
 
-* **furnace** Responsible for providing real-time stock prices. At the moment, this just generates random data.
-* **condenser** Analyses the stock prices provided by the *furnace* and stores the results of that analysis into elasticsearch.
-* **fuel** Shared domain objects and configuration. Library only - not executable
-* **engine-hall** Just the parent pom and any other miscellany.
+* **engine-hall** the parent pom for the spring boot services.
+  * **furnace** Responsible for providing real-time stock prices. At the moment, this just generates random data.
+  * **condenser** Analyses the stock prices provided by the *furnace* and stores the results of that analysis into lasticsearch.
+  * **inlet** Mocks external finance APIs from Google and Yahoo to allow easier offline development.
+* **annex** the parent pom for non-spring boot libraries.
+  * **fuel** Shared domain objects and configuration. Library only - not executable.
+  * **inspector** Testing extensions such as custom Hamcrest matchers.
 
 ## How does it work?
 
