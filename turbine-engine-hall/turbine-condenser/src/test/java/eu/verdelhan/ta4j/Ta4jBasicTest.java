@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
-import org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;

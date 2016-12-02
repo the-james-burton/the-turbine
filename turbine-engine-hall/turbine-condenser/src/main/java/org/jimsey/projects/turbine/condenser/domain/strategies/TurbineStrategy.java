@@ -22,8 +22,6 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.strategies;
 
-import java.util.Optional;
-
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 

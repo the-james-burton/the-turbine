@@ -22,8 +22,8 @@
  */
 package org.jimsey.projects.turbine.inlet.web;
 
-import static org.jimsey.projects.turbine.inspector.matchers.TurbineMatchers.*;
 import static org.hamcrest.Matchers.*;
+import static org.jimsey.projects.turbine.inspector.matchers.TurbineMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

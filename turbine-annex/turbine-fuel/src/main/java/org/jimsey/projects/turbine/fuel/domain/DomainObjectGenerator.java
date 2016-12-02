@@ -24,8 +24,6 @@ package org.jimsey.projects.turbine.fuel.domain;
 
 import java.time.OffsetDateTime;
 
-import javaslang.collection.CharSeq;
-
 public interface DomainObjectGenerator {
   
   Ticker getTicker();

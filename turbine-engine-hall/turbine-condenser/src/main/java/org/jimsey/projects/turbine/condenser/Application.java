@@ -27,19 +27,14 @@ import java.util.Arrays;
 
 import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.condenser.service.Ping;
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -71,7 +66,7 @@ public class Application {
     long message = ping.ping();
     logger.info(String.format("ping=%s", message));
   }
-
+  
   @SuppressWarnings("unused")
   private static void logBeanNames(final ConfigurableApplicationContext spring) {
     logger.info("Let's inspect the beans provided by Spring Boot:");

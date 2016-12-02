@@ -23,7 +23,6 @@
 package org.jimsey.projects.turbine.inlet.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.hamcrest.Matchers.*;
 
 import java.lang.invoke.MethodHandles;
 

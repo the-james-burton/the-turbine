@@ -26,9 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
-
-import javaslang.collection.CharSeq;
 
 /**
  * NOTE: javadoc quirk: replace &amp; with just an ampersand to make the link work...

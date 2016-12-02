@@ -22,8 +22,8 @@
  */
 package org.jimsey.projects.turbine.fuel.domain;
 
-import static java.util.Comparator.*;
 import static java.lang.String.*;
+import static java.util.Comparator.*;
 
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;

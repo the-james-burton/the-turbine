@@ -22,11 +22,9 @@
  */
 package org.jimsey.projects.turbine.inspector.junit;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
