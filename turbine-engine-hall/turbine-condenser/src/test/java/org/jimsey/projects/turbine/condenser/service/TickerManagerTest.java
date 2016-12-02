@@ -66,7 +66,9 @@ public class TickerManagerTest {
     assertThat(tickerManager.getTickers()).isEmpty();
 
     logger.info("when adding ticker ABC.L");
-    tickerManager.addTick(ABC_L);
+    Stock stockABC_L = tickerManager.findOrCreateStock(ABC_L);
+    logger.info("then a stock with ticker ABC.L should be returned...");
+    assertThat(stockABC_L.getTicker()).isEqualTo(ABC_L);
     logger.info("then getTickers() should contain ticker ABC.L...");
     assertThat(tickerManager.getTickers()).contains(ABC_L);
     logger.info("and getTickers() should be of size 1...");
@@ -75,7 +77,7 @@ public class TickerManagerTest {
     assertThat(tickerManager.getTickers()).isEqualTo(HashSet.of(ABC_L));
 
     logger.info("when adding ticker ABC.L again");    
-    tickerManager.addTick(ABC_L);
+    tickerManager.findOrCreateStock(ABC_L);
     logger.info("then getTickers() should still contain ticker ABC.L...");
     assertThat(tickerManager.getTickers()).contains(ABC_L);
     logger.info("and getTickers() should still be of size 1...");
@@ -84,7 +86,9 @@ public class TickerManagerTest {
     assertThat(tickerManager.getTickers()).isEqualTo(HashSet.of(ABC_L));
 
     logger.info("when adding ticker DEF.L");
-    tickerManager.addTick(DEF_L);
+    Stock stockDEF_L = tickerManager.findOrCreateStock(DEF_L);
+    logger.info("then a stock with ticker DEF.L should be returned...");
+    assertThat(stockDEF_L.getTicker()).isEqualTo(DEF_L);
     logger.info("then getTickers() should contain ticker DEF.L...");
     assertThat(tickerManager.getTickers()).contains(DEF_L);
     logger.info("and getTickers() should now be of size 2...");

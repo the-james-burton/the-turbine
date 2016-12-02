@@ -41,7 +41,7 @@ public class IndicatorSplitter extends BaseSplitter {
     logger.debug(" ---- in indicator splitter");
     // Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findStock(tick.getTickerAsObject());
     Ticker ticker = tick.getTickerAsObject();
-    Stock stock = tickerManager.findStock(ticker);
+    Stock stock = tickerManager.findOrCreateStock(ticker);
     return stock.getIndicators().stream()
         .map(indicator -> createMessage(indicator.run(tick), headers))
         .collect(Collectors.toList());

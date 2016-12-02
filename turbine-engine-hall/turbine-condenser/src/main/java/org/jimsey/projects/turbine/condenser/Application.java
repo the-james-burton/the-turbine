@@ -72,21 +72,6 @@ public class Application {
     logger.info(String.format("ping=%s", message));
   }
 
-  @Bean
-  public StockFactory stockFactory() {
-    return new StockFactory() {
-      public Stock createStock(Ticker ticker) {
-        return runtimeStock(ticker);
-      }
-    };
-  }
-
-  @Bean
-  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  Stock runtimeStock(Ticker ticker) {
-    return new Stock(ticker);
-  }
-
   @SuppressWarnings("unused")
   private static void logBeanNames(final ConfigurableApplicationContext spring) {
     logger.info("Let's inspect the beans provided by Spring Boot:");

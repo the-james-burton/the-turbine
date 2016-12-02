@@ -20,56 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.service;
-
-
-import javax.validation.constraints.NotNull;
+package org.jimsey.projects.turbine.condenser.domain;
 
 import org.jimsey.projects.turbine.condenser.StockFactory;
-import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import javaslang.Function0;
-import javaslang.collection.HashSet;
-import javaslang.collection.Set;
-
 @Service
-public class TickerManager {
+public class StockFactoryImpl implements StockFactory {
 
-  @Autowired
-  @NotNull
-  private StockFactory stockFactory;
-
-  private Set<Stock> stocks = HashSet.empty();
-    
-  Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
-  
-  Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
-
-  public Stock findOrCreateStock(Ticker ticker) {
-    return stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(() -> addStock(ticker));
-  }
-  
-  private Stock addStock(Ticker ticker) {
-    Stock newStock = getStockFactory().createStock(ticker);
-    stocks = stocks.add(newStock);
-    tickerCache = Function0.of(tickers).memoized();
-    return newStock;
-  }
-  
-  // --------------------------------------
-  public Set<Ticker> getTickers() {
-    return tickerCache.apply();
+  public Stock createStock(Ticker ticker) {
+    return runtimeStock(ticker);
   }
 
-  public StockFactory getStockFactory() {
-    return stockFactory;
-  }
-
-  public void setStockFactory(StockFactory stockFactory) {
-    this.stockFactory = stockFactory;
+  @Bean
+  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  Stock runtimeStock(Ticker ticker) {
+    return new Stock(ticker);
   }
 
 }

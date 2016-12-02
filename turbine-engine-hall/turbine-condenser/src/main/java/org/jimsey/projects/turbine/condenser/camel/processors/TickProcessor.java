@@ -55,7 +55,7 @@ public class TickProcessor implements Processor {
     message.getHeaders().put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
         String.format(".%s", tick.getTicker()));
     logger.info("tick: {}", tick.toString());
-    tickerManager.addTick(tick.getTickerAsObject());
+    tickerManager.findOrCreateStock(tick.getTickerAsObject());
   }
 
 

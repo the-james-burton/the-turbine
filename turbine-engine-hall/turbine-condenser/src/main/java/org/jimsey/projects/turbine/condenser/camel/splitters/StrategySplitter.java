@@ -41,7 +41,7 @@ public class StrategySplitter extends BaseSplitter {
     logger.debug(" ---- in strategy splitter");
     // Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findStock(tick.getTickerAsObject());
     Ticker ticker = tick.getTickerAsObject();
-    Stock stock = tickerManager.findStock(ticker);
+    Stock stock = tickerManager.findOrCreateStock(ticker);
     return stock.getStrategies().stream()
         .map(strategy -> createMessage(strategy.run(tick), headers))
         .collect(Collectors.toList());

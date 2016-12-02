@@ -56,7 +56,7 @@ public class StockProcessor implements Processor {
     logger.info(tick.toString());
     // Market market = marketsManager.findMarket(tick.getTickerAsObject().getMarket());
     // Stock stock = market.findStock(tick.getTickerAsObject());
-    Stock stock = tickerManager.findStock(ticker);
+    Stock stock = tickerManager.findOrCreateStock(ticker);
     stock.receiveTick(tick);
     logger.info("stock: {}", stock.toString());
   }
