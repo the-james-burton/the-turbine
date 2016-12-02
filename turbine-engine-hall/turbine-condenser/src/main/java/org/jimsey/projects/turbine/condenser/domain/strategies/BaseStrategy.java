@@ -65,6 +65,7 @@ public abstract class BaseStrategy implements TurbineStrategy {
   @Override
   public StrategyJson run(TickJson tick) {
     int index = series.getEnd();
+    // TODO check for empty series...
     double close = series.getLastTick().getClosePrice().toDouble();
     boolean shouldEnter = strategy.shouldEnter(index, tradingRecord);
     boolean shouldExit = strategy.shouldExit(index, tradingRecord);

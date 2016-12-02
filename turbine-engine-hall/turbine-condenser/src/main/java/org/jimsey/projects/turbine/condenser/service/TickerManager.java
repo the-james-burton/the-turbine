@@ -23,11 +23,19 @@
 package org.jimsey.projects.turbine.condenser.service;
 
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.condenser.StockFactory;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,38 +46,48 @@ import javaslang.collection.Set;
 @Service
 public class TickerManager {
 
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+//  @Autowired
+//  @NotNull
+//  private StockFactory stockFactory;
+  
   @Autowired
   @NotNull
-  private StockFactory stockFactory;
+  private TurbineService turbineService;
+
+  private final List<EnableTurbineIndicator> turbineIndicators = new ArrayList<>();
+
+  private final List<EnableTurbineStrategy> turbineStrategies = new ArrayList<>();
 
   private Set<Stock> stocks = HashSet.empty();
     
-  Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
+  private Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
   
-  Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
+  private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
-  public Stock findOrCreateStock(Ticker ticker) {
+  @PostConstruct
+  public void init() {
+    turbineIndicators.addAll(turbineService.getIndicators());
+    turbineStrategies.addAll(turbineService.getStrategies());
+  }
+
+  // TODO why is this being called multiple times?
+  public synchronized Stock findOrCreateStock(Ticker ticker) {
     return stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(() -> addStock(ticker));
   }
   
   private Stock addStock(Ticker ticker) {
-    Stock newStock = getStockFactory().createStock(ticker);
-    stocks = stocks.add(newStock);
+    logger.info("creating Stock object from Ticker:{}", ticker);
+    Stock stock = Stock.of(ticker, turbineIndicators, turbineStrategies);
+    stocks = stocks.add(stock);
     tickerCache = Function0.of(tickers).memoized();
-    return newStock;
+    return stock;
   }
   
   // --------------------------------------
   public Set<Ticker> getTickers() {
     return tickerCache.apply();
-  }
-
-  public StockFactory getStockFactory() {
-    return stockFactory;
-  }
-
-  public void setStockFactory(StockFactory stockFactory) {
-    this.stockFactory = stockFactory;
   }
 
 }

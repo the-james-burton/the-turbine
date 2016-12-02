@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
 
-import org.jimsey.projects.turbine.condenser.StockFactory;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
@@ -47,11 +46,11 @@ public class TickerManagerTest {
   private final Ticker ABC_L = Ticker.of("ABC.L");
   private final Ticker DEF_L = Ticker.of("DEF.L");
 
-  private StockFactory stockFactory = new StockFactory() {
-      public Stock createStock(Ticker ticker) {
-        return Stock.of(ticker);
-    };
-  };
+//  private StockFactory stockFactory = new StockFactory() {
+//      public Stock createStock(Ticker ticker) {
+//        return Stock.of(ticker, new ArrayList<>(), new ArrayList<>());
+//    };
+//  };
 
   @Before
   public void setup() {
@@ -61,7 +60,7 @@ public class TickerManagerTest {
   public void testAddTick() {
     logger.info("given an empty TickerManager");
     tickerManager = new TickerManager();
-    tickerManager.setStockFactory(stockFactory);
+//    tickerManager.setStockFactory(stockFactory);
     logger.info("then it should be emtpy...");
     assertThat(tickerManager.getTickers()).isEmpty();
 
