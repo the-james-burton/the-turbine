@@ -57,8 +57,8 @@ public class YahooFinanceRealtime {
   public static YahooFinanceRealtime of(TickerMetadata metadata, TickJson tick) {
     return new YahooFinanceRealtime(metadata, tick);
   }
-
   
+
   /**
    * @param metadata the metadata to use
    * @param date the date
@@ -75,6 +75,11 @@ public class YahooFinanceRealtime {
     this.tick = new TickJson(date, open, high, low, close, volume,
         metadata.getTicker(), date.toString());
   }
+
+  public static YahooFinanceRealtime of(TickerMetadata metadata, OffsetDateTime date, String line) {
+    return new YahooFinanceRealtime(metadata, date, line);
+  }
+  
 
   @Override
   public String toString() {

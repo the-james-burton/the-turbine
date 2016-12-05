@@ -26,10 +26,12 @@ import static java.lang.String.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
 
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inlet.domain.TickerMetadata;
 import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
+import org.jimsey.projects.turbine.inlet.domain.YahooFinanceRealtime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +44,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javaslang.collection.List;
+import javaslang.collection.Stream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -79,15 +84,27 @@ public class FinanceControllerIT {
 
   @Test
   public void testYahooFinanceRealtimeOne() throws Exception {
-    doRestQuery(TEST1_L.toString());
+    String body = doRestQuery(TEST1_L.toString());
+    logger.info("and the response body should be parseable as a YahooFinanceRealtime object");
+    List<YahooFinanceRealtime> yfrs = parseBody(body);
+    assertThat(yfrs).hasSize(1);
   }
 
   @Test
   public void testYahooFinanceRealtimeTwo() throws Exception {
-    doRestQuery(format("%s+%s", TEST1_L, TEST2_L));
+    String body = doRestQuery(format("%s+%s", TEST1_L, TEST2_L));
+    logger.info("and the response body should be parseable as a YahooFinanceRealtime object");
+    List<YahooFinanceRealtime> yfrs = parseBody(body);
+    assertThat(yfrs).hasSize(2);
   }
 
-  private void doRestQuery(String queryString) {
+  private List<YahooFinanceRealtime> parseBody(String body) {
+    return Stream.of(body.split("\\n"))
+        .map(line -> YahooFinanceRealtime.of(TickerMetadata.of(TEST1_L, "TEST1Name"), OffsetDateTime.now(), line))
+        .toList();
+  }
+  
+  private String doRestQuery(String queryString) {
     String uri = format("/finance/yahoo/realtime/%s", queryString);
     logger.info(format("when %s is called", uri));
     ResponseEntity<String> response = rest.getForEntity(uri, String.class);
@@ -95,5 +112,7 @@ public class FinanceControllerIT {
     logger.info("then the response body should not be null [body:{}]", response.getBody());
     assertThat(body).isNotNull();
     assertThat(body).isNotEmpty();
+    return body;
   }
+  
 }
