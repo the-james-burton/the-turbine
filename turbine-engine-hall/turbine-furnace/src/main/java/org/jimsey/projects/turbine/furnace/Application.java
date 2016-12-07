@@ -54,14 +54,14 @@ public class Application {
     ConfigurableApplicationContext spring = SpringApplication.run(Application.class, args);
   }
 
-  @Bean
-  public TickProducerFactory tickProcuderFactory() {
-    return new TickProducerFactory() {
-      public TickProducer createTickProducer(Ticker ticker) {
-        return runtimeTickProducer(ticker);
-      }
-    };
-  }
+//  @Bean
+//  public TickProducerFactory tickProducerFactory() {
+//    return new TickProducerFactory() {
+//      public TickProducer createTickProducer(Ticker ticker) {
+//        return runtimeTickProducer(ticker);
+//      }
+//    };
+//  }
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

@@ -22,85 +22,68 @@
  */
 package org.jimsey.projects.turbine.furnace.service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.Objects;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
-import org.jimsey.projects.turbine.furnace.camel.routes.TickPublishingRoute;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.scheduling.annotation.Scheduled;
 
-import com.sun.istack.NotNull;
-
-@ConfigurationProperties(prefix = "producer")
-public class TickProducer {
-
-  private static final Logger logger = LoggerFactory.getLogger(TickProducer.class);
-
-  @Autowired
-  @NotNull
-  private CamelContext camel;
+public class TickProducer implements Comparable<TickProducer> {
 
   private final Ticker ticker;
 
   private final DomainObjectGenerator rdog;
-
-  private ProducerTemplate producer;
 
   public TickProducer(Ticker ticker) {
     this.ticker = ticker;
     this.rdog = new RandomDomainObjectGenerator(ticker);
   }
 
-  @PostConstruct
-  public void init() {
-    logger.info(String.format("camel=%s", camel.getName()));
-    producer = camel.createProducerTemplate();
-    logger.info("producer initialised");
+  public static TickProducer of(Ticker ticker) {
+    return new TickProducer(ticker);
   }
-
-  public TickJson createBody() {
+  
+  // TODO issue #20 use turbine-inlet
+  public TickJson createTick() {
     TickJson tick = rdog.newTick();
     return tick;
-  }
-
-  @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
-  public void produce() {
-
-    Map<String, Object> headers = new HashMap<String, Object>();
-
-    // byte[] body = DomainConverter.toBytes(quote, null);
-    // byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
-    TickJson tick = createBody();
-    headers.put(TurbineFurnaceConstants.HEADER_FOR_OBJECT_TYPE, tick.getClass().getName());
-
-    logger.info("producing: [body: {}, headers: {}]", tick.toString(), new JSONObject(headers));
-
-    String text = camel.getTypeConverter().convertTo(String.class, tick);
-    producer.sendBodyAndHeaders(TickPublishingRoute.IN, text, headers);
   }
 
   public Ticker getTicker() {
     return ticker;
   }
 
+  // ----------------------------
+  private final Comparator<TickProducer> comparator = Comparator
+      .comparing(tickProducer -> tickProducer.getTicker().toString());
+
+  @Override
+  public boolean equals(Object key) {
+    if (key == null || !(key instanceof TickProducer)) {
+      return false;
+    }
+    TickProducer that = (TickProducer) key;
+    return Objects.equals(this.ticker, that.ticker);
+  }
+
+  @Override
+  public int compareTo(TickProducer that) {
+    return comparator.compare(this, that);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(ticker);
+  }
+
   @Override
   public String toString() {
-    return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+    // return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+    return ticker.toString();
   }
+
+  // ----------------------------
 
 }
