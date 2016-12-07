@@ -22,15 +22,20 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
 public abstract class BaseIndicator implements TurbineIndicator {
+
+  protected static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected final int timeFrame;
 
@@ -54,6 +59,10 @@ public abstract class BaseIndicator implements TurbineIndicator {
   protected abstract Map<String, Double> computeValues();
 
   public IndicatorJson run(TickJson tick) {
+    if (series == null || series.getTickCount() < 1) {
+      logger.info("not computing indicators for empty series : {}", tick.getTicker());
+      return null;
+    }
     return new IndicatorJson(
         tick.getTimestampAsObject(),
         tick.getClose(),

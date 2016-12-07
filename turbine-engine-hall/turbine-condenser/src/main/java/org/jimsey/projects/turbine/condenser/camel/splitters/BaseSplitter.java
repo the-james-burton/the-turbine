@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.camel.splitters;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 import javax.validation.constraints.NotNull;
@@ -39,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseSplitter {
 
-  protected static final Logger logger = LoggerFactory.getLogger(BaseSplitter.class);
+  protected static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 //  @Autowired
 //  @NotNull

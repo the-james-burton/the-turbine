@@ -22,9 +22,13 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.strategies;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.Strategy;
@@ -33,6 +37,8 @@ import eu.verdelhan.ta4j.TradingRecord;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
 public abstract class BaseStrategy implements TurbineStrategy {
+
+  protected static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final String name;
 
@@ -64,6 +70,11 @@ public abstract class BaseStrategy implements TurbineStrategy {
 
   @Override
   public StrategyJson run(TickJson tick) {
+    if (series == null || series.getTickCount() < 1) {
+      logger.info("not computing indicators for empty series : {}", tick.getTicker());
+      return null;
+    }
+
     int index = series.getEnd();
     // TODO check for empty series...
     double close = series.getLastTick().getClosePrice().toDouble();
