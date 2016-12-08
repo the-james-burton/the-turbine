@@ -70,11 +70,15 @@ public abstract class BaseStrategy implements TurbineStrategy {
 
   @Override
   public StrategyJson run(TickJson tick) {
-    if (series == null || series.getTickCount() < 1) {
-      logger.info("not computing indicators for empty series : {}", tick.getTicker());
-      return null;
-    }
-
+    // wait for the series to be populated one the first tick if need be...
+    // this is a pragmatic rather than elegant solution
+    // something with a future or a latch might be better
+    // or even letting the first 
+//    while (series == null || series.getTickCount() < 1) {
+//      logger.info("waiting for empty series : {}", tick.getTicker());
+//      Try.run(() -> TimeUnit.MILLISECONDS.sleep(100));
+//    }
+    
     int index = series.getEnd();
     // TODO check for empty series...
     double close = series.getLastTick().getClosePrice().toDouble();
@@ -102,14 +106,14 @@ public abstract class BaseStrategy implements TurbineStrategy {
     // the problem then is how to produce a decent visualisation in the UI...
     StrategyJson result = null;
     // if (action != TurbineCondenserConstants.ACTION_NONE) {
-      result = new StrategyJson(
-          tick.getTimestampAsObject(),
-          tick.getTickerAsObject(),
-          tick.getClose(),
-          name, action, thisTradeSize, position, cash, value,
-          tick.getTimestamp());
+    result = new StrategyJson(
+        tick.getTimestampAsObject(),
+        tick.getTickerAsObject(),
+        tick.getClose(),
+        name, action, thisTradeSize, position, cash, value,
+        tick.getTimestamp());
     // }
-    
+
     // sadly, we can't use Optional here because of this compiler error...
     // "The method createMessage(Optional<Entity>, Map<String,Object>) in the type BaseSplitter
     // is not applicable for the arguments (Optional<StrategyJson>, Map<String,Object>)

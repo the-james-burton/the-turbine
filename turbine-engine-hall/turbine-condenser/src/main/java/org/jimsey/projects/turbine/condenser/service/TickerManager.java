@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javaslang.Function0;
+import javaslang.Function2;
 import javaslang.collection.HashSet;
 import javaslang.collection.Set;
 
@@ -72,13 +73,22 @@ public class TickerManager {
     turbineStrategies.addAll(turbineService.getStrategies());
   }
 
-  // TODO why is this being called multiple times?
-  public synchronized Stock findOrCreateStock(Ticker ticker) {
-    return stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(() -> addStock(ticker));
+  Function2<Ticker, Function0<Stock>, Stock> getStockForTickerOrElse = (ticker, supplier) -> stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(supplier);
+  
+  // this is called multiple times because we are effectively multicasting inside rabbitMQ 
+  // so let's cope with that in an interesting way...
+  public Stock findOrCreateStock(Ticker ticker) {
+    logger.info("findOrCreateStock:{}", ticker);
+    return getStockForTickerOrElse.apply(ticker, () -> createStock(ticker));
+  }
+  
+  public synchronized Stock createStock(Ticker ticker) {
+    logger.info("createStock:{}", ticker);
+    return getStockForTickerOrElse.apply(ticker, () -> addStock(ticker));
   }
   
   private Stock addStock(Ticker ticker) {
-    logger.info("creating Stock object from Ticker:{}", ticker);
+    logger.info("addStock:{}", ticker);
     Stock stock = Stock.of(ticker, turbineIndicators, turbineStrategies);
     stocks = stocks.add(stock);
     tickerCache = Function0.of(tickers).memoized();

@@ -34,6 +34,8 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.springframework.stereotype.Component;
 
+import javaslang.control.Try;
+
 @Component
 public class StrategySplitter extends BaseSplitter {
 
@@ -42,6 +44,7 @@ public class StrategySplitter extends BaseSplitter {
     // Stock stock = marketsManager.findMarket(tick.getTickerAsObject().getMarket()).findStock(tick.getTickerAsObject());
     Ticker ticker = tick.getTickerAsObject();
     Stock stock = tickerManager.findOrCreateStock(ticker);
+    Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
     return stock.getStrategies().stream()
         .map(strategy -> createMessage(strategy.run(tick), headers))
         .collect(Collectors.toList());

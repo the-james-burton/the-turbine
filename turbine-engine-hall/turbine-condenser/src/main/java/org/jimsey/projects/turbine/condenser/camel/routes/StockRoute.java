@@ -42,6 +42,7 @@ public class StockRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
     from(getInput("stocks")).id("stocks")
+        .log(" ** tick for stocks")
         .convertBodyTo(String.class)
         // .to("slog:json")
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))

@@ -51,6 +51,7 @@ public class TickConsumerRoute extends BaseRoute {
   public void configure() throws Exception {
     from(getInput("ticks")).id("ticks")
         // .to("slog:json")
+        .log(" * tick")
         .process(tickProcessor)
         .convertBodyTo(String.class)
         .to(String.format("log:%s?showAll=true", this.getClass().getName()))

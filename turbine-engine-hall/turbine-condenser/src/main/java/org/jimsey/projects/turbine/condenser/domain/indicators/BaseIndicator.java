@@ -59,10 +59,16 @@ public abstract class BaseIndicator implements TurbineIndicator {
   protected abstract Map<String, Double> computeValues();
 
   public IndicatorJson run(TickJson tick) {
-    if (series == null || series.getTickCount() < 1) {
-      logger.info("not computing indicators for empty series : {}", tick.getTicker());
-      return null;
-    }
+    
+    // wait for the series to be populated one the first tick if need be...
+    // this is a pragmatic rather than elegant solution
+    // something with a future or a latch might be better
+    // or even letting the first 
+//    while (series == null || series.getTickCount() < 1) {
+//      logger.info("waiting for empty series : {}", tick.getTicker());
+//      Try.run(() -> TimeUnit.MILLISECONDS.sleep(100));
+//    }
+    
     return new IndicatorJson(
         tick.getTimestampAsObject(),
         tick.getClose(),

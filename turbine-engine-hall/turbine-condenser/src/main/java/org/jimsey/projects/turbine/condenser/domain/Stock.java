@@ -24,8 +24,12 @@ package org.jimsey.projects.turbine.condenser.domain;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 import javax.validation.constraints.NotNull;
 
@@ -59,7 +63,7 @@ public class Stock {
   // @Autowired
   // @NotNull
   // private TurbineService turbineService;
-
+  
   private final TimeSeries series = new TimeSeries(new ArrayList<Tick>());
 
   private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
@@ -69,6 +73,9 @@ public class Stock {
   private final List<TurbineStrategy> strategies = new ArrayList<>();
 
   private final Ticker ticker;
+
+  // TODO periodically clean this up...
+  private Map<OffsetDateTime, CountDownLatch> ticksReceived = new ConcurrentHashMap<>();
 
   public Stock(
       final Ticker ticker,
@@ -120,6 +127,11 @@ public class Stock {
   public void receiveTick(TickJson tick) {
     logger.debug("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
     series.addTick(tick);
+    addOrGetLatch(tick.getTimestampAsObject()).countDown();
+  }
+
+  private CountDownLatch addOrGetLatch(OffsetDateTime timestamp) {
+    return ticksReceived.computeIfAbsent(timestamp, (key) -> new CountDownLatch(1));
   }
 
   public List<TurbineIndicator> getIndicators() {
@@ -132,6 +144,10 @@ public class Stock {
 
   public Ticker getTicker() {
     return ticker;
+  }
+  
+  public CountDownLatch awaitTick(OffsetDateTime timestamp) {
+    return addOrGetLatch(timestamp);
   }
 
 }
