@@ -54,6 +54,7 @@ public class TurbineControllerIT {
 
   @Before
   public void setUp() throws Exception {
+    logger.debug(" ===========> debug log");
     logger.info("given a full running system, authenticated");
     rest = rest.withBasicAuth("user", "password");
   }

@@ -48,10 +48,6 @@ import javaslang.collection.Set;
 public class TickerManager {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-//  @Autowired
-//  @NotNull
-//  private StockFactory stockFactory;
   
   @Autowired
   @NotNull
@@ -73,22 +69,20 @@ public class TickerManager {
     turbineStrategies.addAll(turbineService.getStrategies());
   }
 
-  Function2<Ticker, Function0<Stock>, Stock> getStockForTickerOrElse = (ticker, supplier) -> stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(supplier);
+  Function2<Ticker, Function0<Stock>, Stock> findStockForTickerOrElse = (ticker, supplier) -> stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(supplier);
   
   // this is called multiple times because we are effectively multicasting inside rabbitMQ 
   // so let's cope with that in an interesting way...
   public Stock findOrCreateStock(Ticker ticker) {
-    logger.info("findOrCreateStock:{}", ticker);
-    return getStockForTickerOrElse.apply(ticker, () -> createStock(ticker));
+    return findStockForTickerOrElse.apply(ticker, () -> createStockIfFirst(ticker));
   }
   
-  public synchronized Stock createStock(Ticker ticker) {
-    logger.info("createStock:{}", ticker);
-    return getStockForTickerOrElse.apply(ticker, () -> addStock(ticker));
+  private synchronized Stock createStockIfFirst(Ticker ticker) {
+    return findStockForTickerOrElse.apply(ticker, () -> createStock(ticker));
   }
   
-  private Stock addStock(Ticker ticker) {
-    logger.info("addStock:{}", ticker);
+  private Stock createStock(Ticker ticker) {
+    logger.info("creating new Stock object for ticker:{}", ticker);
     Stock stock = Stock.of(ticker, turbineIndicators, turbineStrategies);
     stocks = stocks.add(stock);
     tickerCache = Function0.of(tickers).memoized();

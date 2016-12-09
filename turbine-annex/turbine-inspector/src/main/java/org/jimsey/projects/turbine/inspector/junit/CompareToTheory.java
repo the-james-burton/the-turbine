@@ -26,10 +26,14 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
+import java.lang.invoke.MethodHandles;
+
 import org.junit.Assert;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ORIGINAL VERSION : Copyright 2008-2013 smartics, Kronseder & Reiner GmbH
@@ -44,6 +48,8 @@ import org.junit.runner.RunWith;
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 @RunWith(Theories.class)
 public abstract class CompareToTheory {
+
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static void assumeThatValueIsNotNull(final Object uut) {
     assumeThat(uut, is(not(equalTo(null))));
@@ -97,6 +103,7 @@ public abstract class CompareToTheory {
     private TestAtom(final String label, final Comparable uutX, final Comparable uutY) {
       this.label = label;
       try {
+        logger.trace("compareTo: [{}, {}]", uutX, uutY);
         this.value = uutX.compareTo(uutY);
       } catch (final Exception e) {
         this.e = e;
@@ -127,6 +134,7 @@ public abstract class CompareToTheory {
    */
   @Theory
   public void compareToIsSymmetric(final Comparable uutX, final Comparable uutY) {
+    logger.debug("compareToIsSymmetric: [{}, {}]", uutX, uutY);
     assumeThatValueIsNotNull(uutX);
     assumeThatValueIsNotNull(uutY);
 
@@ -168,6 +176,7 @@ public abstract class CompareToTheory {
   @Theory
   public final void compareToIsTransitive(
       final Comparable uutX, final Comparable uutY, final Comparable uutZ) {
+    logger.debug("compareToIsTransitive: [{}, {}, {}]", uutX, uutY, uutZ);
     assumeThatValueIsNotNull(uutX);
     assumeThatValueIsNotNull(uutY);
 
@@ -205,6 +214,7 @@ public abstract class CompareToTheory {
    */
   @Theory
   public final void compareToIsConsistentToEquals(final Comparable uutX, final Comparable uutY) {
+    logger.debug("compareToIsConsistentToEquals: [{}, {}]", uutX, uutY);
     assumeThatValueIsNotNull(uutX);
 
     final TestAtom xToY = new TestAtom("X", uutX, uutY);

@@ -88,6 +88,8 @@ public class TurbineControllerTest {
   
   @Before
   public void setUp() throws Exception {
+    //logger.info(logger.getName());
+    logger.debug(" ===========> debug log");
     logger.info(" *** ");
     tickers = HashSet.of(Ticker.of("ABC.L"), Ticker.of("DEF.L"));
   }

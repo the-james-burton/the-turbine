@@ -26,9 +26,13 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
+import java.lang.invoke.MethodHandles;
+
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ORIGINAL VERSION : Copyright 2008-2013 smartics, Kronseder & Reiner GmbH
@@ -47,6 +51,8 @@ import org.junit.runner.RunWith;
 @RunWith(Theories.class)
 public abstract class ObjectTheories 
 {
+
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * The default value for the number of iterations for the
@@ -74,7 +80,7 @@ public abstract class ObjectTheories
    * The value of this constant is {@value}.
    * </p>
    */
-  public static final boolean DEFAULT_RUN_HASH_CODE_THEORY_ON_UNEQUAL_INSTANCES = false;
+  public static final boolean DEFAULT_RUN_HASH_CODE_THEORY_ON_UNEQUAL_INSTANCES = true;
 
   /**
    * Type to instantiate for tests.
@@ -157,6 +163,7 @@ public abstract class ObjectTheories
    */
   @Theory
   public final void equalsIsReflexive(final Object uut) {
+    logger.debug("equalsIsReflexive: [{}]", uut);
     assumeThatValueIsNotNull(uut);
     assertThat(uut.equals(uut), is(true));
   }
@@ -179,6 +186,7 @@ public abstract class ObjectTheories
    */
   @Theory
   public final void equalsIsSymmetric(final Object uutX, final Object uutY) {
+    logger.debug("equalsIsSymmetric: [{}, {}]", uutX, uutY);
     assumeThatValueIsNotNull(uutX);
     assumeThatValueIsNotNull(uutY);
 
@@ -206,6 +214,7 @@ public abstract class ObjectTheories
   @Theory
   public final void equalsIsTransitive(final Object uutX, final Object uutY,
       final Object uutZ) {
+    logger.debug("equalsIsTransitive: [{}, {}, {}]", uutX, uutY, uutZ);
     assumeThatValueIsNotNull(uutX);
     assumeThatValueIsNotNull(uutY);
     assumeThatValueIsNotNull(uutZ);
@@ -232,6 +241,7 @@ public abstract class ObjectTheories
    */
   @Theory
   public final void equalsIsConsistent(final Object uutX, final Object uutY) {
+    logger.debug("equalsIsConsistent: [{}, {}]", uutX, uutY);
     assumeThatValueIsNotNull(uutX);
 
     final boolean result = uutX.equals(uutY);
@@ -255,6 +265,7 @@ public abstract class ObjectTheories
    */
   @Theory
   public final void equalsReturnFalseOnNull(final Object uut) {
+    logger.debug("equalsReturnFalseOnNull: [{}]", uut);
     assumeThatValueIsNotNull(uut);
 
     assertThat(uut.equals(null), is(false)); // NOPMD
@@ -270,6 +281,7 @@ public abstract class ObjectTheories
   @Theory
   public final void equalsReturnFalseOnInstanceOfOtherType(final Object uut) {
     if (checkForDifferentTypesInEquals()) {
+      logger.debug("equalsReturnFalseOnInstanceOfOtherType: [{}]", uut);
       assumeThatValueIsNotNull(uut);
 
       final Object instanceOfOtherType = new OtherType();
@@ -298,6 +310,7 @@ public abstract class ObjectTheories
    */
   @Theory
   public final void hashCodeIsConsistent(final Object uut) {
+    logger.debug("hashCodeIsConsistent: [{}]", uut);
     assumeThatValueIsNotNull(uut);
 
     final int hashCode = uut.hashCode();
@@ -325,6 +338,7 @@ public abstract class ObjectTheories
   @Theory
   public final void hashCodeIsConsistentWithEquals(final Object uutX,
       final Object uutY) {
+    logger.debug("hashCodeIsConsistentWithEquals: [{}, {}]", uutX, uutY);
     assumeThatValueIsNotNull(uutX);
     assumeThat(uutX.equals(uutY), is(true)); // implicitly uutY is not 'null'.
 
@@ -354,6 +368,7 @@ public abstract class ObjectTheories
   public final void hashCodeProducesUnequalHashCodesForUnequalInstances(
       final Object uutX, final Object uutY) {
     if (checkForUnequalHashCodes()) {
+      logger.debug("hashCodeProducesUnequalHashCodesForUnequalInstances: [{}, {}]", uutX, uutY);
       assumeThatValueIsNotNull(uutX);
       assumeThatValueIsNotNull(uutY);
       assumeThat(uutX.equals(uutY), is(false));
@@ -374,6 +389,7 @@ public abstract class ObjectTheories
    */
   @Theory
   public final void toStringRunsWithoutFailure(final Object uut) {
+    logger.debug("toStringRunsWithoutFailure: [{}]", uut);
     assumeThatValueIsNotNull(uut);
     final String string = uut.toString();
     assertThat(string, is(not(equalTo(null))));

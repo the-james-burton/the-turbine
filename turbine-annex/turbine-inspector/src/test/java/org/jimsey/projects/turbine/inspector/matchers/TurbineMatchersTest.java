@@ -26,12 +26,20 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.jimsey.projects.turbine.inspector.matchers.TurbineMatchers.*;
 import static org.junit.Assert.*;
 
+import java.lang.invoke.MethodHandles;
+
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TurbineMatchersTest {
 
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Test
   public void testIsNumeric() {
+    logger.debug("testIsNumeric");
+    
     assertThat("1", isNumeric());
     assertThat("1.2", isNumeric());
     assertThat("100000.10000", isNumeric());
