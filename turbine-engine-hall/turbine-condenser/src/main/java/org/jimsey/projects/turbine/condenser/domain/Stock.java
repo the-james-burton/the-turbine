@@ -27,9 +27,8 @@ import java.lang.reflect.Constructor;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.constraints.NotNull;
 
@@ -46,6 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
 
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
@@ -75,8 +78,10 @@ public class Stock {
   private final Ticker ticker;
 
   // TODO periodically clean this up...
-  private Map<OffsetDateTime, CountDownLatch> ticksReceived = new ConcurrentHashMap<>();
+  // private Map<OffsetDateTime, CountDownLatch> ticksReceived = new ConcurrentHashMap<>();
 
+  private Cache<OffsetDateTime, CountDownLatch> ticksReceived;
+  
   public Stock(
       final Ticker ticker,
       final List<EnableTurbineIndicator> turbineIndicators,
@@ -107,6 +112,15 @@ public class Stock {
       BaseStrategy strategy = (BaseStrategy) instantiate(className);
       strategies.add(strategy);
     });
+    
+    // initialise the cache...
+    ticksReceived = Caffeine.newBuilder()
+        .expireAfterWrite(10, TimeUnit.SECONDS)
+        .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) ->  {
+          v.countDown();
+          logger.info("cache expired: [ticker:{}, timestamp:{}]", ticker.getTicker(), k.toString());
+        })
+        .build();
   }
 
   private Object instantiate(String name) {
@@ -131,7 +145,8 @@ public class Stock {
   }
 
   private CountDownLatch addOrGetLatch(OffsetDateTime timestamp) {
-    return ticksReceived.computeIfAbsent(timestamp, (key) -> new CountDownLatch(1));
+    // return ticksReceived.computeIfAbsent(timestamp, (key) -> new CountDownLatch(1));
+    return ticksReceived.get(timestamp, (key) -> new CountDownLatch(1));
   }
 
   public List<TurbineIndicator> getIndicators() {

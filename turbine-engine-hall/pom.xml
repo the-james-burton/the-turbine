@@ -44,6 +44,7 @@
     <jest.version>2.0.1</jest.version>
 
     <javaslang.version>2.0.4</javaslang.version>
+    <caffeine.version>2.3.5</caffeine.version>
 
 <!--     <reactor-core.version>2.5.0.M4</reactor-core.version> -->
 <!--     <reactor-io.version>2.5.0.BUILD-SNAPSHOT</reactor-io.version> -->
@@ -235,6 +236,12 @@
         <groupId>io.javaslang</groupId>
         <artifactId>javaslang-jackson</artifactId>
         <version>${javaslang.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${caffeine.version}</version>
       </dependency>
 
       <!-- <dependency> -->
