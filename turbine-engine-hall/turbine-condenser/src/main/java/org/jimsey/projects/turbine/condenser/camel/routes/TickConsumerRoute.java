@@ -51,10 +51,10 @@ public class TickConsumerRoute extends BaseRoute {
   public void configure() throws Exception {
     from(getInput("ticks")).id("ticks")
         // .to("slog:json")
-        .log(" * tick")
+        .log(" ==> tick: headers:${headers}, body:${body}")
+        // .to(format("log:%s?level=DEBUG&showHeaders=true$showBody=true", logger.getName()))
         .process(tickProcessor)
         .convertBodyTo(String.class)
-        .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .multicast().parallelProcessing()
         .to(getWebsocket(infrastructureProperties.getWebsocketTicks()),
             getElasticsearchUri())

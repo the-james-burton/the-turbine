@@ -43,7 +43,8 @@ public class StrategyRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
     from(getInput("strategies")).id("strategy-publish-route")
-        .log(" ** tick for strategies")
+        .log(" ==> tick => strategies: headers:${headers}, body:${body}")
+        // .to(format("log:%s?level=DEBUG&showHeaders=true$showBody=true", logger.getName()))
         .split().method("strategySplitter")
         // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)

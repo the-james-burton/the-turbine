@@ -43,7 +43,8 @@ public class IndicatorRoute extends BaseRoute {
   @Override
   public void configure() throws Exception {
     from(getInput("indicators")).id("indicator-publish-route")
-        .log(" ** tick for indicators")
+        .log(" ==> tick => indicators: headers:${headers}, body:${body}")
+        // .to(format("log:%s?level=DEBUG&showHeaders=true$showBody=true", logger.getName()))
         .split().method("indicatorSplitter")
         // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
