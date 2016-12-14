@@ -101,7 +101,7 @@ public class FinanceControllerTest {
     MockHttpServletResponse response = result.getResponse();
     String body = response.getContentAsString();
     
-    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, OffsetDateTime.now(), body);
+    YahooFinanceRealtime yfr = YahooFinanceRealtime.of(metadata, OffsetDateTime.now(), body);
 
     assertThat(yfr).isNotNull();
     assertThat(yfr.getMetadata()).isEqualTo(metadata);
