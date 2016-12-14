@@ -42,16 +42,17 @@ public class TickProducer implements Comparable<TickProducer> {
 
   private final DomainObjectGenerator rdog;
 
-  private RestTemplate restTemplate;
+  private final RestTemplate rest;
   
-  public TickProducer(Ticker ticker) {
+  public TickProducer(RestTemplate rest, Ticker ticker) {
+    this.rest = rest;
     this.ticker = ticker;
     this.rdog = new RandomDomainObjectGenerator(ticker);
     logger.info("");
   }
 
-  public static TickProducer of(Ticker ticker) {
-    return new TickProducer(ticker);
+  public static TickProducer of(RestTemplate rest, Ticker ticker) {
+    return new TickProducer(rest, ticker);
   }
 
   // TODO issue #20 use turbine-inlet
@@ -96,15 +97,5 @@ public class TickProducer implements Comparable<TickProducer> {
     // return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     return ticker.toString();
   }
-
-  public RestTemplate getRestTemplate() {
-    return restTemplate;
-  }
-
-  public void setRestTemplate(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
-  }
-
-  // ----------------------------
 
 }

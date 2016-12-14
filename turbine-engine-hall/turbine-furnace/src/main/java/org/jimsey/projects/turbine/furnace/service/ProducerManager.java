@@ -38,10 +38,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javaslang.Function0;
 import javaslang.collection.HashSet;
@@ -66,7 +68,10 @@ public class ProducerManager {
 
   private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
-  public ProducerManager() {
+  private final RestTemplate rest;
+  
+  public ProducerManager(RestTemplateBuilder restTemplateBuilder) {
+    rest = restTemplateBuilder.build();
   }
 
   @PostConstruct
@@ -119,7 +124,7 @@ public class ProducerManager {
 
   public TickProducer addTickProducer(Ticker ticker) {
     logger.info("creating TickProducer object from Ticker:{}", ticker);
-    TickProducer producer = TickProducer.of(ticker);
+    TickProducer producer = TickProducer.of(rest, ticker);
     producers = producers.add(producer);
     tickerCache = Function0.of(tickers).memoized();
     return producer;
