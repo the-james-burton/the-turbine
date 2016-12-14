@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.furnace.service;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -29,28 +30,40 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
 
 public class TickProducer implements Comparable<TickProducer> {
 
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  
   private final Ticker ticker;
 
   private final DomainObjectGenerator rdog;
 
+  private RestTemplate restTemplate;
+  
   public TickProducer(Ticker ticker) {
     this.ticker = ticker;
     this.rdog = new RandomDomainObjectGenerator(ticker);
+    logger.info("");
   }
 
   public static TickProducer of(Ticker ticker) {
     return new TickProducer(ticker);
   }
-  
+
   // TODO issue #20 use turbine-inlet
   public TickJson createTick() {
     TickJson tick = rdog.newTick();
     return tick;
   }
 
+  public TickJson fetchTickFromYahooFinanceRealtime() {
+    return null;
+  }
+  
   public Ticker getTicker() {
     return ticker;
   }
@@ -82,6 +95,14 @@ public class TickProducer implements Comparable<TickProducer> {
   public String toString() {
     // return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     return ticker.toString();
+  }
+
+  public RestTemplate getRestTemplate() {
+    return restTemplate;
+  }
+
+  public void setRestTemplate(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
   }
 
   // ----------------------------

@@ -22,18 +22,13 @@
  */
 package org.jimsey.projects.turbine.furnace;
 
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.furnace.service.TickProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -62,11 +57,5 @@ public class Application {
 //      }
 //    };
 //  }
-
-  @Bean
-  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  TickProducer runtimeTickProducer(Ticker ticker) {
-    return new TickProducer(ticker);
-  }
 
 }
