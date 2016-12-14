@@ -24,6 +24,7 @@ package org.jimsey.projects.turbine.condenser.service.pojo;
 
 import java.time.OffsetDateTime;
 
+@Deprecated
 public class TickPojo {
 
   // {"date":1457683418491,"open":102.78671114152444,"high":104.93154986139871,"low":100.46281730277755,"close":101.08888319502152,"volume":105.86839958250964,"symbol":"ABC","market":"FTSE100","timestamp":"2016-03-11T08:03:38.491Z"}
