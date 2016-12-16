@@ -54,6 +54,9 @@ public class InfrastructureProperties {
   @NotNull
   private String amqpTicksQueue;
 
+  @NotNull
+  private String financeYahooRealtimeUrl;
+
   @PostConstruct
   public void init() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
@@ -99,6 +102,14 @@ public class InfrastructureProperties {
 
   public void setAmqpCamelComponent(String amqpCamelComponent) {
     this.amqpCamelComponent = amqpCamelComponent;
+  }
+
+  public String getFinanceYahooRealtimeUrl() {
+    return financeYahooRealtimeUrl;
+  }
+
+  public void setFinanceYahooRealtimeUrl(String financeYahooRealtimeUrl) {
+    this.financeYahooRealtimeUrl = financeYahooRealtimeUrl;
   }
 
 }

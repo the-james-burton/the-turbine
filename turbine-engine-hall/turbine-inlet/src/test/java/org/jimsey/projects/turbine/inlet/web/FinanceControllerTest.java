@@ -53,6 +53,14 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import javaslang.control.Option;
 
+/**
+ * There appears to be no easy way to use a real bean in a @WebMvcTest.
+ * This means that a 'real' DogKennel' instance cannot be given to the FinanceController.
+ * It is not practical to mock the entire DogKennel,
+ * therefore this test is ignored in favour of @SpringBootTest FinanceControllerIT
+ * @throws Exception
+ */
+@Deprecated
 @RunWith(SpringRunner.class)
 @WebMvcTest(FinanceController.class)
 public class FinanceControllerTest {
@@ -80,13 +88,6 @@ public class FinanceControllerTest {
     given(SymbolMetadataProvider.findMetadataForTicker(ticker)).willReturn(Option.of(metadata));
   }
   
-  /**
-   * There appears to be no easy way to use a real bean in a @WebMvcTest.
-   * This means that a 'real' DogKennel' instance cannot be given to the FinanceController.
-   * It is not practical to mock the entire DogKennel,
-   * therefore this test is ignored in favour of @SpringBootTest FinanceControllerIT
-   * @throws Exception
-   */
   @Ignore
   @Test
   public void testYahooFinanceRealtime() throws Exception {

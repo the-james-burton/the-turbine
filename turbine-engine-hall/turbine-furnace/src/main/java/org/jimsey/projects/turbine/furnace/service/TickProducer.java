@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.furnace.service;
 
+import static java.lang.String.*;
+
 import java.lang.invoke.MethodHandles;
 import java.util.Comparator;
 import java.util.Objects;
@@ -32,7 +34,11 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import javaslang.control.Try;
 
 public class TickProducer implements Comparable<TickProducer> {
 
@@ -42,26 +48,34 @@ public class TickProducer implements Comparable<TickProducer> {
 
   private final DomainObjectGenerator rdog;
 
+  private final String baseUrl;
+  
   private final RestTemplate rest;
   
-  public TickProducer(RestTemplate rest, Ticker ticker) {
+  public TickProducer(RestTemplate rest, Ticker ticker, String baseUrl) {
     this.rest = rest;
     this.ticker = ticker;
+    this.baseUrl = baseUrl;
     this.rdog = new RandomDomainObjectGenerator(ticker);
     logger.info("");
   }
 
-  public static TickProducer of(RestTemplate rest, Ticker ticker) {
-    return new TickProducer(rest, ticker);
+  public static TickProducer of(RestTemplate rest, Ticker ticker, String baseUrl) {
+    return new TickProducer(rest, ticker, baseUrl);
   }
 
   // TODO issue #20 use turbine-inlet
   public TickJson createTick() {
+    fetchTickFromYahooFinanceRealtime();
     TickJson tick = rdog.newTick();
     return tick;
   }
 
   public TickJson fetchTickFromYahooFinanceRealtime() {
+    String url = baseUrl + ticker.getTickerAsString();
+    ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
+        .getOrElse(() -> new ResponseEntity<String>(format("turbine inlet service expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
+    logger.info("{} called {} and got {}:{}", toString(), url, response.getBody(), response.getStatusCode());
     return null;
   }
   

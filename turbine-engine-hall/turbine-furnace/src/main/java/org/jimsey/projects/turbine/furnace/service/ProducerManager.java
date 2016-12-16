@@ -33,6 +33,7 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.furnace.camel.routes.TickPublishingRoute;
+import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,10 @@ public class ProducerManager {
   @NotNull
   private CamelContext camel;
 
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrastructure;
+
   private ProducerTemplate camelProducer;
 
   private Set<TickProducer> producers = HashSet.empty();
@@ -69,8 +74,9 @@ public class ProducerManager {
   private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
   private final RestTemplate rest;
-  
+
   public ProducerManager(RestTemplateBuilder restTemplateBuilder) {
+    logger.info("received a RestTemplateBuilder:{}", restTemplateBuilder);
     rest = restTemplateBuilder.build();
   }
 
@@ -124,7 +130,7 @@ public class ProducerManager {
 
   public TickProducer addTickProducer(Ticker ticker) {
     logger.info("creating TickProducer object from Ticker:{}", ticker);
-    TickProducer producer = TickProducer.of(rest, ticker);
+    TickProducer producer = TickProducer.of(rest, ticker, infrastructure.getFinanceYahooRealtimeUrl());
     producers = producers.add(producer);
     tickerCache = Function0.of(tickers).memoized();
     return producer;
@@ -141,6 +147,14 @@ public class ProducerManager {
 
   public Set<Ticker> getTickers() {
     return tickerCache.apply();
+  }
+
+  public InfrastructureProperties getInfrastructure() {
+    return infrastructure;
+  }
+
+  public void setInfrastructure(InfrastructureProperties infrastructure) {
+    this.infrastructure = infrastructure;
   }
 
 }

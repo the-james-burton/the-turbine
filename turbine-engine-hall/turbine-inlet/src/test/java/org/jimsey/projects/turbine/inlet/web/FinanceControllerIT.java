@@ -76,8 +76,8 @@ public class FinanceControllerIT {
 
   @Test
   public void testPingAsString() throws Exception {
-    logger.info("when /ping is called");
-    ResponseEntity<String> response = rest.getForEntity("/ping", String.class);
+    logger.info("when /test/ping is called");
+    ResponseEntity<String> response = rest.getForEntity("/test/ping", String.class);
     logger.info("then the response body should not be null [body:{}]", response.getBody());
     assertThat(response.getBody()).isNotNull();
   }
