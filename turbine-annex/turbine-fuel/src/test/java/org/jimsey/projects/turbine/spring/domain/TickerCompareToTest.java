@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import static org.jimsey.projects.turbine.spring.domain.TickerTheoryTest.*;
+
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
 import org.junit.experimental.theories.DataPoint;
@@ -29,16 +31,16 @@ import org.junit.experimental.theories.DataPoint;
 public class TickerCompareToTest extends CompareToTheory {
 
   @DataPoint
-  public static final Ticker ABC_L = Ticker.of("ABC.L");
+  public static final Ticker ABC_AX = Ticker.of(ABC, AX);
 
   @DataPoint
-  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
+  public static final Ticker ABC_L = Ticker.of(ABC, L);
+
+  @DataPoint
+  public static final Ticker DEF_AX = Ticker.of("DEF.AX");
 
   @DataPoint
   public static final Ticker DEF_L = Ticker.of("DEF.L");
-
-  @DataPoint
-  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
 
 }
 

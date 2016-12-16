@@ -22,23 +22,33 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 
+import javaslang.collection.CharSeq;
+
 public class TickerTheoryTest extends ObjectTheories {
 
-  @DataPoint
-  public static final Ticker ABC_L = Ticker.of("ABC.L");
+  public static final CharSeq ABC = CharSeq.of("ABC");
+
+  public static final MarketEnum AX = MarketEnum.ASX;
+
+  public static final MarketEnum L = MarketEnum.FTSE100;
 
   @DataPoint
-  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
+  public static final Ticker ABC_AX = Ticker.of(ABC, AX);
+
+  @DataPoint
+  public static final Ticker ABC_L = Ticker.of(ABC, L);
+
+  @DataPoint
+  public static final Ticker DEF_AX = Ticker.of("DEF.AX");
 
   @DataPoint
   public static final Ticker DEF_L = Ticker.of("DEF.L");
 
-  @DataPoint
-  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
 
 }
 

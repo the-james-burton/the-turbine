@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.spring.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.jimsey.projects.turbine.spring.domain.TickerTheoryTest.*;
 
 import java.lang.invoke.MethodHandles;
 
@@ -40,20 +41,6 @@ import javaslang.collection.CharSeq;
 public class TickerTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  private static final CharSeq ABC = CharSeq.of("ABC");
-
-  private static final MarketEnum AX = MarketEnum.ASX;
-
-  private static final MarketEnum L = MarketEnum.FTSE100;
-
-  public final Ticker ABC_AX = Ticker.of(ABC, AX);
-
-  public final Ticker ABC_L = Ticker.of(ABC, L);
-
-  public final Ticker DEF_AX = Ticker.of("DEF.AX");
-
-  public final Ticker DEF_L = Ticker.of("DEF.L");
 
   private final ObjectMapper json = new ObjectMapper();
 

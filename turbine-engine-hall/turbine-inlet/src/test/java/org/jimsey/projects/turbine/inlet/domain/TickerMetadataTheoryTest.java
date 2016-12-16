@@ -28,25 +28,21 @@ import org.junit.experimental.theories.DataPoint;
 
 public class TickerMetadataTheoryTest extends ObjectTheories {
 
-
-  public static final Ticker ABC_L = Ticker.of("ABC.L");
-
+  public static final String NAME1 = "NAME1";
+  public static final String NAME2 = "NAME2";
   public static final Ticker ABC_AX = Ticker.of("ABC.AX");
-
   public static final Ticker DEF_L = Ticker.of("DEF.L");
 
-  public static final Ticker GHI_AX = Ticker.of("GHI.AX");
+  @DataPoint
+  public static final TickerMetadata smAA = TickerMetadata.of(ABC_AX, NAME1);
 
   @DataPoint
-  public static final TickerMetadata DP_ABC_L = TickerMetadata.of(ABC_L, "ABC_L_Name");
+  public static final TickerMetadata smAB = TickerMetadata.of(ABC_AX, NAME2);
 
   @DataPoint
-  public static final TickerMetadata DP_ABC_AX = TickerMetadata.of(ABC_AX, "ABC_AX_Name");
+  public static final TickerMetadata smBA = TickerMetadata.of(DEF_L, NAME1);
 
   @DataPoint
-  public static final TickerMetadata DP_DEF_L = TickerMetadata.of(DEF_L, "DEF_L_Name");
-
-  @DataPoint
-  public static final TickerMetadata DP_GHI_AX = TickerMetadata.of(GHI_AX, "GHI_AX_Name");
+  public static final TickerMetadata smBB = TickerMetadata.of(DEF_L, NAME2);
 
 }

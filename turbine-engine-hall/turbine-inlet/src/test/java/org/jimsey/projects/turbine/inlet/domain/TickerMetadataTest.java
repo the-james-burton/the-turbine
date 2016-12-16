@@ -23,11 +23,11 @@
 package org.jimsey.projects.turbine.inlet.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.jimsey.projects.turbine.inlet.domain.TickerMetadataTheoryTest.*;
 
 import java.lang.invoke.MethodHandles;
 
 import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,23 +37,6 @@ import javaslang.collection.CharSeq;
 public class TickerMetadataTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  public static final String NAME1 = "NAME1";
-
-  public static final String NAME2 = "NAME2";
-
-  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
-
-  public static final Ticker DEF_L = Ticker.of("DEF.L");
-
-  private final TickerMetadata smAA = TickerMetadata.of(ABC_AX, NAME1);
-
-  private final TickerMetadata smAB = TickerMetadata.of(ABC_AX, NAME2);
-
-  private final TickerMetadata smBA = TickerMetadata.of(DEF_L, NAME1);
-
-  private final TickerMetadata smBB = TickerMetadata.of(DEF_L, NAME2);
-
   
   @Test
   public void testMarketCompareTo() {
