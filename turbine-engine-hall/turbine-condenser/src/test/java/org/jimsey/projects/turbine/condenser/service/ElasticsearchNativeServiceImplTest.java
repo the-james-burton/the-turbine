@@ -30,7 +30,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.apache.qpid.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
@@ -147,7 +147,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   @BeforeClass
   public static void beforeClass() throws Exception {
     logger.info("setup()");
-    FileUtils.delete(new File(elasticsearchTmpDir), true);
+    FileUtils.deleteDirectory(new File(elasticsearchTmpDir));
 
     Settings settings = Settings.builder()
         .put("path.home", elasticsearchTmpDir)

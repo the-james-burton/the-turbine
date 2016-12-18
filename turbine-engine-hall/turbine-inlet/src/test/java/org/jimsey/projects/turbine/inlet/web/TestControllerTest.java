@@ -54,7 +54,7 @@ public class TestControllerTest {
     // given(ping.ping()).willReturn(123l);
 
     // TODO how to do numeric comparison on string return..?
-    mvc.perform(get("/ping").accept(MediaType.APPLICATION_OCTET_STREAM))
+    mvc.perform(get("/test/ping").accept(MediaType.APPLICATION_OCTET_STREAM))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().string(not(isEmptyOrNullString())))
