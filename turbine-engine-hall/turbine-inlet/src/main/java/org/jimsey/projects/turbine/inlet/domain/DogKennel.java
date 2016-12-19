@@ -22,11 +22,13 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
+import static java.lang.String.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javaslang.Function1;
@@ -41,15 +43,24 @@ public class DogKennel {
   // TODO make market independent...
   // private final String market = "FTSE100";
 
+  @Autowired
+  private TickerMetadata metadata;
+  
   /**
    * public, immutable list of dogs
    */
   public List<DomainObjectGenerator> dogs = List.empty();  
   
   /**
-   * given a '+' separated string of tickers (eg. ABC.L), will return a list of Tickers for the
+   * given a '+' separated string of tickers (eg. ABC.L), will return a list of enriched Tickers
    */
-  public Function1<String, List<Ticker>> parseTickersString = tickers -> Stream.of(CharSeq.of(tickers).split("\\+")).map(t -> Ticker.of(t)).toList();
+  public Function1<String, List<Ticker>> parseTickersString =
+      tickers -> Stream.of(CharSeq.of(tickers)
+          .split("\\+"))
+          .map(t -> CharSeq.of(t))
+          .map(s -> metadata.findTickerBySymbol.apply(s).getOrElseThrow(() -> 
+              new RuntimeException(format("unable to find ticker:{} in metadata", s))))
+          .toList();
 
   /**
    * given a list of dogs and a list of tickers
@@ -87,5 +98,13 @@ public class DogKennel {
   // TODO this function throws an exception instead of return value, how best to handle? Use a Try?
   public Function2<List<DomainObjectGenerator>, List<Ticker>, Object> assertThatDogsContainTickers = (dogs,
       tickers) -> assertThat(dogs.map(dog -> dog.getTicker())).containsExactlyInAnyOrder(tickers.toJavaArray(Ticker.class));
+
+  public TickerMetadata getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(TickerMetadata metadata) {
+    this.metadata = metadata;
+  }
 
 }

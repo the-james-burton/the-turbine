@@ -24,11 +24,13 @@ package eu.verdelhan.ta4j;
 
 import static org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants.*;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,9 +38,9 @@ import org.slf4j.LoggerFactory;
 
 public class TradingRecordTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(TradingRecordTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(ABC);
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(Ticker.of(ABC, ABCName));
 
   TimeSeries series;
 

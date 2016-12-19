@@ -22,28 +22,18 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
-import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
-import org.junit.experimental.theories.DataPoint;
+import static org.assertj.core.api.Assertions.*;
 
-public class TickerMetadataTheoryTest extends ObjectTheories {
+import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.junit.Test;
 
-  public static final String NAME1 = "NAME1";
-  public static final String NAME2 = "NAME2";
-  public static final Ticker ABC_AX = Ticker.of("ABC.AX");
-  public static final Ticker DEF_L = Ticker.of("DEF.L");
+import javaslang.collection.CharSeq;
 
-  @DataPoint
-  public static final TickerMetadata smAA = TickerMetadata.of(ABC_AX, NAME1);
+public class MarketEnumTest {
 
-  @DataPoint
-  public static final TickerMetadata smAB = TickerMetadata.of(ABC_AX, NAME2);
-
-  @DataPoint
-  public static final TickerMetadata smBA = TickerMetadata.of(DEF_L, NAME1);
-
-  @DataPoint
-  public static final TickerMetadata smBB = TickerMetadata.of(DEF_L, NAME2);
-
+  @Test
+  public void testFromExtension() {
+    assertThat(MarketEnum.fromExtension(CharSeq.of("L")).get()).isEqualTo(MarketEnum.FTSE100);
+  }
+  
 }

@@ -32,7 +32,6 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -42,29 +41,28 @@ public class YahooFinanceRealtimeTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private final DomainObjectGenerator dog = new RandomDomainObjectGenerator(ABC);
+  private final DomainObjectGenerator dog = new RandomDomainObjectGenerator(Ticker.of(ABC, ABCName));
     
   @Test
   public void testRoundTripForString() {
-    OffsetDateTime date = OffsetDateTime.now();
-    TickerMetadata metadata = TickerMetadata.of(Ticker.of("ABC.L"), "ABCName");
+    Ticker ticker = Ticker.of(ABC, ABCName);
     double open = 114.43;
     double high = 114.56;
     double low = 113.51;
     double close = 113.87;
     long vol = 13523517;
     String line = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        metadata.getName(), metadata.getTicker().getMarket(), open, high, low, close, vol);
+        ticker.getName().toString(), ticker.getMarketAsString(), open, high, low, close, vol);
     logger.info(line);
-    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, date, line);
+    YahooFinanceRealtime yfr = YahooFinanceRealtime.of(OffsetDateTime.now(), line, ticker);
 
     // check the individual properties...
-    assertThat(yfr.getMetadata()).isEqualTo(metadata);
-    assertThat(yfr.getOpen()).isEqualTo(open);
-    assertThat(yfr.getHigh()).isEqualTo(high);
-    assertThat(yfr.getLow()).isEqualTo(low);
-    assertThat(yfr.getClose()).isEqualTo(close);
-    assertThat(yfr.getVol()).isEqualTo(vol);
+    assertThat(yfr.getTick().getTickerAsObject()).isEqualTo(ticker);
+    assertThat(yfr.getTick().getOpen()).isEqualTo(open);
+    assertThat(yfr.getTick().getHigh()).isEqualTo(high);
+    assertThat(yfr.getTick().getLow()).isEqualTo(low);
+    assertThat(yfr.getTick().getClose()).isEqualTo(close);
+    assertThat(yfr.getTick().getVol()).isEqualTo(vol);
 
     // check the formatted output string...
     assertThat(yfr.toString()).isEqualTo(line);
@@ -73,20 +71,20 @@ public class YahooFinanceRealtimeTest {
   @Test
   public void testRoundTripForTickJson() {
     TickJson tick = dog.newTick(); 
-    TickerMetadata metadata = TickerMetadata.of(Ticker.of("ABC.L"), "ABCName");
-    YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, tick);
+    Ticker ticker = Ticker.of(ABC, ABCName);
+    YahooFinanceRealtime yfr = YahooFinanceRealtime.of(tick);
 
     // check the individual properties...
-    assertThat(yfr.getMetadata()).isEqualTo(metadata);
-    assertThat(yfr.getOpen()).isEqualTo(tick.getOpen());
-    assertThat(yfr.getHigh()).isEqualTo(tick.getHigh());
-    assertThat(yfr.getLow()).isEqualTo(tick.getLow());
-    assertThat(yfr.getClose()).isEqualTo(tick.getClose());
-    assertThat(yfr.getVol()).isEqualTo(tick.getVol());
+    assertThat(yfr.getTick()).isEqualTo(tick);
+    assertThat(yfr.getTick().getOpen()).isEqualTo(tick.getOpen());
+    assertThat(yfr.getTick().getHigh()).isEqualTo(tick.getHigh());
+    assertThat(yfr.getTick().getLow()).isEqualTo(tick.getLow());
+    assertThat(yfr.getTick().getClose()).isEqualTo(tick.getClose());
+    assertThat(yfr.getTick().getVol()).isEqualTo(tick.getVol());
 
     // check the formatted output string...
     String expected = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        metadata.getName(), metadata.getTicker().getMarket(),
+        ticker.getName(), ticker.getMarketAsString(),
         tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol());
     assertThat(yfr.toString()).isEqualTo(expected);
 

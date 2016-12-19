@@ -34,17 +34,17 @@ public enum MarketEnum {
   ASX("ASXname", "AX"),
   FTSE100("FTSE100name", "L");
 
-  private final CharSeq name;
+  private final CharSeq market;
 
   private final CharSeq extension;
 
-  private MarketEnum(CharSeq name, CharSeq extension) {
-    this.name = name;
+  private MarketEnum(CharSeq market, CharSeq extension) {
+    this.market = market;
     this.extension = extension;
   }
 
-  private MarketEnum(String name, String extension) {
-    this.name = CharSeq.of(name);
+  private MarketEnum(String market, String extension) {
+    this.market = CharSeq.of(market);
     this.extension = CharSeq.of(extension);
   }
 
@@ -52,8 +52,12 @@ public enum MarketEnum {
     return Stream.of(values()).find(m -> m.getExtension().eq(extension));
   }
 
+  public static Option<MarketEnum> fromMarket(CharSeq market) {
+    return Stream.of(values()).find(m -> m.getName().eq(market));
+  }
+
   public CharSeq getName() {
-    return name;
+    return market;
   }
 
   public CharSeq getExtension() {

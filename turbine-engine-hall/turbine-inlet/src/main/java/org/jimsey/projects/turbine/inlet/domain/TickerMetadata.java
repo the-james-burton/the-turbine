@@ -1,6 +1,6 @@
 /**
  * The MIT License
- * Copyright (c) 2015 the-james-burton
+ * Copyright (c) ${project.inceptionYear} the-james-burton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,37 +22,28 @@
  */
 package org.jimsey.projects.turbine.inlet.domain;
 
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
+import javax.annotation.PostConstruct;
 
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.springframework.stereotype.Service;
+
+import javaslang.Function1;
+import javaslang.collection.CharSeq;
+import javaslang.collection.List;
 import javaslang.control.Option;
 
-public interface TickerMetadataProvider {
+@Service
+public class TickerMetadata {
 
-  /**
-   * @param metadata e.g. TickerMetadata.of(Ticker.of("ABC.L"), "ABCName")
-   * @return the metadata
-   */
-  void addMetadata(TickerMetadata name);
-
-  /**
-   * @param ticker e.g. Ticker.of("ABC.L")
-   * @return the metadata
-   */
-  Option<TickerMetadata> findMetadataForTicker(Ticker ticker);
-
-  /**
-   * @param ticker e.g. "ABC.L"
-   * @return the metadata
-   */
-  Option<TickerMetadata> findMetadataForTicker(String ticker);
-
-  /**
-   * 
-   * @param market e.g. "FTSE100"
-   * @param symbol e.g. "ABC"
-   * @return the metadata
-   */
-  Option<TickerMetadata> findMetadataForMarketAndSymbol(String market, String symbol);
-
+  private List<Ticker> knownTickers = List.empty();
+  
+  public Function1<CharSeq, Option<Ticker>> findTickerBySymbol = 
+      (symbol) -> knownTickers.find(ticker -> ticker.getTicker().eq(symbol));
+  
+  @PostConstruct
+  public void init() {
+    knownTickers = knownTickers.append(Ticker.of("ABC.L", "ABCName"));
+    knownTickers = knownTickers.append(Ticker.of("DEF.L", "DEFName"));
+  }
+  
 }

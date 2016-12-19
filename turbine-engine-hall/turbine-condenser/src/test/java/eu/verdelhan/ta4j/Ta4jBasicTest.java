@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class Ta4jBasicTest {
 
   private static final Logger logger = LoggerFactory.getLogger(Ta4jBasicTest.class);
 
-  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(ABC);
+  DomainObjectGenerator rdog = new RandomDomainObjectGenerator(Ticker.of(ABC, ABCName));
 
   List<Tick> ticks;
 

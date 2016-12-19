@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.furnace.service;
 import static java.lang.String.*;
 
 import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -32,6 +33,7 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -79,7 +81,10 @@ public class TickProducer implements Comparable<TickProducer> {
     String url = baseUrl + ticker.getTickerAsString();
     ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
         .getOrElse(() -> new ResponseEntity<String>(format("turbine inlet service expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
+    // there will only be one line, since we are not (yet) batching requests to the external finance service...
     logger.info("{} called {} and got {}:{}", toString(), url, response.getBody(), response.getStatusCode());
+    YahooFinanceRealtime yfr = YahooFinanceRealtime.of(OffsetDateTime.now(), response.getBody(), ticker);
+    logger.info("yfr:{}", yfr);
     return null;
   }
   

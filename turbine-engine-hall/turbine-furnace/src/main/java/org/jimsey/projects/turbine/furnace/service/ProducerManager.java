@@ -84,8 +84,8 @@ public class ProducerManager {
   public void init() {
     camelProducer = camel.createProducerTemplate();
     // TODO issue #5 replace this with an import of external stock market list
-    findOrCreateTickProducer(Ticker.of("ABC.L"));
-    findOrCreateTickProducer(Ticker.of("DEF.L"));
+    findOrCreateTickProducer(Ticker.of("ABC.L", "ABCName"));
+    findOrCreateTickProducer(Ticker.of("DEF.L", "DEFName"));
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)

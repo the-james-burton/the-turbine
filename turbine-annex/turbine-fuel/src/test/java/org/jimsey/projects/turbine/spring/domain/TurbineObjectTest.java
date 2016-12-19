@@ -29,6 +29,7 @@ import java.io.IOException;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class TurbineObjectTest {
   @Before
   public void before() {
     json = new ObjectMapper();
-    rdog = new RandomDomainObjectGenerator(ABC);
+    rdog = new RandomDomainObjectGenerator(Ticker.of(ABC, ABCName));
   }
 
   @Test

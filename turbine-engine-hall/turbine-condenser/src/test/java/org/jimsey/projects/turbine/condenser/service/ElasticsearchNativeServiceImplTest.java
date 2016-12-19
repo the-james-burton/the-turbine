@@ -45,6 +45,7 @@ import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -84,9 +85,10 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   @Mock
   private InfrastructureProperties infrastructureProperties;
 
-  private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(tickerOne);
+  private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(Ticker.of(tickerOne, "ABCName"));
 
-  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(tickerTwo);
+  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(Ticker.of(tickerTwo, "DEFName"));
+
 
   private final ObjectMapper json = new ObjectMapper();
 

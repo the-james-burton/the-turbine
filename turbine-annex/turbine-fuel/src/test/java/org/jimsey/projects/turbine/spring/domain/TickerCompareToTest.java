@@ -29,18 +29,18 @@ import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
 import org.junit.experimental.theories.DataPoint;
 
 public class TickerCompareToTest extends CompareToTheory {
+  
+  @DataPoint
+  public static final Ticker tickAAA = Ticker.of(TICK1, AX, NAME1);
 
   @DataPoint
-  public static final Ticker ABC_AX = Ticker.of(ABC, AX);
+  public static final Ticker tickAAB = Ticker.of(TICK1, AX, NAME2);
 
   @DataPoint
-  public static final Ticker ABC_L = Ticker.of(ABC, L);
+  public static final Ticker tickABA = Ticker.of(TICK1, L, NAME1);
 
   @DataPoint
-  public static final Ticker DEF_AX = Ticker.of("DEF.AX");
-
-  @DataPoint
-  public static final Ticker DEF_L = Ticker.of("DEF.L");
+  public static final Ticker tickBAA = Ticker.of(TICK2, AX, NAME1);
 
 }
 

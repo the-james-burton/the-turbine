@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.fuel.domain;
 
+import static java.lang.String.*;
+
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -47,29 +49,40 @@ public class Ticker implements Comparable<Ticker>{
   
   private final CharSeq symbol;
   
+  private final CharSeq name;
+  
   private final MarketEnum market;
   
   // ----------------------------
-  public Ticker(CharSeq ticker) {
+  public Ticker(CharSeq ticker, CharSeq name) {
     this.ticker = ticker;
+    this.name = name;
     CharSeq[] parts = ticker.split("\\.");
     Tuple2<CharSeq, CharSeq> tuple = Try.of(() -> Tuple.of(parts[0], parts[1])).getOrElseThrow(() -> new RuntimeException("unable to parse as ticker:" + ticker));
     this.symbol = tuple._1;
-    this.market = MarketEnum.fromExtension(tuple._2).getOrElseThrow(() -> new RuntimeException("no MarketEnum for" + tuple._2));
+    this.market = MarketEnum.fromExtension(tuple._2).getOrElseThrow(() -> new RuntimeException("no MarketEnum for extension:" + tuple._2));
   }
-
   
-  
-  public Ticker(CharSeq symbol, MarketEnum market) {
+  public Ticker(CharSeq symbol, MarketEnum market, CharSeq name) {
     this.symbol = symbol;
     this.market = market;
+    this.name = name;
     this.ticker = CharSeq.of(String.format("%s.%s", symbol, market.getExtension()));
   }
 
   public Ticker(String ticker) {
-    this(CharSeq.of(ticker));
+    this(CharSeq.of(ticker), CharSeq.empty());
   }
 
+  public Ticker(CharSeq ticker) {
+    this(ticker, CharSeq.empty());
+  }
+
+  public Ticker(String ticker, String name) {
+    this(CharSeq.of(ticker), CharSeq.of(name));
+  }
+
+  // ------------------------------------------
   public static Ticker of(CharSeq ticker) {
     return new Ticker(ticker);
   }
@@ -78,22 +91,35 @@ public class Ticker implements Comparable<Ticker>{
     return new Ticker(ticker);
   }
 
-  public static Ticker of(CharSeq symbol, MarketEnum market) {
-    return new Ticker(symbol, market);
+  public static Ticker of(CharSeq ticker, CharSeq name) {
+    return new Ticker(ticker, name);
   }
 
-  public static Ticker of(String symbol, MarketEnum market) {
-    return new Ticker(CharSeq.of(symbol), market);
+  public static Ticker of(String ticker, String name) {
+    return new Ticker(ticker, name);
   }
 
-  public static Ticker of(String symbol, String market) {
-    return new Ticker(CharSeq.of(symbol), MarketEnum.valueOf(market));
+  public static Ticker of(CharSeq symbol, MarketEnum market, CharSeq name) {
+    return new Ticker(symbol, market, name);
   }
 
+  public static Ticker of(String symbol, MarketEnum market, String name) {
+    return new Ticker(CharSeq.of(symbol), market, CharSeq.of(name));
+  }
+
+  public static Ticker of(CharSeq symbol, CharSeq market, CharSeq name) {
+    return Ticker.of(symbol, MarketEnum.fromMarket(market).getOrElseThrow(() -> new RuntimeException(format("no MarketEnum available for name %s", market))), name);
+  }
+
+  public static Ticker of(String symbol, String market, String name) {
+    return Ticker.of(CharSeq.of(symbol), CharSeq.of(market), CharSeq.of(name));
+  }
 
   // ----------------------------
   private final Comparator<Ticker> comparator = Comparator
-      .comparing(t -> t.getTicker().toString());
+      .comparing((Ticker t) -> t.getTicker().toString())
+      .thenComparing(t -> t.getMarket())
+      .thenComparing(t -> t.getName().toString());
 
   @Override
   public boolean equals(Object key) {
@@ -101,7 +127,9 @@ public class Ticker implements Comparable<Ticker>{
       return false;
     }
     Ticker that = (Ticker) key;
-    return Objects.equals(this.ticker, that.ticker);
+    return Objects.equals(this.ticker, that.ticker)
+        && Objects.equals(this.market, that.market)
+        && Objects.equals(this.name, that.name);
   }
 
   @Override
@@ -111,7 +139,7 @@ public class Ticker implements Comparable<Ticker>{
 
   @Override
   public int hashCode() {
-    return Objects.hash(ticker);
+    return Objects.hash(ticker, market, name);
   }
 
   @Override
@@ -149,6 +177,10 @@ public class Ticker implements Comparable<Ticker>{
   @JsonIgnore
   public MarketEnum getMarket() {
     return market;
+  }
+
+  public CharSeq getName() {
+    return name;
   }
 
 }

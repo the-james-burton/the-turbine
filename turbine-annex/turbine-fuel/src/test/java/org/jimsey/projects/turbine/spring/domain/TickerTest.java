@@ -53,70 +53,70 @@ public class TickerTest {
   @Test
   public void testConstructor() {
     // check that the constructor correctly sets all properties...
-    assertThat(ABC_AX).hasFieldOrPropertyWithValue("ticker", CharSeq.of(String.format("%s.%s", ABC, AX.getExtension())));
-    assertThat(ABC_AX).hasFieldOrPropertyWithValue("symbol", ABC);
-    assertThat(ABC_AX).hasFieldOrPropertyWithValue("market", AX);
+    assertThat(tickAAA).hasFieldOrPropertyWithValue("ticker", CharSeq.of(String.format("%s.%s", TICK1, AX.getExtension())));
+    assertThat(tickAAA).hasFieldOrPropertyWithValue("symbol", TICK1);
+    assertThat(tickAAA).hasFieldOrPropertyWithValue("market", AX);
   }
 
   @Test
   public void testHashCode() {
     // check that the hash code is consistent across objects...
-    assertThat(ABC_AX.hashCode()).isEqualTo(new Ticker(ABC, AX).hashCode());
-    assertThat(new Ticker(ABC, AX).hashCode()).isEqualTo(ABC_AX.hashCode());
+    assertThat(tickAAA.hashCode()).isEqualTo(new Ticker(TICK1, AX, NAME1).hashCode());
+    assertThat(new Ticker(TICK1, AX, NAME1).hashCode()).isEqualTo(tickAAA.hashCode());
 
     // check that all fields are part of the hash code...
-    assertThat(ABC_AX.hashCode()).isNotEqualTo(ABC_L.hashCode());
-    assertThat(ABC_AX.hashCode()).isNotEqualTo(DEF_AX.hashCode());
-    assertThat(ABC_AX.hashCode()).isNotEqualTo(DEF_L.hashCode());
+    assertThat(tickAAA.hashCode()).isNotEqualTo(tickAAB.hashCode());
+    assertThat(tickAAA.hashCode()).isNotEqualTo(tickABA.hashCode());
+    assertThat(tickAAA.hashCode()).isNotEqualTo(tickBAA.hashCode());
   }
 
   @Test
   public void testEquals() {
     // reflexive...
-    assertThat(ABC_AX).isEqualTo(ABC_AX);
+    assertThat(tickAAA).isEqualTo(tickAAA);
 
     // symmetric...
-    assertThat(ABC_AX).isEqualTo(new Ticker(ABC, AX));
-    assertThat(new Ticker(ABC, AX)).isEqualTo(ABC_AX);
+    assertThat(tickAAA).isEqualTo(new Ticker(TICK1, AX, NAME1));
+    assertThat(new Ticker(TICK1, AX, NAME1)).isEqualTo(tickAAA);
 
     // consistent (same checks again)...
-    assertThat(ABC_AX).isEqualTo(new Ticker(ABC, AX));
-    assertThat(new Ticker(ABC, AX)).isEqualTo(ABC_AX);
+    assertThat(tickAAA).isEqualTo(new Ticker(TICK1, AX, NAME1));
+    assertThat(new Ticker(TICK1, AX, NAME1)).isEqualTo(tickAAA);
 
     // transitive...
-    Ticker ABC_AX2 = new Ticker(ABC, AX);
-    Ticker ABC_AX3 = new Ticker(ABC, AX);
+    Ticker ABC_AX2 = new Ticker(TICK1, AX, NAME1);
+    Ticker ABC_AX3 = new Ticker(TICK1, AX, NAME1);
 
-    assertThat(ABC_AX).isEqualTo(ABC_AX2);
+    assertThat(tickAAA).isEqualTo(ABC_AX2);
     assertThat(ABC_AX2).isEqualTo(ABC_AX3);
-    assertThat(ABC_AX).isEqualTo(ABC_AX3);
+    assertThat(tickAAA).isEqualTo(ABC_AX3);
 
     // check not equal to null...
-    assertThat(ABC_AX).isNotEqualTo(null);
+    assertThat(tickAAA).isNotEqualTo(null);
 
     // check all properties are included in equals...
-    assertThat(ABC_AX).isNotEqualTo(ABC_L);
-    assertThat(ABC_AX).isNotEqualTo(DEF_AX);
-    assertThat(ABC_AX).isNotEqualTo(DEF_L);
+    assertThat(tickAAA).isNotEqualTo(tickAAB);
+    assertThat(tickAAA).isNotEqualTo(tickABA);
+    assertThat(tickAAA).isNotEqualTo(tickBAA);
   }
 
   @Test
   public void testCompareTo() {
 
     // check that all fields participate in compareTo...
-    assertThat(ABC_AX).isLessThan(ABC_L);
-    assertThat(ABC_AX).isLessThan(DEF_AX);
-    assertThat(ABC_AX).isLessThan(DEF_L);
+    assertThat(tickAAA).isLessThan(tickAAB);
+    assertThat(tickAAA).isLessThan(tickABA);
+    assertThat(tickAAA).isLessThan(tickBAA);
 
     // check that the reverse is also true...
-    assertThat(ABC_L).isGreaterThan(ABC_AX);
-    assertThat(DEF_AX).isGreaterThan(ABC_AX);
-    assertThat(DEF_L).isGreaterThan(ABC_AX);
+    assertThat(tickAAB).isGreaterThan(tickAAA);
+    assertThat(tickABA).isGreaterThan(tickAAA);
+    assertThat(tickBAA).isGreaterThan(tickAAA);
   }
 
   @Test
   public void testJsonSerialise() throws JsonProcessingException {
-    String result = json.writeValueAsString(ABC_L);
+    String result = json.writeValueAsString(tickAAB);
     logger.info(result);
   }
   

@@ -28,11 +28,9 @@ import static org.assertj.core.api.Assertions.*;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 
+import org.assertj.core.util.Arrays;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
-import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -46,8 +44,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javaslang.collection.List;
-import javaslang.collection.Stream;
 
+/**
+ * There appears to be no easy way to use a real bean in a @WebMvcTest.
+ * This means that a 'real' DogKennel' instance cannot be given to the FinanceController.
+ * It is not practical to mock the entire DogKennel,
+ * therefore this test is @SpringBootTest and not @WebMvcTest.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("it")
@@ -60,19 +63,9 @@ public class FinanceControllerIT {
   private final Ticker TEST2_L = Ticker.of("TEST2.L");
   
   private final Ticker TEST3_L = Ticker.of("TEST3.L");
-  
-  @Autowired
-  private TickerMetadataProvider tickerMetadataProvider;
-  
+    
   @Autowired
   private TestRestTemplate rest;
-
-  @Before
-  public void setUp() throws Exception {
-    tickerMetadataProvider.addMetadata(TickerMetadata.of(TEST1_L, "TEST1Name"));
-    tickerMetadataProvider.addMetadata(TickerMetadata.of(TEST2_L, "TEST2Name"));
-    tickerMetadataProvider.addMetadata(TickerMetadata.of(TEST3_L, "TEST3Name"));
-  }
 
   @Test
   public void testPingAsString() throws Exception {
@@ -86,22 +79,16 @@ public class FinanceControllerIT {
   public void testYahooFinanceRealtimeOne() throws Exception {
     String body = doRestQuery(TEST1_L.toString());
     logger.info("and the response body should be parseable as a YahooFinanceRealtime object");
-    List<YahooFinanceRealtime> yfrs = parseBody(body);
-    assertThat(yfrs).hasSize(1);
+    YahooFinanceRealtime yfr = YahooFinanceRealtime.of(OffsetDateTime.now(), body, TEST1_L);
+    assertThat(yfr.getTick()).isNotNull();
   }
 
   @Test
   public void testYahooFinanceRealtimeTwo() throws Exception {
     String body = doRestQuery(format("%s+%s", TEST1_L, TEST2_L));
     logger.info("and the response body should be parseable as a YahooFinanceRealtime object");
-    List<YahooFinanceRealtime> yfrs = parseBody(body);
+    List<YahooFinanceRealtime> yfrs = YahooFinanceRealtime.of(OffsetDateTime.now(), body.split("\\n"), Arrays.array(TEST1_L, TEST2_L));
     assertThat(yfrs).hasSize(2);
-  }
-
-  private List<YahooFinanceRealtime> parseBody(String body) {
-    return Stream.of(body.split("\\n"))
-        .map(line -> YahooFinanceRealtime.of(TickerMetadata.of(TEST1_L, "TEST1Name"), OffsetDateTime.now(), line))
-        .toList();
   }
   
   private String doRestQuery(String queryString) {

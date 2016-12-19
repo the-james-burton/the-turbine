@@ -40,6 +40,7 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,7 +70,7 @@ public class IndicatorControllerTest {
   @Autowired
   private MockMvc mvc;
 
-  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(ABC);
+  private DomainObjectGenerator rdog = new RandomDomainObjectGenerator(Ticker.of(ABC, ABCName));
 
   private List<IndicatorJson> indicators = new ArrayList<IndicatorJson>();
 

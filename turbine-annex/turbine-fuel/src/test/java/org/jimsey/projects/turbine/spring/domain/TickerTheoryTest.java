@@ -31,23 +31,29 @@ import javaslang.collection.CharSeq;
 
 public class TickerTheoryTest extends ObjectTheories {
 
-  public static final CharSeq ABC = CharSeq.of("ABC");
+  public static final CharSeq TICK1 = CharSeq.of("TICK1");
+
+  public static final CharSeq TICK2 = CharSeq.of("TICK2");
+
+  public static final CharSeq NAME1 = CharSeq.of("NAME1");
+
+  public static final CharSeq NAME2 = CharSeq.of("NAME2");
 
   public static final MarketEnum AX = MarketEnum.ASX;
 
   public static final MarketEnum L = MarketEnum.FTSE100;
 
   @DataPoint
-  public static final Ticker ABC_AX = Ticker.of(ABC, AX);
+  public static final Ticker tickAAA = Ticker.of(TICK1, AX, NAME1);
 
   @DataPoint
-  public static final Ticker ABC_L = Ticker.of(ABC, L);
+  public static final Ticker tickAAB = Ticker.of(TICK1, AX, NAME2);
 
   @DataPoint
-  public static final Ticker DEF_AX = Ticker.of("DEF.AX");
+  public static final Ticker tickABA = Ticker.of(TICK1, L, NAME1);
 
   @DataPoint
-  public static final Ticker DEF_L = Ticker.of("DEF.L");
+  public static final Ticker tickBAA = Ticker.of(TICK2, AX, NAME1);
 
 
 }

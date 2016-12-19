@@ -30,7 +30,6 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.jimsey.projects.turbine.inlet.domain.DogKennel;
-import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javaslang.Tuple;
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
 
@@ -54,9 +52,6 @@ public class FinanceController {
 
   @Autowired
   private DogKennel kennel;
-
-  @Autowired
-  private TickerMetadataProvider tickerMetadataProvider;
 
   /**
    * http://finance.yahoo.com/d/quotes.csv?f=nxohgav&amp;s=BHP.AX+BLT.L+AAPL
@@ -120,25 +115,19 @@ public class FinanceController {
     logger.info("dogs:{}", myDogs.toJavaList());
     logger.info("missing:{}", missing.toJavaList());
 
+    //    .map(dog -> Tuple.of(tickerMetadataProvider.findMetadataForTicker(dog.getTicker()), dog.newTick()))
+    //    .filter(tuple -> tuple._1.isDefined())
+    
     // format the results specific to this mock API...
     CharSeq results = myDogs
-        .map(dog -> Tuple.of(tickerMetadataProvider.findMetadataForTicker(dog.getTicker()), dog.newTick()))
-        .filter(tuple -> tuple._1.isDefined())
-        .map(tuple -> YahooFinanceRealtime.of(tuple._1.get(), tuple._2))
+        .map(dog -> dog.newTick())
+        .map(tick -> YahooFinanceRealtime.of(tick))
         .map(yfr -> yfr.toString())
         .map(CharSeq::of)
         .reduce((x, xs) -> x.append('\n').appendAll(xs));
 
     logger.info("results:{}", results.toString());
     return results;
-  }
-
-  public TickerMetadataProvider getSymbolMetadataProvider() {
-    return tickerMetadataProvider;
-  }
-
-  public void setSymbolMetadataProvider(TickerMetadataProvider tickerMetadataProvider) {
-    this.tickerMetadataProvider = tickerMetadataProvider;
   }
 
   public DogKennel getKennel() {

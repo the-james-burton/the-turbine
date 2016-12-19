@@ -39,9 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javaslang.Function1;
-import javaslang.Tuple;
-import javaslang.Tuple2;
-import javaslang.collection.CharSeq;
 
 public class RandomDomainObjectGenerator implements DomainObjectGenerator, Comparable<DomainObjectGenerator> {
 
@@ -70,21 +67,20 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     this.tick = createTick(ticker);
   }
 
-  public RandomDomainObjectGenerator(String ticker) {
-    // TODO same as function in DogKennel...
+/*  public RandomDomainObjectGenerator(String ticker) {
     CharSeq[] split = CharSeq.of(ticker).split("\\.");
     Tuple2<CharSeq, MarketEnum> tuple = Tuple.of(split[0], MarketEnum.fromExtension(split[1]).getOrElseThrow(() -> parsingException.apply(ticker)));
     this.ticker = Ticker.of(tuple._1, tuple._2);
     this.tick = createTick(this.ticker);
   }
-
-  public RandomDomainObjectGenerator(MarketEnum market, CharSeq symbol) {
+*/
+/*  public RandomDomainObjectGenerator(MarketEnum market, CharSeq symbol) {
     Objects.requireNonNull(market);
     Objects.requireNonNull(symbol);
     this.ticker = Ticker.of(symbol, market);
     this.tick = createTick(ticker);
   }
-
+*/
   private TickJson createTick(Ticker ticker) {
     return new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d,
         ticker, OffsetDateTime.now().toString());

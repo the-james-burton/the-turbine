@@ -25,6 +25,9 @@ package org.jimsey.projects.turbine.fuel.domain;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+import javaslang.collection.List;
+import javaslang.collection.Stream;
+
 /**
  * NOTE: javadoc quirk: replace &amp; with just an ampersand to make the link work...
  * http://finance.yahoo.com/d/quotes.csv?f=nxohgav&amp;s=BHP.AX+BLT.L+AAPL
@@ -39,21 +42,17 @@ public class YahooFinanceRealtime {
 
   private final TickJson tick;
 
-  private final TickerMetadata metadata;
-
   /**
    * @param metadata the metadata to use
    * @param tick the tick to base this object on
    */
-  public YahooFinanceRealtime(TickerMetadata metadata, TickJson tick) {
-    Objects.requireNonNull(metadata, "metadata must be provided");
+  public YahooFinanceRealtime(TickJson tick) {
     Objects.requireNonNull(tick, "tick must be provided");
-    this.metadata = metadata;
     this.tick = tick;
   }
 
-  public static YahooFinanceRealtime of(TickerMetadata metadata, TickJson tick) {
-    return new YahooFinanceRealtime(metadata, tick);
+  public static YahooFinanceRealtime of(TickJson tick) {
+    return new YahooFinanceRealtime(tick);
   }
   
 
@@ -62,54 +61,37 @@ public class YahooFinanceRealtime {
    * @param date the date
    * @param line  in this format: "ABCName","FTSE100",114.43,114.56,113.51,113.87,13523517
    */
-  public YahooFinanceRealtime(TickerMetadata metadata, OffsetDateTime date, String line) {
+  public YahooFinanceRealtime(OffsetDateTime date, String line, Ticker ticker) {
     String[] parts = line.split(",");
+    // Ticker ticker = Ticker.of(parts[0].replaceAll("\"", ""), parts[1].replaceAll("\"", ""));
     double open = Double.parseDouble(parts[2]);
     double high = Double.parseDouble(parts[3]);
     double low = Double.parseDouble(parts[4]);
     double close = Double.parseDouble(parts[5]);
     double volume = Double.parseDouble(parts[6]);
-    this.metadata = metadata;
     this.tick = new TickJson(date, open, high, low, close, volume,
-        metadata.getTicker(), date.toString());
+        ticker, date.toString());
   }
 
-  public static YahooFinanceRealtime of(TickerMetadata metadata, OffsetDateTime date, String line) {
-    return new YahooFinanceRealtime(metadata, date, line);
+  public static YahooFinanceRealtime of(OffsetDateTime date, String line, Ticker ticker) {
+    return new YahooFinanceRealtime(date, line, ticker);
   }
   
-
+  public static List<YahooFinanceRealtime> of(OffsetDateTime date, String[] lines, Ticker[] tickers) {
+    return Stream.of(lines)
+        .zip(Stream.of(tickers))
+        .map(tuple -> YahooFinanceRealtime.of(date, tuple._1, tuple._2)).toList();
+  }
+  
   @Override
   public String toString() {
     return String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        metadata.getName(),
-        metadata.getTicker().getMarket().toString(),
-        getOpen(), getHigh(), getLow(), getClose(), getVol());
-  }
-
-  public TickerMetadata getMetadata() {
-    return metadata;
+        tick.getTickerAsObject().getName(), tick.getTickerAsObject().getMarketAsString(),
+        tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol());
   }
   
-  public double getOpen() {
-    return tick.getOpen();
+  public TickJson getTick() {
+    return tick;
   }
 
-  public double getHigh() {
-    return tick.getHigh();
-  }
-
-  public double getLow() {
-    return tick.getLow();
-  }
-
-  public double getClose() {
-    return tick.getClose();
-  }
-
-  public long getVol() {
-    return tick.getVol();
-  }
-
-  
 }
