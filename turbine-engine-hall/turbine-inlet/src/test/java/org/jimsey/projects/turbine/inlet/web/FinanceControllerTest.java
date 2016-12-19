@@ -35,9 +35,9 @@ import java.time.OffsetDateTime;
 
 import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.inlet.domain.TickerMetadata;
+import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
-import org.jimsey.projects.turbine.inlet.domain.YahooFinanceRealtime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

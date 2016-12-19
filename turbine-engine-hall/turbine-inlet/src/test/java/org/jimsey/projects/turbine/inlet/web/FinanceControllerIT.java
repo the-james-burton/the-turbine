@@ -29,9 +29,9 @@ import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.inlet.domain.TickerMetadata;
+import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
-import org.jimsey.projects.turbine.inlet.domain.YahooFinanceRealtime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

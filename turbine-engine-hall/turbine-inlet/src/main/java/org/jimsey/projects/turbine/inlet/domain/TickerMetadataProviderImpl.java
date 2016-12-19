@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
 import org.springframework.stereotype.Service;
 
 import javaslang.control.Option;

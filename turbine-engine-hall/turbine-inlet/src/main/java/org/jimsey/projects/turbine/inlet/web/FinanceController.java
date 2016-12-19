@@ -28,9 +28,9 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.jimsey.projects.turbine.inlet.domain.DogKennel;
 import org.jimsey.projects.turbine.inlet.domain.TickerMetadataProvider;
-import org.jimsey.projects.turbine.inlet.domain.YahooFinanceRealtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

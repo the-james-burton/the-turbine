@@ -1,6 +1,6 @@
 /**
  * The MIT License
- * Copyright (c) ${project.inceptionYear} the-james-burton
+ * Copyright (c) 2015 the-james-burton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inlet.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
 import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 

@@ -1,6 +1,6 @@
 /**
  * The MIT License
- * Copyright (c) ${project.inceptionYear} the-james-burton
+ * Copyright (c) 2015 the-james-burton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.inlet.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants.*;
@@ -31,6 +31,9 @@ import java.time.OffsetDateTime;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.TickerMetadata;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +42,12 @@ public class YahooFinanceRealtimeTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final TickerMetadataProvider tmp = new TickerMetadataProviderImpl();
-  
   private final DomainObjectGenerator dog = new RandomDomainObjectGenerator(ABC);
-  
+    
   @Test
   public void testRoundTripForString() {
     OffsetDateTime date = OffsetDateTime.now();
-    TickerMetadata metadata = tmp.findMetadataForTicker("ABC.L").getOrElseThrow(() -> new RuntimeException("ABC.L not in TickerMetadataProvider"));
+    TickerMetadata metadata = TickerMetadata.of(Ticker.of("ABC.L"), "ABCName");
     double open = 114.43;
     double high = 114.56;
     double low = 113.51;
@@ -72,7 +73,7 @@ public class YahooFinanceRealtimeTest {
   @Test
   public void testRoundTripForTickJson() {
     TickJson tick = dog.newTick(); 
-    TickerMetadata metadata = tmp.findMetadataForTicker("ABC.L").getOrElseThrow(() -> new RuntimeException("ABC.L not in TickerMetadataProvider"));
+    TickerMetadata metadata = TickerMetadata.of(Ticker.of("ABC.L"), "ABCName");
     YahooFinanceRealtime yfr = new YahooFinanceRealtime(metadata, tick);
 
     // check the individual properties...

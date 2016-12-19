@@ -52,6 +52,10 @@ public class TickProducer implements Comparable<TickProducer> {
   
   private final RestTemplate rest;
   
+//  Stream.of(body.split("\\n"))
+//  .map(line -> YahooFinanceRealtime.of(metadata, OffsetDateTime.now(), line))
+//  .toList()
+  
   public TickProducer(RestTemplate rest, Ticker ticker, String baseUrl) {
     this.rest = rest;
     this.ticker = ticker;
