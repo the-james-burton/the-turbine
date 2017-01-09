@@ -9,7 +9,12 @@ spring:
       cluster-nodes: localhost:9300
       repositories:
         enabled: true
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    
 server:
   port: 48002
 #  ssl:
