@@ -40,9 +40,6 @@ import javaslang.collection.Stream;
 @Component
 public class DogKennel {
 
-  // TODO make market independent...
-  // private final String market = "FTSE100";
-
   @Autowired
   private TickerMetadata metadata;
   
@@ -59,7 +56,7 @@ public class DogKennel {
           .split("\\+"))
           .map(t -> CharSeq.of(t))
           .map(s -> metadata.findTickerBySymbol.apply(s).getOrElseThrow(() -> 
-              new RuntimeException(format("unable to find ticker:{} in metadata", s))))
+              new RuntimeException(format("unable to find ticker:%s in metadata", s))))
           .toList();
 
   /**
