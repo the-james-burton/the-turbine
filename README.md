@@ -1,7 +1,5 @@
 # the-turbine [![Build Status](https://api.travis-ci.org/the-james-burton/the-turbine.svg?branch=master)](https://travis-ci.org/the-james-burton/the-turbine)
 
-> oh no, looks like I've broken travis-ci! See issue #25
-
 ## What is it?
 
 The turbine is a set of server-side components that perform automated technical analysis on stocks. It it not actually connected just yet to any real source of stock prices, instead, it currently generates random data so that the project can be further developed. This data is also analysed with common technical indicators and trading strategies and the results of that analysis are persisted into Elasticsearch for further analysis downstream.
