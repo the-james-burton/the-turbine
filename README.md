@@ -41,6 +41,8 @@ Everything is sent around as JSON. This makes it easy to persist in elasticsearc
 0. **I didn't want to implement another bespoke elasticsearch API and client.** Why not just use the built-in REST API and factory client? Well, that's what I did.
 0. **RabbitMQ supports stomp over websockets!** and spring boot lets you plug it right in as a websocket broker. This lets rabbitMQ take control of *all* the asynchronous messaging.
 
+> NOTE: Issue #24 describes a limitation with the Spring websocket RabbitMQ relay that is described above. Using it means I can't use reactor 3! So for now I have gone back to using the built-in Spring websocker broker until Spring 5/Boot 2 is released which will use reactor 3.
+
 I believe a main concern with this design is security. To secure the connections to elasticsearch, I would most likely put ApiMan or similar over the top. To secure the rabbitMQ webstomp connections I am not so sure. I need to do more research. However it is very easy to stop using rabbitMQ as websocket broker and use the native spring support instead.
 
 
