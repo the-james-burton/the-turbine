@@ -22,6 +22,9 @@
  */
 package org.jimsey.projects.turbine.condenser.amqp;
 
+import javax.validation.constraints.NotNull;
+
+import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -29,22 +32,31 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * This class controls the wiring within RabbitMQ for our Spring AMQP implementation 
+ * @author the-james-burton
+ */
 @Configuration
 public class AmqpSetup {
 
-  final static String queueName = "spring-boot";
+  final static String queueName = "turbine.test.queue";
+
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrastructureProperties;
 
   @Bean
   Queue queue() {
-      return new Queue(queueName, false);
+      return new Queue(queueName, false, false, true);
   }
 
   @Bean
   TopicExchange exchange() {
-      return new TopicExchange("spring-boot-exchange");
+      return new TopicExchange("turbine.test.exchange", false, true);
   }
 
   @Bean
@@ -63,7 +75,7 @@ public class AmqpSetup {
   }
 
   @Bean
-  MessageListenerAdapter listenerAdapter(ExampleReceiver receiver) {
-      return new MessageListenerAdapter(receiver, "receiveMessage");
+  MessageListenerAdapter listenerAdapter(TestReceiver receiver) {
+      return new MessageListenerAdapter(receiver);
   }
 }

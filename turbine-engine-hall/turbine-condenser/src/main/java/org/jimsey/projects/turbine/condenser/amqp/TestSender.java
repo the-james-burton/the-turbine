@@ -23,6 +23,8 @@
 package org.jimsey.projects.turbine.condenser.amqp;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,21 +33,26 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
+/**
+ * See AmqpSetup for details of how this class is wired up to RabbitMQ
+ * @author the-james-burton
+ */
 @Component
 @ManagedResource
-public class ExampleSender {
+public class TestSender {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final RabbitTemplate rabbitTemplate;
 
-  public ExampleSender(RabbitTemplate rabbitTemplate) {
+  public TestSender(RabbitTemplate rabbitTemplate) {
       this.rabbitTemplate = rabbitTemplate;
   }
 
   @ManagedOperation
-  public void sendMessage(String message) throws Exception {
-    logger.info(" ...> Spring AMQP Sending [{}]", message);
+  public void sendMessage() throws Exception {
+    String message = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+    logger.info(" ...> Spring AMQP sending message [{}]", message);
       rabbitTemplate.convertAndSend(AmqpSetup.queueName, message);
   }
 }

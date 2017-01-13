@@ -28,13 +28,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * See AmqpSetup for details of how this class is wired up to RabbitMQ
+ * @author the-james-burton
+ */
 @Component
-public class ExampleReceiver {
+public class TestReceiver {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void receiveMessage(String message) {
-    logger.info(" ...> Spring AMQP Received [{}]", message);
+  /**
+   * The method intended to be called on message arrival should be called 'handleMessage'
+   * as per MessageListenerAdapter.defaultListenerMethod
+   * @param message handle inbound test message from RabbitMQ
+   */
+  public void handleMessage(String message) {
+    logger.info(" ...> Spring AMQP received [{}]", message);
   }
 
 }
