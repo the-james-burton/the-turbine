@@ -86,30 +86,15 @@
       <artifactId>jest</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-net</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>io.projectreactor</groupId> -->
+<!--       <artifactId>reactor-net</artifactId> -->
+<!--     </dependency> -->
 
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-bus</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-stream</artifactId>
-    </dependency>
-
-<!--     <dependency> -->
-<!--       <groupId>io.projectreactor</groupId> -->
-<!--       <artifactId>reactor-io</artifactId> -->
-<!--     </dependency> -->
 
     <dependency>
       <groupId>io.netty</groupId>
@@ -308,7 +293,11 @@
       <scope>test</scope>
     </dependency>
 
-
+    <dependency>
+      <groupId>io.projectreactor.addons</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 

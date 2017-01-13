@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.2.RELEASE</version>
+    <version>1.4.3.RELEASE</version>
     <relativePath></relativePath>
   </parent>
 
@@ -28,7 +28,7 @@
     <java.version>1.8</java.version>
 
     <!-- for dependencies... -->
-    <spring.boot.version>1.4.2.RELEASE</spring.boot.version>
+    <spring.boot.version>1.4.3.RELEASE</spring.boot.version>
 <!--     <camel.version>2.17.3</camel.version> -->
     <camel.version>2.18.1</camel.version>
 
@@ -46,15 +46,8 @@
     <javaslang.version>2.0.5</javaslang.version>
     <caffeine.version>2.3.5</caffeine.version>
 
-<!--     <reactor-core.version>2.5.0.M4</reactor-core.version> -->
-<!--     <reactor-io.version>2.5.0.BUILD-SNAPSHOT</reactor-io.version> -->
-
-    <reactor-core.version>2.0.8.RELEASE</reactor-core.version>
-    <reactor-io.version>2.0.8.RELEASE</reactor-io.version>
-    <reactor-stream.version>2.0.8.RELEASE</reactor-stream.version>
-    <reactor-bus.version>2.0.8.RELEASE</reactor-bus.version>
-<!--     <reactor-core.version>2.0.8.RELEASE</reactor-core.version> -->
-    <reactor-net.version>2.0.8.RELEASE</reactor-net.version>
+    <reactor3.version>3.0.4.RELEASE</reactor3.version>
+    <reactor2.version>2.0.8.RELEASE</reactor2.version>
     <netty.version>4.1.5.Final</netty.version>
 
     <commons-lang3.version>3.5</commons-lang3.version>
@@ -178,35 +171,17 @@
         <version>${spring.boot.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>io.projectreactor</groupId>
-        <artifactId>reactor-net</artifactId>
-        <version>${reactor-net.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.projectreactor</groupId>
-        <artifactId>reactor-core</artifactId>
-        <version>${reactor-core.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.projectreactor</groupId>
-        <artifactId>reactor-bus</artifactId>
-        <version>${reactor-net.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.projectreactor</groupId>
-        <artifactId>reactor-stream</artifactId>
-        <version>${reactor-core.version}</version>
-      </dependency>
-
 <!--       <dependency> -->
 <!--         <groupId>io.projectreactor</groupId> -->
-<!--         <artifactId>reactor-io</artifactId> -->
-<!--         <version>${reactor-io.version}</version> -->
+<!--         <artifactId>reactor-net</artifactId> -->
+<!--         <version>${reactor2.version}</version> -->
 <!--       </dependency> -->
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+      <version>${reactor3.version}</version>
+    </dependency>
 
       <dependency>
         <groupId>io.netty</groupId>
@@ -435,6 +410,13 @@
         <version>0.0.1-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor.addons</groupId>
+      <artifactId>reactor-test</artifactId>
+      <version>${reactor3.version}</version>
+      <scope>test</scope>
+    </dependency>
 
     </dependencies>
 

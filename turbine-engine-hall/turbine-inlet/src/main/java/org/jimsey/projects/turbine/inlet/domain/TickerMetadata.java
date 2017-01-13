@@ -32,6 +32,10 @@ import javaslang.collection.CharSeq;
 import javaslang.collection.List;
 import javaslang.control.Option;
 
+/**
+ * 
+ * @author the-james-burton
+ */
 @Service
 public class TickerMetadata {
 
@@ -42,6 +46,7 @@ public class TickerMetadata {
   
   @PostConstruct
   public void init() {
+    // TODO issue #5 initialise this from external source...
     knownTickers = knownTickers.append(Ticker.of("ABC.L", "ABCName"));
     knownTickers = knownTickers.append(Ticker.of("DEF.L", "DEFName"));
   }

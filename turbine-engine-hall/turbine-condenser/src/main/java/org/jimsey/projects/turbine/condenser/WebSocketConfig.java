@@ -24,6 +24,8 @@ package org.jimsey.projects.turbine.condenser;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
@@ -42,20 +44,24 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
+  private static final Logger logger = LoggerFactory.getLogger(BrokerListener.class);
+
   StompEndpointRegistry registry;
 
   @Override
   public void configureMessageBroker(final MessageBrokerRegistry config) {
     // to support stomp over websockets natively...
-    // config.enableSimpleBroker("/topic");
+    logger.warn(" ~~> issue #24 - not using the spring stomp broker relay until it supports reactor 3");
+    config.enableSimpleBroker("/topic");
 
-    // to use the stomp support build into RabbitMQ...
-    config.enableStompBrokerRelay("/topic", "/queue")
-        .setRelayHost("localhost")
-        .setRelayPort(61613)
-        .setSystemLogin("guest")
-        .setSystemPasscode("guest");
-    // .setVirtualHost("/");
+    // to use the stomp support built into RabbitMQ...
+    // NOTE: not using this due to https://github.com/the-james-burton/the-turbine/issues/24
+    // config.enableStompBrokerRelay("/topic", "/queue")
+    //     .setRelayHost("localhost")
+    //     .setRelayPort(61613)
+    //     .setSystemLogin("guest")
+    //     .setSystemPasscode("guest");
+    // // .setVirtualHost("/");
 
     config.setApplicationDestinationPrefixes("/app");
     config.setPathMatcher(new AntPathMatcher("."));
@@ -64,10 +70,12 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(final StompEndpointRegistry registry) {
     this.registry = registry;
-    registry.addEndpoint("/reply").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
-    registry.addEndpoint("/request").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
-    registry.addEndpoint("/ping").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
-    registry.addEndpoint("/ticks").setAllowedOrigins("http://localhost:9000", "http://localhost:48002").withSockJS();
+    String atacamaInGulpServeMode = "http://localhost:3000"; 
+    String inProcessWebsite = "http://localhost:48002"; 
+    registry.addEndpoint("/reply").setAllowedOrigins(atacamaInGulpServeMode, inProcessWebsite).withSockJS();
+    registry.addEndpoint("/request").setAllowedOrigins(atacamaInGulpServeMode, inProcessWebsite).withSockJS();
+    registry.addEndpoint("/ping").setAllowedOrigins(atacamaInGulpServeMode, inProcessWebsite).withSockJS();
+    registry.addEndpoint("/ticks").setAllowedOrigins(atacamaInGulpServeMode, inProcessWebsite).withSockJS();
   }
 
   @Override

@@ -56,8 +56,13 @@ public class SecuritySetup extends WebSecurityConfigurerAdapter {
         .httpBasic()
         .and()
         .authorizeRequests()
-        // .antMatchers("/index.html", "/home.html", "/login.html", "/", "turbine/**", "/user")
-        // .permitAll()
+        // .antMatchers("/index.html", "/home.html", "/login.html", "/", "turbine/**", "/user").permitAll()
+        /* 
+         * when running a local spring simple stomp broker, this is needed because
+         * the credentials do not work when given to AngularStompDK in atacama
+         * so we are forced to unsecure the simple stomp broker for now...
+         */
+        .antMatchers("/ticks/**").permitAll() 
         .anyRequest()
         .hasAnyRole("USER")
         // .authenticated()
