@@ -25,9 +25,11 @@ package org.jimsey.projects.turbine.furnace.camel.routes;
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +51,7 @@ public class TickPublishingRoute extends RouteBuilder {
         .log(" ** tick for publishing")
         // .to(String.format("log:%s?showAll=true", this.getClass().getName()))
         .convertBodyTo(String.class)
+        .setHeader(RabbitMQConstants.CONTENT_TYPE, constant(MessageProperties.CONTENT_TYPE_TEXT_PLAIN))
         .multicast().parallelProcessing()
         .to(getOutput("ticks"))
         .end();

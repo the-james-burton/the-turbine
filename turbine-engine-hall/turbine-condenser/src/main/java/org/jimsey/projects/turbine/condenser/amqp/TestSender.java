@@ -28,6 +28,9 @@ import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -51,8 +54,12 @@ public class TestSender {
 
   @ManagedOperation
   public void sendMessage() throws Exception {
-    String message = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-    logger.info(" ...> Spring AMQP sending message [{}]", message);
-      rabbitTemplate.convertAndSend(AmqpSetup.queueTestName, message);
+    String text = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+    logger.info(" ...> Spring AMQP sending message [{}]", text);
+    // the defaults will do the same as below, this is really to show how to do it post-camel...
+    Message message = MessageBuilder.withBody(text.getBytes())
+        .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
+        .build();
+      rabbitTemplate.send(AmqpSetup.exchangeTestName, "", message);
   }
 }
