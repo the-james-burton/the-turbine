@@ -53,6 +53,6 @@ public class TestSender {
   public void sendMessage() throws Exception {
     String message = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
     logger.info(" ...> Spring AMQP sending message [{}]", message);
-      rabbitTemplate.convertAndSend(AmqpSetup.queueName, message);
+      rabbitTemplate.convertAndSend(AmqpSetup.queueTestName, message);
   }
 }

@@ -22,17 +22,23 @@
  */
 package org.jimsey.projects.turbine.condenser.amqp;
 
-import javax.validation.constraints.NotNull;
+import java.lang.invoke.MethodHandles;
 
-import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,41 +47,108 @@ import org.springframework.context.annotation.Configuration;
  * @author the-james-burton
  */
 @Configuration
-public class AmqpSetup {
+@EnableRabbit
+public class AmqpSetup extends BaseConfiguration {
 
-  final static String queueName = "turbine.test.queue";
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  final static String queueTestName = "turbine.test.queue";
+
+  final static String exchangeTestName = "turbine.test.exchange";
+
+  private String exchangeTicksName, queueTicksName;
+
+  private ConnectionFactory connectionFactory = new CachingConnectionFactory(); 
+  
   @Autowired
-  @NotNull
-  private InfrastructureProperties infrastructureProperties;
+  private AmqpAdmin rabbit;
+
+  @PostConstruct
+  public void init() {
+    exchangeTicksName = infrastructureProperties.getAmqpTicksExchange();
+    queueTicksName = infrastructureProperties.getAmqpTicksQueue() + ".spring";
+    
+    // TODO maybe the direct programming approach is better than all the beans below..?
+    //rabbit.declareBinding(bindingTest());
+  }
+
+  /**
+   * enables support for @RabbitListener
+   * @param configurer
+   * @return
+   */
+  @Bean
+  public SimpleRabbitListenerContainerFactory myFactory(
+      SimpleRabbitListenerContainerFactoryConfigurer configurer) {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    configurer.configure(factory, connectionFactory);
+    // factory.setMessageConverter(myMessageConverter());
+    return factory;
+  }
+
+  /**
+   * 
+   * @param connectionFactory injected by Spring
+   * @param listenerAdapter injected by Spring
+   * @return 
+   */
+//  @Bean
+//  SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+//      MessageListenerAdapter listenerAdapterTest) {
+//    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+//    container.setConnectionFactory(connectionFactory);
+//    container.setQueueNames(queueTestName);
+//    container.setMessageListener(listenerAdapterTest);
+//    return container;
+//  }
 
   @Bean
-  Queue queue() {
-      return new Queue(queueName, false, false, true);
+  TopicExchange exchangeTest() {
+    return new TopicExchange(exchangeTestName, false, true);
   }
 
   @Bean
-  TopicExchange exchange() {
-      return new TopicExchange("turbine.test.exchange", false, true);
+  TopicExchange exchangeTicks() {
+    return new TopicExchange(exchangeTicksName, true, true);
   }
 
   @Bean
-  Binding binding(Queue queue, TopicExchange exchange) {
-      return BindingBuilder.bind(queue).to(exchange).with(queueName);
+  Queue queueTest() {
+    return new Queue(queueTestName, false, false, true);
   }
 
   @Bean
-  SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-          MessageListenerAdapter listenerAdapter) {
-      SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-      container.setConnectionFactory(connectionFactory);
-      container.setQueueNames(queueName);
-      container.setMessageListener(listenerAdapter);
-      return container;
+  Queue queueTicks() {
+    return new Queue(queueTicksName, false, false, true);
   }
 
   @Bean
-  MessageListenerAdapter listenerAdapter(TestReceiver receiver) {
-      return new MessageListenerAdapter(receiver);
+  Binding bindingTest(Queue queueTest, TopicExchange exchangeTest) {
+    return BindingBuilder.bind(queueTest).to(exchangeTest).with("");
+  }
+
+  @Bean
+  Binding bindingTicks(Queue queueTicks, TopicExchange exchangeTicks) {
+    return BindingBuilder.bind(queueTicks).to(exchangeTicks).with("");
+  }
+
+
+//  @Bean
+//  MessageListenerAdapter listenerAdapterTest(TestReceiver receiver) {
+//    return new MessageListenerAdapter(receiver);
+//  }
+//
+//  @Bean
+//  MessageListenerAdapter listenerAdapterTicks(TickReceiver receiver) {
+//    return new MessageListenerAdapter(receiver);
+//  }
+  
+
+  public AmqpAdmin getRabbit() {
+    return rabbit;
+  }
+
+  public void setRabbit(AmqpAdmin rabbit) {
+    this.rabbit = rabbit;
   }
 }

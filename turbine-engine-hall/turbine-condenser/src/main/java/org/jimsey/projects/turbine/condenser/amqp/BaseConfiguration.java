@@ -20,49 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.camel.routes;
+package org.jimsey.projects.turbine.condenser.amqp;
 
-import java.lang.invoke.MethodHandles;
-
-import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.apache.camel.Processor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-public class TickConsumerRoute extends BaseRoute {
-
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+/**
+ * extend this in an @Configuration class to get injected properties
+ * @author the-james-burton
+ */
+public class BaseConfiguration {
 
   @Autowired
   @NotNull
-  private Processor tickProcessor;
+  InfrastructureProperties infrastructureProperties;
 
-  @PostConstruct
-  public void init() {
-    super.setup(
-        infrastructureProperties.getElasticsearchIndexForTicks(),
-        infrastructureProperties.getElasticsearchTypeForTicks());
+  public InfrastructureProperties getInfrastructureProperties() {
+    return infrastructureProperties;
   }
 
-  @Override
-  public void configure() throws Exception {
-    from(getInput("ticks")).id("ticks")
-        // .to("slog:json")
-        .log(" ==> tick: headers:${headers}, body:${body}")
-        // .to(format("log:%s?level=DEBUG&showHeaders=true$showBody=true", logger.getName()))
-        .process(tickProcessor)
-        .convertBodyTo(String.class)
-        .multicast().parallelProcessing()
-        .to(getWebsocket(infrastructureProperties.getWebsocketTicks()),
-            getElasticsearchUri())
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  public void setInfrastructureProperties(InfrastructureProperties infrastructureProperties) {
+    this.infrastructureProperties = infrastructureProperties;
   }
 
 }

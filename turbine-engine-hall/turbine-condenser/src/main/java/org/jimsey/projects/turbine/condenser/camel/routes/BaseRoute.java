@@ -22,13 +22,19 @@
  */
 package org.jimsey.projects.turbine.condenser.camel.routes;
 
+import java.lang.invoke.MethodHandles;
+
 import javax.validation.constraints.NotNull;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseRoute extends RouteBuilder {
+
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private String index;
 
@@ -65,6 +71,7 @@ public abstract class BaseRoute extends RouteBuilder {
         queueOptionName,
         infrastructureProperties.getAmqpTicksQueue(),
         queueSuffix);
+    logger.info("BaseRoute::getInput():[{}]", input);
     return input;
   }
 

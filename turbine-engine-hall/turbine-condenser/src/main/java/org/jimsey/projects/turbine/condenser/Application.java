@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.condenser.amqp.TestSender;
 import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javaslang.control.Try;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
@@ -65,6 +67,11 @@ public class Application {
     Ping ping = (Ping) spring.getBean("ping");
     long message = ping.ping();
     logger.info(String.format("ping=%s", message));
+    
+    // TODO remove this little testing code...
+    TestSender amqpTestSender = spring.getBean(TestSender.class);
+    Try.run(() -> amqpTestSender.sendMessage())
+      .orElseRun((e) -> logger.info("could not send AMQP message:{}", e));
   }
   
   @SuppressWarnings("unused")

@@ -20,49 +20,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.camel.routes;
+package org.jimsey.projects.turbine.condenser.amqp;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
-
-import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * See AmqpSetup for details of how this class is wired up to RabbitMQ
+ * @author the-james-burton
+ */
 @Component
-public class TickConsumerRoute extends BaseRoute {
+public class TickReceiver extends BaseConfiguration {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Autowired
-  @NotNull
-  private Processor tickProcessor;
-
-  @PostConstruct
-  public void init() {
-    super.setup(
-        infrastructureProperties.getElasticsearchIndexForTicks(),
-        infrastructureProperties.getElasticsearchTypeForTicks());
-  }
-
-  @Override
-  public void configure() throws Exception {
-    from(getInput("ticks")).id("ticks")
-        // .to("slog:json")
-        .log(" ==> tick: headers:${headers}, body:${body}")
-        // .to(format("log:%s?level=DEBUG&showHeaders=true$showBody=true", logger.getName()))
-        .process(tickProcessor)
-        .convertBodyTo(String.class)
-        .multicast().parallelProcessing()
-        .to(getWebsocket(infrastructureProperties.getWebsocketTicks()),
-            getElasticsearchUri())
-        .end();
-
-    logger.info(String.format("%s configured in camel context %s", this.getClass().getName(), getContext().getName()));
+  /**
+   * handle inbound ticks from RabbitMQ
+   * @param the inbound message from RabbitMQ as a String
+   */
+  @RabbitListener(queues = "#{queueTicks}")
+  public void handleMessage(String message) {
+    logger.info(" ...> TickReceiver: Spring AMQP received [{}]", message);
   }
 
 }

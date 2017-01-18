@@ -26,6 +26,7 @@ import java.lang.invoke.MethodHandles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,10 +39,10 @@ public class TestReceiver {
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
-   * The method intended to be called on message arrival should be called 'handleMessage'
-   * as per MessageListenerAdapter.defaultListenerMethod
-   * @param message handle inbound test message from RabbitMQ
+   * handle RabbitMQ setup test messages
+   * @param the inbound message from RabbitMQ as a String
    */
+  @RabbitListener(queues = "#{queueTest}")
   public void handleMessage(String message) {
     logger.info(" ...> Spring AMQP received [{}]", message);
   }
