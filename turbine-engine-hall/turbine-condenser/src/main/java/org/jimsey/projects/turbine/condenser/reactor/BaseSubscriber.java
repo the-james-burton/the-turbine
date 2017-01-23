@@ -20,31 +20,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.amqp;
+package org.jimsey.projects.turbine.condenser.reactor;
 
 import java.lang.invoke.MethodHandles;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Component;
 
-/**
- * See AmqpSetup for details of how this class is wired up to RabbitMQ
- * @author the-james-burton
- */
-@Component
-public class TestReceiver {
+public class BaseSubscriber<T> implements Subscriber<T>, Subscription {
 
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  /**
-   * handle RabbitMQ setup test messages
-   * @param the inbound message from RabbitMQ as a String
-   */
-  @RabbitListener(queues = "#{queueTest}")
-  public void handleMessage(String message) {
-    logger.info(" ...> Spring AMQP received [{}]", message);
+  final String name;
+
+  Subscription subscription;
+
+  public BaseSubscriber(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public void request(long n) {
+    subscription.request(n);
+  }
+
+  @Override
+  public void cancel() {
+    subscription.cancel();
+  }
+
+  @Override
+  public void onSubscribe(Subscription subscription) {
+    this.subscription = subscription;
+    this.subscription.request(1);
+    logger.info("{} onSubscribe:{}", name, subscription.toString());
+  }
+
+  @Override
+  public void onNext(T t) {
+    logger.info("{} onNext:{}", name, t.toString());
+    this.subscription.request(1);
+  }
+
+  @Override
+  public void onError(Throwable t) {
+    logger.error("{} onError:{}", name, t.getMessage());
+  }
+
+  @Override
+  public void onComplete() {
+    logger.info("{} onComplete", name);
   }
 
 }

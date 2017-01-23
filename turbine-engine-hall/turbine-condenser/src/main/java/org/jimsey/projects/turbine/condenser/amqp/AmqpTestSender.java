@@ -36,22 +36,31 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
+import javaslang.collection.Stream;
+import javaslang.control.Try;
+
 /**
  * See AmqpSetup for details of how this class is wired up to RabbitMQ
  * @author the-james-burton
  */
 @Component
 @ManagedResource
-public class TestSender {
+public class AmqpTestSender {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final RabbitTemplate rabbitTemplate;
-
-  public TestSender(RabbitTemplate rabbitTemplate) {
+      
+  public AmqpTestSender(RabbitTemplate rabbitTemplate) {
       this.rabbitTemplate = rabbitTemplate;
   }
-
+  
+  @ManagedOperation
+  public void sendMessages(int n) {
+    Stream.range(0, n).forEach(x -> 
+        Try.run(() -> sendMessage()).orElseRun((e) -> logger.info("could not send AMQP message:{}", e)));
+  }  
+  
   @ManagedOperation
   public void sendMessage() throws Exception {
     String text = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
@@ -60,6 +69,7 @@ public class TestSender {
     Message message = MessageBuilder.withBody(text.getBytes())
         .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
         .build();
-      rabbitTemplate.send(AmqpSetup.exchangeTestName, "", message);
+    rabbitTemplate.send(AmqpSetup.exchangeTestName, "", message);
+    
   }
 }
