@@ -71,7 +71,15 @@ public class AmqpTickReceiver extends BaseConfiguration {
   @RabbitListener(queues = "#{queueTicks}")
   public void handleMessage(String message) {
     logger.info(" ...> TickReceiver: Spring AMQP received [{}]", message);
-    tickReceiver.getTopic().onNext(message);
+    getTickReceiver().getTopic().onNext(message);
+  }
+
+  public ReactorTickReceiver getTickReceiver() {
+    return tickReceiver;
+  }
+
+  public void setTickReceiver(ReactorTickReceiver tickReceiver) {
+    this.tickReceiver = tickReceiver;
   }
 
 }

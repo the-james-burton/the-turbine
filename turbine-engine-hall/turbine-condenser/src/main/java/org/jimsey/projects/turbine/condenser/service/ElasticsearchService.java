@@ -29,6 +29,8 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 public interface ElasticsearchService {
 
+  String indexTick(TickJson tick);
+
   String getAllTicks();
 
   List<TickJson> findTicksByTicker(String ticker);

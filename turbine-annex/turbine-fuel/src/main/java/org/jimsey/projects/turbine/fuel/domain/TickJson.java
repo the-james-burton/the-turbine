@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
+import javaslang.control.Try;
 
 // TODO this annotation (spring-data-elasticsearch only) forces the use of constants...
 // @Document(
@@ -100,6 +101,12 @@ public class TickJson extends Tick implements Serializable {
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
         open, high, low, close, volume, Ticker.of(ticker), timestamp);
+  }
+
+  public static TickJson of(String tick) {
+    return Try
+        .of(() -> json.readValue(tick, TickJson.class))
+        .getOrElseThrow((e) -> new RuntimeException(String.format("unable to parse [%s] as a TickJson : [%s]", e.getMessage())));
   }
 
   @JsonProperty("date")

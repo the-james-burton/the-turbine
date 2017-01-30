@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.reactor;
 
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
+
 /**
  * A reactor subscriber to process ticks
  * 
@@ -30,17 +32,16 @@ package org.jimsey.projects.turbine.condenser.reactor;
  *   2. should this instead be an instance of one of the various built in reactor subscribers?
  * @author the-james-burton
  */
-public class ReactorTickSubscriber extends BaseSubscriber<String> {
+public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
 
   public ReactorTickSubscriber(String name) {
     super(name);
   }
 
   @Override
-  public void onNext(String t) {
+  public void onNext(TickJson t) {
     super.onNext(t);
     // TODO in here we should do the same at the existing camel TickProcessor ??
   }
-
 
 }

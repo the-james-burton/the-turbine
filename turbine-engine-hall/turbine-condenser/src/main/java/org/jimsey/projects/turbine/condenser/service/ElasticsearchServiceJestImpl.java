@@ -158,4 +158,10 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
     return null;
   }
 
+  @Override
+  public String indexTick(TickJson tick) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

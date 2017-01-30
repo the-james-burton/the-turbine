@@ -34,6 +34,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -108,6 +109,20 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     elasticsearch.addTransportAddress(transport);
   }
 
+  /**
+   * put the given tick into elasticsearch
+   * @param tick the tick to be saved
+   * @return the toString() of the response from elasticsearch client
+   */
+  @Override
+  public String indexTick(TickJson tick) {
+    IndexResponse response = elasticsearch
+        .prepareIndex(indexForTicks, typeForTicks)
+        .setSource(tick.toString())
+        .get();
+    return response.toString();
+  }
+  
   @Override
   public String getAllTicks() {
     QueryBuilder queryBuilder = matchAllQuery();
