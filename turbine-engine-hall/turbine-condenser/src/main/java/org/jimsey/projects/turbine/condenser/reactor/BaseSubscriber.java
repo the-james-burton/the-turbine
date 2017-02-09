@@ -60,7 +60,6 @@ public class BaseSubscriber<T> implements Subscriber<T>, Subscription {
 
   @Override
   public void onNext(T t) {
-    logger.info("{} onNext:{}", name, t.toString());
     this.subscription.request(1);
   }
 
