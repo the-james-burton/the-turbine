@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Arrays.*;
 import static springfox.documentation.schema.AlternateTypeRules.*;
 
 import java.util.List;
@@ -77,13 +77,13 @@ public class SwaggerSetup {
                 typeResolver.resolve(WildcardType.class)))
         .useDefaultResponseMessages(false)
         .globalResponseMessage(RequestMethod.GET,
-            newArrayList(new ResponseMessageBuilder()
+            asList(new ResponseMessageBuilder()
                 .code(500)
                 .message("500 message")
                 .responseModel(new ModelRef("Error"))
                 .build()))
-        .securitySchemes(newArrayList(apiKey()))
-        .securityContexts(newArrayList(securityContext()))
+        .securitySchemes(asList(apiKey()))
+        .securityContexts(asList(securityContext()))
         .enableUrlTemplating(true)
     // .globalOperationParameters(
     // newArrayList(new ParameterBuilder()
@@ -116,7 +116,7 @@ public class SwaggerSetup {
     AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
     AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
     authorizationScopes[0] = authorizationScope;
-    return newArrayList(
+    return asList(
         new SecurityReference("mykey", authorizationScopes));
   }
 
