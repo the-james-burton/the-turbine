@@ -1,6 +1,5 @@
 logging:
   file: logs/condenser.log
-
 spring:
   jmx:
     port: 49002
@@ -13,8 +12,7 @@ spring:
     host: localhost
     port: 5672
     username: guest
-    password: guest
-    
+    password: guest  
 server:
   port: 48002
 #  ssl:
@@ -22,7 +20,6 @@ server:
 #    key-store-password: changeit
 #    keyStoreType: PKCS12
 #    keyAlias: tomcat
-
 infrastructure:
   environment-name: test1
   amqp-camel-component: rabbitmq
@@ -49,4 +46,4 @@ infrastructure:
   websocket-indicators: /topic/indicators
   websocket-strategies: /topic/strategies
   websocket-reply: /topic/reply
-  
+ 

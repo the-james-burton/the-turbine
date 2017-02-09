@@ -22,10 +22,13 @@
  */
 package org.jimsey.projects.turbine.fuel.domain;
 
+import static java.lang.String.*;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -37,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
@@ -159,30 +161,33 @@ public class TickJson extends Tick implements Serializable {
     return ticker;
   }
 
+  /**
+   * @return a complete, unescaped string, for example:  {"date":1485798512013,"open":100.0,"high":102.02332696536376,"low":99.73993448169895,"close":101.24628125330254,"volume":5446,"ticker":"ABC.L","timestamp":"2017-01-30T17:48:32.017Z"}
+   */
   @Override
   public String toString() {
-    String result = null;
-    try {
-      result = json.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return result;
+    return Try.of(() -> json.writeValueAsString(this))
+        .getOrElseThrow(e -> new RuntimeException(format("unable to write [%s] as String", this.toStringForElasticsearch())));
   }
 
-  @Deprecated
-  public String toStringWithoutJson() {
-    // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
-
+  /**
+   * @return string suitable for Elasticsearch, for example: {\"date\":1485798512013,\"open\":100.0,\"high\":102.02332696536376,\"low\":99.73993448169895,\"close\":101.24628125330254,\"volume\":5446,\"ticker\":\"ABC.L\"}
+   */
+  public String toStringForElasticsearch() {
     OffsetDateTime date = OffsetDateTime.parse(getEndTime().toString());
 
-    return String.format("{\"date\": %tQ, \"open\": %.2f, \"high\": %.2f, \"low\": %.2f, \"close\": %.2f, \"volume\": %.0f},",
+    // deliberately don't return the timestamp...
+    return format(
+        "{\"date\":%tQ,\"open\":%s,\"high\":%s,\"low\":%s,\"close\":%s,\"volume\":%.0f,\"ticker\":\"%s\"}",
+        // "{\"date\":%tQ,\"open\":%.2f,\"high\":%.2f,\"low\":%.2f,\"close\":%.2f,\"volume\":%.0f,\"ticker\":\"%s\",\"timestamp\":\"%s\"}",
+        // "{\\\"date\\\":%tQ,\\\"open\\\":%.2f,\\\"high\\\":%.2f,\\\"low\\\":%.2f,\\\"close\\\":%.2f,\\\"volume\\\":%.0f,\\\"ticker\\\":\\\"%s\\\"}",
         date,
         getOpenPrice().toDouble(),
         getMaxPrice().toDouble(),
         getMinPrice().toDouble(),
         getClosePrice().toDouble(),
-        getVolume().toDouble());
+        getVolume().toDouble(),
+        ticker, timestamp.format(DateTimeFormatter.ISO_DATE_TIME));
   }
 
 }

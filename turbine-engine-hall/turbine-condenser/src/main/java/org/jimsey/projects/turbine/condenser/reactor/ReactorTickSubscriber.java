@@ -22,7 +22,16 @@
  */
 package org.jimsey.projects.turbine.condenser.reactor;
 
+import org.jimsey.projects.turbine.condenser.domain.Stock;
+import org.jimsey.projects.turbine.condenser.service.TickerManager;
+import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+
+import javaslang.collection.Stream;
+import javaslang.control.Try;
+import reactor.core.publisher.TopicProcessor;
 
 /**
  * A reactor subscriber to process ticks
@@ -34,14 +43,43 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
  */
 public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
 
-  public ReactorTickSubscriber(String name) {
+  private final TickerManager tickerManager;
+
+  private final TopicProcessor<IndicatorJson> indicators;
+
+  private final TopicProcessor<StrategyJson> strategies;
+
+  public ReactorTickSubscriber(
+      String name,
+      TickerManager tickerManager,
+      TopicProcessor<IndicatorJson> indicators,
+      TopicProcessor<StrategyJson> strategies) {
     super(name);
+    this.tickerManager = tickerManager;
+    this.indicators = indicators;
+    this.strategies = strategies;
   }
 
   @Override
-  public void onNext(TickJson t) {
-    super.onNext(t);
-    // TODO in here we should do the same at the existing camel TickProcessor ??
+  public void onNext(TickJson tick) {
+    // logger.info("this:{}:{}", name, hashCode());
+    super.onNext(tick);
+    Ticker ticker = tick.getTickerAsObject();
+    Stock stock = tickerManager.findOrCreateStock(ticker);
+
+    tickerManager.findOrCreateStock(tick.getTickerAsObject()).receiveTick(tick);
+
+    // TODO still need this?
+    Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
+
+    Stream.ofAll(stock.getIndicators())
+        .map(indicator -> indicator.run(tick))
+        .forEach(indicatorJson -> indicators.onNext(indicatorJson));
+
+    Stream.ofAll(stock.getStrategies())
+        .map(strategy -> strategy.run(tick))
+        .forEach(strategyJson -> strategies.onNext(strategyJson));
+
   }
 
 }

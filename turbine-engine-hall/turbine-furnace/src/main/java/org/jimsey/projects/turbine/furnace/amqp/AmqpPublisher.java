@@ -20,43 +20,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.camel.processors;
+package org.jimsey.projects.turbine.furnace.amqp;
 
-import javax.validation.constraints.NotNull;
+import java.lang.invoke.MethodHandles;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
-import org.jimsey.projects.camel.components.SpringSimpleMessagingConstants;
-import org.jimsey.projects.turbine.condenser.service.TickerManager;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
 /**
- * Camel processor that does anything required to the tick before we send it to the client.
- *
+ * See AmqpSetup for details of how this class is wired up to RabbitMQ
  * @author the-james-burton
  */
 @Component
-public class TickProcessor implements Processor {
+@ManagedResource
+public class AmqpPublisher {
 
-  private static final Logger logger = LoggerFactory.getLogger(TickProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Autowired @NotNull
-  private TickerManager tickerManager;
+  private final RabbitTemplate rabbitTemplate;
 
-  @Override
-  public void process(final Exchange exchange) throws Exception {
-    Message message = exchange.getIn();
-    TickJson tick = message.getMandatoryBody(TickJson.class);
-    message.getHeaders().put(SpringSimpleMessagingConstants.DESTINATION_SUFFIX,
-        String.format(".%s", tick.getTicker()));
-    logger.info("tick: {}", tick.toString());
-    tickerManager.findOrCreateStock(tick.getTickerAsObject()).receiveTick(tick);    
+  // Spring will give us a RabbitTemplate...
+  public AmqpPublisher(RabbitTemplate rabbitTemplate) {
+    this.rabbitTemplate = rabbitTemplate;
   }
 
+  @ManagedOperation
+  public void publishTick(TickJson tick) {
+    logger.info(" ...> Spring AMQP sending tick [{}]", tick);
+    // TODO... best content type to use?
+    Message msg = MessageBuilder.withBody(tick.toString().getBytes())
+        .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
+        .build();
+    rabbitTemplate.send(AmqpSetup.getExchangeTicksName(), "", msg);
 
+  }
 }

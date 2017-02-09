@@ -25,11 +25,16 @@ package org.jimsey.projects.turbine.condenser.service;
 import java.util.List;
 
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 public interface ElasticsearchService {
 
   String indexTick(TickJson tick);
+
+  String indexIndicator(IndicatorJson indicator);
+
+  String indexStrategy(StrategyJson strategy);
 
   String getAllTicks();
 

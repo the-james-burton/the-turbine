@@ -24,8 +24,6 @@ package org.jimsey.projects.turbine.fuel.camel;
 
 import java.io.IOException;
 
-import org.apache.camel.Converter;
-import org.apache.camel.Exchange;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jimsey.projects.turbine.fuel.domain.Entity;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
@@ -34,36 +32,37 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Converter
+/**
+ * This was used by camel. I am leaving it in for now in case the methods are useful
+ * for spring AMQP or elasticsearch message conversion...
+ *
+ * @author the-james-burton
+ */
+@Deprecated
 public class TurbineObjectConverter {
 
   private static ObjectMapper json = new ObjectMapper();
 
   // --------------------------------------------
-  @Converter
-  public static byte[] toBytes(final Entity entity, final Exchange exchange) {
+  public static byte[] toBytes(final Entity entity) {
     return SerializationUtils.serialize(entity);
   }
 
   // --------------------------------------------
-  @Converter
-  public static String toString(final TickJson tick, final Exchange exchange) {
+  public static String toString(final TickJson tick) {
     return tick.toString();
   }
 
-  @Converter
-  public static String toString(final IndicatorJson indicator, final Exchange exchange) {
+  public static String toString(final IndicatorJson indicator) {
     return indicator.toString();
   }
 
-  @Converter
-  public static String toString(final StrategyJson strategy, final Exchange exchange) {
+  public static String toString(final StrategyJson strategy) {
     return strategy.toString();
   }
 
   // --------------------------------------------
-  @Converter
-  public static TickJson toTickJson(final String text, final Exchange exchange) {
+  public static TickJson toTickJson(final String text) {
     TickJson tick = null;
     try {
       tick = json.readValue(text, TickJson.class);
@@ -73,8 +72,7 @@ public class TurbineObjectConverter {
     return tick;
   }
 
-  @Converter
-  public static TickJson toTickJson(final byte[] bytes, final Exchange exchange) {
+  public static TickJson toTickJson(final byte[] bytes) {
     TickJson tick = null;
     try {
       tick = json.readValue(bytes, TickJson.class);
@@ -84,8 +82,7 @@ public class TurbineObjectConverter {
     return tick;
   }
 
-  @Converter
-  public static IndicatorJson toIndicatorJson(final String text, final Exchange exchange) {
+  public static IndicatorJson toIndicatorJson(final String text) {
     IndicatorJson indicator = null;
     try {
       indicator = json.readValue(text, IndicatorJson.class);
@@ -95,8 +92,7 @@ public class TurbineObjectConverter {
     return indicator;
   }
 
-  @Converter
-  public static StrategyJson toStrategyJson(final String text, final Exchange exchange) {
+  public static StrategyJson toStrategyJson(final String text) {
     StrategyJson strategy = null;
     try {
       strategy = json.readValue(text, StrategyJson.class);

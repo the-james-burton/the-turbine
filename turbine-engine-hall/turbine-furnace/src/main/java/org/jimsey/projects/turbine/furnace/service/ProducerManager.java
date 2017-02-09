@@ -27,14 +27,11 @@ import static java.lang.String.*;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
-import org.jimsey.projects.turbine.furnace.camel.routes.TickPublishingRoute;
+import org.jimsey.projects.turbine.furnace.amqp.AmqpPublisher;
 import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,13 +56,11 @@ public class ProducerManager {
 
   @Autowired
   @NotNull
-  private CamelContext camel;
+  private InfrastructureProperties infrastructure;
 
   @Autowired
   @NotNull
-  private InfrastructureProperties infrastructure;
-
-  private ProducerTemplate camelProducer;
+  private AmqpPublisher amqpPublisher;
 
   private Set<TickProducer> producers = HashSet.empty();
 
@@ -82,7 +77,6 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
-    camelProducer = camel.createProducerTemplate();
     // TODO issue #5 replace this with an import of external stock market list
     findOrCreateTickProducer(Ticker.of("ABC.L", "ABCName"));
     findOrCreateTickProducer(Ticker.of("DEF.L", "DEFName"));
@@ -108,16 +102,8 @@ public class ProducerManager {
   }
 
   public void publishTick(TickJson tick) {
-
-    java.util.Map<String, Object> headers = new java.util.HashMap<>();
-
-    // byte[] body = DomainConverter.toBytes(quote, null);
-    // byte[] body = mCamel.getTypeConverter().convertTo(byte[].class, object);
-    headers.put(TurbineFurnaceConstants.HEADER_FOR_OBJECT_TYPE, tick.getClass().getName());
-    String text = camel.getTypeConverter().convertTo(String.class, tick);
-
-    logger.info("publishing: [body: {}, headers: {}]", tick.toString(), new JSONObject(headers));
-    camelProducer.sendBodyAndHeaders(TickPublishingRoute.IN, text, headers);
+    logger.info("publishing tick: {}", tick.toString());
+    amqpPublisher.publishTick(tick);
   }
 
   @ManagedOperation
@@ -155,6 +141,14 @@ public class ProducerManager {
 
   public void setInfrastructure(InfrastructureProperties infrastructure) {
     this.infrastructure = infrastructure;
+  }
+
+  public AmqpPublisher getAmqpPublisher() {
+    return amqpPublisher;
+  }
+
+  public void setAmqpPublisher(AmqpPublisher amqpPublisher) {
+    this.amqpPublisher = amqpPublisher;
   }
 
 }

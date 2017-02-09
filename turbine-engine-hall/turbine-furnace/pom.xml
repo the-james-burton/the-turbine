@@ -44,30 +44,30 @@
       <artifactId>reactor-core</artifactId>
     </dependency>
     
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.apache.camel</groupId> -->
+<!--       <artifactId>camel-core</artifactId> -->
+<!--     </dependency> -->
 
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-rabbitmq</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.apache.camel</groupId> -->
+<!--       <artifactId>camel-rabbitmq</artifactId> -->
+<!--     </dependency> -->
 
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-amqp</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.apache.camel</groupId> -->
+<!--       <artifactId>camel-amqp</artifactId> -->
+<!--     </dependency> -->
 
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-spring-boot</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.apache.camel</groupId> -->
+<!--       <artifactId>camel-spring-boot</artifactId> -->
+<!--     </dependency> -->
 
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-metrics</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.apache.camel</groupId> -->
+<!--       <artifactId>camel-metrics</artifactId> -->
+<!--     </dependency> -->
 
     <dependency>
       <groupId>org.apache.commons</groupId>

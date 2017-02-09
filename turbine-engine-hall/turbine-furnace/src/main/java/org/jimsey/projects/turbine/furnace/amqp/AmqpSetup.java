@@ -20,12 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.amqp;
+package org.jimsey.projects.turbine.furnace.amqp;
 
 import java.lang.invoke.MethodHandles;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpAdmin;
@@ -48,15 +50,15 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableRabbit
-public class AmqpSetup extends BaseConfiguration {
+public class AmqpSetup {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  final static String queueTestName = "turbine.test.queue";
+  @Autowired
+  @NotNull
+  private InfrastructureProperties infrastructureProperties;
 
-  final static String exchangeTestName = "turbine.test.exchange";
-
-  private String exchangeTicksName, queueTicksName;
+  private static String exchangeTicksName, queueTicksName;
 
   private ConnectionFactory connectionFactory = new CachingConnectionFactory();
 
@@ -65,8 +67,8 @@ public class AmqpSetup extends BaseConfiguration {
 
   @PostConstruct
   public void init() {
-    exchangeTicksName = infrastructureProperties.getAmqpTicksExchange();
-    queueTicksName = infrastructureProperties.getAmqpTicksQueue();
+    exchangeTicksName = getInfrastructureProperties().getAmqpTicksExchange();
+    queueTicksName = getInfrastructureProperties().getAmqpTicksQueue();
 
     // TODO maybe the direct programming approach is better than all the beans below..?
     // rabbit.declareBinding(bindingTest());
@@ -86,35 +88,9 @@ public class AmqpSetup extends BaseConfiguration {
     return factory;
   }
 
-  /**
-   * 
-   * @param connectionFactory injected by Spring
-   * @param listenerAdapter injected by Spring
-   * @return 
-   */
-  // @Bean
-  // SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-  // MessageListenerAdapter listenerAdapterTest) {
-  // SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-  // container.setConnectionFactory(connectionFactory);
-  // container.setQueueNames(queueTestName);
-  // container.setMessageListener(listenerAdapterTest);
-  // return container;
-  // }
-
-  @Bean
-  TopicExchange exchangeTest() {
-    return new TopicExchange(exchangeTestName, false, true);
-  }
-
   @Bean
   TopicExchange exchangeTicks() {
     return new TopicExchange(exchangeTicksName, true, true);
-  }
-
-  @Bean
-  Queue queueTest() {
-    return new Queue(queueTestName, false, false, true);
   }
 
   @Bean
@@ -123,24 +99,9 @@ public class AmqpSetup extends BaseConfiguration {
   }
 
   @Bean
-  Binding bindingTest(Queue queueTest, TopicExchange exchangeTest) {
-    return BindingBuilder.bind(queueTest).to(exchangeTest).with("");
-  }
-
-  @Bean
   Binding bindingTicks(Queue queueTicks, TopicExchange exchangeTicks) {
     return BindingBuilder.bind(queueTicks).to(exchangeTicks).with("");
   }
-
-  // @Bean
-  // MessageListenerAdapter listenerAdapterTest(TestReceiver receiver) {
-  // return new MessageListenerAdapter(receiver);
-  // }
-  //
-  // @Bean
-  // MessageListenerAdapter listenerAdapterTicks(TickReceiver receiver) {
-  // return new MessageListenerAdapter(receiver);
-  // }
 
   public AmqpAdmin getRabbit() {
     return rabbit;
@@ -149,4 +110,21 @@ public class AmqpSetup extends BaseConfiguration {
   public void setRabbit(AmqpAdmin rabbit) {
     this.rabbit = rabbit;
   }
+
+  public InfrastructureProperties getInfrastructureProperties() {
+    return infrastructureProperties;
+  }
+
+  public void setInfrastructureProperties(InfrastructureProperties infrastructureProperties) {
+    this.infrastructureProperties = infrastructureProperties;
+  }
+
+  public static String getExchangeTicksName() {
+    return exchangeTicksName;
+  }
+
+  public static String getQueueTicksName() {
+    return queueTicksName;
+  }
+
 }

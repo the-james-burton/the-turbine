@@ -50,17 +50,23 @@ public class AmqpTestSender {
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final RabbitTemplate rabbitTemplate;
-      
+
   public AmqpTestSender(RabbitTemplate rabbitTemplate) {
-      this.rabbitTemplate = rabbitTemplate;
+    this.rabbitTemplate = rabbitTemplate;
   }
-  
+
+  /**
+   * TESTING ONLY
+   */
   @ManagedOperation
   public void sendMessages(int n) {
-    Stream.range(0, n).forEach(x -> 
-        Try.run(() -> sendMessage()).orElseRun((e) -> logger.info("could not send AMQP message:{}", e)));
-  }  
-  
+    Stream.range(0, n)
+        .forEach(x -> Try.run(() -> sendMessage()).orElseRun((e) -> logger.info("could not send AMQP message:{}", e)));
+  }
+
+  /**
+   * TESTING ONLY
+   */
   @ManagedOperation
   public void sendMessage() throws Exception {
     String text = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
@@ -70,6 +76,6 @@ public class AmqpTestSender {
         .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
         .build();
     rabbitTemplate.send(AmqpSetup.exchangeTestName, "", message);
-    
+
   }
 }

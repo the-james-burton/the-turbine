@@ -22,6 +22,8 @@
  */
 package org.jimsey.projects.turbine.furnace;
 
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import com.sun.istack.NotNull;
 
 @SpringBootApplication
 @EnableAutoConfiguration
@@ -49,13 +49,13 @@ public class Application {
     ConfigurableApplicationContext spring = SpringApplication.run(Application.class, args);
   }
 
-//  @Bean
-//  public TickProducerFactory tickProducerFactory() {
-//    return new TickProducerFactory() {
-//      public TickProducer createTickProducer(Ticker ticker) {
-//        return runtimeTickProducer(ticker);
-//      }
-//    };
-//  }
+  // @Bean
+  // public TickProducerFactory tickProducerFactory() {
+  // return new TickProducerFactory() {
+  // public TickProducer createTickProducer(Ticker ticker) {
+  // return runtimeTickProducer(ticker);
+  // }
+  // };
+  // }
 
 }

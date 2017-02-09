@@ -45,19 +45,19 @@ import javaslang.control.Try;
 public class TickProducer implements Comparable<TickProducer> {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  
+
   private final Ticker ticker;
 
   private final DomainObjectGenerator rdog;
 
   private final String baseUrl;
-  
+
   private final RestTemplate rest;
-  
-//  Stream.of(body.split("\\n"))
-//  .map(line -> YahooFinanceRealtime.of(metadata, OffsetDateTime.now(), line))
-//  .toList()
-  
+
+  // Stream.of(body.split("\\n"))
+  // .map(line -> YahooFinanceRealtime.of(metadata, OffsetDateTime.now(), line))
+  // .toList()
+
   public TickProducer(RestTemplate rest, Ticker ticker, String baseUrl) {
     this.rest = rest;
     this.ticker = ticker;
@@ -83,11 +83,16 @@ public class TickProducer implements Comparable<TickProducer> {
         .getOrElse(() -> new ResponseEntity<String>(format("turbine inlet service expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
     // there will only be one line, since we are not (yet) batching requests to the external finance service...
     logger.info("{} called {} and got {}:{}", toString(), url, response.getBody(), response.getStatusCode());
-    YahooFinanceRealtime yfr = YahooFinanceRealtime.of(OffsetDateTime.now(), response.getBody(), ticker);
+    YahooFinanceRealtime yfr = Try.of(() -> YahooFinanceRealtime.of(OffsetDateTime.now(), response.getBody(), ticker))
+        // TODO I don't like the way the exception is lost here...
+        .getOrElse(() -> {
+          logger.info("unable to parse response as a YFR: {}", response.getBody());
+          return null;
+        });
     logger.info("yfr:{}", yfr);
     return null;
   }
-  
+
   public Ticker getTicker() {
     return ticker;
   }

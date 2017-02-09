@@ -42,8 +42,10 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,11 +99,14 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     typeForIndicators = infrastructureProperties.getElasticsearchTypeForIndicators();
     indexForStrategies = infrastructureProperties.getElasticsearchIndexForStrategies();
     typeForStrategies = infrastructureProperties.getElasticsearchTypeForStrategies();
-    Settings settings = Settings.settingsBuilder()
+    // Settings settings = Settings.settingsBuilder()
+    Settings settings = Settings.builder()
         .put("cluster.name", cluster)
+        .put("transport.type", "netty4")
         .build();
     // elasticsearch = new TransportClient(settings);
-    elasticsearch = TransportClient.builder().settings(settings).build();
+    // elasticsearch = TransportClient.builder().settings(settings).build();
+    elasticsearch = new PreBuiltTransportClient(settings);
     logger.info(" *** connecting to : {}:{}:{}", cluster, host, port);
 
     InetSocketAddress address = new InetSocketAddress(host, port);
@@ -116,13 +121,34 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
    */
   @Override
   public String indexTick(TickJson tick) {
+    logger.info("indexTick:{}", tick.toString());
     IndexResponse response = elasticsearch
         .prepareIndex(indexForTicks, typeForTicks)
         .setSource(tick.toString())
         .get();
     return response.toString();
   }
-  
+
+  @Override
+  public String indexIndicator(IndicatorJson indicator) {
+    logger.info("indexIndicator:{}", indicator.toString());
+    IndexResponse response = elasticsearch
+        .prepareIndex(indexForIndicators, typeForIndicators)
+        .setSource(indicator.toString())
+        .get();
+    return response.toString();
+  }
+
+  @Override
+  public String indexStrategy(StrategyJson strategy) {
+    logger.info("indexStrategy:{}", strategy.toString());
+    IndexResponse response = elasticsearch
+        .prepareIndex(indexForStrategies, typeForStrategies)
+        .setSource(strategy.toString())
+        .get();
+    return response.toString();
+  }
+
   @Override
   public String getAllTicks() {
     QueryBuilder queryBuilder = matchAllQuery();

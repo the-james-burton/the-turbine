@@ -67,14 +67,14 @@ public class Application {
     Ping ping = (Ping) spring.getBean("ping");
     long message = ping.ping();
     logger.info(String.format("ping=%s", message));
-    
+
     // TODO remove this little testing code...
     AmqpTestSender amqpTestSender = spring.getBean(AmqpTestSender.class);
     amqpTestSender.sendMessages(2);
     AmqpTickReceiver amqpTickReceiver = spring.getBean(AmqpTickReceiver.class);
-    amqpTickReceiver.sendMessage();
+    amqpTickReceiver.sendMessages(2);
   }
-  
+
   @SuppressWarnings("unused")
   private static void logBeanNames(final ConfigurableApplicationContext spring) {
     logger.info("Let's inspect the beans provided by Spring Boot:");

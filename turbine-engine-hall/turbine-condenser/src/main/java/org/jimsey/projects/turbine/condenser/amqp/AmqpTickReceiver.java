@@ -26,7 +26,7 @@ import java.lang.invoke.MethodHandles;
 
 import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.condenser.reactor.ReactorTickReceiver;
+import org.jimsey.projects.turbine.condenser.reactor.ReactorManager;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
@@ -38,6 +38,7 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
+import javaslang.collection.Stream;
 import javaslang.control.Try;
 
 /**
@@ -52,17 +53,27 @@ public class AmqpTickReceiver extends BaseConfiguration {
 
   @Autowired
   @NotNull
-  private ReactorTickReceiver tickReceiver;
-  
+  private ReactorManager tickReceiver;
+
   /** TESTING ONLY **/
   private DomainObjectGenerator dog = new RandomDomainObjectGenerator(Ticker.of("ABC.L"));
+
   /**
    * TESTING ONLY
    */
   @ManagedOperation
   public void sendMessage() {
     Try.run(() -> handleMessage(dog.newTick().toString())).orElseRun((e) -> logger.info("could not send tick:{}", e));
-  }  
+  }
+
+  /**
+   * TESTING ONLY
+   */
+  @ManagedOperation
+  public void sendMessages(int n) {
+    Stream.range(0, n)
+        .forEach(x -> Try.run(() -> sendMessage()).orElseRun((e) -> logger.info("could not send tick:{}", e)));
+  }
 
   /**
    * handle inbound ticks from RabbitMQ
@@ -71,14 +82,14 @@ public class AmqpTickReceiver extends BaseConfiguration {
   @RabbitListener(queues = "#{queueTicks}")
   public void handleMessage(String message) {
     logger.info(" ...> TickReceiver: Spring AMQP received [{}]", message);
-    getTickReceiver().getTopic().onNext(message);
+    tickReceiver.getInbound().onNext(message);
   }
 
-  public ReactorTickReceiver getTickReceiver() {
+  public ReactorManager getTickReceiver() {
     return tickReceiver;
   }
 
-  public void setTickReceiver(ReactorTickReceiver tickReceiver) {
+  public void setTickReceiver(ReactorManager tickReceiver) {
     this.tickReceiver = tickReceiver;
   }
 

@@ -34,6 +34,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.condenser.service.pojo.TickPojo;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
+import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,6 +161,18 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
 
   @Override
   public String indexTick(TickJson tick) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String indexIndicator(IndicatorJson indicator) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String indexStrategy(StrategyJson strategy) {
     // TODO Auto-generated method stub
     return null;
   }

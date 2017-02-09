@@ -28,6 +28,8 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -38,7 +40,9 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.node.internal.InternalSettingsPreparer;
+import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.transport.Netty4Plugin;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
@@ -63,6 +67,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Unfortunately, using elasticsearch >5 in this way to do isolated integration tests is no longer supported.
+ * https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking_50_java_api_changes.html
+ * 
+ * An alternative approach might be to use a standalone elasticsearch which is also possible in travis ci...
+ * https://www.peterbe.com/plog/elasticsearch-5-in-travis-ci
+ * 
+ * Furthermore, note that elasticsearch >5 uses log4j2 and does not work with the log4j-to-slf4j v2, see... 
+ * https://github.com/the-james-burton/the-turbine/issues/28
+ * 
+ * This will mean that unfortunately this ES test will not work in Eclipse, since its JUnit runner
+ * does not honor maven surefire exclusions (and eclipse does not seem to have any other way of excluding a dependency).
+ *
+ * @author the-james-burton
+ */
 @RunWith(SpringRunner.class)
 // @SpringApplicationConfiguration(classes = MockServletContext.class)
 @ActiveProfiles("it")
@@ -88,7 +107,6 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(Ticker.of(tickerOne, "ABCName"));
 
   private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(Ticker.of(tickerTwo, "DEFName"));
-
 
   private final ObjectMapper json = new ObjectMapper();
 
@@ -146,6 +164,12 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
 
   }
 
+  private static class MyNode extends Node {
+    public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
+      super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+    }
+  }
+
   @BeforeClass
   public static void beforeClass() throws Exception {
     logger.info("setup()");
@@ -155,21 +179,27 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
         .put("path.home", elasticsearchTmpDir)
         .put("path.conf", elasticsearchTmpDir)
         .put("path.data", elasticsearchTmpDir)
-        .put("path.work", elasticsearchTmpDir)
+        // .put("path.work", elasticsearchTmpDir)
         .put("path.logs", elasticsearchTmpDir)
-        .put("http.port", elasticsearchRestPort)
+        .put("transport.type", "netty4")
         .put("transport.tcp.port", elasticsearchNativePort)
-        .put("index.number_of_shards", "1")
-        .put("index.number_of_replicas", "0")
-        .put("discovery.zen.ping.multicast.enabled", "false")
+        .put("http.type", "netty4")
+        .put("http.enabled", "true")
+        .put("http.port", elasticsearchRestPort)
+        .put("cluster.name", elasticsearchCluster)
+        // .put("index.number_of_shards", "1")
+        // .put("index.number_of_replicas", "0")
+        // .put("discovery.zen.ping.multicast.enabled", "false")
         .build();
 
-    node = NodeBuilder.nodeBuilder()
-        .data(true)
-        .client(false)
-        .settings(settings)
-        .clusterName(elasticsearchCluster)
-        .node();
+    Collection<Class<? extends Plugin>> plugins = Arrays.asList(Netty4Plugin.class);
+    node = new MyNode(settings, plugins);
+    // node.
+    // .data(true)
+    // .client(false)
+    // .settings(settings)
+    // .clusterName(elasticsearchCluster)
+    // .node();
     node.start();
     elasticsearch = node.client();
   }
@@ -391,7 +421,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     DeleteIndexResponse response = null;
     try {
       response = elasticsearch.admin().indices().prepareDelete(index).get();
-      logger.debug("successfully deleted: index:{}, headers:{}", index, response.getHeaders());
+      logger.debug("successfully deleted: index:{}, isAcknowledged:{}", index, response.isAcknowledged());
     } catch (Exception e) {
       logger.debug(e.getMessage());
     }
