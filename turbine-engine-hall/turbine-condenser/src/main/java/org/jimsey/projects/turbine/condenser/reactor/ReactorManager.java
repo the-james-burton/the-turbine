@@ -89,10 +89,10 @@ public class ReactorManager {
   @PostConstruct
   public void init() {
 
-    msgs = TopicProcessor.create("msgs", 4);
-    ticks = TopicProcessor.create("ticks", 4);
-    indicators = TopicProcessor.create("indicators", 4);
-    strategies = TopicProcessor.create("strategies", 4);
+    msgs = TopicProcessor.create("msgs");
+    ticks = TopicProcessor.create("ticks");
+    indicators = TopicProcessor.create("indicators");
+    strategies = TopicProcessor.create("strategies");
 
     ReactorTickSubscriber tickSubscriber = new ReactorTickSubscriber(
         "tickSubscriber", tickerManager, indicators, strategies);
@@ -124,16 +124,6 @@ public class ReactorManager {
         .doOnNext(strategy -> logger.info(" reactor strategies -> strategy:{}", strategy))
         .doOnNext(strategy -> elasticsearch.indexStrategy(strategy))
         .subscribe(strategy -> websocket.convertAndSend(websocketForStrategies.apply(strategy), strategy.toString()));
-
-    // camel destinations...
-    // ssm:///topic/ticks
-    // elasticsearch://elasticsearch?ip=localhost&port=9300&operation=INDEX&indexName=turbine-ticks&indexType=turbine-tick
-
-    // ssm:///topic/indicators
-    // elasticsearch://elasticsearch?ip=localhost&port=9300&operation=INDEX&indexName=turbine-indicators&indexType=turbine-indicator
-
-    // ssm:///topic/strategies
-    // elasticsearch://elasticsearch?ip=localhost&port=9300&operation=INDEX&indexName=turbine-strategies&indexType=turbine-strategy
 
   }
 
