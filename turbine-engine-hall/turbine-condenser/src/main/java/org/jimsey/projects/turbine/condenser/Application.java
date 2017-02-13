@@ -72,7 +72,7 @@ public class Application {
     AmqpTestSender amqpTestSender = spring.getBean(AmqpTestSender.class);
     amqpTestSender.sendMessages(2);
     AmqpTickReceiver amqpTickReceiver = spring.getBean(AmqpTickReceiver.class);
-    amqpTickReceiver.sendMessages(2);
+    amqpTickReceiver.receiveSimulatedMessages(2);
   }
 
   @SuppressWarnings("unused")

@@ -62,21 +62,24 @@ public class AmqpTickReceiver extends BaseConfiguration {
    * TESTING ONLY
    */
   @ManagedOperation
-  public void sendMessage() {
-    Try.run(() -> handleMessage(dog.newTick().toString())).orElseRun((e) -> logger.info("could not send tick:{}", e));
+  public void receiveSimulatedMessage() {
+    Try.run(() -> handleMessage(dog.newTick().toString()))
+        .orElseRun((e) -> logger.info("could not receive simulated message:{}", e));
   }
 
   /**
    * TESTING ONLY
    */
   @ManagedOperation
-  public void sendMessages(int n) {
+  public void receiveSimulatedMessages(int n) {
     Stream.range(0, n)
-        .forEach(x -> Try.run(() -> sendMessage()).orElseRun((e) -> logger.info("could not send tick:{}", e)));
+        .forEach(x -> Try.run(() -> receiveSimulatedMessage())
+            .orElseRun((e) -> logger.info("could not receive {} simulated messages:{}", n, e)));
   }
 
   /**
    * handle inbound ticks from RabbitMQ
+   * #{queueTicks} resolves via SpEL into a bean declared in AmqpSetup
    * @param the inbound message from RabbitMQ as a String
    */
   @RabbitListener(queues = "#{queueTicks}")
