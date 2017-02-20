@@ -5,4 +5,11 @@ spring:
     port: 49006
 server:
   port: 48006
-
+markets:
+  lse:
+    companies:
+      file: list-of-all-companies.xls
+      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${markets.lse.companies.file}
+    securities:
+      file: list-of-all-securities-ex-debt.xls
+      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${markets.lse.securities.file}
