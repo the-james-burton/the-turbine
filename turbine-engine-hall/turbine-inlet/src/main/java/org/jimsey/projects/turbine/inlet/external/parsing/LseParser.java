@@ -34,6 +34,7 @@ import java.time.ZoneId;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections4.IteratorUtils;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -46,6 +47,8 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
 import javaslang.Function1;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import javaslang.collection.List;
 import javaslang.collection.Stream;
 import javaslang.control.Try;
@@ -64,6 +67,8 @@ public class LseParser {
   @Value("${markets.lse.securities.file}")
   private String lseSecuritiesFile;
 
+  private final Integer headerRowNumber = 6;
+
   private final List<String> expectedHeaders = List.of("List Date", "Company", "Group", "Sector", "Sub Sector",
       "Country of Incorporation",
       "Market", "Mkt Cap £m", "International Main Market");
@@ -76,7 +81,7 @@ public class LseParser {
     logger.info("markets.lse.companies.file: {}", lseCompaniesFile);
     logger.info("markets.lse.securities.file: {}", lseSecuritiesFile);
 
-    // List<Company> companies = parseCompanies(lseCompaniesFile);
+    List<Company> companies = parseCompanies(lseCompaniesFile);
     // companies.forEach(c -> logger.info(c.toString()));
   }
 
@@ -88,15 +93,12 @@ public class LseParser {
     Sheet sheet = wb.getSheetAt(0);
 
     // validate the sheet...
-    Row headerRow = sheet.getRow(6);
-    ;
-    List<String> actualHeaders = Stream.ofAll(IteratorUtils.asIterable(headerRow.cellIterator()))
-        .map(cell -> cell.getStringCellValue())
-        .toList();
-    boolean isValid = actualHeaders.containsAll(expectedHeaders);
-    if (!isValid) {
-      throw new RuntimeException("The expected header row is not present in the expected place. Maybe the sheet has changed?");
-    }
+    Row headerRow = findAndValidateHeaderRow(sheet, headerRowNumber, expectedHeaders);
+
+    // log out the cell types...
+    logger.info(findHeaderCellTypes(sheet, headerRow)
+        .map(t -> format("%s:%s", t._1, t._2))
+        .reduce((a, b) -> format("%s, %s", a, b)));
 
     // parse the sheet into Company pojos...
     List<Company> companies = Stream.ofAll((Iterable<Row>) sheet)
@@ -114,6 +116,28 @@ public class LseParser {
         .toList();
 
     return companies;
+  }
+
+  private List<Tuple2<String, CellType>> findHeaderCellTypes(Sheet sheet, Row headersAtRow) {
+    Row firstRow = sheet.getRow(headerRowNumber + 1);
+    return Stream.ofAll(IteratorUtils.asIterable(headersAtRow.cellIterator()))
+        .zip(IteratorUtils.asIterable(firstRow.cellIterator()))
+        .map(t -> Tuple.of(t._1.getStringCellValue(), t._2.getCellTypeEnum()))
+        .toList();
+    // .toJavaMap(v -> Tuple.of(v._1.getStringCellValue(), v._2.getCellTypeEnum()));
+    // .forEach(t -> logger.info("{}:{}", t._1.getStringCellValue(), t._2.getCellTypeEnum().toString()));
+  }
+
+  private Row findAndValidateHeaderRow(Sheet sheet, Integer headersAtRow, List<String> expected) {
+    Row headerRow = sheet.getRow(headersAtRow);
+    List<String> actualHeaders = Stream.ofAll(IteratorUtils.asIterable(headerRow.cellIterator()))
+        .map(cell -> cell.getStringCellValue())
+        .toList();
+    boolean isValid = actualHeaders.containsAll(expected);
+    if (!isValid) {
+      throw new RuntimeException("The expected header row is not present in the expected place. Maybe the sheet has changed?");
+    }
+    return headerRow;
   }
 
 }

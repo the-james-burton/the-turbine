@@ -29,6 +29,13 @@ import java.util.Date;
 
 public class Security {
 
+  // Security Start Date, Company Name, Country of Incorporation, LSE Market, FCA Listing Category, ISIN, Security Name, TIDM, Mkt
+  // Cap £m, Shares in Issue, Industry, Supersector, Sector, Subsector, Group, MarketSegmentCode, MarketSectorCode, Trading
+  // Currency
+  //
+  // 02-Aug-06, 1PM PLC, GB, AIM, GB00BCDBXK43, ORD GBP0.1, OPM , 29.97210315, 54,494,733.00, Financials, Financial Services,
+  // Financial Services, Specialty Finance, 8775, AIM, AIM, GBX
+
   private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
   public final Date listDate;
