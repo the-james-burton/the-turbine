@@ -34,12 +34,14 @@ import java.time.ZoneId;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jimsey.projects.turbine.inlet.external.domain.Company;
+import org.jimsey.projects.turbine.inlet.external.domain.Security;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,9 +71,13 @@ public class LseParser {
 
   private final Integer headerRowNumber = 6;
 
-  private final List<String> expectedHeaders = List.of("List Date", "Company", "Group", "Sector", "Sub Sector",
-      "Country of Incorporation",
-      "Market", "Mkt Cap £m", "International Main Market");
+  private final List<String> expectedCompanyHeaders = List.of("List Date", "Company", "Group", "Sector", "Sub Sector",
+      "Country of Incorporation", "Market", "Mkt Cap £m", "International Main Market");
+
+  private final List<String> expectedSecurityHeaders = List.of(
+      "Security Start Date", "Company Name", "Country of Incorporation", "LSE Market", "FCA Listing Category", "ISIN",
+      "Security Name", "TIDM", "Mkt Cap £m", "Shares in Issue", "Industry", "Supersector", "Sector", "Subsector", "Group",
+      "MarketSegmentCode", "MarketSectorCode", "Trading Currency");
 
   // POI needs help parsing 'N' and 'Y' string cells into a boolean...
   private static Function1<String, Boolean> convertToBoolean = (v) -> "Y".equals(v) ? true : false;
@@ -81,19 +87,60 @@ public class LseParser {
     logger.info("markets.lse.companies.file: {}", lseCompaniesFile);
     logger.info("markets.lse.securities.file: {}", lseSecuritiesFile);
 
-    List<Company> companies = parseCompanies(lseCompaniesFile);
+    // List<Company> companies = parseCompanies(lseCompaniesFile);
     // companies.forEach(c -> logger.info(c.toString()));
+
+    List<Security> securities = parseSecurities(lseSecuritiesFile);
+    securities.forEach(c -> logger.info(c.toString()));
+  }
+
+  private List<Security> parseSecurities(String input) {
+    Sheet sheet = extractSheet(input);
+
+    // validate the sheet...
+    Row headerRow = findAndValidateHeaderRow(sheet, headerRowNumber, expectedSecurityHeaders);
+
+    logger.info(findHeaderCellTypes(sheet, headerRow)
+        .map(t -> format("%s:%s", t._1, t._2))
+        .reduce((a, b) -> format("%s, %s", a, b)));
+
+    // Security Start Date:NUMERIC, Company Name:STRING, Country of Incorporation:STRING, LSE Market:STRING, FCA Listing
+    // Category:STRING, ISIN:STRING, Security Name:STRING, TIDM:STRING, Mkt Cap £m:NUMERIC, Shares in Issue:NUMERIC,
+    // Industry:STRING, Supersector:STRING, Sector:STRING, Subsector:STRING, Group:NUMERIC, MarketSegmentCode:STRING,
+    // MarketSectorCode:STRING, Trading Currency:STRING
+
+    // parse the sheet into Company pojos...
+    List<Security> securities = Stream.ofAll((Iterable<Row>) sheet)
+        .filter(row -> row.getRowNum() > 6)
+        .map(row -> Security.of(
+            row.getCell(0).getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+            StringUtils.trim(row.getCell(1).getStringCellValue()),
+            StringUtils.trim(row.getCell(2).getStringCellValue()),
+            StringUtils.trim(row.getCell(3).getStringCellValue()),
+            StringUtils.trim(row.getCell(4).getStringCellValue()),
+            StringUtils.trim(row.getCell(5).getStringCellValue()),
+            StringUtils.trim(row.getCell(6).getStringCellValue()),
+            StringUtils.trim(row.getCell(7).getStringCellValue()),
+            row.getCell(8).getNumericCellValue(),
+            (long) row.getCell(9).getNumericCellValue(),
+            StringUtils.trim(row.getCell(10).getStringCellValue()),
+            StringUtils.trim(row.getCell(11).getStringCellValue()),
+            StringUtils.trim(row.getCell(12).getStringCellValue()),
+            StringUtils.trim(row.getCell(13).getStringCellValue()),
+            (int) row.getCell(14).getNumericCellValue(),
+            StringUtils.trim(row.getCell(15).getStringCellValue()),
+            StringUtils.trim(row.getCell(16).getStringCellValue()),
+            StringUtils.trim(row.getCell(17).getStringCellValue())))
+        .toList();
+
+    return securities;
   }
 
   private List<Company> parseCompanies(String input) {
-    InputStream xls = Try.of(() -> new FileInputStream(input))
-        .getOrElseThrow(t -> new RuntimeException(format("unable to open stream for %s, reason:%s", input, t.getMessage())));
-    Workbook wb = Try.of(() -> WorkbookFactory.create(xls))
-        .getOrElseThrow(t -> new RuntimeException(format("unable to open workbook %s, reason:%s", xls, t.getMessage())));
-    Sheet sheet = wb.getSheetAt(0);
+    Sheet sheet = extractSheet(input);
 
     // validate the sheet...
-    Row headerRow = findAndValidateHeaderRow(sheet, headerRowNumber, expectedHeaders);
+    Row headerRow = findAndValidateHeaderRow(sheet, headerRowNumber, expectedCompanyHeaders);
 
     // log out the cell types...
     logger.info(findHeaderCellTypes(sheet, headerRow)
@@ -105,17 +152,26 @@ public class LseParser {
         .filter(row -> row.getRowNum() > 6)
         .map(row -> Company.of(
             row.getCell(0).getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-            row.getCell(1).getStringCellValue(),
+            StringUtils.trim(row.getCell(1).getStringCellValue()),
             (int) row.getCell(2).getNumericCellValue(),
-            row.getCell(3).getStringCellValue(),
-            row.getCell(4).getStringCellValue(),
-            row.getCell(5).getStringCellValue(),
-            row.getCell(6).getStringCellValue(),
+            StringUtils.trim(row.getCell(3).getStringCellValue()),
+            StringUtils.trim(row.getCell(4).getStringCellValue()),
+            StringUtils.trim(row.getCell(5).getStringCellValue()),
+            StringUtils.trim(row.getCell(6).getStringCellValue()),
             row.getCell(7).getNumericCellValue(),
             convertToBoolean.apply(row.getCell(8).getStringCellValue())))
         .toList();
 
     return companies;
+  }
+
+  private Sheet extractSheet(String input) {
+    InputStream xls = Try.of(() -> new FileInputStream(input))
+        .getOrElseThrow(t -> new RuntimeException(format("unable to open stream for %s, reason:%s", input, t.getMessage())));
+    Workbook wb = Try.of(() -> WorkbookFactory.create(xls))
+        .getOrElseThrow(t -> new RuntimeException(format("unable to open workbook %s, reason:%s", xls, t.getMessage())));
+    Sheet sheet = wb.getSheetAt(0);
+    return sheet;
   }
 
   private List<Tuple2<String, CellType>> findHeaderCellTypes(Sheet sheet, Row headersAtRow) {
