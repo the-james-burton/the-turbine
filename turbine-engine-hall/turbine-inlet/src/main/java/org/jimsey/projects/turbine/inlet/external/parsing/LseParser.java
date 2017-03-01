@@ -63,10 +63,10 @@ public class LseParser {
 
   private static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-  @Value("${markets.lse.companies.file}")
+  @Value("${exchanges.lse.companies.file}")
   private String lseCompaniesFile;
 
-  @Value("${markets.lse.securities.file}")
+  @Value("${exchanges.lse.securities.file}")
   private String lseSecuritiesFile;
 
   private final Integer headerRowNumber = 6;
@@ -84,8 +84,8 @@ public class LseParser {
 
   @PostConstruct
   public void init() {
-    logger.info("markets.lse.companies.file: {}", lseCompaniesFile);
-    logger.info("markets.lse.securities.file: {}", lseSecuritiesFile);
+    logger.info("exchanges.lse.companies.file: {}", lseCompaniesFile);
+    logger.info("exchanges.lse.securities.file: {}", lseSecuritiesFile);
 
     // List<Company> companies = parseCompanies(lseCompaniesFile);
     // companies.forEach(c -> logger.info(c.toString()));

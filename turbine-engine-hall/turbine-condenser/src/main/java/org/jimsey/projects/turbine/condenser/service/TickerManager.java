@@ -22,7 +22,6 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
-
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ import javaslang.collection.Set;
 public class TickerManager {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  
+
   @Autowired
   @NotNull
   private TurbineService turbineService;
@@ -58,29 +57,30 @@ public class TickerManager {
   private final List<EnableTurbineStrategy> turbineStrategies = new ArrayList<>();
 
   private Set<Stock> stocks = HashSet.empty();
-    
+
   private Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
-  
+
   private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
   @PostConstruct
   public void init() {
-    turbineIndicators.addAll(turbineService.getIndicators());
-    turbineStrategies.addAll(turbineService.getStrategies());
+    turbineIndicators.addAll(turbineService.findIndicators());
+    turbineStrategies.addAll(turbineService.findStrategies());
   }
 
-  Function2<Ticker, Function0<Stock>, Stock> findStockForTickerOrElse = (ticker, supplier) -> stocks.filter(stock -> stock.getTicker().equals(ticker)).getOrElse(supplier);
-  
-  // this is called multiple times because we are effectively multicasting inside rabbitMQ 
+  Function2<Ticker, Function0<Stock>, Stock> findStockForTickerOrElse = (ticker, supplier) -> stocks
+      .filter(stock -> stock.getTicker().equals(ticker)).getOrElse(supplier);
+
+  // this is called multiple times because we are effectively multicasting inside rabbitMQ
   // so let's cope with that in an interesting way...
   public Stock findOrCreateStock(Ticker ticker) {
     return findStockForTickerOrElse.apply(ticker, () -> createStockIfFirst(ticker));
   }
-  
+
   private synchronized Stock createStockIfFirst(Ticker ticker) {
     return findStockForTickerOrElse.apply(ticker, () -> createStock(ticker));
   }
-  
+
   private Stock createStock(Ticker ticker) {
     logger.info("creating new Stock object for ticker:{}", ticker);
     Stock stock = Stock.of(ticker, turbineIndicators, turbineStrategies);
@@ -88,7 +88,7 @@ public class TickerManager {
     tickerCache = Function0.of(tickers).memoized();
     return stock;
   }
-  
+
   // --------------------------------------
   public Set<Ticker> getTickers() {
     return tickerCache.apply();

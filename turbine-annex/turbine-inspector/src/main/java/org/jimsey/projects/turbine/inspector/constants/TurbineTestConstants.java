@@ -36,7 +36,6 @@ public class TurbineTestConstants {
 
   public static final String DEFName = "DEFName";
 
-  public static final String FTSE100 = "FTSE100";
-
+  public static final String LSE = "LSE";
 
 }

@@ -72,11 +72,11 @@ public class TurbineController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/stocks/{market}")
+  @RequestMapping("/stocks/{exchange}")
   // @CrossOrigin(origins = "*", maxAge = 3600)
-  public String stocks(@PathVariable String market) throws Exception {
-    logger.info("stocks({})", market);
-    return turbineService.listStocks(market);
+  public String stocks(@PathVariable String exchange) throws Exception {
+    logger.info("stocks({})", exchange);
+    return turbineService.listStocks(exchange);
   }
 
   @RequestMapping("/indicators")

@@ -43,31 +43,33 @@ import javaslang.control.Try;
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE,
     setterVisibility = Visibility.NONE)
-public class Ticker implements Comparable<Ticker>{
+public class Ticker implements Comparable<Ticker> {
 
   private final CharSeq ticker;
-  
+
   private final CharSeq symbol;
-  
+
   private final CharSeq name;
-  
-  private final MarketEnum market;
-  
+
+  private final ExchangeEnum exchange;
+
   // ----------------------------
   public Ticker(CharSeq ticker, CharSeq name) {
     this.ticker = ticker;
     this.name = name;
     CharSeq[] parts = ticker.split("\\.");
-    Tuple2<CharSeq, CharSeq> tuple = Try.of(() -> Tuple.of(parts[0], parts[1])).getOrElseThrow(() -> new RuntimeException("unable to parse as ticker:" + ticker));
+    Tuple2<CharSeq, CharSeq> tuple = Try.of(() -> Tuple.of(parts[0], parts[1]))
+        .getOrElseThrow(() -> new RuntimeException("unable to parse as ticker:" + ticker));
     this.symbol = tuple._1;
-    this.market = MarketEnum.fromExtension(tuple._2).getOrElseThrow(() -> new RuntimeException("no MarketEnum for extension:" + tuple._2));
+    this.exchange = ExchangeEnum.fromExtension(tuple._2)
+        .getOrElseThrow(() -> new RuntimeException("no ExchangeEnum for extension:" + tuple._2));
   }
-  
-  public Ticker(CharSeq symbol, MarketEnum market, CharSeq name) {
+
+  public Ticker(CharSeq symbol, ExchangeEnum exchange, CharSeq name) {
     this.symbol = symbol;
-    this.market = market;
+    this.exchange = exchange;
     this.name = name;
-    this.ticker = CharSeq.of(String.format("%s.%s", symbol, market.getExtension()));
+    this.ticker = CharSeq.of(String.format("%s.%s", symbol, exchange.getExtension()));
   }
 
   public Ticker(String ticker) {
@@ -99,26 +101,27 @@ public class Ticker implements Comparable<Ticker>{
     return new Ticker(ticker, name);
   }
 
-  public static Ticker of(CharSeq symbol, MarketEnum market, CharSeq name) {
-    return new Ticker(symbol, market, name);
+  public static Ticker of(CharSeq symbol, ExchangeEnum exchange, CharSeq name) {
+    return new Ticker(symbol, exchange, name);
   }
 
-  public static Ticker of(String symbol, MarketEnum market, String name) {
-    return new Ticker(CharSeq.of(symbol), market, CharSeq.of(name));
+  public static Ticker of(String symbol, ExchangeEnum exchange, String name) {
+    return new Ticker(CharSeq.of(symbol), exchange, CharSeq.of(name));
   }
 
-  public static Ticker of(CharSeq symbol, CharSeq market, CharSeq name) {
-    return Ticker.of(symbol, MarketEnum.fromMarket(market).getOrElseThrow(() -> new RuntimeException(format("no MarketEnum available for name %s", market))), name);
+  public static Ticker of(CharSeq symbol, CharSeq exchange, CharSeq name) {
+    return Ticker.of(symbol, ExchangeEnum.fromName(exchange)
+        .getOrElseThrow(() -> new RuntimeException(format("no ExchangeEnum available for name %s", exchange))), name);
   }
 
-  public static Ticker of(String symbol, String market, String name) {
-    return Ticker.of(CharSeq.of(symbol), CharSeq.of(market), CharSeq.of(name));
+  public static Ticker of(String symbol, String exchange, String name) {
+    return Ticker.of(CharSeq.of(symbol), CharSeq.of(exchange), CharSeq.of(name));
   }
 
   // ----------------------------
   private final Comparator<Ticker> comparator = Comparator
       .comparing((Ticker t) -> t.getTicker().toString())
-      .thenComparing(t -> t.getMarket())
+      .thenComparing(t -> t.getExchange())
       .thenComparing(t -> t.getName().toString());
 
   @Override
@@ -128,7 +131,7 @@ public class Ticker implements Comparable<Ticker>{
     }
     Ticker that = (Ticker) key;
     return Objects.equals(this.ticker, that.ticker)
-        && Objects.equals(this.market, that.market)
+        && Objects.equals(this.exchange, that.exchange)
         && Objects.equals(this.name, that.name);
   }
 
@@ -139,7 +142,7 @@ public class Ticker implements Comparable<Ticker>{
 
   @Override
   public int hashCode() {
-    return Objects.hash(ticker, market, name);
+    return Objects.hash(ticker, exchange, name);
   }
 
   @Override
@@ -159,9 +162,9 @@ public class Ticker implements Comparable<Ticker>{
     return symbol.toString();
   }
 
-  @JsonProperty("market")
-  public String getMarketAsString() {
-    return market.toString();
+  @JsonProperty("exchange")
+  public String getExchangeAsString() {
+    return exchange.toString();
   }
 
   @JsonIgnore
@@ -175,8 +178,8 @@ public class Ticker implements Comparable<Ticker>{
   }
 
   @JsonIgnore
-  public MarketEnum getMarket() {
-    return market;
+  public ExchangeEnum getExchange() {
+    return exchange;
   }
 
   public CharSeq getName() {

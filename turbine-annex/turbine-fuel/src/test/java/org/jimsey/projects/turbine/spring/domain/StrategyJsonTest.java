@@ -50,7 +50,7 @@ public class StrategyJsonTest {
 
   @Before
   public void before() {
-    // {"date":1401174943825,"symbol":"ABC","market":"FTSE100","close":100.0,"action":"enter","amount":1,"position":6,"cost":11.0,"value":14.0,"timestamp":"2015-11-06T18:21:47.263Z"}
+    // {"date":1401174943825,"symbol":"ABC","exchange":"LSE","close":100.0,"action":"enter","amount":1,"position":6,"cost":11.0,"value":14.0,"timestamp":"2015-11-06T18:21:47.263Z"}
   }
 
   @Test
@@ -64,7 +64,7 @@ public class StrategyJsonTest {
 
   @Test
   public void testConstructor() {
-    StrategyJson  strategy = new StrategyJson(OffsetDateTime.now(), TICKER,
+    StrategyJson strategy = new StrategyJson(OffsetDateTime.now(), TICKER,
         100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
     String constructor = strategy.toString();
     logger.info(constructor);

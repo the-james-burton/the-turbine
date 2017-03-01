@@ -5,7 +5,7 @@ spring:
     port: 49006
 server:
   port: 48006
-markets:
+exchanges:
   lse:
     companies:
       file: list-of-all-companies.xls

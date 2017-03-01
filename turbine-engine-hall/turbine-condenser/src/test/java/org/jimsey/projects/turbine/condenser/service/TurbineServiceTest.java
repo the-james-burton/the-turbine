@@ -50,12 +50,12 @@ public class TurbineServiceTest {
     turbineService = new TurbineService();
   }
 
-//  @Test
-//  public void testListStocks() throws Exception {
-//    String stocks = turbineService.listStocks(MarketEnum.FTSE100.toString());
-//    logger.info("{}", stocks);
-//    assertThat(stocks).contains(Stocks.ABC.getMarket());
-//  }
+  // @Test
+  // public void testListStocks() throws Exception {
+  // String stocks = turbineService.listStocks(ExchangeEnum.LSE.toString());
+  // logger.info("{}", stocks);
+  // assertThat(stocks).contains(Stocks.ABC.getExchange());
+  // }
 
   @Test
   public void testListIndicators() throws Exception {

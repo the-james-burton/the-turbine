@@ -64,7 +64,7 @@ public class FinanceController {
 
   /** 
    * @param tickersString a '+' separated list of tickers with extension, e.g. ABC.L+DEF.L 
-   * @return an attachment containing a CSV string of name,market,open,high,low,close,volume
+   * @return an attachment containing a CSV string of name,exchange,open,high,low,close,volume
    */
   @RequestMapping("/yahoo/realtime/{tickersString:.+}")
   public ResponseEntity<String> yahooFinanceRealtime(@PathVariable @NotNull String tickersString) {
@@ -81,7 +81,7 @@ public class FinanceController {
 
   /** 
    * @param tickersString a '+' separated list of tickers with extension, e.g. ABC.L+DEF.L 
-   * @return a CSV string of name,market,open,high,low,close,volume
+   * @return a CSV string of name,exchange,open,high,low,close,volume
    */
   @RequestMapping("/yahoo/realtime/direct/{tickersString:.+}")
   public ResponseEntity<String> yahooFinanceRealtimeDirect(@PathVariable @NotNull String tickersString) {
@@ -115,9 +115,9 @@ public class FinanceController {
     logger.info("dogs:{}", myDogs.toJavaList());
     logger.info("missing:{}", missing.toJavaList());
 
-    //    .map(dog -> Tuple.of(tickerMetadataProvider.findMetadataForTicker(dog.getTicker()), dog.newTick()))
-    //    .filter(tuple -> tuple._1.isDefined())
-    
+    // .map(dog -> Tuple.of(tickerMetadataProvider.findMetadataForTicker(dog.getTicker()), dog.newTick()))
+    // .filter(tuple -> tuple._1.isDefined())
+
     // format the results specific to this mock API...
     CharSeq results = myDogs
         .map(dog -> dog.newTick())

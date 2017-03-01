@@ -20,48 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.fuel.domain;
+package org.jimsey.projects.turbine.spring.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import static org.assertj.core.api.Assertions.*;
+
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
+import org.junit.Test;
 
 import javaslang.collection.CharSeq;
-import javaslang.collection.Stream;
-import javaslang.control.Option;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum MarketEnum {
+public class ExchangeEnumTest {
 
-  ASX("ASXname", "AX"),
-  FTSE100("FTSE100name", "L");
-
-  private final CharSeq market;
-
-  private final CharSeq extension;
-
-  private MarketEnum(CharSeq market, CharSeq extension) {
-    this.market = market;
-    this.extension = extension;
-  }
-
-  private MarketEnum(String market, String extension) {
-    this.market = CharSeq.of(market);
-    this.extension = CharSeq.of(extension);
-  }
-
-  public static Option<MarketEnum> fromExtension(CharSeq extension) {
-    return Stream.of(values()).find(m -> m.getExtension().eq(extension));
-  }
-
-  public static Option<MarketEnum> fromMarket(CharSeq market) {
-    return Stream.of(values()).find(m -> m.getName().eq(market));
-  }
-
-  public CharSeq getName() {
-    return market;
-  }
-
-  public CharSeq getExtension() {
-    return extension;
+  @Test
+  public void testFromExtension() {
+    assertThat(ExchangeEnum.fromExtension(CharSeq.of("L")).get()).isEqualTo(ExchangeEnum.LSE);
   }
 
 }

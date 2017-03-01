@@ -46,24 +46,24 @@ public class LseDownloader extends BaseDownloader {
 
   final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Value("${markets.lse.companies.url}")
+  @Value("${exchanges.lse.companies.url}")
   private String lseCompaniesUrl;
 
-  @Value("${markets.lse.securities.url}")
+  @Value("${exchanges.lse.securities.url}")
   private String lseSecuritiesUrl;
 
-  @Value("${markets.lse.companies.file}")
+  @Value("${exchanges.lse.companies.file}")
   private String lseCompaniesFile;
 
-  @Value("${markets.lse.securities.file}")
+  @Value("${exchanges.lse.securities.file}")
   private String lseSecuritiesFile;
 
   @PostConstruct
   public void init() {
-    logger.info("markets.lse.companies.file: {}", lseCompaniesFile);
-    logger.info("markets.lse.securities.file: {}", lseSecuritiesFile);
-    logger.info("markets.lse.companies.url: {}", lseCompaniesUrl);
-    logger.info("markets.lse.securities.url: {}", lseSecuritiesUrl);
+    logger.info("exchanges.lse.companies.file: {}", lseCompaniesFile);
+    logger.info("exchanges.lse.securities.file: {}", lseSecuritiesFile);
+    logger.info("exchanges.lse.companies.url: {}", lseCompaniesUrl);
+    logger.info("exchanges.lse.securities.url: {}", lseSecuritiesUrl);
 
     // TODO reduce the amount of downloading by keeping files for 1 month...
     // downloadAsync(lseCompaniesUrl, lseCompaniesFile);

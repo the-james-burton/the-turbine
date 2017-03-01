@@ -54,12 +54,11 @@ public class YahooFinanceRealtime {
   public static YahooFinanceRealtime of(TickJson tick) {
     return new YahooFinanceRealtime(tick);
   }
-  
 
   /**
    * @param metadata the metadata to use
    * @param date the date
-   * @param line  in this format: "ABCName","FTSE100",114.43,114.56,113.51,113.87,13523517
+   * @param line  in this format: "ABCName","LSE",114.43,114.56,113.51,113.87,13523517
    */
   public YahooFinanceRealtime(OffsetDateTime date, String line, Ticker ticker) {
     String[] parts = line.split(",");
@@ -76,20 +75,20 @@ public class YahooFinanceRealtime {
   public static YahooFinanceRealtime of(OffsetDateTime date, String line, Ticker ticker) {
     return new YahooFinanceRealtime(date, line, ticker);
   }
-  
+
   public static List<YahooFinanceRealtime> of(OffsetDateTime date, String[] lines, Ticker[] tickers) {
     return Stream.of(lines)
         .zip(Stream.of(tickers))
         .map(tuple -> YahooFinanceRealtime.of(date, tuple._1, tuple._2)).toList();
   }
-  
+
   @Override
   public String toString() {
     return String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        tick.getTickerAsObject().getName(), tick.getTickerAsObject().getMarketAsString(),
+        tick.getTickerAsObject().getName(), tick.getTickerAsObject().getExchangeAsString(),
         tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol());
   }
-  
+
   public TickJson getTick() {
     return tick;
   }

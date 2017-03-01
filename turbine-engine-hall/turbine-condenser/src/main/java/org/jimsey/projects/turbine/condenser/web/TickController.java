@@ -71,7 +71,7 @@ public class TickController {
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
     String ticks = getTicks("ABC.L");
-    logger.info("*** getTicks(FTSE100, ABC) : [{}]", ticks);
+    logger.info("*** getTicks(ABC.L) : [{}]", ticks);
     // logger.info("this mornings getTicksAfter(ABC) : [{}]", getTicksAfter("ABC", sod));
   }
 

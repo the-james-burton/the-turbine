@@ -52,7 +52,7 @@ public class YahooFinanceRealtimeTest {
     double close = 113.87;
     long vol = 13523517;
     String line = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        ticker.getName().toString(), ticker.getMarketAsString(), open, high, low, close, vol);
+        ticker.getName().toString(), ticker.getExchangeAsString(), open, high, low, close, vol);
     logger.info(line);
     YahooFinanceRealtime yfr = YahooFinanceRealtime.of(OffsetDateTime.now(), line, ticker);
 
@@ -84,7 +84,7 @@ public class YahooFinanceRealtimeTest {
 
     // check the formatted output string...
     String expected = String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f,%.2f,%d",
-        ticker.getName(), ticker.getMarketAsString(),
+        ticker.getName(), ticker.getExchangeAsString(),
         tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol());
     assertThat(yfr.toString()).isEqualTo(expected);
 

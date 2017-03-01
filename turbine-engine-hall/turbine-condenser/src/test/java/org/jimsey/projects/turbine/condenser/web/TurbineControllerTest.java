@@ -72,7 +72,7 @@ public class TurbineControllerTest {
 
   @MockBean
   private TickerManager tickerManager;
-  
+
   @Autowired
   private MockMvc mvc;
 
@@ -85,10 +85,10 @@ public class TurbineControllerTest {
   private final ObjectMapper json = new ObjectMapper();
 
   private Set<Ticker> tickers;
-  
+
   @Before
   public void setUp() throws Exception {
-    //logger.info(logger.getName());
+    // logger.info(logger.getName());
     logger.debug(" ===========> debug log");
     logger.info(" *** ");
     tickers = HashSet.of(Ticker.of("ABC.L"), Ticker.of("DEF.L"));
@@ -102,7 +102,7 @@ public class TurbineControllerTest {
 
     mvc.perform(
         get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "ping"))
-        .accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().json(json.writeValueAsString(expected)));
     // .andExpect(content().string(equalTo("123")));
@@ -115,13 +115,13 @@ public class TurbineControllerTest {
     when(turbineSerivce.listStocks(anyString())).thenReturn(response);
 
     mvc.perform(
-        get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", TurbineTestConstants.FTSE100))
-        .accept(MediaType.APPLICATION_JSON))
+        get(String.format("%s/%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "stocks", TurbineTestConstants.LSE))
+            .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
-        .andExpect(content().string(containsString(TurbineTestConstants.FTSE100)));
+        .andExpect(content().string(containsString(TurbineTestConstants.LSE)));
 
-    // TODO add test for stocks not in given market...
+    // TODO add test for stocks not in given exchange...
   }
 
   @Test
@@ -132,7 +132,7 @@ public class TurbineControllerTest {
 
     mvc.perform(
         get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "indicators"))
-        .accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(indicators.get(0))));
@@ -146,7 +146,7 @@ public class TurbineControllerTest {
 
     mvc.perform(
         get(String.format("%s/%s", TurbineCondenserConstants.REST_ROOT_TURBINE, "strategies"))
-        .accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
         .andDo(handler -> logger.info("{}", handler.getResponse().getContentAsString().toString()))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(strategies.get(0))));

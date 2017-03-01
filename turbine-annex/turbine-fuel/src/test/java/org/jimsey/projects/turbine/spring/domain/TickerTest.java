@@ -27,7 +27,7 @@ import static org.jimsey.projects.turbine.spring.domain.TickerTheoryTest.*;
 
 import java.lang.invoke.MethodHandles;
 
-import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -45,9 +45,9 @@ public class TickerTest {
   private final ObjectMapper json = new ObjectMapper();
 
   @Test
-  public void testMarketCompareTo() {
+  public void testExchangeCompareTo() {
     // make sure the ordering is correct in our enum...
-    assertThat(MarketEnum.ASX).isLessThan(MarketEnum.FTSE100);
+    assertThat(ExchangeEnum.ASX).isLessThan(ExchangeEnum.LSE);
   }
 
   @Test
@@ -55,7 +55,7 @@ public class TickerTest {
     // check that the constructor correctly sets all properties...
     assertThat(tickAAA).hasFieldOrPropertyWithValue("ticker", CharSeq.of(String.format("%s.%s", TICK1, AX.getExtension())));
     assertThat(tickAAA).hasFieldOrPropertyWithValue("symbol", TICK1);
-    assertThat(tickAAA).hasFieldOrPropertyWithValue("market", AX);
+    assertThat(tickAAA).hasFieldOrPropertyWithValue("exchange", AX);
   }
 
   @Test
@@ -119,5 +119,5 @@ public class TickerTest {
     String result = json.writeValueAsString(tickAAB);
     logger.info(result);
   }
-  
+
 }

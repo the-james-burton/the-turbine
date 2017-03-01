@@ -22,7 +22,7 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
-import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
@@ -39,9 +39,9 @@ public class TickerTheoryTest extends ObjectTheories {
 
   public static final CharSeq NAME2 = CharSeq.of("NAME2");
 
-  public static final MarketEnum AX = MarketEnum.ASX;
+  public static final ExchangeEnum AX = ExchangeEnum.ASX;
 
-  public static final MarketEnum L = MarketEnum.FTSE100;
+  public static final ExchangeEnum L = ExchangeEnum.LSE;
 
   @DataPoint
   public static final Ticker tickAAA = Ticker.of(TICK1, AX, NAME1);
@@ -55,6 +55,4 @@ public class TickerTheoryTest extends ObjectTheories {
   @DataPoint
   public static final Ticker tickBAA = Ticker.of(TICK2, AX, NAME1);
 
-
 }
-

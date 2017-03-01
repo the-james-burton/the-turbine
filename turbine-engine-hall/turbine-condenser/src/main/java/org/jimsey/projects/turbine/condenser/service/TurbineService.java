@@ -32,7 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
-import org.jimsey.projects.turbine.fuel.domain.MarketEnum;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -51,10 +51,10 @@ public class TurbineService {
 
   private static ObjectMapper json = new ObjectMapper();
 
-   @Autowired
-   @NotNull
-   private TickerManager tickerManager;
-    
+  @Autowired
+  @NotNull
+  private TickerManager tickerManager;
+
   // @Autowired
   // @NotNull
   // private IndicatorRepository indicatorRepository;
@@ -66,13 +66,13 @@ public class TurbineService {
     logger.info("found strategies : {}", listStrategies().toString());
   }
 
-  public List<Ticker> getTickers(MarketEnum market) {
+  public List<Ticker> findTickers(ExchangeEnum exchange) {
     return tickerManager.getTickers()
-        .filter(ticker -> ticker.getMarket().equals(market))
+        .filter(ticker -> ticker.getExchange().equals(exchange))
         .toJavaList();
   }
 
-  public List<EnableTurbineStrategy> getStrategies() {
+  public List<EnableTurbineStrategy> findStrategies() {
     Reflections reflections = new Reflections(EnableTurbineStrategy.class.getPackage().getName());
     Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineStrategy.class);
     return classes.stream()
@@ -80,7 +80,7 @@ public class TurbineService {
         .collect(Collectors.toList());
   }
 
-  public List<EnableTurbineIndicator> getIndicators() {
+  public List<EnableTurbineIndicator> findIndicators() {
     Reflections reflections = new Reflections(EnableTurbineIndicator.class.getPackage().getName());
     Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
     return classes.stream()
@@ -88,14 +88,14 @@ public class TurbineService {
         .collect(Collectors.toList());
   }
 
-  public String listStocks(String market) {
+  public String listStocks(String exchange) {
 
     // TODO is there a better way to push the list into a json property?
     String result = null;
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("stocks")
-        List<Ticker> stockz = getTickers(MarketEnum.valueOf(market));
+        List<Ticker> stockz = findTickers(ExchangeEnum.valueOf(exchange));
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
@@ -108,7 +108,7 @@ public class TurbineService {
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("strategies")
-        List<EnableTurbineStrategy> strategiez = getStrategies();
+        List<EnableTurbineStrategy> strategiez = findStrategies();
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
@@ -121,7 +121,7 @@ public class TurbineService {
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("indicators")
-        List<EnableTurbineIndicator> indicatorz = getIndicators();
+        List<EnableTurbineIndicator> indicatorz = findIndicators();
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);

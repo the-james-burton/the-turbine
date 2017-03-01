@@ -42,12 +42,12 @@ import javaslang.Function1;
 
 public class RandomDomainObjectGenerator implements DomainObjectGenerator, Comparable<DomainObjectGenerator> {
 
-  private static final String parsingExceptionText = "unable to parse %s as a valid ticker, it should be in the format 'ABC.L' where the L is a valid market in MarketEnum";
+  private static final String parsingExceptionText = "unable to parse %s as a valid ticker, it should be in the format 'ABC.L' where the L is a valid exchange in ExchangeEnum";
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Ticker ticker;
-  
+
   private TickJson tick;
 
   private IndicatorJson indicator;
@@ -61,26 +61,29 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
    * to indicate that parsing the given string as a ticker failed
    */
   private final Function1<String, RuntimeException> parsingException = (m) -> new RuntimeException(format(parsingExceptionText, m));
-  
+
   public RandomDomainObjectGenerator(Ticker ticker) {
     this.ticker = ticker;
     this.tick = createTick(ticker);
   }
 
-/*  public RandomDomainObjectGenerator(String ticker) {
-    CharSeq[] split = CharSeq.of(ticker).split("\\.");
-    Tuple2<CharSeq, MarketEnum> tuple = Tuple.of(split[0], MarketEnum.fromExtension(split[1]).getOrElseThrow(() -> parsingException.apply(ticker)));
-    this.ticker = Ticker.of(tuple._1, tuple._2);
-    this.tick = createTick(this.ticker);
-  }
-*/
-/*  public RandomDomainObjectGenerator(MarketEnum market, CharSeq symbol) {
-    Objects.requireNonNull(market);
-    Objects.requireNonNull(symbol);
-    this.ticker = Ticker.of(symbol, market);
-    this.tick = createTick(ticker);
-  }
-*/
+  /*
+   * public RandomDomainObjectGenerator(String ticker) {
+   * CharSeq[] split = CharSeq.of(ticker).split("\\.");
+   * Tuple2<CharSeq, ExchangeEnum> tuple = Tuple.of(split[0], ExchangeEnum.fromExtension(split[1]).getOrElseThrow(() ->
+   * parsingException.apply(ticker)));
+   * this.ticker = Ticker.of(tuple._1, tuple._2);
+   * this.tick = createTick(this.ticker);
+   * }
+   */
+  /*
+   * public RandomDomainObjectGenerator(ExchangeEnum exchange, CharSeq symbol) {
+   * Objects.requireNonNull(exchange);
+   * Objects.requireNonNull(symbol);
+   * this.ticker = Ticker.of(symbol, exchange);
+   * this.tick = createTick(ticker);
+   * }
+   */
   private TickJson createTick(Ticker ticker) {
     return new TickJson(OffsetDateTime.now(), 100.0d, 101.0d, 90.0d, 100.0d, 5000.0d,
         ticker, OffsetDateTime.now().toString());
@@ -179,7 +182,6 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
   public int compareTo(DomainObjectGenerator that) {
     return comparator.compare(this, that);
   }
-
 
   @Override
   public Ticker getTicker() {

@@ -71,7 +71,7 @@ public class TurbineControllerIT {
 
   @Test
   public void testListSymbols() throws Exception {
-    String url = String.format("%s/%s/%s", path, "stocks", TurbineTestConstants.FTSE100);
+    String url = String.format("%s/%s/%s", path, "stocks", TurbineTestConstants.LSE);
     logger.info("when {} is called...", url);
     ResponseEntity<String> response = rest.getForEntity(url, String.class);
     logger.info("symbols: {}", response.getBody());
