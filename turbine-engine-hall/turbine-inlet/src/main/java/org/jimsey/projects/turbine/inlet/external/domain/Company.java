@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.inlet.external.domain;
 import static java.lang.String.*;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
@@ -76,7 +77,7 @@ public class Company implements Comparable<Company> {
 
   private final Boolean internationalMainMarket;
 
-  // private final OffsetDateTime timestamp = OffsetDateTime.now();
+  private final OffsetDateTime timestamp = OffsetDateTime.now();
 
   private static final ObjectMapper json = new ObjectMapper();
 
@@ -144,6 +145,16 @@ public class Company implements Comparable<Company> {
   }
 
   // ---------------------------------
+  @JsonProperty("timestamp")
+  public String getTimestamp() {
+    return timestamp.format(DateTimeFormatter.ISO_DATE_TIME);
+  }
+
+  @JsonIgnore
+  public OffsetDateTime getTimestampAsObject() {
+    return timestamp;
+  }
+
   @JsonProperty("listDate")
   public String getDate() {
     // return listDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
