@@ -22,12 +22,18 @@
  */
 package org.jimsey.projects.turbine.inlet.external.domain;
 
+import static java.lang.String.*;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javaslang.control.Try;
 
 public class Security implements Comparable<Security> {
 
@@ -84,6 +90,8 @@ public class Security implements Comparable<Security> {
   public final String marketSectorCode;
 
   public final String tradingCurrency;
+
+  private static ObjectMapper json = new ObjectMapper();
 
   private final Comparator<Security> comparator = Comparator
       .comparing((Security s) -> s.securityName)
@@ -148,9 +156,14 @@ public class Security implements Comparable<Security> {
     return Objects.hash(securityName, companyName, lseMarket, securityStartDate, isin);
   }
 
+  public String toStringForElasticsearch() {
+    return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+  }
+
   @Override
   public String toString() {
-    return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+    return Try.of(() -> json.writeValueAsString(this))
+        .getOrElseThrow(e -> new RuntimeException(format("unable to write [%s] as String", this.toStringForElasticsearch())));
   }
 
   // ---------------------------------

@@ -9,7 +9,18 @@ exchanges:
   lse:
     companies:
       file: list-of-all-companies.xls
-      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${markets.lse.companies.file}
+      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${exchanges.lse.companies.file}
     securities:
       file: list-of-all-securities-ex-debt.xls
-      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${markets.lse.securities.file}
+      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${exchanges.lse.securities.file}
+elasticsearch:
+  cluster: elasticsearch
+  host: localhost
+  port: 9300
+  index:
+    company: turbine-companies
+    security: turbine-securities
+  type:
+    company: turbine-company
+    security: turbine-security
+ 

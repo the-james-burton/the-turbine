@@ -22,12 +22,24 @@
  */
 package org.jimsey.projects.turbine.inlet.external.domain;
 
+import static java.lang.String.*;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javaslang.control.Try;
 
 /**
  * POJO representation of a row in the LSE companies spreadsheet
@@ -35,6 +47,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  *
  * @author the-james-burton
  */
+@JsonAutoDetect(
+    fieldVisibility = Visibility.NONE,
+    getterVisibility = Visibility.NONE,
+    isGetterVisibility = Visibility.NONE,
+    creatorVisibility = Visibility.NONE,
+    setterVisibility = Visibility.NONE)
 public class Company implements Comparable<Company> {
 
   // List Date, Company, Group, Sector, Sub Sector, Country of Incorporation, Market, Mkt Cap £m, International Main Market
@@ -58,13 +76,26 @@ public class Company implements Comparable<Company> {
 
   private final Boolean internationalMainMarket;
 
+  // private final OffsetDateTime timestamp = OffsetDateTime.now();
+
+  private static final ObjectMapper json = new ObjectMapper();
+
   private final Comparator<Company> comparator = Comparator
       .comparing((Company c) -> c.name)
       .thenComparing(c -> c.listDate)
       .thenComparing(c -> c.group);
 
-  public Company(LocalDate listDate, String name, Integer group, String sector, String subSector, String country, String market,
-      Double marketCapitalisation, Boolean internationalMainMarket) {
+  @JsonCreator
+  public Company(
+      @JsonProperty("listDate") LocalDate listDate,
+      @JsonProperty("name") String name,
+      @JsonProperty("group") Integer group,
+      @JsonProperty("sector") String sector,
+      @JsonProperty("subSector") String subSector,
+      @JsonProperty("country") String country,
+      @JsonProperty("market") String market,
+      @JsonProperty("marketCapitalisation") Double marketCapitalisation,
+      @JsonProperty("internationalMainMarket") Boolean internationalMainMarket) {
     this.listDate = listDate;
     this.name = name;
     this.group = group;
@@ -102,44 +133,64 @@ public class Company implements Comparable<Company> {
     return Objects.hash(name, listDate, group);
   }
 
-  @Override
-  public String toString() {
+  public String toStringForElasticsearch() {
     return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
   }
 
+  @Override
+  public String toString() {
+    return Try.of(() -> json.writeValueAsString(this))
+        .getOrElseThrow(e -> new RuntimeException(format("unable to write [%s] as String", this.toStringForElasticsearch())));
+  }
+
   // ---------------------------------
-  public LocalDate getListDate() {
+  @JsonProperty("listDate")
+  public String getDate() {
+    // return listDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+    return listDate.format(DateTimeFormatter.ISO_DATE);
+  }
+
+  @JsonIgnore
+  public LocalDate getListDateAsObject() {
     return listDate;
   }
 
+  @JsonProperty("name")
   public String getName() {
     return name;
   }
 
+  @JsonProperty("group")
   public Integer getGroup() {
     return group;
   }
 
+  @JsonProperty("sector")
   public String getSector() {
     return sector;
   }
 
+  @JsonProperty("subSector")
   public String getSubSector() {
     return subSector;
   }
 
+  @JsonProperty("country")
   public String getCountry() {
     return country;
   }
 
+  @JsonProperty("market")
   public String getMarket() {
     return market;
   }
 
+  @JsonProperty("marketCapitalisation")
   public Double getMarketCapitalisation() {
     return marketCapitalisation;
   }
 
+  @JsonProperty("internationalMainMarket")
   public Boolean getInternationalMainMarket() {
     return internationalMainMarket;
   }

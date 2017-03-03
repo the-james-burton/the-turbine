@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,8 +43,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jimsey.projects.turbine.inlet.external.domain.Company;
 import org.jimsey.projects.turbine.inlet.external.domain.Security;
+import org.jimsey.projects.turbine.inlet.service.ElasticsearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
@@ -62,6 +65,10 @@ public class LseParser {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+  @Autowired
+  @NotNull
+  private ElasticsearchService elasticsearch;
 
   @Value("${exchanges.lse.companies.file}")
   private String lseCompaniesFile;
@@ -87,11 +94,13 @@ public class LseParser {
     logger.info("exchanges.lse.companies.file: {}", lseCompaniesFile);
     logger.info("exchanges.lse.securities.file: {}", lseSecuritiesFile);
 
-    // List<Company> companies = parseCompanies(lseCompaniesFile);
-    // companies.forEach(c -> logger.info(c.toString()));
+    List<Company> companies = parseCompanies(lseCompaniesFile);
+    companies.forEach(c -> logger.info(c.toString()));
 
-    List<Security> securities = parseSecurities(lseSecuritiesFile);
-    securities.forEach(c -> logger.info(c.toString()));
+    elasticsearch.indexCompany(companies.head());
+
+    // List<Security> securities = parseSecurities(lseSecuritiesFile);
+    // securities.forEach(c -> logger.info(c.toString()));
   }
 
   private List<Security> parseSecurities(String input) {
