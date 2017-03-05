@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.3.RELEASE</version>
+    <version>1.5.2.RELEASE</version>
     <relativePath></relativePath>
   </parent>
 
@@ -28,7 +28,8 @@
     <java.version>1.8</java.version>
 
     <!-- for dependencies... -->
-    <spring.boot.version>1.4.3.RELEASE</spring.boot.version>
+<!--     <spring.boot.version>1.4.3.RELEASE</spring.boot.version> -->
+    <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
 <!--     <camel.version>2.17.3</camel.version> -->
 <!--     <camel.version>2.18.1</camel.version> -->
 
@@ -40,14 +41,14 @@
     <springfox.version>2.6.1</springfox.version>
 
 <!--     <elasticsearch.version>2.3.5</elasticsearch.version> -->
-    <elasticsearch.version>5.2.0</elasticsearch.version>
+    <elasticsearch.version>5.2.2</elasticsearch.version>
 <!--     <lucene.version>5.5.3</lucene.version> -->
     <jest.version>2.0.1</jest.version>
 
     <javaslang.version>2.0.5</javaslang.version>
     <caffeine.version>2.3.5</caffeine.version>
 
-    <reactor3.version>3.0.4.RELEASE</reactor3.version>
+    <reactor3.version>3.0.5.RELEASE</reactor3.version>
     <reactor2.version>2.0.8.RELEASE</reactor2.version>
     <netty.version>4.1.5.Final</netty.version>
     
@@ -63,7 +64,7 @@
 
     <reflections.version>0.9.10</reflections.version>
     <jna.version>4.2.2</jna.version>
-    <assertj.version>3.6.1</assertj.version>
+    <assertj.version>3.6.2</assertj.version>
   </properties>
 
   <build>
