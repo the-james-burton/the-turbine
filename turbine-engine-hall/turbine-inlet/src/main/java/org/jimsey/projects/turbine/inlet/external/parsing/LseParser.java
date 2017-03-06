@@ -97,10 +97,14 @@ public class LseParser {
     List<Company> companies = parseCompanies(lseCompaniesFile);
     companies.forEach(c -> logger.info(c.toString()));
 
+    elasticsearch.deleteCompaniesIndex();
     elasticsearch.indexCompany(companies.head());
 
-    // List<Security> securities = parseSecurities(lseSecuritiesFile);
-    // securities.forEach(c -> logger.info(c.toString()));
+    List<Security> securities = parseSecurities(lseSecuritiesFile);
+    securities.forEach(c -> logger.info(c.toString()));
+
+    elasticsearch.deleteSecuritiesIndex();
+    elasticsearch.indexSecurity(securities.head());
   }
 
   private List<Security> parseSecurities(String input) {

@@ -27,10 +27,12 @@ import java.net.InetSocketAddress;
 
 import javax.annotation.PostConstruct;
 
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.jimsey.projects.turbine.inlet.external.domain.Company;
 import org.jimsey.projects.turbine.inlet.external.domain.Security;
@@ -84,21 +86,59 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   @Override
   public String indexCompany(Company company) {
     logger.info("indexCompany:{}", company.toString());
-    IndexResponse response = elasticsearch
-        .prepareIndex(indexForCompany, typeForCompany)
-        .setSource(company.toString())
-        .get();
-    return response.toString();
+    return indexObject(company, indexForCompany, typeForCompany);
   }
 
   @Override
   public String indexSecurity(Security security) {
     logger.info("indexSecurity:{}", security.toString());
+    return indexObject(security, indexForSecurity, typeForSecurity);
+  }
+
+  @Override
+  public boolean deleteCompaniesIndex() {
+    return deleteIndex(indexForCompany);
+  }
+
+  @Override
+  public boolean deleteSecuritiesIndex() {
+    return deleteIndex(indexForSecurity);
+  }
+
+  /**
+   * Adds (indexes) a given object to the given index with the given type
+   * @param object to index which should have a toString() method returning valid JSON
+   * @param index to add the object to
+   * @param type to give the object
+   * @return
+   */
+  private String indexObject(Object object, String index, String type) {
     IndexResponse response = elasticsearch
-        .prepareIndex(indexForSecurity, typeForSecurity)
-        .setSource(security.toString())
+        .prepareIndex(index, type)
+        .setSource(object.toString())
         .get();
     return response.toString();
+  }
+
+  /**
+   * Removes the given index from elasticsearch
+   * @param index to delete
+   * @return true if successfully deleted
+   */
+  private boolean deleteIndex(String index) {
+    boolean result = false;
+    try {
+      DeleteIndexResponse response = elasticsearch.admin().indices().prepareDelete(index).get();
+      logger.info("successfully deleted: index:{}, isAcknowledged:{}", index, response.isAcknowledged());
+      result = response.isAcknowledged();
+    } catch (IndexNotFoundException e) {
+      logger.info("index not found: index:{}", index);
+      result = true;
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      result = false;
+    }
+    return result;
   }
 
 }

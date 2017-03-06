@@ -30,4 +30,9 @@ public interface ElasticsearchService {
   String indexCompany(Company company);
 
   String indexSecurity(Security security);
+
+  boolean deleteCompaniesIndex();
+
+  boolean deleteSecuritiesIndex();
+
 }
