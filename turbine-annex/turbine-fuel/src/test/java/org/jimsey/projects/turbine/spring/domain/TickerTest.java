@@ -53,7 +53,7 @@ public class TickerTest {
   @Test
   public void testConstructor() {
     // check that the constructor correctly sets all properties...
-    assertThat(tickAAA).hasFieldOrPropertyWithValue("ticker", CharSeq.of(String.format("%s.%s", TICK1, AX.getExtension())));
+    assertThat(tickAAA).hasFieldOrPropertyWithValue("ric", CharSeq.of(String.format("%s.%s", TICK1, AX.getExtension())));
     assertThat(tickAAA).hasFieldOrPropertyWithValue("symbol", TICK1);
     assertThat(tickAAA).hasFieldOrPropertyWithValue("exchange", AX);
   }

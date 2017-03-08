@@ -66,7 +66,7 @@ public class IndicatorJsonTest {
   @Test
   public void testJsonCreator() {
     IndicatorJson indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
-        TICKER.getTickerAsString(), name, OffsetDateTime.now().toString());
+        TICKER.getRicAsString(), name, OffsetDateTime.now().toString());
     String jsonCreator = indicator.toString();
     logger.info(jsonCreator);
     assertNotNull(jsonCreator);

@@ -56,7 +56,7 @@ public class TickJsonTest {
   @Test
   public void testJsonCreator() {
     TickJson tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TICKER.getTickerAsString(), OffsetDateTime.now().toString());
+        TICKER.getRicAsString(), OffsetDateTime.now().toString());
     String jsonCreator = tick.toString();
     logger.info(jsonCreator);
     assertNotNull(jsonCreator);

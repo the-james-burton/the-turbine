@@ -118,7 +118,7 @@ public class Stock {
         .expireAfterWrite(10, TimeUnit.SECONDS)
         .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) ->  {
           v.countDown();
-          logger.info("cache expired: [ticker:{}, timestamp:{}]", ticker.getTicker(), k.toString());
+          logger.info("cache expired: [ticker:{}, timestamp:{}]", ticker.getRic(), k.toString());
         })
         .build();
   }

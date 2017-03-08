@@ -78,7 +78,7 @@ public class TickProducer implements Comparable<TickProducer> {
   }
 
   public TickJson fetchTickFromYahooFinanceRealtime() {
-    String url = baseUrl + ticker.getTickerAsString();
+    String url = baseUrl + ticker.getRicAsString();
     ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
         .getOrElse(() -> new ResponseEntity<String>(format("turbine inlet service expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
     // there will only be one line, since we are not (yet) batching requests to the external finance service...

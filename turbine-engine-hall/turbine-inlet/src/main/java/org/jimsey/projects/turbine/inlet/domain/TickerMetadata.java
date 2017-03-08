@@ -42,7 +42,7 @@ public class TickerMetadata {
   private List<Ticker> knownTickers = List.empty();
   
   public Function1<CharSeq, Option<Ticker>> findTickerBySymbol = 
-      (symbol) -> knownTickers.find(ticker -> ticker.getTicker().eq(symbol));
+      (symbol) -> knownTickers.find(ticker -> ticker.getRic().eq(symbol));
   
   @PostConstruct
   public void init() {

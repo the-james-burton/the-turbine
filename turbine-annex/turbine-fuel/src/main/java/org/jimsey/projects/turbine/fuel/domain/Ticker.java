@@ -49,7 +49,7 @@ import javaslang.control.Try;
     setterVisibility = Visibility.NONE)
 public class Ticker implements Comparable<Ticker> {
 
-  private final CharSeq ticker;
+  private final CharSeq ric;
 
   private final CharSeq symbol;
 
@@ -62,13 +62,13 @@ public class Ticker implements Comparable<Ticker> {
   private static final ObjectMapper json = new ObjectMapper();
 
   // ----------------------------
-  public Ticker(CharSeq ticker, CharSeq name) {
+  public Ticker(CharSeq ric, CharSeq name) {
     this.timestamp = OffsetDateTime.now();
-    this.ticker = ticker;
+    this.ric = ric;
     this.name = name;
-    CharSeq[] parts = ticker.split("\\.");
+    CharSeq[] parts = ric.split("\\.");
     Tuple2<CharSeq, CharSeq> tuple = Try.of(() -> Tuple.of(parts[0], parts[1]))
-        .getOrElseThrow(() -> new RuntimeException("unable to parse as ticker:" + ticker));
+        .getOrElseThrow(() -> new RuntimeException("unable to parse as ticker:" + ric));
     this.symbol = tuple._1;
     this.exchange = ExchangeEnum.fromExtension(tuple._2)
         .getOrElseThrow(() -> new RuntimeException("no ExchangeEnum for extension:" + tuple._2));
@@ -77,12 +77,12 @@ public class Ticker implements Comparable<Ticker> {
   @JsonCreator
   public Ticker(
       @JsonProperty("timestamp") String timestamp,
-      @JsonProperty("ticker") String ticker,
+      @JsonProperty("ric") String ric,
       @JsonProperty("symbol") String symbol,
       @JsonProperty("exchange") String exchange,
       @JsonProperty("name") String name) {
     this.timestamp = OffsetDateTime.parse(timestamp);
-    this.ticker = CharSeq.of(ticker);
+    this.ric = CharSeq.of(ric);
     this.symbol = CharSeq.of(symbol);
     this.exchange = ExchangeEnum.valueOf(exchange);
     this.name = CharSeq.of(name);
@@ -93,7 +93,7 @@ public class Ticker implements Comparable<Ticker> {
     this.symbol = symbol;
     this.exchange = exchange;
     this.name = name;
-    this.ticker = CharSeq.of(String.format("%s.%s", symbol, exchange.getExtension()));
+    this.ric = CharSeq.of(String.format("%s.%s", symbol, exchange.getExtension()));
   }
 
   public Ticker(String ticker) {
@@ -109,20 +109,20 @@ public class Ticker implements Comparable<Ticker> {
   }
 
   // ------------------------------------------
-  public static Ticker of(CharSeq ticker) {
-    return new Ticker(ticker);
+  public static Ticker of(CharSeq ric) {
+    return new Ticker(ric);
   }
 
-  public static Ticker of(String ticker) {
-    return new Ticker(ticker);
+  public static Ticker of(String ric) {
+    return new Ticker(ric);
   }
 
-  public static Ticker of(CharSeq ticker, CharSeq name) {
-    return new Ticker(ticker, name);
+  public static Ticker of(CharSeq ric, CharSeq name) {
+    return new Ticker(ric, name);
   }
 
-  public static Ticker of(String ticker, String name) {
-    return new Ticker(ticker, name);
+  public static Ticker of(String ric, String name) {
+    return new Ticker(ric, name);
   }
 
   public static Ticker of(CharSeq symbol, ExchangeEnum exchange, CharSeq name) {
@@ -144,7 +144,7 @@ public class Ticker implements Comparable<Ticker> {
 
   // ----------------------------
   private final Comparator<Ticker> comparator = Comparator
-      .comparing((Ticker t) -> t.getTickerAsString())
+      .comparing((Ticker t) -> t.getRicAsString())
       .thenComparing(t -> t.getExchange())
       .thenComparing(t -> t.getName().toString());
 
@@ -154,7 +154,7 @@ public class Ticker implements Comparable<Ticker> {
       return false;
     }
     Ticker that = (Ticker) key;
-    return Objects.equals(this.ticker, that.ticker)
+    return Objects.equals(this.ric, that.ric)
         && Objects.equals(this.exchange, that.exchange)
         && Objects.equals(this.name, that.name);
   }
@@ -166,7 +166,7 @@ public class Ticker implements Comparable<Ticker> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ticker, exchange, name);
+    return Objects.hash(ric, exchange, name);
   }
 
   @Override
@@ -174,7 +174,7 @@ public class Ticker implements Comparable<Ticker> {
     // return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     // return ticker.toString();
     return Try.of(() -> json.writeValueAsString(this))
-        .getOrElseThrow(e -> new RuntimeException(format("unable to write [%s] as JSON", ticker)));
+        .getOrElseThrow(e -> new RuntimeException(format("unable to write [%s] as JSON", ric)));
   }
 
   // ----------------------------
@@ -188,9 +188,9 @@ public class Ticker implements Comparable<Ticker> {
     return timestamp;
   }
 
-  @JsonProperty("ticker")
-  public String getTickerAsString() {
-    return ticker.toString();
+  @JsonProperty("ric")
+  public String getRicAsString() {
+    return ric.toString();
   }
 
   @JsonProperty("symbol")
@@ -209,8 +209,8 @@ public class Ticker implements Comparable<Ticker> {
   }
 
   @JsonIgnore
-  public CharSeq getTicker() {
-    return ticker;
+  public CharSeq getRic() {
+    return ric;
   }
 
   @JsonIgnore

@@ -144,7 +144,7 @@ public class TickJson extends Tick implements Serializable {
 
   @JsonProperty("ticker")
   public String getTicker() {
-    return ticker.getTickerAsString();
+    return ticker.getRicAsString();
   }
 
   @JsonProperty("timestamp")
