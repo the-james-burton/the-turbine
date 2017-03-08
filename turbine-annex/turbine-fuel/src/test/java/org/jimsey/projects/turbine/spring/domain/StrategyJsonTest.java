@@ -55,7 +55,7 @@ public class StrategyJsonTest {
 
   @Test
   public void testJsonCreator() {
-    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.toString(),
+    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.getTickerAsString(),
         100.0d, "exit", "myname", -1, 5, 10.0d, 15.0d, OffsetDateTime.now().toString());
     String jsonCreator = strategy.toString();
     logger.info(jsonCreator);
@@ -73,20 +73,19 @@ public class StrategyJsonTest {
 
   @Test
   public void testJson() throws IOException {
-    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.toString(),
+    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.getTickerAsString(),
         100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(strategy);
     strategy = json.readValue(text, StrategyJson.class);
     logger.info(text);
     logger.info(strategy.toString());
     assertEquals(text, strategy.toString());
-
   }
 
   @Ignore
   @Test
   public void testSerializable() throws IOException {
-    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.toString(),
+    StrategyJson strategy = new StrategyJson(1401174943825l, TICKER.getTickerAsString(),
         100.0d, "enter", "myname", 1, 6, 11.0d, 14.0d, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(strategy);
     TickJson strategy2 = (TickJson) SerializationUtils.deserialize(bytes);

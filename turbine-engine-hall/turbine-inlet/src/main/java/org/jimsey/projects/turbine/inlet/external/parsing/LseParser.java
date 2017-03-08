@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.inlet.external.parsing;
 
 import static java.lang.String.*;
+import static javaslang.Predicates.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -41,8 +42,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jimsey.projects.turbine.inlet.external.domain.Company;
-import org.jimsey.projects.turbine.inlet.external.domain.Security;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inlet.external.domain.LseCompany;
+import org.jimsey.projects.turbine.inlet.external.domain.LseSecurity;
 import org.jimsey.projects.turbine.inlet.service.ElasticsearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,20 +97,35 @@ public class LseParser {
     logger.info("exchanges.lse.companies.file: {}", lseCompaniesFile);
     logger.info("exchanges.lse.securities.file: {}", lseSecuritiesFile);
 
-    List<Company> companies = parseCompanies(lseCompaniesFile);
-    companies.forEach(c -> logger.info(c.toString()));
+    List<LseCompany> companies = parseCompanies(lseCompaniesFile);
+    // companies.forEach(c -> logger.info(c.toString()));
 
-    elasticsearch.deleteCompaniesIndex();
-    elasticsearch.indexCompany(companies.head());
+    // elasticsearch.deleteCompaniesIndex();
+    // elasticsearch.indexCompany(companies.head());
+    // companies.forEach(elasticsearch::indexCompany);
+    // companies.toJavaList().parallelStream().forEach(elasticsearch::indexCompany);
 
-    List<Security> securities = parseSecurities(lseSecuritiesFile);
-    securities.forEach(c -> logger.info(c.toString()));
+    List<LseSecurity> securities = parseSecurities(lseSecuritiesFile);
+    // securities.forEach(c -> logger.info(c.toString()));
 
-    elasticsearch.deleteSecuritiesIndex();
-    elasticsearch.indexSecurity(securities.head());
+    List<Ticker> tickers = securities
+        .filter(s -> isIn("AIM", "UK Main Market").test(s.getLseMarket()))
+        .filter(s -> StringUtils.startsWith(s.getSecurityName(), "ORD GBP"))
+        .filter(s -> isIn("GBX", "GBP").test(s.getTradingCurrency()))
+        .map(s -> Ticker.of(s.getTidm(), ExchangeEnum.LSE, s.getCompanyName()));
+
+    elasticsearch.deleteTickersIndex();
+    // elasticsearch.indexTicker(tickers.head());
+    tickers.toJavaList().parallelStream().forEach(elasticsearch::indexTicker);
+
+    // elasticsearch.deleteSecuritiesIndex();
+    // elasticsearch.indexSecurity(securities.head());
+    // securities.forEach(elasticsearch::indexSecurity);
+    // securities.toJavaList().parallelStream().forEach(elasticsearch::indexSecurity);
+
   }
 
-  private List<Security> parseSecurities(String input) {
+  private List<LseSecurity> parseSecurities(String input) {
     Sheet sheet = extractSheet(input);
 
     // validate the sheet...
@@ -123,9 +141,9 @@ public class LseParser {
     // MarketSectorCode:STRING, Trading Currency:STRING
 
     // parse the sheet into Company pojos...
-    List<Security> securities = Stream.ofAll((Iterable<Row>) sheet)
+    List<LseSecurity> securities = Stream.ofAll((Iterable<Row>) sheet)
         .filter(row -> row.getRowNum() > 6)
-        .map(row -> Security.of(
+        .map(row -> LseSecurity.of(
             row.getCell(0).getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
             StringUtils.trim(row.getCell(1).getStringCellValue()),
             StringUtils.trim(row.getCell(2).getStringCellValue()),
@@ -149,7 +167,7 @@ public class LseParser {
     return securities;
   }
 
-  private List<Company> parseCompanies(String input) {
+  private List<LseCompany> parseCompanies(String input) {
     Sheet sheet = extractSheet(input);
 
     // validate the sheet...
@@ -161,9 +179,9 @@ public class LseParser {
         .reduce((a, b) -> format("%s, %s", a, b)));
 
     // parse the sheet into Company pojos...
-    List<Company> companies = Stream.ofAll((Iterable<Row>) sheet)
+    List<LseCompany> companies = Stream.ofAll((Iterable<Row>) sheet)
         .filter(row -> row.getRowNum() > 6)
-        .map(row -> Company.of(
+        .map(row -> LseCompany.of(
             row.getCell(0).getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
             StringUtils.trim(row.getCell(1).getStringCellValue()),
             (int) row.getCell(2).getNumericCellValue(),

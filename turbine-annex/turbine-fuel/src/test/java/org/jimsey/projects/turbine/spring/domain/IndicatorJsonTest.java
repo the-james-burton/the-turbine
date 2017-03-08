@@ -53,7 +53,7 @@ public class IndicatorJsonTest {
   private final String name = "testIndicatorName";
 
   private final Ticker TICKER = Ticker.of(ABC);
-  
+
   @Before
   public void before() {
     // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
@@ -66,7 +66,7 @@ public class IndicatorJsonTest {
   @Test
   public void testJsonCreator() {
     IndicatorJson indicator = new IndicatorJson(1401174943825l, 100.0d, indicators,
-        TICKER.toString(), name, OffsetDateTime.now().toString());
+        TICKER.getTickerAsString(), name, OffsetDateTime.now().toString());
     String jsonCreator = indicator.toString();
     logger.info(jsonCreator);
     assertNotNull(jsonCreator);

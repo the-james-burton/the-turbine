@@ -108,7 +108,8 @@ public class TickJson extends Tick implements Serializable {
   public static TickJson of(String tick) {
     return Try
         .of(() -> json.readValue(tick, TickJson.class))
-        .getOrElseThrow((e) -> new RuntimeException(String.format("unable to parse [%s] as a TickJson : [%s]", e.getMessage())));
+        .getOrElseThrow(
+            (e) -> new RuntimeException(String.format("unable to parse [%s] as a TickJson : [%s]", tick, e.getMessage())));
   }
 
   @JsonProperty("date")
@@ -143,7 +144,7 @@ public class TickJson extends Tick implements Serializable {
 
   @JsonProperty("ticker")
   public String getTicker() {
-    return ticker.toString();
+    return ticker.getTickerAsString();
   }
 
   @JsonProperty("timestamp")

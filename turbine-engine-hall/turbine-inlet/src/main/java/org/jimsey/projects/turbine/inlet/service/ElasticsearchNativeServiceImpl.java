@@ -34,8 +34,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.jimsey.projects.turbine.inlet.external.domain.Company;
-import org.jimsey.projects.turbine.inlet.external.domain.Security;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inlet.external.domain.LseCompany;
+import org.jimsey.projects.turbine.inlet.external.domain.LseSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,6 +68,12 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   @Value("${elasticsearch.type.security}")
   private String typeForSecurity;
 
+  @Value("${elasticsearch.index.ticker}")
+  private String indexForTicker;
+
+  @Value("${elasticsearch.type.ticker}")
+  private String typeForTicker;
+
   private TransportClient elasticsearch;
 
   @PostConstruct
@@ -84,15 +91,21 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   @Override
-  public String indexCompany(Company company) {
+  public String indexCompany(LseCompany company) {
     logger.info("indexCompany:{}", company.toString());
     return indexObject(company, indexForCompany, typeForCompany);
   }
 
   @Override
-  public String indexSecurity(Security security) {
+  public String indexSecurity(LseSecurity security) {
     logger.info("indexSecurity:{}", security.toString());
     return indexObject(security, indexForSecurity, typeForSecurity);
+  }
+
+  @Override
+  public String indexTicker(Ticker ticker) {
+    logger.info("indexTicker:{}", ticker.toString());
+    return indexObject(ticker, indexForTicker, typeForTicker);
   }
 
   @Override
@@ -103,6 +116,11 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   @Override
   public boolean deleteSecuritiesIndex() {
     return deleteIndex(indexForSecurity);
+  }
+
+  @Override
+  public boolean deleteTickersIndex() {
+    return deleteIndex(indexForTicker);
   }
 
   /**

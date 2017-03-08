@@ -20,7 +20,9 @@ elasticsearch:
   index:
     company: turbine-companies
     security: turbine-securities
+    ticker: turbine-tickers
   type:
     company: turbine-company
     security: turbine-security
+    ticker: turbine-ticker
  

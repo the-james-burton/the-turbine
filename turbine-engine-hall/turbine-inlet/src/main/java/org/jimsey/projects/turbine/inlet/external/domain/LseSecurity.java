@@ -54,7 +54,7 @@ import javaslang.control.Try;
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE,
     setterVisibility = Visibility.NONE)
-public class Security implements Comparable<Security> {
+public class LseSecurity implements Comparable<LseSecurity> {
 
   // Security Start Date, Company Name, Country of Incorporation, LSE Market, FCA Listing Category, ISIN, Security Name, TIDM, Mkt
   // Cap £m, Shares in Issue, Industry, Supersector, Sector, Subsector, Group, MarketSegmentCode, MarketSectorCode, Trading
@@ -114,15 +114,15 @@ public class Security implements Comparable<Security> {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private final Comparator<Security> comparator = Comparator
-      .comparing((Security s) -> s.securityName)
-      .thenComparing((Security s) -> s.companyName)
+  private final Comparator<LseSecurity> comparator = Comparator
+      .comparing((LseSecurity s) -> s.securityName)
+      .thenComparing((LseSecurity s) -> s.companyName)
       .thenComparing(s -> s.lseMarket)
       .thenComparing(s -> s.securityStartDate)
       .thenComparing(s -> s.isin);
 
   @JsonCreator
-  public Security(
+  public LseSecurity(
       @JsonProperty("securityStartDate") LocalDate securityStartDate,
       @JsonProperty("companyName") String companyName,
       @JsonProperty("countryOfIncorporation") String countryOfIncorporation,
@@ -161,21 +161,21 @@ public class Security implements Comparable<Security> {
     this.tradingCurrency = tradingCurrency;
   }
 
-  public static Security of(LocalDate securityStartDate, String companyName, String countryOfIncorporation, String lseMarket,
+  public static LseSecurity of(LocalDate securityStartDate, String companyName, String countryOfIncorporation, String lseMarket,
       String fcaListingCategory, String isin, String securityName, String tidm, Double mktCap, Long sharesInIssue, String industry,
       String supersector, String sector, String subsector, Integer group, String marketSegmentCode, String marketSectorCode,
       String tradingCurrency) {
-    return new Security(securityStartDate, companyName, countryOfIncorporation, lseMarket,
+    return new LseSecurity(securityStartDate, companyName, countryOfIncorporation, lseMarket,
         fcaListingCategory, isin, securityName, tidm, mktCap, sharesInIssue, industry,
         supersector, sector, subsector, group, marketSegmentCode, marketSectorCode, tradingCurrency);
   }
 
   @Override
   public boolean equals(Object key) {
-    if (key == null || !(key instanceof Company)) {
+    if (key == null || !(key instanceof LseCompany)) {
       return false;
     }
-    Security that = (Security) key;
+    LseSecurity that = (LseSecurity) key;
     return Objects.equals(this.securityName, that.securityName)
         && Objects.equals(this.companyName, that.companyName)
         && Objects.equals(this.lseMarket, that.lseMarket)
@@ -184,7 +184,7 @@ public class Security implements Comparable<Security> {
   }
 
   @Override
-  public int compareTo(Security that) {
+  public int compareTo(LseSecurity that) {
     return comparator.compare(this, that);
   }
 

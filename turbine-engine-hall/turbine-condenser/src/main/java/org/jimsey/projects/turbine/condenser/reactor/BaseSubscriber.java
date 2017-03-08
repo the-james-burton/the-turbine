@@ -65,6 +65,7 @@ public class BaseSubscriber<T> implements Subscriber<T>, Subscription {
 
   @Override
   public void onError(Throwable t) {
+    t.printStackTrace();
     logger.error("{} onError:{}", name, t.getMessage());
   }
 

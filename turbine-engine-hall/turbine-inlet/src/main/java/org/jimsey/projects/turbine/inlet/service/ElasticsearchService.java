@@ -22,17 +22,22 @@
  */
 package org.jimsey.projects.turbine.inlet.service;
 
-import org.jimsey.projects.turbine.inlet.external.domain.Company;
-import org.jimsey.projects.turbine.inlet.external.domain.Security;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.inlet.external.domain.LseCompany;
+import org.jimsey.projects.turbine.inlet.external.domain.LseSecurity;
 
 public interface ElasticsearchService {
 
-  String indexCompany(Company company);
+  String indexCompany(LseCompany company);
 
-  String indexSecurity(Security security);
+  String indexSecurity(LseSecurity security);
+
+  String indexTicker(Ticker ticker);
 
   boolean deleteCompaniesIndex();
 
   boolean deleteSecuritiesIndex();
+
+  boolean deleteTickersIndex();
 
 }

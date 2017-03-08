@@ -25,6 +25,7 @@ package org.jimsey.projects.turbine.spring.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.jimsey.projects.turbine.spring.domain.TickerTheoryTest.*;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
@@ -33,7 +34,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javaslang.collection.CharSeq;
@@ -115,9 +115,11 @@ public class TickerTest {
   }
 
   @Test
-  public void testJsonSerialise() throws JsonProcessingException {
-    String result = json.writeValueAsString(tickAAB);
-    logger.info(result);
+  public void testJsonSerialise() throws IOException {
+    String expected = json.writeValueAsString(tickAAA);
+    logger.info(expected);
+    Ticker ticker = json.readValue(expected, Ticker.class);
+    assertThat(ticker.toString()).isEqualTo(expected);
   }
 
 }

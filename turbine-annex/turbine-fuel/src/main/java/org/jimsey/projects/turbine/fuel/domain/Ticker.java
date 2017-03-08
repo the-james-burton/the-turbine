@@ -24,13 +24,17 @@ package org.jimsey.projects.turbine.fuel.domain;
 
 import static java.lang.String.*;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javaslang.Tuple;
 import javaslang.Tuple2;
@@ -53,8 +57,13 @@ public class Ticker implements Comparable<Ticker> {
 
   private final ExchangeEnum exchange;
 
+  private final OffsetDateTime timestamp;
+
+  private static final ObjectMapper json = new ObjectMapper();
+
   // ----------------------------
   public Ticker(CharSeq ticker, CharSeq name) {
+    this.timestamp = OffsetDateTime.now();
     this.ticker = ticker;
     this.name = name;
     CharSeq[] parts = ticker.split("\\.");
@@ -65,7 +74,22 @@ public class Ticker implements Comparable<Ticker> {
         .getOrElseThrow(() -> new RuntimeException("no ExchangeEnum for extension:" + tuple._2));
   }
 
+  @JsonCreator
+  public Ticker(
+      @JsonProperty("timestamp") String timestamp,
+      @JsonProperty("ticker") String ticker,
+      @JsonProperty("symbol") String symbol,
+      @JsonProperty("exchange") String exchange,
+      @JsonProperty("name") String name) {
+    this.timestamp = OffsetDateTime.parse(timestamp);
+    this.ticker = CharSeq.of(ticker);
+    this.symbol = CharSeq.of(symbol);
+    this.exchange = ExchangeEnum.valueOf(exchange);
+    this.name = CharSeq.of(name);
+  }
+
   public Ticker(CharSeq symbol, ExchangeEnum exchange, CharSeq name) {
+    this.timestamp = OffsetDateTime.now();
     this.symbol = symbol;
     this.exchange = exchange;
     this.name = name;
@@ -120,7 +144,7 @@ public class Ticker implements Comparable<Ticker> {
 
   // ----------------------------
   private final Comparator<Ticker> comparator = Comparator
-      .comparing((Ticker t) -> t.getTicker().toString())
+      .comparing((Ticker t) -> t.getTickerAsString())
       .thenComparing(t -> t.getExchange())
       .thenComparing(t -> t.getName().toString());
 
@@ -148,10 +172,22 @@ public class Ticker implements Comparable<Ticker> {
   @Override
   public String toString() {
     // return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
-    return ticker.toString();
+    // return ticker.toString();
+    return Try.of(() -> json.writeValueAsString(this))
+        .getOrElseThrow(e -> new RuntimeException(format("unable to write [%s] as JSON", ticker)));
   }
 
   // ----------------------------
+  @JsonProperty("timestamp")
+  public String getTimestamp() {
+    return timestamp.format(DateTimeFormatter.ISO_DATE_TIME);
+  }
+
+  @JsonIgnore
+  public OffsetDateTime getTimestampAsObject() {
+    return timestamp;
+  }
+
   @JsonProperty("ticker")
   public String getTickerAsString() {
     return ticker.toString();
@@ -160,6 +196,11 @@ public class Ticker implements Comparable<Ticker> {
   @JsonProperty("symbol")
   public String getSymbolAsString() {
     return symbol.toString();
+  }
+
+  @JsonProperty("name")
+  public String getNameAsString() {
+    return name.toString();
   }
 
   @JsonProperty("exchange")
@@ -178,12 +219,13 @@ public class Ticker implements Comparable<Ticker> {
   }
 
   @JsonIgnore
-  public ExchangeEnum getExchange() {
-    return exchange;
-  }
-
   public CharSeq getName() {
     return name;
+  }
+
+  @JsonIgnore
+  public ExchangeEnum getExchange() {
+    return exchange;
   }
 
 }

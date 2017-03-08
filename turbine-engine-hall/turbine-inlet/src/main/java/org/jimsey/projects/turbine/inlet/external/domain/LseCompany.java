@@ -54,7 +54,7 @@ import javaslang.control.Try;
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE,
     setterVisibility = Visibility.NONE)
-public class Company implements Comparable<Company> {
+public class LseCompany implements Comparable<LseCompany> {
 
   // List Date, Company, Group, Sector, Sub Sector, Country of Incorporation, Market, Mkt Cap £m, International Main Market
   // 02-Aug-06,1PM PLC, 8775, General Financial, Specialty Finance, GB, AIM, 29.97210315, N
@@ -81,13 +81,13 @@ public class Company implements Comparable<Company> {
 
   private static final ObjectMapper json = new ObjectMapper();
 
-  private final Comparator<Company> comparator = Comparator
-      .comparing((Company c) -> c.name)
+  private final Comparator<LseCompany> comparator = Comparator
+      .comparing((LseCompany c) -> c.name)
       .thenComparing(c -> c.listDate)
       .thenComparing(c -> c.group);
 
   @JsonCreator
-  public Company(
+  public LseCompany(
       @JsonProperty("listDate") LocalDate listDate,
       @JsonProperty("name") String name,
       @JsonProperty("group") Integer group,
@@ -108,24 +108,24 @@ public class Company implements Comparable<Company> {
     this.internationalMainMarket = internationalMainMarket;
   }
 
-  public static Company of(LocalDate listDate, String name, Integer group, String sector, String subSector, String country,
+  public static LseCompany of(LocalDate listDate, String name, Integer group, String sector, String subSector, String country,
       String market, Double marketCapitalisation, Boolean internationalMainMarket) {
-    return new Company(listDate, name, group, sector, subSector, country, market, marketCapitalisation, internationalMainMarket);
+    return new LseCompany(listDate, name, group, sector, subSector, country, market, marketCapitalisation, internationalMainMarket);
   }
 
   @Override
   public boolean equals(Object key) {
-    if (key == null || !(key instanceof Company)) {
+    if (key == null || !(key instanceof LseCompany)) {
       return false;
     }
-    Company that = (Company) key;
+    LseCompany that = (LseCompany) key;
     return Objects.equals(this.name, that.name)
         && Objects.equals(this.listDate, that.listDate)
         && Objects.equals(this.group, that.group);
   }
 
   @Override
-  public int compareTo(Company that) {
+  public int compareTo(LseCompany that) {
     return comparator.compare(this, that);
   }
 

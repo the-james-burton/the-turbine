@@ -108,7 +108,7 @@ public abstract class Entity implements Serializable {
 
   @JsonProperty("ticker")
   public String getTicker() {
-    return ticker.toString();
+    return ticker.getTickerAsString();
   }
 
   @JsonProperty("timestamp")

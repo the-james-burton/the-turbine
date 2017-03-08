@@ -89,6 +89,8 @@ public class ReactorManager {
   @PostConstruct
   public void init() {
 
+    logger.info(" ** ReactorManager init();");
+
     msgs = TopicProcessor.create("msgs");
     ticks = TopicProcessor.create("ticks");
     indicators = TopicProcessor.create("indicators");
