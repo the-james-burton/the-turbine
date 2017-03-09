@@ -76,24 +76,24 @@ public class IndicatorController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/{ticker}")
+  @RequestMapping("/{ric}")
   public String getIndicators(
-      @PathVariable String ticker) {
-    logger.info("getIndicators({}, {})", ticker);
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByTicker(ticker);
+      @PathVariable String ric) {
+    logger.info("getIndicators({}, {})", ric);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByRic(ric);
     // return Joiner.on(',').join(indicators);
-    return indicators.stream().map(i -> i.toString()).reduce((l,r)-> format("%s,%s", l,r)).orElse("");
+    return indicators.stream().map(i -> i.toString()).reduce((l, r) -> format("%s,%s", l, r)).orElse("");
   }
 
-  @RequestMapping("/{ticker}/{name}/{date}")
+  @RequestMapping("/{ric}/{name}/{date}")
   public String getIndicatorsAfter(
-      @PathVariable String ticker,
-      @PathVariable String name, 
+      @PathVariable String ric,
+      @PathVariable String name,
       @PathVariable Long date)
       throws JsonProcessingException {
-    logger.info("getIndicatorsAfter({}, {}, {}, {})", ticker, name, date);
-    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByTickerAndNameAndDateGreaterThan(
-        ticker, name, date);
+    logger.info("getIndicatorsAfter({}, {}, {}, {})", ric, name, date);
+    List<IndicatorJson> indicators = elasticsearch.findIndicatorsByRicAndNameAndDateGreaterThan(
+        ric, name, date);
 
     // TODO can do this with java 8 lambdas?
     Object dto = new Object() {

@@ -92,7 +92,7 @@ public class TickControllerTest {
     // {\"date\":1437757455156,\"open\":95.20691875293008,\"high\":96.33109747791707,\"low\":95.03864535693057,\"close\":95.76421881828955,\"volume\":104.54628090784864,\"symbol\":\"ABC\",\"exchanges\":\"LSE\",\"timestamp\":\"2015-07-24T18:04:15.156+01:00\"},
     // {\"date\":1437757459179,\"open\":95.30416761402581,\"high\":95.88765706158829,\"low\":92.37627010410178,\"close\":93.31372449905724,\"volume\":92.83201741698048,\"symbol\":\"ABC\",\"exchanges\":\"LSE\",\"timestamp\":\"2015-07-24T18:04:19.179+01:00\"}";
 
-    given(elasticsearch.findTicksByTickerAndDateGreaterThan(
+    given(elasticsearch.findTicksByRicAndDateGreaterThan(
         anyString(), Mockito.any(Long.class))).willReturn(ticks);
 
     String expected = json.writeValueAsString(new Object() {

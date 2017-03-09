@@ -239,9 +239,9 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     populateElasticsearch(rdogTwo, numberTwo, indexForTicks, typeForTicks, null, TickJson.class);
     logger.info("it should return {} {} ticks, {} {} ticks and 0 {} ticks",
         numberOne, tickerOne, numberTwo, tickerTwo, tickerThree);
-    List<TickJson> resultOne = service.findTicksByTicker(tickerOne);
-    List<TickJson> resultTwo = service.findTicksByTicker(tickerTwo);
-    List<TickJson> resultThree = service.findTicksByTicker(tickerThree);
+    List<TickJson> resultOne = service.findTicksByRic(tickerOne);
+    List<TickJson> resultTwo = service.findTicksByRic(tickerTwo);
+    List<TickJson> resultThree = service.findTicksByRic(tickerThree);
     logger.info(" *** findTicksByTicker({}): {}, expected: {}",
         tickerOne, resultOne.size(), numberOne);
     logger.info(" *** findTicksByTicker({}): {}, expected: {}",
@@ -264,9 +264,9 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     populateElasticsearch(rdogTwo, numberTwo, indexForIndicators, typeForIndicators, name, IndicatorJson.class);
     logger.info("it should return {} {} indictors, {} {} indicators and 0 {} indicators",
         numberOne, tickerOne, numberTwo, tickerTwo, tickerThree);
-    List<IndicatorJson> resultOne = service.findIndicatorsByTicker(tickerOne);
-    List<IndicatorJson> resultTwo = service.findIndicatorsByTicker(tickerTwo);
-    List<IndicatorJson> resultThree = service.findIndicatorsByTicker(tickerThree);
+    List<IndicatorJson> resultOne = service.findIndicatorsByRic(tickerOne);
+    List<IndicatorJson> resultTwo = service.findIndicatorsByRic(tickerTwo);
+    List<IndicatorJson> resultThree = service.findIndicatorsByRic(tickerThree);
     logger.info(" *** findIndicatorsByTicker({}): {}, expected: {}",
         tickerOne, resultOne.size(), numberOne);
     logger.info(" *** findIndicatorsByTicker({}): {}, expected: {}",
@@ -285,7 +285,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     logger.info("given {} {} ticks", number, tickerOne);
     long midpoint = populateElasticsearch(rdogOne, number, indexForTicks, typeForTicks, null, TickJson.class).getDate();
     logger.info("it should return only {} {} ticks after the midpoint", expected, tickerOne);
-    List<TickJson> result = service.findTicksByTickerAndDateGreaterThan(tickerOne, midpoint);
+    List<TickJson> result = service.findTicksByRicAndDateGreaterThan(tickerOne, midpoint);
     logger.info(" *** findTicksByTickerAndDateGreaterThan({}, {}): {}, expected: {}",
         tickerOne, midpoint, result.size(), expected);
     assertThat(result).hasSize(expected);
@@ -299,7 +299,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     long midpoint = populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, null,
         IndicatorJson.class).getDate();
     logger.info("it should return only {} {} indicators after the midpoint", expected, tickerOne);
-    List<IndicatorJson> result = service.findIndicatorsByTickerAndDateGreaterThan(tickerOne, midpoint);
+    List<IndicatorJson> result = service.findIndicatorsByRicAndDateGreaterThan(tickerOne, midpoint);
     logger.info(" *** findIndicatorsByTickerAndDateGreaterThan({}, {}): {}, expected: {}",
         tickerOne, midpoint, result.size(), expected);
     assertThat(result).hasSize(expected);
@@ -317,7 +317,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     long midpoint = OffsetDateTime.now().toInstant().toEpochMilli();
     populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, nameTwo, IndicatorJson.class);
     logger.info("it should return only {} {} {} indicators after the midpoint", expected, nameOne, tickerOne);
-    List<IndicatorJson> result = service.findIndicatorsByTickerAndNameAndDateGreaterThan(tickerOne, nameOne, midpoint);
+    List<IndicatorJson> result = service.findIndicatorsByRicAndNameAndDateGreaterThan(tickerOne, nameOne, midpoint);
     logger.info(" *** findIndicatorsByTickerAndNameAndDateGreaterThan({}, {}, {}): {}, expected: {}",
         tickerOne, nameOne, midpoint, result.size(), expected);
     assertThat(result).hasSize(expected);

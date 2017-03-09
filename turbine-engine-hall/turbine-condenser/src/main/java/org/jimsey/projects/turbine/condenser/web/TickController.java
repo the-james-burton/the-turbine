@@ -81,23 +81,23 @@ public class TickController {
     return new PingResponse(ping.ping());
   }
 
-  @RequestMapping("/{ticker}")
+  @RequestMapping("/{ric}")
   public String getTicks(
-      @PathVariable String ticker) {
-    logger.info("getTicks({}, {})", ticker);
-    List<TickJson> ticks = elasticsearch.findTicksByTicker(ticker);
+      @PathVariable String ric) {
+    logger.info("getTicks({}, {})", ric);
+    List<TickJson> ticks = elasticsearch.findTicksByRic(ric);
     if (ticks == null) {
       return null;
     }
     return Joiner.on(',').useForNull("").join(ticks);
   }
 
-  @RequestMapping("/{ticker}/{date}")
+  @RequestMapping("/{ric}/{date}")
   public String getTicksAfter(
-      @PathVariable String ticker,
+      @PathVariable String ric,
       @PathVariable Long date) throws JsonProcessingException {
-    logger.info("getTicksAfter({}, {}, {})", ticker, date);
-    List<TickJson> ticks = elasticsearch.findTicksByTickerAndDateGreaterThan(ticker, date);
+    logger.info("getTicksAfter({}, {}, {})", ric, date);
+    List<TickJson> ticks = elasticsearch.findTicksByRicAndDateGreaterThan(ric, date);
     // return Joiner.on(',').join(ticks);
     // return objectToJson(ticks);
     // if (true) {

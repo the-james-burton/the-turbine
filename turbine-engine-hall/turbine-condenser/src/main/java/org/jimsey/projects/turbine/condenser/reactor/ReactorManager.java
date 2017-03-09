@@ -78,13 +78,13 @@ public class ReactorManager {
   }
 
   private final Function1<TickJson, String> websocketForTicks = (tick) -> format("%s.%s",
-      infrastructureProperties.getWebsocketTicks(), tick.getTicker());
+      infrastructureProperties.getWebsocketTicks(), tick.getRic());
 
   private final Function1<IndicatorJson, String> websocketForIndicators = (indicator) -> format("%s.%s.%s",
-      infrastructureProperties.getWebsocketIndicators(), indicator.getTicker(), indicator.getName());
+      infrastructureProperties.getWebsocketIndicators(), indicator.getRic(), indicator.getName());
 
   private final Function1<StrategyJson, String> websocketForStrategies = (strategy) -> format("%s.%s.%s",
-      infrastructureProperties.getWebsocketStrategies(), strategy.getTicker(), strategy.getName());
+      infrastructureProperties.getWebsocketStrategies(), strategy.getRic(), strategy.getName());
 
   @PostConstruct
   public void init() {

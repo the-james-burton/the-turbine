@@ -168,35 +168,35 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   @Override
-  public List<TickJson> findTicksByTicker(String ticker) {
+  public List<TickJson> findTicksByRic(String ric) {
     return queryElasticsearch(indexForTicks, typeForTicks, TickJson.class,
-        matchQuery("ticker", ticker));
+        matchQuery("ric", ric));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByTicker(String ticker) {
+  public List<IndicatorJson> findIndicatorsByRic(String ric) {
     return queryElasticsearch(indexForIndicators, typeForIndicators, IndicatorJson.class,
-        matchQuery("ticker", ticker));
+        matchQuery("ric", ric));
   }
 
   @Override
-  public List<TickJson> findTicksByTickerAndDateGreaterThan(String ticker, Long date) {
+  public List<TickJson> findTicksByRicAndDateGreaterThan(String ric, Long date) {
     return queryElasticsearch(indexForTicks, typeForTicks, TickJson.class,
-        matchQuery("ticker", ticker),
+        matchQuery("ric", ric),
         rangeQuery("date").from(date));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByTickerAndDateGreaterThan(String ticker, Long date) {
+  public List<IndicatorJson> findIndicatorsByRicAndDateGreaterThan(String ric, Long date) {
     return queryElasticsearch(indexForIndicators, typeForIndicators, IndicatorJson.class,
-        matchQuery("ticker", ticker),
+        matchQuery("ric", ric),
         rangeQuery("date").from(date));
   }
 
   @Override
-  public List<IndicatorJson> findIndicatorsByTickerAndNameAndDateGreaterThan(String ticker, String name, Long date) {
+  public List<IndicatorJson> findIndicatorsByRicAndNameAndDateGreaterThan(String ric, String name, Long date) {
     return queryElasticsearch(indexForIndicators, typeForIndicators, IndicatorJson.class,
-        matchQuery("ticker", ticker),
+        matchQuery("ric", ric),
         matchQuery("name", name),
         rangeQuery("date").from(date));
   }

@@ -75,7 +75,7 @@ public class StrategyJson extends Entity implements Serializable {
   @JsonCreator
   public StrategyJson(
       @JsonProperty("date") long date,
-      @JsonProperty("ticker") String ticker,
+      @JsonProperty("ric") String ric,
       @JsonProperty("close") double close,
       @JsonProperty("name") String name,
       @JsonProperty("action") String action,
@@ -85,7 +85,7 @@ public class StrategyJson extends Entity implements Serializable {
       @JsonProperty("value") Double value,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        Ticker.of(ticker), close, name, action, amount, position, cash, value, timestamp);
+        Ticker.of(ric), close, name, action, amount, position, cash, value, timestamp);
   }
 
   // -----------------------

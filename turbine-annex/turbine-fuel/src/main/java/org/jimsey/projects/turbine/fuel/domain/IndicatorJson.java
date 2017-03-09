@@ -62,11 +62,11 @@ public class IndicatorJson extends Entity implements Serializable {
       @JsonProperty("date") long date,
       @JsonProperty("close") double close,
       @JsonProperty("indicators") Map<String, Double> indicators,
-      @JsonProperty("ticker") String ticker,
+      @JsonProperty("ric") String ric,
       @JsonProperty("name") String name,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        close, indicators, Ticker.of(ticker), name, timestamp);
+        close, indicators, Ticker.of(ric), name, timestamp);
   }
 
   // -----------------------

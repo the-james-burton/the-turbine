@@ -99,10 +99,10 @@ public class TickJson extends Tick implements Serializable {
       @JsonProperty("low") double low,
       @JsonProperty("close") double close,
       @JsonProperty("volume") double volume,
-      @JsonProperty("ticker") String ticker,
+      @JsonProperty("ric") String ric,
       @JsonProperty("timestamp") String timestamp) {
     this(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()),
-        open, high, low, close, volume, Ticker.of(ticker), timestamp);
+        open, high, low, close, volume, Ticker.of(ric), timestamp);
   }
 
   public static TickJson of(String tick) {
@@ -142,8 +142,8 @@ public class TickJson extends Tick implements Serializable {
     return super.getMinPrice().toDouble();
   }
 
-  @JsonProperty("ticker")
-  public String getTicker() {
+  @JsonProperty("ric")
+  public String getRic() {
     return ticker.getRicAsString();
   }
 

@@ -38,14 +38,14 @@ public interface ElasticsearchService {
 
   String getAllTicks();
 
-  List<TickJson> findTicksByTicker(String ticker);
+  List<TickJson> findTicksByRic(String ticker);
 
-  List<TickJson> findTicksByTickerAndDateGreaterThan(String ticker, Long date);
+  List<TickJson> findTicksByRicAndDateGreaterThan(String ticker, Long date);
 
-  List<IndicatorJson> findIndicatorsByTicker(String ticker);
+  List<IndicatorJson> findIndicatorsByRic(String ticker);
 
-  List<IndicatorJson> findIndicatorsByTickerAndDateGreaterThan(String ticker, Long date);
+  List<IndicatorJson> findIndicatorsByRicAndDateGreaterThan(String ticker, Long date);
 
-  List<IndicatorJson> findIndicatorsByTickerAndNameAndDateGreaterThan(String ticker, String name, Long date);
+  List<IndicatorJson> findIndicatorsByRicAndNameAndDateGreaterThan(String ticker, String name, Long date);
 
 }
