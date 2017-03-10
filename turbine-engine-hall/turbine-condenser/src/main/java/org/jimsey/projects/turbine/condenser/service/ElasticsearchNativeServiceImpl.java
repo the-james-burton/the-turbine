@@ -44,9 +44,11 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,12 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   private TransportClient elasticsearch;
 
   private static ObjectMapper json = new ObjectMapper();
+
+  @NotNull
+  private String indexForTickers;
+
+  @NotNull
+  private String typeForTickers;
 
   @NotNull
   private String indexForTicks;
@@ -93,6 +101,8 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     String host = infrastructureProperties.getElasticsearchHost();
     String cluster = infrastructureProperties.getElasticsearchCluster();
     Integer port = infrastructureProperties.getElasticsearchNativePort();
+    indexForTickers = infrastructureProperties.getElasticsearchIndexForTickers();
+    typeForTickers = infrastructureProperties.getElasticsearchTypeForTickers();
     indexForTicks = infrastructureProperties.getElasticsearchIndexForTicks();
     typeForTicks = infrastructureProperties.getElasticsearchTypeForTicks();
     indexForIndicators = infrastructureProperties.getElasticsearchIndexForIndicators();
@@ -150,7 +160,7 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   @Override
-  public String getAllTicks() {
+  public String findTicks() {
     QueryBuilder queryBuilder = matchAllQuery();
     SearchResponse response = elasticsearch
         .prepareSearch(indexForTicks)
@@ -201,6 +211,12 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
         rangeQuery("date").from(date));
   }
 
+  @Override
+  public List<Ticker> findTickersByExchange(ExchangeEnum exchange) {
+    return queryElasticsearch(indexForTickers, typeForTickers, Ticker.class,
+        matchQuery("exchange", exchange.toString()));
+  }
+
   private <T> List<T> queryElasticsearch(String index, String type, Class<T> t, QueryBuilder... queries) {
     BoolQueryBuilder query = boolQuery();
     for (QueryBuilder q : queries) {
@@ -218,7 +234,8 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
           .get();
       results = extractResults(response, t);
     } catch (ElasticsearchException e) {
-      logger.error("unable to query elasticsearch: {}", query.toString());
+      logger.error("unable to query elasticsearch: {}:{}", e.getMessage(), query.toString());
+      e.printStackTrace();
     }
     return results;
   }

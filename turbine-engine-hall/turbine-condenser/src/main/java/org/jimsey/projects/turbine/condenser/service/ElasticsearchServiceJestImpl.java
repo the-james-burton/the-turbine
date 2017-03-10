@@ -33,9 +33,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.condenser.service.pojo.TickPojo;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +79,7 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
   }
 
   @Override
-  public String getAllTicks() {
+  public String findTicks() {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     // searchSourceBuilder.query(QueryBuilders.matchQuery("type", "kimchy"));
 
@@ -173,6 +175,12 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
 
   @Override
   public String indexStrategy(StrategyJson strategy) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<Ticker> findTickersByExchange(ExchangeEnum exchange) {
     // TODO Auto-generated method stub
     return null;
   }

@@ -24,9 +24,11 @@ package org.jimsey.projects.turbine.condenser.service;
 
 import java.util.List;
 
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
 public interface ElasticsearchService {
 
@@ -36,7 +38,7 @@ public interface ElasticsearchService {
 
   String indexStrategy(StrategyJson strategy);
 
-  String getAllTicks();
+  String findTicks();
 
   List<TickJson> findTicksByRic(String ticker);
 
@@ -48,4 +50,5 @@ public interface ElasticsearchService {
 
   List<IndicatorJson> findIndicatorsByRicAndNameAndDateGreaterThan(String ticker, String name, Long date);
 
+  List<Ticker> findTickersByExchange(ExchangeEnum exchange);
 }

@@ -82,6 +82,9 @@ public class InfrastructureProperties {
   private Integer elasticsearchRestPort;
 
   @NotNull
+  private String elasticsearchIndexForTickers;
+
+  @NotNull
   private String elasticsearchIndexForTicks;
 
   @NotNull
@@ -89,6 +92,9 @@ public class InfrastructureProperties {
 
   @NotNull
   private String elasticsearchIndexForStrategies;
+
+  @NotNull
+  private String elasticsearchTypeForTickers;
 
   @NotNull
   private String elasticsearchTypeForTicks;
@@ -265,6 +271,14 @@ public class InfrastructureProperties {
     this.elasticsearchRestPort = elasticsearchRestPort;
   }
 
+  public String getElasticsearchIndexForTickers() {
+    return elasticsearchIndexForTickers;
+  }
+
+  public void setElasticsearchIndexForTickers(String elasticsearchIndexForTickers) {
+    this.elasticsearchIndexForTickers = elasticsearchIndexForTickers;
+  }
+
   public String getElasticsearchIndexForTicks() {
     return elasticsearchIndexForTicks;
   }
@@ -287,6 +301,14 @@ public class InfrastructureProperties {
 
   public void setElasticsearchIndexForIndicators(String elasticsearchIndexForIndicators) {
     this.elasticsearchIndexForIndicators = elasticsearchIndexForIndicators;
+  }
+
+  public String getElasticsearchTypeForTickers() {
+    return elasticsearchTypeForTickers;
+  }
+
+  public void setElasticsearchTypeForTickers(String elasticsearchTypeForTickers) {
+    this.elasticsearchTypeForTickers = elasticsearchTypeForTickers;
   }
 
   public String getElasticsearchTypeForTicks() {

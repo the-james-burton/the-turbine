@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
+import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -45,6 +46,7 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.transport.Netty4Plugin;
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
@@ -92,11 +94,25 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
 
   private static final String elasticsearchTmpDir = "./target/elasticsearch";
 
-  private static final String tickerOne = "ABC.L";
+  private static final String ricOne = "ABC.L";
 
-  private static final String tickerTwo = "DEF.L";
+  private static final String ricTwo = "DEF.L";
 
-  private static final String tickerThree = "GHI.L";
+  private static final String ricThree = "GHI.L";
+
+  private static final String ricFour = "JLK.AX";
+
+  private static final String ricFive = "LMN.AX";
+
+  private static final Ticker T1 = Ticker.of(ricOne, "ABCName");
+
+  private static final Ticker T2 = Ticker.of(ricTwo, "DEFName");
+
+  private static final Ticker T3 = Ticker.of(ricThree, "GHIName");
+
+  private static final Ticker T4 = Ticker.of(ricFour, "JKLName");
+
+  private static final Ticker T5 = Ticker.of(ricFive, "KMNName");
 
   @InjectMocks
   private ElasticsearchNativeServiceImpl service = new ElasticsearchNativeServiceImpl();
@@ -104,9 +120,9 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   @Mock
   private InfrastructureProperties infrastructureProperties;
 
-  private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(Ticker.of(tickerOne, "ABCName"));
+  private final DomainObjectGenerator rdogOne = new RandomDomainObjectGenerator(T1);
 
-  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(Ticker.of(tickerTwo, "DEFName"));
+  private final DomainObjectGenerator rdogTwo = new RandomDomainObjectGenerator(T2);
 
   private final ObjectMapper json = new ObjectMapper();
 
@@ -121,6 +137,10 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   private static final String elasticsearchCluster = "elasticsearch-test";
 
   private static final String elasticsearchHost = "localhost";
+
+  private static final String indexForTickers = "turbine-tickers-test";
+
+  private static final String typeForTickers = "turbine-ticker-test";
 
   private static final String indexForTicks = "turbine-ticks-test";
 
@@ -150,6 +170,8 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
       when(infrastructureProperties.getElasticsearchHost()).thenReturn(elasticsearchHost);
       when(infrastructureProperties.getElasticsearchNativePort()).thenReturn(elasticsearchNativePort);
       when(infrastructureProperties.getElasticsearchRestPort()).thenReturn(elasticsearchRestPort);
+      when(infrastructureProperties.getElasticsearchIndexForTickers()).thenReturn(indexForTickers);
+      when(infrastructureProperties.getElasticsearchTypeForTickers()).thenReturn(typeForTickers);
       when(infrastructureProperties.getElasticsearchIndexForTicks()).thenReturn(indexForTicks);
       when(infrastructureProperties.getElasticsearchTypeForTicks()).thenReturn(typeForTicks);
       when(infrastructureProperties.getElasticsearchIndexForIndicators()).thenReturn(indexForIndicators);
@@ -208,6 +230,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   public void tearDown() {
     logger.debug("tearDown()");
     // delete whole index, not each id...
+    deleteElasticsearch(indexForTickers);
     deleteElasticsearch(indexForTicks);
     deleteElasticsearch(indexForIndicators);
     deleteElasticsearch(indexForStrategies);
@@ -220,7 +243,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     logger.info("given any {} ticks", number);
     populateElasticsearch(rdogOne, number, indexForTicks, typeForTicks, null, TickJson.class);
     logger.info("it should return all ticks");
-    String result = service.getAllTicks();
+    String result = service.findTicks();
     logger.info(" *** getAllTicks(): {}", result);
     @SuppressWarnings("unchecked")
     List<TickJson> ticks = (List<TickJson>) json.readValue(result, List.class);
@@ -230,24 +253,24 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   }
 
   @Test
-  public void testFindTicksByTicker() throws Exception {
+  public void testFindTicksByRic() throws Exception {
     int numberOne = 5;
     int numberTwo = 7;
     logger.info("given {} {} ticks and {} {} ticks",
-        numberOne, tickerOne, numberTwo, tickerTwo);
+        numberOne, ricOne, numberTwo, ricTwo);
     populateElasticsearch(rdogOne, numberOne, indexForTicks, typeForTicks, null, TickJson.class);
     populateElasticsearch(rdogTwo, numberTwo, indexForTicks, typeForTicks, null, TickJson.class);
     logger.info("it should return {} {} ticks, {} {} ticks and 0 {} ticks",
-        numberOne, tickerOne, numberTwo, tickerTwo, tickerThree);
-    List<TickJson> resultOne = service.findTicksByRic(tickerOne);
-    List<TickJson> resultTwo = service.findTicksByRic(tickerTwo);
-    List<TickJson> resultThree = service.findTicksByRic(tickerThree);
+        numberOne, ricOne, numberTwo, ricTwo, ricThree);
+    List<TickJson> resultOne = service.findTicksByRic(ricOne);
+    List<TickJson> resultTwo = service.findTicksByRic(ricTwo);
+    List<TickJson> resultThree = service.findTicksByRic(ricThree);
     logger.info(" *** findTicksByTicker({}): {}, expected: {}",
-        tickerOne, resultOne.size(), numberOne);
+        ricOne, resultOne.size(), numberOne);
     logger.info(" *** findTicksByTicker({}): {}, expected: {}",
-        tickerTwo, resultTwo.size(), numberTwo);
+        ricTwo, resultTwo.size(), numberTwo);
     logger.info(" *** findTicksByTicker({}): {}, expected: {}",
-        tickerThree, resultThree.size(), 0);
+        ricThree, resultThree.size(), 0);
     assertThat(resultOne).hasSize(numberOne);
     assertThat(resultTwo).hasSize(numberTwo);
     assertThat(resultThree).hasSize(0);
@@ -258,21 +281,21 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     int numberOne = 5;
     int numberTwo = 7;
     logger.info("given {} {} indicators and {} {} indicators",
-        numberOne, tickerOne, numberTwo, tickerTwo);
+        numberOne, ricOne, numberTwo, ricTwo);
     String name = "indicator-name";
     populateElasticsearch(rdogOne, numberOne, indexForIndicators, typeForIndicators, name, IndicatorJson.class);
     populateElasticsearch(rdogTwo, numberTwo, indexForIndicators, typeForIndicators, name, IndicatorJson.class);
     logger.info("it should return {} {} indictors, {} {} indicators and 0 {} indicators",
-        numberOne, tickerOne, numberTwo, tickerTwo, tickerThree);
-    List<IndicatorJson> resultOne = service.findIndicatorsByRic(tickerOne);
-    List<IndicatorJson> resultTwo = service.findIndicatorsByRic(tickerTwo);
-    List<IndicatorJson> resultThree = service.findIndicatorsByRic(tickerThree);
+        numberOne, ricOne, numberTwo, ricTwo, ricThree);
+    List<IndicatorJson> resultOne = service.findIndicatorsByRic(ricOne);
+    List<IndicatorJson> resultTwo = service.findIndicatorsByRic(ricTwo);
+    List<IndicatorJson> resultThree = service.findIndicatorsByRic(ricThree);
     logger.info(" *** findIndicatorsByTicker({}): {}, expected: {}",
-        tickerOne, resultOne.size(), numberOne);
+        ricOne, resultOne.size(), numberOne);
     logger.info(" *** findIndicatorsByTicker({}): {}, expected: {}",
-        tickerTwo, resultTwo.size(), numberTwo);
+        ricTwo, resultTwo.size(), numberTwo);
     logger.info(" *** findIndicatorsByTicker({}): {}, expected: {}",
-        tickerThree, resultThree.size(), 0);
+        ricThree, resultThree.size(), 0);
     assertThat(resultOne).hasSize(numberOne);
     assertThat(resultTwo).hasSize(numberTwo);
     assertThat(resultThree).hasSize(0);
@@ -282,12 +305,12 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   public void testFindTicksByTickerAndDateGreaterThan() throws Exception {
     int number = 7;
     int expected = 4;
-    logger.info("given {} {} ticks", number, tickerOne);
+    logger.info("given {} {} ticks", number, ricOne);
     long midpoint = populateElasticsearch(rdogOne, number, indexForTicks, typeForTicks, null, TickJson.class).getDate();
-    logger.info("it should return only {} {} ticks after the midpoint", expected, tickerOne);
-    List<TickJson> result = service.findTicksByRicAndDateGreaterThan(tickerOne, midpoint);
+    logger.info("it should return only {} {} ticks after the midpoint", expected, ricOne);
+    List<TickJson> result = service.findTicksByRicAndDateGreaterThan(ricOne, midpoint);
     logger.info(" *** findTicksByTickerAndDateGreaterThan({}, {}): {}, expected: {}",
-        tickerOne, midpoint, result.size(), expected);
+        ricOne, midpoint, result.size(), expected);
     assertThat(result).hasSize(expected);
   }
 
@@ -295,13 +318,13 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
   public void testFindIndicatorsByTickerAndDateGreaterThan() throws Exception {
     int number = 7;
     int expected = 4;
-    logger.info("given {} {} indicators", number, tickerOne);
+    logger.info("given {} {} indicators", number, ricOne);
     long midpoint = populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, null,
         IndicatorJson.class).getDate();
-    logger.info("it should return only {} {} indicators after the midpoint", expected, tickerOne);
-    List<IndicatorJson> result = service.findIndicatorsByRicAndDateGreaterThan(tickerOne, midpoint);
+    logger.info("it should return only {} {} indicators after the midpoint", expected, ricOne);
+    List<IndicatorJson> result = service.findIndicatorsByRicAndDateGreaterThan(ricOne, midpoint);
     logger.info(" *** findIndicatorsByTickerAndDateGreaterThan({}, {}): {}, expected: {}",
-        tickerOne, midpoint, result.size(), expected);
+        ricOne, midpoint, result.size(), expected);
     assertThat(result).hasSize(expected);
   }
 
@@ -312,15 +335,44 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
     final String nameOne = "indicator-one";
     final String nameTwo = "indicator-two";
     logger.info("given {} {} {} indicators and {} {} {} indicators",
-        number, tickerOne, nameOne, number, tickerOne, nameTwo);
+        number, ricOne, nameOne, number, ricOne, nameTwo);
     populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, nameOne, IndicatorJson.class);
     long midpoint = OffsetDateTime.now().toInstant().toEpochMilli();
     populateElasticsearch(rdogOne, number, indexForIndicators, typeForIndicators, nameTwo, IndicatorJson.class);
-    logger.info("it should return only {} {} {} indicators after the midpoint", expected, nameOne, tickerOne);
-    List<IndicatorJson> result = service.findIndicatorsByRicAndNameAndDateGreaterThan(tickerOne, nameOne, midpoint);
+    logger.info("it should return only {} {} {} indicators after the midpoint", expected, nameOne, ricOne);
+    List<IndicatorJson> result = service.findIndicatorsByRicAndNameAndDateGreaterThan(ricOne, nameOne, midpoint);
     logger.info(" *** findIndicatorsByTickerAndNameAndDateGreaterThan({}, {}, {}): {}, expected: {}",
-        tickerOne, nameOne, midpoint, result.size(), expected);
+        ricOne, nameOne, midpoint, result.size(), expected);
     assertThat(result).hasSize(expected);
+  }
+
+  @Test
+  public void testFindTickersByExchange() throws Exception {
+    ExchangeEnum exchangeOne = ExchangeEnum.LSE;
+    ExchangeEnum exchangeTwo = ExchangeEnum.ASX;
+    logger.info("given the following tickers: {} {} {} {}",
+        ricOne, ricTwo, ricFour, ricFive);
+    index(indexForTickers, typeForTickers, T1);
+    index(indexForTickers, typeForTickers, T2);
+    index(indexForTickers, typeForTickers, T4);
+    index(indexForTickers, typeForTickers, T5);
+    refreshElasticsearch();
+
+    logger.info("when asking for {}, it should return {}",
+        exchangeOne, Arrays.asList(ricOne, ricTwo));
+    List<Ticker> resultOne = service.findTickersByExchange(exchangeOne);
+    logger.info(" *** findTickersByExchange({}): {}, expected: {}",
+        exchangeOne, resultOne.stream().map(t -> t.getRicAsString()).collect(toList()), Arrays.asList(ricOne, ricTwo));
+    assertThat(resultOne).hasSize(2);
+    assertThat(resultOne).containsExactlyInAnyOrder(T1, T2);
+
+    logger.info("when asking for {}, it should return {}",
+        exchangeTwo, Arrays.asList(ricFour, ricFive));
+    List<Ticker> resultTwo = service.findTickersByExchange(exchangeTwo);
+    logger.info(" *** findTickersByExchange({}): {}, expected: {}",
+        exchangeTwo, resultTwo.stream().map(t -> t.getRicAsString()).collect(toList()), Arrays.asList(ricFour, ricFive));
+    assertThat(resultTwo).hasSize(2);
+    assertThat(resultTwo).containsExactlyInAnyOrder(T4, T5);
   }
 
   // ------------------------------------------------------
@@ -375,6 +427,7 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
    * Should be called after every data population.
    */
   private void refreshElasticsearch() {
+    refreshElasticsearch(indexForTickers);
     refreshElasticsearch(indexForTicks);
     refreshElasticsearch(indexForIndicators);
     refreshElasticsearch(indexForStrategies);
@@ -401,11 +454,12 @@ public class ElasticsearchNativeServiceImplTest extends SpringBootContextLoader 
    * @throws JsonProcessingException
    */
   private String index(String index, String type, Object object) throws ElasticsearchException, JsonProcessingException {
+    // logger.debug("indexing: index:{}, type:{}, object:{}", index, type, object);
     IndexResponse response = elasticsearch
         .prepareIndex(index, type)
         .setSource(json.writeValueAsBytes(object))
         .get();
-    logger.debug("successfully indexed new object: index:{}, type:{}, id:{}, object:{}",
+    logger.debug("successfully indexed: index:{}, type:{}, id:{}, object:{}",
         response.getIndex(), response.getType(), response.getId(), object);
     return response.getId();
   }
