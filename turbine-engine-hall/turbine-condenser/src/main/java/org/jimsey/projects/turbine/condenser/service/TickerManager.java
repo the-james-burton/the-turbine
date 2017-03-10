@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import org.jimsey.projects.turbine.condenser.domain.Stock;
 import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,27 +53,44 @@ public class TickerManager {
   @NotNull
   private TurbineService turbineService;
 
+  @NotNull
+  @Autowired
+  private ElasticsearchService elasticsearch;
+
   private final List<EnableTurbineIndicator> turbineIndicators = new ArrayList<>();
 
   private final List<EnableTurbineStrategy> turbineStrategies = new ArrayList<>();
 
   private Set<Stock> stocks = HashSet.empty();
 
-  private Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
+  private Set<Ticker> tickers = HashSet.empty();
 
-  private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
+  // old but still interesting memoised version below...
+  // private Function0<Set<Ticker>> tickers = () -> stocks.map(stock -> stock.getTicker());
+  // private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
   @PostConstruct
   public void init() {
     turbineIndicators.addAll(turbineService.findIndicators());
     turbineStrategies.addAll(turbineService.findStrategies());
+    tickers = HashSet.ofAll(elasticsearch.findTickersByExchange(ExchangeEnum.LSE));
+    stocks = tickers.map(t -> Stock.of(t, turbineIndicators, turbineStrategies));
+    tickers.forEach(t -> logger.info("{}", t.toString()));
   }
 
   Function2<Ticker, Function0<Stock>, Stock> findStockForTickerOrElse = (ticker, supplier) -> stocks
       .filter(stock -> stock.getTicker().equals(ticker)).getOrElse(supplier);
 
-  // this is called multiple times because we are effectively multicasting inside rabbitMQ
-  // so let's cope with that in an interesting way...
+  /** We used to multicast inside rabbitMQ, resulting in ticks, indicators and strategies being out-of-order.
+   * This meant that dynamic creation of new tickers here could come from several places all at once.
+   * So we coped with that in an interesting way, as shown in the methods below.
+   *
+   * Since the move to reactor, I believe this is is now redundant, but I will leave it in place.
+   * Also, when tickers are read from elasticsearch, we may want to reject unknown ticks anyway.
+   *
+   * @param ticker the Ticker from which to look up the Stock
+   * @return the Stock for the Ticker, either from existing or new
+   */
   public Stock findOrCreateStock(Ticker ticker) {
     return findStockForTickerOrElse.apply(ticker, () -> createStockIfFirst(ticker));
   }
@@ -83,15 +101,17 @@ public class TickerManager {
 
   private Stock createStock(Ticker ticker) {
     logger.info("creating new Stock object for ticker:{}", ticker);
+    tickers = tickers.add(ticker);
     Stock stock = Stock.of(ticker, turbineIndicators, turbineStrategies);
     stocks = stocks.add(stock);
-    tickerCache = Function0.of(tickers).memoized();
+    // tickerCache = Function0.of(tickers).memoized();
     return stock;
   }
 
   // --------------------------------------
   public Set<Ticker> getTickers() {
-    return tickerCache.apply();
+    // return tickerCache.apply();
+    return tickers;
   }
 
 }
