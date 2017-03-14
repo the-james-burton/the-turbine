@@ -22,9 +22,11 @@
  */
 package org.jimsey.projects.turbine.furnace.component;
 
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
+import java.lang.invoke.MethodHandles;
 
+import javax.annotation.PostConstruct;
+
+import org.jimsey.projects.turbine.fuel.component.BaseInfrastructureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,81 +37,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @ConfigurationProperties(prefix = "infrastructure")
-public class InfrastructureProperties {
+public class InfrastructureProperties extends BaseInfrastructureProperties {
 
-  private static final Logger logger = LoggerFactory.getLogger(InfrastructureProperties.class);
-
-  @NotNull
-  private String environmentName;
-
-  @NotNull
-  private String amqpServer;
-
-  @NotNull
-  private String amqpCamelComponent;
-
-  @NotNull
-  private String amqpTicksExchange;
-
-  @NotNull
-  private String amqpTicksQueue;
-
-  @NotNull
-  private String financeYahooRealtimeUrl;
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @PostConstruct
   public void init() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     logger.info(objectMapper.writeValueAsString(this));
-  }
-
-  // ------------------------------------------
-  public String getEnvironmentName() {
-    return environmentName;
-  }
-
-  public void setEnvironmentName(String environmentName) {
-    this.environmentName = environmentName;
-  }
-
-  public String getAmqpServer() {
-    return amqpServer;
-  }
-
-  public void setAmqpServer(String amqpServer) {
-    this.amqpServer = amqpServer;
-  }
-
-  public String getAmqpTicksExchange() {
-    return amqpTicksExchange;
-  }
-
-  public void setAmqpTicksExchange(String amqpTicksExchange) {
-    this.amqpTicksExchange = amqpTicksExchange;
-  }
-
-  public String getAmqpTicksQueue() {
-    return amqpTicksQueue;
-  }
-
-  public void setAmqpTicksQueue(String amqpTicksQueue) {
-    this.amqpTicksQueue = amqpTicksQueue;
-  }
-
-  public String getAmqpCamelComponent() {
-    return amqpCamelComponent;
-  }
-
-  public void setAmqpCamelComponent(String amqpCamelComponent) {
-    this.amqpCamelComponent = amqpCamelComponent;
-  }
-
-  public String getFinanceYahooRealtimeUrl() {
-    return financeYahooRealtimeUrl;
-  }
-
-  public void setFinanceYahooRealtimeUrl(String financeYahooRealtimeUrl) {
-    this.financeYahooRealtimeUrl = financeYahooRealtimeUrl;
   }
 
 }

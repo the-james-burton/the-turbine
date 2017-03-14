@@ -24,9 +24,12 @@ package org.jimsey.projects.turbine.furnace.service;
 
 import static java.lang.String.*;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
@@ -60,6 +63,10 @@ public class ProducerManager {
 
   @Autowired
   @NotNull
+  private ElasticsearchService elasticsearch;
+
+  @Autowired
+  @NotNull
   private AmqpPublisher amqpPublisher;
 
   private Set<TickProducer> producers = HashSet.empty();
@@ -77,6 +84,8 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
+    List<Ticker> tickers = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
+    tickers.forEach(t -> logger.info(t.toString()));
     // TODO issue #5 replace this with an import of external stock market list
     findOrCreateTickProducer(Ticker.of("ABC.L", "ABCName"));
     findOrCreateTickProducer(Ticker.of("DEF.L", "DEFName"));

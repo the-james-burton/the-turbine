@@ -20,31 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.component;
+package org.jimsey.projects.turbine.furnace.service;
 
-import java.lang.invoke.MethodHandles;
+import org.jimsey.projects.turbine.fuel.service.BaseElasticsearchNativeServiceImpl;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
-import org.jimsey.projects.turbine.fuel.component.BaseInfrastructureProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-@Component
-@ConfigurationProperties(prefix = "infrastructure")
-public class InfrastructureProperties extends BaseInfrastructureProperties {
-
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @PostConstruct
-  public void init() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    logger.info(objectMapper.writeValueAsString(this));
-  }
+@Service
+public class ElasticsearchNativeServiceImpl extends BaseElasticsearchNativeServiceImpl implements ElasticsearchService {
 
 }

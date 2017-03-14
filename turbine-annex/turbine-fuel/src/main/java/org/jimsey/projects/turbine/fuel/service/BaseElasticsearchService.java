@@ -1,6 +1,6 @@
 /**
  * The MIT License
- * Copyright (c) ${project.inceptionYear} the-james-burton
+ * Copyright (c) 2015 the-james-burton
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.component;
+package org.jimsey.projects.turbine.fuel.service;
 
-import java.lang.invoke.MethodHandles;
+import java.util.List;
 
-import javax.annotation.PostConstruct;
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
-import org.jimsey.projects.turbine.fuel.component.BaseInfrastructureProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+public interface BaseElasticsearchService {
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-@Component
-@ConfigurationProperties(prefix = "infrastructure")
-public class InfrastructureProperties extends BaseInfrastructureProperties {
-
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @PostConstruct
-  public void init() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    logger.info(objectMapper.writeValueAsString(this));
-  }
+  List<Ticker> findTickersByExchange(ExchangeEnum exchange);
 
 }

@@ -97,7 +97,7 @@ public class LseParser {
     logger.info("exchanges.lse.companies.file: {}", lseCompaniesFile);
     logger.info("exchanges.lse.securities.file: {}", lseSecuritiesFile);
 
-    List<LseCompany> companies = parseCompanies(lseCompaniesFile);
+    // List<LseCompany> companies = parseCompanies(lseCompaniesFile);
     // companies.forEach(c -> logger.info(c.toString()));
 
     // elasticsearch.deleteCompaniesIndex();
