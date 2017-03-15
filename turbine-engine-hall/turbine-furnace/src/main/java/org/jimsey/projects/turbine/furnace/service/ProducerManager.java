@@ -24,6 +24,7 @@ package org.jimsey.projects.turbine.furnace.service;
 
 import static java.lang.String.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -84,11 +85,20 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
+    // what are we interesteds in? let's take three large companies...
+    List<String> watches = Arrays.asList("BATS", "GSK", "DGE");
+
+    // logger.info("============> watches: ", watches.contains("BATS"));
+
     List<Ticker> tickers = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
-    tickers.forEach(t -> logger.info(t.toString()));
+    // tickers.forEach(t -> logger.info(t.toString()));
+
+    tickers.stream()
+        .filter(t -> watches.contains(t.getSymbolAsString()))
+        .forEach(t -> findOrCreateTickProducer(t));
     // TODO issue #5 replace this with an import of external stock market list
-    findOrCreateTickProducer(Ticker.of("ABC.L", "ABCName"));
-    findOrCreateTickProducer(Ticker.of("DEF.L", "DEFName"));
+    // findOrCreateTickProducer(Ticker.of("ABC.L", "ABCName"));
+    // findOrCreateTickProducer(Ticker.of("DEF.L", "DEFName"));
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
