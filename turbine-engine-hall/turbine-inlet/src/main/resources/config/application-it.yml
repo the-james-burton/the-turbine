@@ -5,4 +5,24 @@ spring:
     port: 49005
 server:
   port: 48005
-
+exchanges:
+  lse:
+    companies:
+      file: list-of-all-companies.xls
+      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${exchanges.lse.companies.file}
+    securities:
+      file: list-of-all-securities-ex-debt.xls
+      url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${exchanges.lse.securities.file}
+elasticsearch:
+  cluster: elasticsearch-test
+  host: localhost
+  port: 9301
+  index:
+    company: turbine-companies-test
+    security: turbine-securities-test
+    ticker: turbine-tickers-test
+  type:
+    company: turbine-company-test
+    security: turbine-security-test
+    ticker: turbine-ticker-test
+ 

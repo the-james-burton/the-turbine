@@ -23,11 +23,14 @@
 package org.jimsey.projects.turbine.inlet.web;
 
 import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
 
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceHistoric;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.jimsey.projects.turbine.inlet.domain.DogKennel;
 import org.slf4j.Logger;
@@ -43,7 +46,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
+import javaslang.collection.Stream;
 
+/**
+ * http://finance.yahoo.com/d/quotes.csv?f=nxohgav&amp;s=BHP.AX+BLT.L+AAPL
+ * http://localhost:48006/finance/yahoo/realtime/ABC
+ * 
+ * "BHP BLT FPO","ASX",23.20,23.40,23.00,23.31,9714517
+ * "BHP BILLITON PLC ORD $0.50","LSE",1225.00,1255.00,1222.00,1232.50,8947122
+ * "Apple Inc.","NMS",114.43,114.56,113.51,113.87,13523517
+ * 
+ * http://real-chart.finance.yahoo.com/table.csv?s=DGE.L&amp;d=6&amp;e=5&amp;f=2016&amp;g=d&amp;a=6&amp;b=1&amp;c=1900&amp;ignore=.csv
+ * 
+ * Date,Open,High,Low,Close,Volume,Adj Close
+ * 2016-07-05,165.40,166.70,158.50,158.50,30017600,158.50
+ * 2016-07-04,171.80,172.458,166.20,167.50,19955300,167.50
+ * 2016-07-01,173.40,176.70,165.337,169.70,38748700,169.70
+ * 
+ */
 @Controller
 @RequestMapping("/finance")
 public class FinanceController {
@@ -53,14 +73,8 @@ public class FinanceController {
   @Autowired
   private DogKennel kennel;
 
-  /**
-   * http://finance.yahoo.com/d/quotes.csv?f=nxohgav&amp;s=BHP.AX+BLT.L+AAPL
-   * http://localhost:48006/finance/yahoo/realtime/ABC
-   * 
-   * "BHP BLT FPO","ASX",23.20,23.40,23.00,23.31,9714517
-   * "BHP BILLITON PLC ORD $0.50","LSE",1225.00,1255.00,1222.00,1232.50,8947122
-   * "Apple Inc.","NMS",114.43,114.56,113.51,113.87,13523517
-   */
+  // http://finance.yahoo.com/d/quotes.csv?f=nxohgav&s=BHP.AX+BLT.L+AAPL
+  // http://real-chart.finance.yahoo.com/table.csv?s=DGE.L&d=6&e=5&f=2016&g=d&a=6&b=1&c=1900&ignore=.csv
 
   /** 
    * @param tickersString a '+' separated list of tickers with extension, e.g. ABC.L+DEF.L 
@@ -92,6 +106,58 @@ public class FinanceController {
     HttpHeaders headers = new HttpHeaders();
     ResponseEntity<String> response = new ResponseEntity<>(results.toString(), headers, HttpStatus.OK);
     return response;
+  }
+
+  /** 
+   * @param tickersString a ticker with extension, e.g. ABC.L
+   * @return a CSV string with header row of Date,Open,High,Low,Close,Volume,Adj Close
+   */
+  @RequestMapping("/yahoo/historic/direct/{ticker:.+}")
+  public ResponseEntity<String> yahooFinanceHistoricDirect(@PathVariable @NotNull String ticker) {
+    logger.info("yahooFinanceHistoricDirect({})", ticker);
+    CharSeq results = doTicksYahooFinanceHistoric(kennel.parseTickersString.apply(ticker).head());
+
+    // create the return type required by this mock API...
+    HttpHeaders headers = new HttpHeaders();
+    ResponseEntity<String> response = new ResponseEntity<>(results.toString(), headers, HttpStatus.OK);
+    return response;
+  }
+
+  /*
+   * generate a complete response string for a yahoo finance realtime reply
+   */
+  private CharSeq doTicksYahooFinanceHistoric(final Ticker ticker) {
+    logger.info("ticker:{}", ticker.toString());
+
+    // is ticker new?
+    List<Ticker> missing = kennel.findMissingTickers.apply(kennel.dogs, List.of(ticker));
+    kennel.dogs = kennel.createAndAddNewDogs.apply(kennel.dogs, missing);
+
+    // get the dogs for the requested tickers...
+    DomainObjectGenerator myDog = kennel.findMyDog.apply(kennel.dogs, ticker).get();
+
+    logger.info("manager:{}", kennel.dogs.toJavaList());
+    logger.info("dogs:{}", myDog.toString());
+    logger.info("missing:{}", missing.toJavaList());
+
+    // generate a historic series of TickJson...
+    OffsetDateTime today = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0);
+    List<TickJson> ticks = Stream.range(1, 10)
+        .map(x -> myDog.newTick(today.minusDays(x)))
+        .toList();
+
+    // format the results specific to this mock API...
+    YahooFinanceHistoric yfh = YahooFinanceHistoric.of(ticks);
+
+    // .map(tick -> YahooFinanceHistoric.of(tick))
+    // .map(yfr -> yfr.toString())
+    // .map(CharSeq::of)
+    // .getOrElse(CharSeq.empty())
+    // .reduce((x, xs) -> x.append('\n').appendAll(xs));
+
+    CharSeq results = CharSeq.of(yfh.toString());
+    logger.info("results:{}", results.toString());
+    return results;
   }
 
   /*

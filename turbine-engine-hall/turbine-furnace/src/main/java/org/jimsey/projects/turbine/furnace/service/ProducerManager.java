@@ -85,10 +85,8 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
-    // what are we interesteds in? let's take three large companies...
+    // what are we interested in? let's take three large companies...
     List<String> watches = Arrays.asList("BATS", "GSK", "DGE");
-
-    // logger.info("============> watches: ", watches.contains("BATS"));
 
     List<Ticker> tickers = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
     // tickers.forEach(t -> logger.info(t.toString()));

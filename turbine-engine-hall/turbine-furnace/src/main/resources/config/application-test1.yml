@@ -30,4 +30,5 @@ infrastructure:
   elasticsearch-type-for-indicators: turbine-indicator
   elasticsearch-type-for-strategies: turbine-strategy
   finance-yahoo-realtime-url: http://localhost:48006/finance/yahoo/realtime/direct/  
+  finance-yahoo-historic-url: http://localhost:48006/finance/yahoo/historic/direct/  
   

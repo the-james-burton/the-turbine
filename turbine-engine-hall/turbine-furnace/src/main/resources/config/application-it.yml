@@ -8,8 +8,7 @@ spring:
       repositories:
         enabled: false
 server:
-  port: 48004
-  
+  port: 48004  
 infrastructure:
   environment-name: it
   amqp-camel-component: stub

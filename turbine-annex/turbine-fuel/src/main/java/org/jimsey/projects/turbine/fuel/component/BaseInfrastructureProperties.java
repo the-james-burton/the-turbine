@@ -78,7 +78,9 @@ public class BaseInfrastructureProperties {
 
   String websocketReply;
 
-  private String financeYahooRealtimeUrl;
+  String financeYahooRealtimeUrl;
+
+  private String financeYahooHistoricUrl;
 
   // ------------------------------------------
   public String getEnvironmentName() {
@@ -303,6 +305,14 @@ public class BaseInfrastructureProperties {
 
   public void setFinanceYahooRealtimeUrl(String financeYahooRealtimeUrl) {
     this.financeYahooRealtimeUrl = financeYahooRealtimeUrl;
+  }
+
+  public String getFinanceYahooHistoricUrl() {
+    return financeYahooHistoricUrl;
+  }
+
+  public void setFinanceYahooHistoricUrl(String financeYahooHistoricUrl) {
+    this.financeYahooHistoricUrl = financeYahooHistoricUrl;
   }
 
 }

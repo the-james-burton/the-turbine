@@ -30,6 +30,7 @@ import java.time.OffsetDateTime;
 
 import org.assertj.core.util.Arrays;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceHistoric;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,12 +59,13 @@ public class FinanceControllerIT {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private static final String historicUrl = "/finance/yahoo/historic/%s";
+  private static final String realtimeUrl = "/finance/yahoo/realtime/%s";
+
   private final Ticker TEST1_L = Ticker.of("TEST1.L");
-  
   private final Ticker TEST2_L = Ticker.of("TEST2.L");
-  
   private final Ticker TEST3_L = Ticker.of("TEST3.L");
-    
+
   @Autowired
   private TestRestTemplate rest;
 
@@ -76,8 +78,16 @@ public class FinanceControllerIT {
   }
 
   @Test
+  public void testYahooFinanceHistoricOne() throws Exception {
+    String body = doRestQuery(historicUrl, TEST1_L.toString());
+    logger.info("and the response body should be parseable as a YahooFinanceHistoric object");
+    YahooFinanceHistoric yfr = YahooFinanceHistoric.of(body, TEST1_L);
+    assertThat(yfr.getTicks()).hasSize(10);
+  }
+
+  @Test
   public void testYahooFinanceRealtimeOne() throws Exception {
-    String body = doRestQuery(TEST1_L.toString());
+    String body = doRestQuery(realtimeUrl, TEST1_L.toString());
     logger.info("and the response body should be parseable as a YahooFinanceRealtime object");
     YahooFinanceRealtime yfr = YahooFinanceRealtime.of(OffsetDateTime.now(), body, TEST1_L);
     assertThat(yfr.getTick()).isNotNull();
@@ -85,14 +95,15 @@ public class FinanceControllerIT {
 
   @Test
   public void testYahooFinanceRealtimeTwo() throws Exception {
-    String body = doRestQuery(format("%s+%s", TEST1_L, TEST2_L));
+    String body = doRestQuery(realtimeUrl, format("%s+%s", TEST1_L, TEST2_L));
     logger.info("and the response body should be parseable as a YahooFinanceRealtime object");
-    List<YahooFinanceRealtime> yfrs = YahooFinanceRealtime.of(OffsetDateTime.now(), body.split("\\n"), Arrays.array(TEST1_L, TEST2_L));
+    List<YahooFinanceRealtime> yfrs = YahooFinanceRealtime.of(OffsetDateTime.now(), body.split("\\n"),
+        Arrays.array(TEST1_L, TEST2_L));
     assertThat(yfrs).hasSize(2);
   }
-  
-  private String doRestQuery(String queryString) {
-    String uri = format("/finance/yahoo/realtime/%s", queryString);
+
+  private String doRestQuery(String url, String queryString) {
+    String uri = format(realtimeUrl, queryString);
     logger.info(format("when %s is called", uri));
     ResponseEntity<String> response = rest.getForEntity(uri, String.class);
     String body = response.getBody();
@@ -101,5 +112,5 @@ public class FinanceControllerIT {
     assertThat(body).isNotEmpty();
     return body;
   }
-  
+
 }

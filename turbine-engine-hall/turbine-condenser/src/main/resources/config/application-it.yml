@@ -18,7 +18,6 @@ security:
 
 server:
   port: 48003
-
 infrastructure:
   environment-name: it
   amqp-camel-component: stub

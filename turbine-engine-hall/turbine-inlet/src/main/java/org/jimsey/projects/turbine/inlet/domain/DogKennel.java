@@ -36,28 +36,28 @@ import javaslang.Function2;
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
 import javaslang.collection.Stream;
+import javaslang.control.Option;
 
 @Component
 public class DogKennel {
 
   @Autowired
   private TickerMetadata metadata;
-  
+
   /**
    * public, immutable list of dogs
    */
-  public List<DomainObjectGenerator> dogs = List.empty();  
-  
+  public List<DomainObjectGenerator> dogs = List.empty();
+
   /**
    * given a '+' separated string of tickers (eg. ABC.L), will return a list of enriched Tickers
    */
-  public Function1<String, List<Ticker>> parseTickersString =
-      tickers -> Stream.of(CharSeq.of(tickers)
-          .split("\\+"))
-          .map(t -> CharSeq.of(t))
-          .map(s -> metadata.findTickerBySymbol.apply(s).getOrElseThrow(() -> 
-              new RuntimeException(format("unable to find ticker:%s in metadata", s))))
-          .toList();
+  public Function1<String, List<Ticker>> parseTickersString = tickers -> Stream.of(CharSeq.of(tickers)
+      .split("\\+"))
+      .map(t -> CharSeq.of(t))
+      .map(s -> metadata.findTickerBySymbol.apply(s)
+          .getOrElseThrow(() -> new RuntimeException(format("unable to find ticker:%s in metadata", s))))
+      .toList();
 
   /**
    * given a list of dogs and a list of tickers
@@ -87,6 +87,13 @@ public class DogKennel {
    */
   public Function2<List<DomainObjectGenerator>, List<Ticker>, List<DomainObjectGenerator>> findMyDogs = (dogs, tickers) -> dogs
       .filter(dog -> tickers.contains(dog.getTicker()));
+
+  /**
+   * given a list of dogs and a ticker
+   * then will return a dog for just the given ticker
+   */
+  public Function2<List<DomainObjectGenerator>, Ticker, Option<DomainObjectGenerator>> findMyDog = (dogs, ticker) -> dogs
+      .find(dog -> dog.getTicker().equals(ticker));
 
   /**
    * given a list of dogs and a list of tickers
