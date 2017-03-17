@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -112,6 +113,23 @@ public class TickJson extends Tick implements Serializable {
             (e) -> new RuntimeException(String.format("unable to parse [%s] as a TickJson : [%s]", tick, e.getMessage())));
   }
 
+  @Override
+  public boolean equals(Object key) {
+    if (key == null || !(key instanceof TickJson)) {
+      return false;
+    }
+    TickJson that = (TickJson) key;
+    return Objects.equals(this.date, that.date)
+        && Objects.equals(this.timestamp, that.timestamp)
+        && Objects.equals(this.ticker, that.ticker)
+        && Objects.equals(this.getOpen(), that.getOpen())
+        && Objects.equals(this.getHigh(), that.getHigh())
+        && Objects.equals(this.getLow(), that.getLow())
+        && Objects.equals(this.getClose(), that.getClose())
+        && Objects.equals(this.getVol(), that.getVol());
+  }
+
+  // --------------------------------
   @JsonProperty("date")
   public long getDate() {
     return super.getEndTime().toInstant().getMillis();

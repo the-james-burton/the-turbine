@@ -24,7 +24,11 @@ package org.jimsey.projects.turbine.fuel.domain;
 
 import static java.lang.String.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import javaslang.collection.List;
@@ -73,7 +77,7 @@ public class YahooFinanceHistoric {
 
   private TickJson parseLine(String line, Ticker ticker) {
     String[] parts = line.split(",");
-    OffsetDateTime date = OffsetDateTime.parse(parts[0]);
+    OffsetDateTime date = OffsetDateTime.of(LocalDate.parse(parts[0]), LocalTime.of(0, 0, 0), ZoneOffset.UTC);
     double open = Double.parseDouble(parts[1]);
     double high = Double.parseDouble(parts[2]);
     double low = Double.parseDouble(parts[3]);
@@ -91,7 +95,7 @@ public class YahooFinanceHistoric {
   public String toString() {
     return "Date,Open,High,Low,Close,Volume,Adj Close\n".concat(
         ticks.map(tick -> format("%s,%.2f,%.2f,%.2f,%.2f,%d,%.2f",
-            tick.getTimestampAsObject(),
+            tick.getTimestampAsObject().format(DateTimeFormatter.ISO_LOCAL_DATE),
             tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol(), tick.getClose()))
             .reduce((a, b) -> format("%s\n%s", a, b)));
   }
