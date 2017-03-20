@@ -14,15 +14,15 @@ exchanges:
       file: list-of-all-securities-ex-debt.xls
       url: http://www.londonstockexchange.com/statistics/companies-and-issuers/${exchanges.lse.securities.file}
 elasticsearch:
-  cluster: elasticsearch-test
+  cluster: elasticsearch
   host: localhost
-  port: 9301
+  port: 9300
   index:
-    company: turbine-companies-test
-    security: turbine-securities-test
-    ticker: turbine-tickers-test
+    company: turbine-companies
+    security: turbine-securities
+    ticker: turbine-tickers
   type:
-    company: turbine-company-test
-    security: turbine-security-test
-    ticker: turbine-ticker-test
+    company: turbine-company
+    security: turbine-security
+    ticker: turbine-ticker
  

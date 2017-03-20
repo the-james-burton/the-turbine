@@ -73,7 +73,12 @@ public class TickerManager {
   public void init() {
     turbineIndicators.addAll(turbineService.findIndicators());
     turbineStrategies.addAll(turbineService.findStrategies());
-    tickers = HashSet.ofAll(elasticsearch.findTickersByExchange(ExchangeEnum.LSE));
+    List<Ticker> tickersFromEs = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
+    if (tickersFromEs == null || tickersFromEs.isEmpty()) {
+      logger.warn(" !!!! WARNING ---- no tickers found in elasticsearch ---- !!!!");
+    } else {
+      tickers = HashSet.ofAll(tickersFromEs);
+    }
     stocks = tickers.map(t -> Stock.of(t, turbineIndicators, turbineStrategies));
     tickers.forEach(t -> logger.info("{}", t.toString()));
   }

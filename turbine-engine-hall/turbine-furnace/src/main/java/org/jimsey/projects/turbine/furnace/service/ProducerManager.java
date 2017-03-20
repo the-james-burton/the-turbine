@@ -85,13 +85,37 @@ public class ProducerManager {
 
   @PostConstruct
   public void init() {
-    // what are we interested in? let's take three large companies...
-    List<String> watches = Arrays.asList("BATS", "GSK", "DGE");
 
-    List<Ticker> tickers = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
+    // what are we interested in? let's take three large companies...
+    Ticker bat = Ticker.of("BATS", ExchangeEnum.LSE, "BRITISH AMERICAN TOBACCO");
+    Ticker gsk = Ticker.of("GSK", ExchangeEnum.LSE, "GLAXOSMITHKLINE");
+    Ticker dge = Ticker.of("DGE", ExchangeEnum.LSE, "DIAGEO");
+
+    List<String> watches = Arrays.asList(
+        bat.getSymbolAsString(),
+        gsk.getSymbolAsString(),
+        dge.getSymbolAsString());
+
+    // always ensure these hard-coded watches are present,
+    // this is helpful if we have not imported the LSE tickers...
+    List<Ticker> tickers = Arrays.asList(bat, gsk, dge);
+
+    // get any tickers from elasticsearch...
+    List<Ticker> tickersFromEs = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
     // tickers.forEach(t -> logger.info(t.toString()));
 
-    tickers.stream()
+    if (tickersFromEs == null || tickersFromEs.isEmpty()) {
+      logger.warn("WARNING: no tickers found in elasticsearch, only our hardcoded watches will be available to start with: {}",
+          tickers);
+    } else {
+      tickers.addAll(tickersFromEs);
+    }
+
+    Set<Ticker> distinctTickers = HashSet.ofAll(tickers);
+
+    distinctTickers = distinctTickers.union(HashSet.of(bat, gsk, dge));
+
+    distinctTickers
         .filter(t -> watches.contains(t.getSymbolAsString()))
         .forEach(t -> findOrCreateTickProducer(t));
     // TODO issue #5 replace this with an import of external stock market list

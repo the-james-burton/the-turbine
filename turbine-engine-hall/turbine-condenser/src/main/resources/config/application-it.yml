@@ -33,9 +33,11 @@ infrastructure:
   elasticsearch-host: localhost
   elasticsearch-native-port: 9300
   elasticsearch-rest-port: 9200
+  elasticsearch-index-for-tickers: turbine-tickers
   elasticsearch-index-for-ticks: turbine-ticks
   elasticsearch-index-for-indicators: turbine-indicators
   elasticsearch-index-for-strategies: turbine-strategies
+  elasticsearch-type-for-tickers: turbine-ticker
   elasticsearch-type-for-ticks: turbine-tick
   elasticsearch-type-for-indicators: turbine-indicator
   elasticsearch-type-for-strategies: turbine-strategy

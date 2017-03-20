@@ -65,9 +65,9 @@ public class IndicatorController {
   public void init() throws Exception {
     long sod = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli();
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
-    logger.info("right now date value is {}", now);
-    logger.info("this mornings date value is {}", sod);
-    logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("ABC.L", "BollingerBands", sod));
+    // logger.info("right now date value is {}", now);
+    // logger.info("this mornings date value is {}", sod);
+    // logger.info("this mornings getIndicatorsAfter() : [{}]", getIndicatorsAfter("ABC.L", "BollingerBands", sod));
   }
 
   @RequestMapping("/ping")
