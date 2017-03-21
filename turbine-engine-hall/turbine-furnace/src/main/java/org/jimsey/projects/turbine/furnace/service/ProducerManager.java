@@ -24,12 +24,12 @@ package org.jimsey.projects.turbine.furnace.service;
 
 import static java.lang.String.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
@@ -86,41 +86,37 @@ public class ProducerManager {
   @PostConstruct
   public void init() {
 
-    // what are we interested in? let's take three large companies...
-    Ticker bat = Ticker.of("BATS", ExchangeEnum.LSE, "BRITISH AMERICAN TOBACCO");
-    Ticker gsk = Ticker.of("GSK", ExchangeEnum.LSE, "GLAXOSMITHKLINE");
-    Ticker dge = Ticker.of("DGE", ExchangeEnum.LSE, "DIAGEO");
-
-    List<String> watches = Arrays.asList(
-        bat.getSymbolAsString(),
-        gsk.getSymbolAsString(),
-        dge.getSymbolAsString());
-
-    // always ensure these hard-coded watches are present,
-    // this is helpful if we have not imported the LSE tickers...
-    List<Ticker> tickers = Arrays.asList(bat, gsk, dge);
+    // start with our preset list...
+    Set<Ticker> tickersAll = HashSet.ofAll(TurbineFuelConstants.PRESET_TICKERS);
 
     // get any tickers from elasticsearch...
     List<Ticker> tickersFromEs = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
     // tickers.forEach(t -> logger.info(t.toString()));
 
+    // NOTE: this doesn't trap uncheck exceptions...
+    // List<Ticker> tickersFromEs = Try.of(() -> elasticsearch.findTickersByExchange(ExchangeEnum.LSE)).getOrElse(new
+    // ArrayList<Ticker>());
+
+    // TODO better way to do this with Option?
     if (tickersFromEs == null || tickersFromEs.isEmpty()) {
       logger.warn("WARNING: no tickers found in elasticsearch, only our hardcoded watches will be available to start with: {}",
-          tickers);
+          TurbineFuelConstants.PRESET_TICKERS);
     } else {
-      tickers.addAll(tickersFromEs);
+      tickersAll = TurbineFuelConstants.PRESET_TICKERS.addAll(tickersFromEs);
     }
 
-    Set<Ticker> distinctTickers = HashSet.ofAll(tickers);
-
-    distinctTickers = distinctTickers.union(HashSet.of(bat, gsk, dge));
-
-    distinctTickers
-        .filter(t -> watches.contains(t.getSymbolAsString()))
+    // create realtime simulations of watches and/or tickers from elasticsearch...
+    tickersAll
+        // .filter(t -> false)
+        // restrict to only preset tickers for now...
+        .filter(t -> TurbineFuelConstants.PRESET_TICKERS.contains(t))
         .forEach(t -> findOrCreateTickProducer(t));
-    // TODO issue #5 replace this with an import of external stock market list
-    // findOrCreateTickProducer(Ticker.of("ABC.L", "ABCName"));
-    // findOrCreateTickProducer(Ticker.of("DEF.L", "DEFName"));
+
+    // do some historic population...
+    producers
+        .flatMap(p -> p.fetchTicksFromYahooFinanceHistoric())
+        .forEach(t -> logger.info(t.toString()));
+
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
@@ -155,9 +151,14 @@ public class ProducerManager {
     return result.toString();
   }
 
+  public synchronized TickProducer findOrCreateTickProducer(Ticker ticker) {
+    return producers.filter(producer -> producer.getTicker().equals(ticker)).getOrElse(() -> addTickProducer(ticker));
+  }
+
   public TickProducer addTickProducer(Ticker ticker) {
     logger.info("creating TickProducer object from Ticker:{}", ticker);
-    TickProducer producer = TickProducer.of(rest, ticker, infrastructure.getFinanceYahooRealtimeUrl());
+    TickProducer producer = TickProducer.of(rest, ticker,
+        infrastructure.getFinanceYahooRealtimeUrl(), infrastructure.getFinanceYahooHistoricUrl());
     producers = producers.add(producer);
     tickerCache = Function0.of(tickers).memoized();
     return producer;
@@ -166,10 +167,6 @@ public class ProducerManager {
   @ManagedOperation
   public TickProducer addTickProducer(String ticker) {
     return addTickProducer(Ticker.of(ticker));
-  }
-
-  public synchronized TickProducer findOrCreateTickProducer(Ticker ticker) {
-    return producers.filter(producer -> producer.getTicker().equals(ticker)).getOrElse(() -> addTickProducer(ticker));
   }
 
   public Set<Ticker> getTickers() {

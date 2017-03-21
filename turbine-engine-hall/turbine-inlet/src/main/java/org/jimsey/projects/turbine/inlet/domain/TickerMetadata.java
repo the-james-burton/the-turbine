@@ -24,12 +24,15 @@ package org.jimsey.projects.turbine.inlet.domain;
 
 import javax.annotation.PostConstruct;
 
+import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.springframework.stereotype.Service;
 
 import javaslang.Function1;
 import javaslang.collection.CharSeq;
+import javaslang.collection.HashSet;
 import javaslang.collection.List;
+import javaslang.collection.Set;
 import javaslang.control.Option;
 
 /**
@@ -39,16 +42,24 @@ import javaslang.control.Option;
 @Service
 public class TickerMetadata {
 
-  private List<Ticker> knownTickers = List.empty();
-  
-  public Function1<CharSeq, Option<Ticker>> findTickerBySymbol = 
-      (symbol) -> knownTickers.find(ticker -> ticker.getRic().eq(symbol));
-  
+  private Set<Ticker> knownTickers = HashSet.empty();
+
+  public Function1<CharSeq, Option<Ticker>> findTickerBySymbol = (symbol) -> knownTickers
+      .find(ticker -> ticker.getRic().eq(symbol));
+
   @PostConstruct
   public void init() {
     // TODO issue #5 initialise this from external source...
-    knownTickers = knownTickers.append(Ticker.of("ABC.L", "ABCName"));
-    knownTickers = knownTickers.append(Ticker.of("DEF.L", "DEFName"));
+    TurbineFuelConstants.PRESET_TICKERS
+        .forEach(t -> addTicker(t));
   }
-  
+
+  public void addTicker(Ticker ticker) {
+    knownTickers = knownTickers.add(ticker);
+  }
+
+  public void addTickers(List<Ticker> tickers) {
+    knownTickers = knownTickers.addAll(tickers);
+  }
+
 }

@@ -33,6 +33,7 @@ import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.fuel.domain.YahooFinanceHistoric;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceRealtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import javaslang.collection.List;
 import javaslang.control.Try;
 
 public class TickProducer implements Comparable<TickProducer> {
@@ -50,7 +52,9 @@ public class TickProducer implements Comparable<TickProducer> {
 
   private final DomainObjectGenerator rdog;
 
-  private final String baseUrl;
+  private final String realtimeUrl;
+
+  private final String historicUrl;
 
   private final RestTemplate rest;
 
@@ -58,16 +62,17 @@ public class TickProducer implements Comparable<TickProducer> {
   // .map(line -> YahooFinanceRealtime.of(metadata, OffsetDateTime.now(), line))
   // .toList()
 
-  public TickProducer(RestTemplate rest, Ticker ticker, String baseUrl) {
+  public TickProducer(RestTemplate rest, Ticker ticker, String realtimeUrl, String historicUrl) {
     this.rest = rest;
     this.ticker = ticker;
-    this.baseUrl = baseUrl;
+    this.realtimeUrl = realtimeUrl;
+    this.historicUrl = historicUrl;
     this.rdog = new RandomDomainObjectGenerator(ticker);
     logger.info("");
   }
 
-  public static TickProducer of(RestTemplate rest, Ticker ticker, String baseUrl) {
-    return new TickProducer(rest, ticker, baseUrl);
+  public static TickProducer of(RestTemplate rest, Ticker ticker, String realtimeUrl, String historicUrl) {
+    return new TickProducer(rest, ticker, realtimeUrl, historicUrl);
   }
 
   // TODO issue #20 use turbine-inlet
@@ -78,11 +83,12 @@ public class TickProducer implements Comparable<TickProducer> {
   }
 
   public TickJson fetchTickFromYahooFinanceRealtime() {
-    String url = baseUrl + ticker.getRicAsString();
+    String url = realtimeUrl + ticker.getRicAsString();
     ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
-        .getOrElse(() -> new ResponseEntity<String>(format("turbine inlet service expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
+        .getOrElse(() -> new ResponseEntity<String>(
+            format("turbine inlet service for yahoo realtime expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
     // there will only be one line, since we are not (yet) batching requests to the external finance service...
-    logger.info("{} called {} and got {}:{}", toString(), url, response.getBody(), response.getStatusCode());
+    logger.info("{} called {} and got {}:{}", ticker.getRicAsString(), url, response.getBody(), response.getStatusCode());
     YahooFinanceRealtime yfr = Try.of(() -> YahooFinanceRealtime.of(OffsetDateTime.now(), response.getBody(), ticker))
         // TODO I don't like the way the exception is lost here...
         .getOrElse(() -> {
@@ -91,6 +97,19 @@ public class TickProducer implements Comparable<TickProducer> {
         });
     logger.info("yfr:{}", yfr);
     return null;
+  }
+
+  public List<TickJson> fetchTicksFromYahooFinanceHistoric() {
+    String url = historicUrl + ticker.getRicAsString();
+    ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
+        .getOrElse(() -> new ResponseEntity<String>(
+            format("turbine inlet service for yahoo historic expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
+    // there will only be one line, since we are not (yet) batching requests to the external finance service...
+    logger.info("{} called {} and got {}:{}", ticker.getRicAsString(), url, response.getBody(), response.getStatusCode());
+    YahooFinanceHistoric yfh = Try.of(() -> YahooFinanceHistoric.of(response.toString(), ticker))
+        .getOrElse(YahooFinanceHistoric.of(List.empty()));
+    logger.info("yfr:{}", yfh);
+    return yfh.getTicks();
   }
 
   public Ticker getTicker() {

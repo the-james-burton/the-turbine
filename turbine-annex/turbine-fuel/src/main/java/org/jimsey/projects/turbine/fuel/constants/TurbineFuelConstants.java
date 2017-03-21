@@ -22,6 +22,12 @@
  */
 package org.jimsey.projects.turbine.fuel.constants;
 
+import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
+import org.jimsey.projects.turbine.fuel.domain.Ticker;
+
+import javaslang.collection.HashSet;
+import javaslang.collection.Set;
+
 public class TurbineFuelConstants {
 
   // TODO these are ONLY for use in the @Document annotation, which will be removed
@@ -38,5 +44,11 @@ public class TurbineFuelConstants {
   public static final String ELASTICSEARCH_TYPE_FOR_INDICATORS = "turbine-indicator";
 
   public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
+
+  // what are we interested in? let's take three large companies...
+  public static final Set<Ticker> PRESET_TICKERS = HashSet.of(
+      Ticker.of("BATS", ExchangeEnum.LSE, "BRITISH AMERICAN TOBACCO"),
+      Ticker.of("GSK", ExchangeEnum.LSE, "GLAXOSMITHKLINE"),
+      Ticker.of("DGE", ExchangeEnum.LSE, "DIAGEO"));
 
 }
