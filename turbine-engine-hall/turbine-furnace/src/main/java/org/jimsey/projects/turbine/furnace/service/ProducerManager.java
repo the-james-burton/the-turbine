@@ -33,7 +33,6 @@ import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.furnace.amqp.AmqpPublisher;
 import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.slf4j.Logger;
@@ -43,7 +42,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -119,7 +117,7 @@ public class ProducerManager {
 
   }
 
-  @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
+  // @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
   public void produceTicks() {
     producers
         .map(producer -> producer.createTick())

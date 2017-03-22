@@ -105,8 +105,7 @@ public class RandomDomainObjectGenerator implements DomainObjectGenerator, Compa
     double close = RandomUtils.nextDouble(Math.max(0, low), high);
     double volume = RandomUtils.nextDouble(4000, 6000);
 
-    tick = new TickJson(date, open, high, low, close, volume, ticker,
-        OffsetDateTime.now().toString());
+    tick = new TickJson(date, open, high, low, close, volume, ticker, date.toString());
     return tick;
   }
 

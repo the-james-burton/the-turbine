@@ -97,7 +97,8 @@ public class YahooFinanceHistoric {
         ticks.map(tick -> format("%s,%.2f,%.2f,%.2f,%.2f,%d,%.2f",
             tick.getTimestampAsObject().format(DateTimeFormatter.ISO_LOCAL_DATE),
             tick.getOpen(), tick.getHigh(), tick.getLow(), tick.getClose(), tick.getVol(), tick.getClose()))
-            .reduce((a, b) -> format("%s\n%s", a, b)));
+            .reduceOption((a, b) -> format("%s\n%s", a, b))
+            .getOrElse(""));
   }
 
   public List<TickJson> getTicks() {

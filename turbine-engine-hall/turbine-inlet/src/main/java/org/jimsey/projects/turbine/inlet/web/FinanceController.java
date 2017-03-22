@@ -141,9 +141,11 @@ public class FinanceController {
     logger.info("missing:{}", missing.toJavaList());
 
     // generate a historic series of TickJson...
-    OffsetDateTime today = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0);
-    List<TickJson> ticks = Stream.range(1, 10)
-        .map(x -> myDog.newTick(today.minusDays(x)))
+    int daysAgo = 10;
+    OffsetDateTime startDate = OffsetDateTime.now().minusDays(daysAgo).withHour(0).withMinute(0).withSecond(0);
+    List<TickJson> ticks = Stream.range(1, daysAgo)
+        .map(x -> myDog.newTick(startDate.plusDays(x)))
+        .reverse()
         .toList();
 
     // format the results specific to this mock API...
