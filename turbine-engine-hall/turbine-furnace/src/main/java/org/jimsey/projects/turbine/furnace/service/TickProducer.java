@@ -109,7 +109,8 @@ public class TickProducer implements Comparable<TickProducer> {
     YahooFinanceHistoric yfh = Try.of(() -> YahooFinanceHistoric.of(response.toString(), ticker))
         .getOrElse(YahooFinanceHistoric.of(List.empty()));
     logger.info("yfr:{}", yfh);
-    return yfh.getTicks();
+    // need to reverse the order to get them processed correctly...
+    return yfh.getTicks().reverse();
   }
 
   public Ticker getTicker() {

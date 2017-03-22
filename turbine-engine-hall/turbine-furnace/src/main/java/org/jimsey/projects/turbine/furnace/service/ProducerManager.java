@@ -107,13 +107,14 @@ public class ProducerManager {
     tickersAll
         // .filter(t -> false)
         // restrict to only preset tickers for now...
-        .filter(t -> TurbineFuelConstants.PRESET_TICKERS.contains(t))
-        .forEach(t -> findOrCreateTickProducer(t));
+        .filter(tick -> TurbineFuelConstants.PRESET_TICKERS.contains(tick))
+        .forEach(tick -> findOrCreateTickProducer(tick));
 
     // do some historic population...
     producers
-        .flatMap(p -> p.fetchTicksFromYahooFinanceHistoric())
-        .forEach(t -> logger.info(t.toString()));
+        .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric())
+        .peek(tick -> logger.info(tick.toString()))
+        .forEach(tick -> publishTick(tick));
 
   }
 
