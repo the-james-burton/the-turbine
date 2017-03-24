@@ -56,7 +56,7 @@ public class AmqpTickReceiver extends BaseConfiguration {
   private ReactorManager tickReceiver;
 
   /** TESTING ONLY **/
-  private DomainObjectGenerator dog = new RandomDomainObjectGenerator(Ticker.of("ABC.L"));
+  private DomainObjectGenerator dog = new RandomDomainObjectGenerator(Ticker.of("DGE.L"));
 
   /**
    * TESTING ONLY
