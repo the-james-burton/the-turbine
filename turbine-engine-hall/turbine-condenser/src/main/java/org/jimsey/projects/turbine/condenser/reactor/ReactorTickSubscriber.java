@@ -62,7 +62,7 @@ public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
 
   @Override
   public void onNext(TickJson tick) {
-    logger.info("{} onNext:{}", name, tick.toString());
+    logger.info("tickSubscriber:{} onNext:{}", name, tick.toString());
     Ticker ticker = tick.getTickerAsObject();
     Stock stock = tickerManager.findOrCreateStock(ticker);
 
