@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Objects;
 
 import org.joda.time.DateTime;
@@ -56,7 +57,7 @@ import javaslang.control.Try;
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE,
     setterVisibility = Visibility.NONE)
-public class TickJson extends Tick implements Serializable {
+public class TickJson extends Tick implements Serializable, Comparable<TickJson> {
 
   // TODO serialization does not work because Tick is a constructor immutable - maybe raise a request in ta4j...
   private static final long serialVersionUID = 1L;
@@ -72,6 +73,10 @@ public class TickJson extends Tick implements Serializable {
   private OffsetDateTime timestamp;
 
   private Ticker ticker;
+
+  private final Comparator<TickJson> comparator = Comparator
+      .comparing((TickJson t) -> t.getDate())
+      .thenComparing(t -> t.getTickerAsObject());
 
   public TickJson(
       OffsetDateTime date,
@@ -91,6 +96,7 @@ public class TickJson extends Tick implements Serializable {
     } catch (Exception e) {
       logger.warn("Could not parse timestamp: {}", timestamp);
     }
+
   }
 
   @JsonCreator
@@ -120,13 +126,17 @@ public class TickJson extends Tick implements Serializable {
     }
     TickJson that = (TickJson) key;
     return Objects.equals(this.date, that.date)
-        && Objects.equals(this.timestamp, that.timestamp)
-        && Objects.equals(this.ticker, that.ticker)
-        && Objects.equals(this.getOpen(), that.getOpen())
-        && Objects.equals(this.getHigh(), that.getHigh())
-        && Objects.equals(this.getLow(), that.getLow())
-        && Objects.equals(this.getClose(), that.getClose())
-        && Objects.equals(this.getVol(), that.getVol());
+        && Objects.equals(this.ticker, that.ticker);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(date, ticker);
+  }
+
+  @Override
+  public int compareTo(TickJson that) {
+    return comparator.compare(this, that);
   }
 
   // --------------------------------

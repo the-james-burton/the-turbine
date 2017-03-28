@@ -22,7 +22,9 @@
  */
 package org.jimsey.projects.turbine.spring.domain;
 
-import static org.jimsey.projects.turbine.inspector.constants.TurbineTestConstants.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.jimsey.projects.turbine.spring.domain.TickJsonTheoryTest.*;
+import static org.jimsey.projects.turbine.spring.domain.TickerTheoryTest.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -30,8 +32,6 @@ import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
-import org.jimsey.projects.turbine.fuel.domain.Ticker;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -45,36 +45,91 @@ public class TickJsonTest {
 
   private static ObjectMapper json = new ObjectMapper();
 
-  private final Ticker TICKER = Ticker.of(ABC);
+  @Test
+  public void testConstructor() {
+    // check that the constructor correctly sets all properties...
+    assertThat(tjAA).hasFieldOrPropertyWithValue("date", now.toInstant().toEpochMilli());
+    assertThat(tjAA).hasFieldOrPropertyWithValue("ticker", tickAAA);
+  }
 
-  @Before
-  public void before() {
-    // {"date": 1401174943825, "open": 99.52, "high": 99.58, "low": 98.99, "close": 99.08, "volume": 100},
-    // this.tick = new STick(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d);
+  @Test
+  public void testHashCode() {
+    // check that the hash code is consistent across objects...
+    assertThat(tjAA.hashCode()).isEqualTo(new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString()).hashCode());
+    assertThat(new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString()).hashCode())
+            .isEqualTo(tjAA.hashCode());
+
+    // check that all fields are part of the hash code...
+    assertThat(tjAA.hashCode()).isNotEqualTo(tjAB.hashCode());
+    assertThat(tjAA.hashCode()).isNotEqualTo(tjBA.hashCode());
+    assertThat(tjAA.hashCode()).isNotEqualTo(tjBB.hashCode());
+  }
+
+  @Test
+  public void testEquals() {
+    // reflexive...
+    assertThat(tjAA).isEqualTo(tjAA);
+
+    // symmetric...
+    assertThat(tjAA).isEqualTo(new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString()));
+    assertThat(new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString())).isEqualTo(tjAA);
+
+    // consistent (same checks again)...
+    assertThat(tjAA).isEqualTo(new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString()));
+    assertThat(new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString())).isEqualTo(tjAA);
+
+    // transitive...
+    TickJson ABC_AX2 = new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString());
+    TickJson ABC_AX3 = new TickJson(now,
+        R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), R.nextDouble(), tickAAA, now.toString());
+
+    assertThat(tjAA).isEqualTo(ABC_AX2);
+    assertThat(ABC_AX2).isEqualTo(ABC_AX3);
+    assertThat(tjAA).isEqualTo(ABC_AX3);
+
+    // check not equal to null...
+    assertThat(tjAA).isNotEqualTo(null);
+
+    // check all properties are included in equals...
+    assertThat(tjAA).isNotEqualTo(tjAB);
+    assertThat(tjAA).isNotEqualTo(tjBA);
+    assertThat(tjAA).isNotEqualTo(tjBB);
+  }
+
+  @Test
+  public void testCompareTo() {
+
+    // check that all fields participate in compareTo...
+    assertThat(tjAA).isLessThan(tjAB);
+    assertThat(tjAA).isLessThan(tjBA);
+    assertThat(tjAA).isLessThan(tjBB);
+
+    // check that the reverse is also true...
+    assertThat(tjAB).isGreaterThan(tjAA);
+    assertThat(tjBA).isGreaterThan(tjAA);
+    assertThat(tjBB).isGreaterThan(tjAA);
   }
 
   @Test
   public void testJsonCreator() {
     TickJson tick = new TickJson(1401174943825l, 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TICKER.getRicAsString(), OffsetDateTime.now().toString());
+        tickAAA.getRicAsString(), OffsetDateTime.now().toString());
     String jsonCreator = tick.toString();
     logger.info(jsonCreator);
     assertNotNull(jsonCreator);
   }
 
   @Test
-  public void testConstructor() {
-    TickJson tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TICKER, OffsetDateTime.now().toString());
-    String constructor = tick.toString();
-    logger.info(constructor);
-    assertNotNull(constructor);
-  }
-
-  @Test
   public void testJson() throws IOException {
     TickJson tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TICKER, OffsetDateTime.now().toString());
+        tickAAA, OffsetDateTime.now().toString());
     String text = json.writeValueAsString(tick);
     tick = json.readValue(text, TickJson.class);
     logger.info(text);
@@ -87,7 +142,7 @@ public class TickJsonTest {
   @Test
   public void testSerializable() throws IOException {
     TickJson tick = new TickJson(OffsetDateTime.now(), 99.52d, 99.58d, 98.99d, 99.08d, 100.0d,
-        TICKER, OffsetDateTime.now().toString());
+        tickAAA, OffsetDateTime.now().toString());
     byte[] bytes = SerializationUtils.serialize(tick);
     TickJson tick2 = (TickJson) SerializationUtils.deserialize(bytes);
     logger.info(tick.toString());

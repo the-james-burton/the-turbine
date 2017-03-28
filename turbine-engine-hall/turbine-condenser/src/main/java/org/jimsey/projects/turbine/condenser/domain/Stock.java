@@ -66,10 +66,10 @@ public class Stock {
   // @Autowired
   // @NotNull
   // private TurbineService turbineService;
-  
-  private final TimeSeries series = new TimeSeries(new ArrayList<Tick>());
 
-  private final ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+  private final TimeSeries series;
+
+  private final ClosePriceIndicator closePriceIndicator;
 
   private final List<TurbineIndicator> indicators = new ArrayList<>();
 
@@ -81,12 +81,14 @@ public class Stock {
   // private Map<OffsetDateTime, CountDownLatch> ticksReceived = new ConcurrentHashMap<>();
 
   private Cache<OffsetDateTime, CountDownLatch> ticksReceived;
-  
+
   public Stock(
       final Ticker ticker,
       final List<EnableTurbineIndicator> turbineIndicators,
       final List<EnableTurbineStrategy> turbineStrategies) {
     this.ticker = ticker;
+    this.series = new TimeSeries(ticker.getRicAsString(), new ArrayList<Tick>());
+    this.closePriceIndicator = new ClosePriceIndicator(series);
     init(turbineIndicators, turbineStrategies);
   }
 
@@ -112,11 +114,11 @@ public class Stock {
       BaseStrategy strategy = (BaseStrategy) instantiate(className);
       strategies.add(strategy);
     });
-    
+
     // initialise the cache...
     ticksReceived = Caffeine.newBuilder()
         .expireAfterWrite(10, TimeUnit.SECONDS)
-        .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) ->  {
+        .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) -> {
           v.countDown();
           logger.info("cache expired: [ticker:{}, timestamp:{}]", ticker.getRic(), k.toString());
         })
@@ -160,7 +162,7 @@ public class Stock {
   public Ticker getTicker() {
     return ticker;
   }
-  
+
   public CountDownLatch awaitTick(OffsetDateTime timestamp) {
     return addOrGetLatch(timestamp);
   }
