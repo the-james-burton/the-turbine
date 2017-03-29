@@ -28,7 +28,6 @@ import java.util.Arrays;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.amqp.AmqpTestSender;
-import org.jimsey.projects.turbine.condenser.amqp.AmqpTickReceiver;
 import org.jimsey.projects.turbine.condenser.service.Ping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,8 +70,8 @@ public class Application {
     // TODO remove this little testing code...
     AmqpTestSender amqpTestSender = spring.getBean(AmqpTestSender.class);
     amqpTestSender.sendMessages(2);
-    AmqpTickReceiver amqpTickReceiver = spring.getBean(AmqpTickReceiver.class);
-    amqpTickReceiver.receiveSimulatedMessages(2);
+    // AmqpTickReceiver amqpTickReceiver = spring.getBean(AmqpTickReceiver.class);
+    // amqpTickReceiver.receiveSimulatedMessages(2);
   }
 
   @SuppressWarnings("unused")

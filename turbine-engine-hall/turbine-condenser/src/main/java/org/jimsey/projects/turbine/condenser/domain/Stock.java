@@ -53,6 +53,7 @@ import com.github.benmanes.caffeine.cache.RemovalCause;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
+import javaslang.collection.Stream;
 
 @ConfigurationProperties(prefix = "consumer")
 public class Stock {
@@ -67,7 +68,8 @@ public class Stock {
   // @NotNull
   // private TurbineService turbineService;
 
-  private final TimeSeries series;
+  /** this is not final because we may need to make a new TimeSeries in case of an out-of-order tick */
+  private TimeSeries series;
 
   private final ClosePriceIndicator closePriceIndicator;
 
@@ -142,8 +144,32 @@ public class Stock {
 
   public void receiveTick(TickJson tick) {
     logger.debug("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
-    series.addTick(tick);
+    try {
+      series.addTick(tick);
+    } catch (IllegalArgumentException e) {
+      // Happens when trying to add an out-of-order tick
+      logger.warn("out-of-order tick, will rebuild series: {}", tick);
+      series = rebuildTimeSeriesWithAddTick(series, tick);
+      logger.warn("successfully rebuild series:{}", series.getName());
+    }
     addOrGetLatch(tick.getTimestampAsObject()).countDown();
+  }
+
+  /**
+   * The ticks in a Ta4J TimeSeries are final, immutable and hard to retrieve, so
+   * in this method, we build a new TimeSeries in as best and simple a way as I can see
+   * 
+   * @param series the TimeSeries to append the out of order tick to
+   * @param tick the out of order tick that cannot be directly added to the TimeSeries 
+   * @return a new TimeSeries with the tick added in the right place
+   */
+  public static TimeSeries rebuildTimeSeriesWithAddTick(TimeSeries series, TickJson tick) {
+    List<Tick> sortedTicks = Stream.range(0, series.getTickCount())
+        .map(x -> series.getTick(x))
+        .append(tick)
+        .sorted()
+        .toJavaList();
+    return new TimeSeries(series.getName(), sortedTicks);
   }
 
   private CountDownLatch addOrGetLatch(OffsetDateTime timestamp) {

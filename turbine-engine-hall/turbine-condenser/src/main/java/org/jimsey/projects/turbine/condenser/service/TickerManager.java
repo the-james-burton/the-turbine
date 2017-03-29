@@ -73,6 +73,11 @@ public class TickerManager {
   public void init() {
     turbineIndicators.addAll(turbineService.findIndicators());
     turbineStrategies.addAll(turbineService.findStrategies());
+
+    // TODO temporary...!!!
+    // if (true)
+    //  return;
+
     List<Ticker> tickersFromEs = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
     if (tickersFromEs == null || tickersFromEs.isEmpty()) {
       logger.warn(" !!!! WARNING ---- no tickers found in elasticsearch ---- !!!!");

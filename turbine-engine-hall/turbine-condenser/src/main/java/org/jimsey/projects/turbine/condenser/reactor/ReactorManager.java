@@ -23,6 +23,7 @@
 package org.jimsey.projects.turbine.condenser.reactor;
 
 import static java.lang.String.*;
+import static java.time.Duration.*;
 
 import java.lang.invoke.MethodHandles;
 
@@ -42,6 +43,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import javaslang.Function1;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.TopicProcessor;
 
 @Component
@@ -66,6 +68,7 @@ public class ReactorManager {
 
   // topics to enable multiple consumers...
   private TopicProcessor<TickJson> ticks;
+  private TopicProcessor<TickJson> ticks2;
 
   private TopicProcessor<IndicatorJson> indicators;
 
@@ -93,6 +96,7 @@ public class ReactorManager {
 
     msgs = TopicProcessor.create("msgs");
     ticks = TopicProcessor.create("ticks");
+    ticks2 = TopicProcessor.create("ticks2");
     indicators = TopicProcessor.create("indicators");
     strategies = TopicProcessor.create("strategies");
 
@@ -111,6 +115,12 @@ public class ReactorManager {
     ticks
         // .subscribe(new ReactorTickSubscriber("tickSubscriber"));
         .doOnNext(tick -> logger.info(" reactor ticks -> tick:{}", tick))
+        .buffer(ofSeconds(2))
+        .flatMap(l -> Flux.fromIterable(l).sort())
+        .subscribe(ticks2);
+
+    ticks2
+        .doOnNext(tick -> logger.info(" reactor ticks2 -> tick:{}", tick))
         .doOnNext(tick -> elasticsearch.indexTick(tick))
         .doOnNext(tick -> websocket.convertAndSend(websocketForTicks.apply(tick), tick.toString()))
         .subscribe(tickSubscriber);

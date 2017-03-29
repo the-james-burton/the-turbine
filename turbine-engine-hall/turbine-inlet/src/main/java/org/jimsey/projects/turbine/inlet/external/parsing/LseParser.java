@@ -118,7 +118,7 @@ public class LseParser {
     // elasticsearch.indexTicker(tickers.head());
 
     // put the tickers into elasticsearch...
-    // tickers.toJavaList().parallelStream().forEach(elasticsearch::indexTicker);
+    tickers.toJavaList().parallelStream().forEach(elasticsearch::indexTicker);
 
     // elasticsearch.deleteSecuritiesIndex();
     // elasticsearch.indexSecurity(securities.head());

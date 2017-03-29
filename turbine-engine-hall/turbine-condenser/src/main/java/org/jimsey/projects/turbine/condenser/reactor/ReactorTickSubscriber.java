@@ -66,18 +66,24 @@ public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
     Ticker ticker = tick.getTickerAsObject();
     Stock stock = tickerManager.findOrCreateStock(ticker);
 
-    tickerManager.findOrCreateStock(tick.getTickerAsObject()).receiveTick(tick);
+    try {
+      tickerManager.findOrCreateStock(tick.getTickerAsObject()).receiveTick(tick);
 
-    // TODO still need this?
-    Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
+      // TODO still need this?
+      Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
 
-    Stream.ofAll(stock.getIndicators())
-        .map(indicator -> indicator.run(tick))
-        .forEach(indicatorJson -> indicators.onNext(indicatorJson));
+      Stream.ofAll(stock.getIndicators())
+          .map(indicator -> indicator.run(tick))
+          .forEach(indicatorJson -> indicators.onNext(indicatorJson));
 
-    Stream.ofAll(stock.getStrategies())
-        .map(strategy -> strategy.run(tick))
-        .forEach(strategyJson -> strategies.onNext(strategyJson));
+      Stream.ofAll(stock.getStrategies())
+          .map(strategy -> strategy.run(tick))
+          .forEach(strategyJson -> strategies.onNext(strategyJson));
+
+    } catch (Throwable t) {
+      logger.error("unable to receive tick:{}", t.getMessage());
+      t.printStackTrace();
+    }
 
     super.onNext(tick);
   }
