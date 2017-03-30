@@ -87,7 +87,7 @@ Then open the project in Eclipse and run the launch configurations in *ide/eclip
 
 At some point I will provide an easier way of installing and running this app using spring boot packaging best practice, but it remains a development project for now.
 
-### Help, I get 'insecure response' errors! 
+### Help, I get 'insecure response' errors!
 
 You may see this if you have turned on SSL/HTTPS. If oyu do, then you need to tell your browser to trust these HTTPS URLs. In chrome, you can do this by simply browsing to the URLs, clicking 'advanced' and then trusting them.
 
@@ -156,3 +156,19 @@ It communicates with two principal back end components...
 ## Where did the names come from?
 
 The name was originally coined when this project was going to be a simple messaging performance test suite. However, it has since expanded into a full technical analysis suite. We can try and force the name *turbine* into a backronym, something like 'Technical Understanding Reached By Implementing New Executables', if we must. The names of the subprojects are meant to evoke interpretations of parts of an electricity generating turbine, although it doesn't really hold up to a pedantic analysis of the metaphor.
+
+## Notes and issues...
+
+I currently have a problem with elasticsearch sometimes hanging and not restarting after my laptop resumes from suspend (linux mint 18.1 xfce). No logs, nothing just hanging. After hacking about with the elasticsearch.sh I got this error out of it...
+
+```
+2017-03-30 18:12:03,009 main ERROR Could not register mbeans java.security.AccessControlException: access denied ("javax.management.MBeanTrustPermission" "register")
+```
+
+I *think* the solution might be [this suggestion](https://groups.google.com/forum/#!msg/hector-users/A9ybod1Ox_A/AH9-PcfZdlQJ), which is to add this line inside the `grant{}` block in the active `java.policy` file. For me, this is `/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.policy`...
+
+```
+grant {
+  permission javax.management.MBeanTrustPermission "register";
+}
+```
