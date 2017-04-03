@@ -112,6 +112,23 @@ public class FinanceController {
    * @param tickersString a ticker with extension, e.g. ABC.L
    * @return a CSV string with header row of Date,Open,High,Low,Close,Volume,Adj Close
    */
+  @RequestMapping("/yahoo/historic/{ticker:.+}")
+  public ResponseEntity<String> yahooFinanceHistoric(@PathVariable @NotNull String ticker) {
+    logger.info("yahooFinanceHistoricDirect({})", ticker);
+    CharSeq results = doTicksYahooFinanceHistoric(kennel.parseTickersString.apply(ticker).head());
+
+    // create the return type required by this mock API...
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    headers.setContentDispositionFormData("file", "quotes.csv");
+    ResponseEntity<String> response = new ResponseEntity<>(results.toString(), headers, HttpStatus.OK);
+    return response;
+  }
+
+  /** 
+   * @param tickersString a ticker with extension, e.g. ABC.L
+   * @return a CSV string with header row of Date,Open,High,Low,Close,Volume,Adj Close
+   */
   @RequestMapping("/yahoo/historic/direct/{ticker:.+}")
   public ResponseEntity<String> yahooFinanceHistoricDirect(@PathVariable @NotNull String ticker) {
     logger.info("yahooFinanceHistoricDirect({})", ticker);
@@ -143,7 +160,7 @@ public class FinanceController {
     // generate a historic series of TickJson...
     int daysAgo = 10;
     OffsetDateTime startDate = OffsetDateTime.now().minusDays(daysAgo).withHour(0).withMinute(0).withSecond(0);
-    List<TickJson> ticks = Stream.range(1, daysAgo)
+    List<TickJson> ticks = Stream.range(1, daysAgo + 1)
         .map(x -> myDog.newTick(startDate.plusDays(x)))
         .reverse()
         .toList();

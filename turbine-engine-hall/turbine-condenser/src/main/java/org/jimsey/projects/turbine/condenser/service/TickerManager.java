@@ -37,6 +37,7 @@ import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javaslang.Function0;
@@ -48,6 +49,10 @@ import javaslang.collection.Set;
 public class TickerManager {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Autowired
+  @NotNull
+  private Environment environment;
 
   @Autowired
   @NotNull
@@ -74,9 +79,11 @@ public class TickerManager {
     turbineIndicators.addAll(turbineService.findIndicators());
     turbineStrategies.addAll(turbineService.findStrategies());
 
+    // environment.getActiveProfiles();
+
     // TODO temporary...!!!
     // if (true)
-    //  return;
+    // return;
 
     List<Ticker> tickersFromEs = elasticsearch.findTickersByExchange(ExchangeEnum.LSE);
     if (tickersFromEs == null || tickersFromEs.isEmpty()) {

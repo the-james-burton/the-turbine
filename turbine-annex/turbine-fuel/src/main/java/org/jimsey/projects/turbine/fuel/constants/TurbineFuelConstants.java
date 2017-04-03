@@ -33,22 +33,18 @@ public class TurbineFuelConstants {
   // TODO these are ONLY for use in the @Document annotation, which will be removed
   // when the native elasticsearch port is complete
 
+  public static final Ticker tickerA = Ticker.of("BATS", ExchangeEnum.LSE, "BRITISH AMERICAN TOBACCO");
+  public static final Ticker tickerB = Ticker.of("GSK", ExchangeEnum.LSE, "GLAXOSMITHKLINE");
+  public static final Ticker tickerC = Ticker.of("DGE", ExchangeEnum.LSE, "DIAGEO");
+
   public static final String ELASTICSEARCH_INDEX_FOR_TICKS = "turbine-ticks";
-
   public static final String ELASTICSEARCH_INDEX_FOR_INDICATORS = "turbine-indicators";
-
   public static final String ELASTICSEARCH_INDEX_FOR_STRATEGIES = "turbine-strategies";
-
   public static final String ELASTICSEARCH_TYPE_FOR_TICKS = "turbine-tick";
-
   public static final String ELASTICSEARCH_TYPE_FOR_INDICATORS = "turbine-indicator";
-
   public static final String ELASTICSEARCH_TYPE_FOR_STRATEGIES = "turbine-strategy";
 
   // what are we interested in? let's take three large companies...
-  public static final Set<Ticker> PRESET_TICKERS = HashSet.of(
-      Ticker.of("BATS", ExchangeEnum.LSE, "BRITISH AMERICAN TOBACCO"),
-      Ticker.of("GSK", ExchangeEnum.LSE, "GLAXOSMITHKLINE"),
-      Ticker.of("DGE", ExchangeEnum.LSE, "DIAGEO"));
+  public static final Set<Ticker> PRESET_TICKERS = HashSet.of(tickerA, tickerB, tickerC);
 
 }
