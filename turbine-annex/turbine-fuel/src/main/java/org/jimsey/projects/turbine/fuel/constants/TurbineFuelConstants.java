@@ -46,5 +46,6 @@ public class TurbineFuelConstants {
 
   // what are we interested in? let's take three large companies...
   public static final Set<Ticker> PRESET_TICKERS = HashSet.of(tickerA, tickerB, tickerC);
+  // public static final Set<Ticker> PRESET_TICKERS = HashSet.of(tickerA);
 
 }

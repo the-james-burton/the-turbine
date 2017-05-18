@@ -158,7 +158,7 @@ public class FinanceController {
     logger.info("missing:{}", missing.toJavaList());
 
     // generate a historic series of TickJson...
-    int daysAgo = 10;
+    int daysAgo = 100;
     OffsetDateTime startDate = OffsetDateTime.now().minusDays(daysAgo).withHour(0).withMinute(0).withSecond(0);
     List<TickJson> ticks = Stream.range(1, daysAgo + 1)
         .map(x -> myDog.newTick(startDate.plusDays(x)))
