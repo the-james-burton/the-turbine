@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.verdelhan.ta4j.Tick;
-import javaslang.control.Try;
+import io.vavr.control.Try;
 
 // TODO this annotation (spring-data-elasticsearch only) forces the use of constants...
 // @Document(

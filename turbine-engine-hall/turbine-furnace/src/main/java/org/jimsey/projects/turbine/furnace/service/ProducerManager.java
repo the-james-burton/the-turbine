@@ -45,11 +45,11 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javaslang.Function0;
-import javaslang.collection.HashSet;
-import javaslang.collection.Set;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
+import io.vavr.Function0;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.Set;
+import io.vavr.collection.SortedSet;
+import io.vavr.collection.TreeSet;
 
 @Service
 @ConfigurationProperties(prefix = "producer")

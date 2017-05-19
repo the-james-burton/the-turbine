@@ -29,8 +29,8 @@ import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
-import javaslang.collection.Stream;
-import javaslang.control.Try;
+import io.vavr.collection.Stream;
+import io.vavr.control.Try;
 import reactor.core.publisher.TopicProcessor;
 
 /**

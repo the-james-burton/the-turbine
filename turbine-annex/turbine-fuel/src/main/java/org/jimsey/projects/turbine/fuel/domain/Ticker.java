@@ -36,10 +36,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javaslang.Tuple;
-import javaslang.Tuple2;
-import javaslang.collection.CharSeq;
-import javaslang.control.Try;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
+import io.vavr.collection.CharSeq;
+import io.vavr.collection.Seq;
+import io.vavr.control.Try;
 
 @JsonAutoDetect(
     fieldVisibility = Visibility.NONE,
@@ -66,8 +67,8 @@ public class Ticker implements Comparable<Ticker> {
     this.timestamp = OffsetDateTime.now();
     this.ric = ric;
     this.name = name;
-    CharSeq[] parts = ric.split("\\.");
-    Tuple2<CharSeq, CharSeq> tuple = Try.of(() -> Tuple.of(parts[0], parts[1]))
+    Seq<CharSeq> parts = ric.split("\\.");
+    Tuple2<CharSeq, CharSeq> tuple = Try.of(() -> Tuple.of(parts.get(0), parts.get(1)))
         .getOrElseThrow(() -> new RuntimeException("unable to parse as ticker:" + ric));
     this.symbol = tuple._1;
     this.exchange = ExchangeEnum.fromExtension(tuple._2)

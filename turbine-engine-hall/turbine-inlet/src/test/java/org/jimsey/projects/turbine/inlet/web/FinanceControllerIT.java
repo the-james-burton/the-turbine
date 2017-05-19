@@ -44,7 +44,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 /**
  * There appears to be no easy way to use a real bean in a @WebMvcTest.

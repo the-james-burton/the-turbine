@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javaslang.control.Try;
+import io.vavr.control.Try;
 
 /**
  * POJO representation of a row in the LSE companies spreadsheet

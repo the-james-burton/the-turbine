@@ -53,7 +53,7 @@ import com.github.benmanes.caffeine.cache.RemovalCause;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import javaslang.collection.Stream;
+import io.vavr.collection.Stream;
 
 @ConfigurationProperties(prefix = "consumer")
 public class Stock {

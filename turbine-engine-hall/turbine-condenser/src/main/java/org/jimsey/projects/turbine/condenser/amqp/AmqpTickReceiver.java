@@ -38,8 +38,8 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
-import javaslang.collection.Stream;
-import javaslang.control.Try;
+import io.vavr.collection.Stream;
+import io.vavr.control.Try;
 
 /**
  * See AmqpSetup for details of how this class is wired up to RabbitMQ

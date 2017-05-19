@@ -31,12 +31,11 @@ import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javaslang.Function1;
-import javaslang.Function2;
-import javaslang.collection.CharSeq;
-import javaslang.collection.List;
-import javaslang.collection.Stream;
-import javaslang.control.Option;
+import io.vavr.Function1;
+import io.vavr.Function2;
+import io.vavr.collection.CharSeq;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 
 @Component
 public class DogKennel {
@@ -52,8 +51,8 @@ public class DogKennel {
   /**
    * given a '+' separated string of tickers (eg. ABC.L), will return a list of enriched Tickers
    */
-  public Function1<String, List<Ticker>> parseTickersString = tickers -> Stream.of(CharSeq.of(tickers)
-      .split("\\+"))
+  public Function1<String, List<Ticker>> parseTickersString = tickers -> CharSeq.of(tickers)
+      .split("\\+")
       .map(t -> CharSeq.of(t))
       .map(s -> metadata.findTickerBySymbol.apply(s)
           .getOrElseThrow(() -> new RuntimeException(format("unable to find ticker:%s in metadata", s))))

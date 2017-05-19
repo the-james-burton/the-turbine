@@ -29,7 +29,7 @@ import org.jimsey.projects.turbine.inspector.junit.CompareToTheory;
 import org.junit.experimental.theories.DataPoint;
 
 public class TickerCompareToTest extends CompareToTheory {
-  
+
   @DataPoint
   public static final Ticker tickAAA = Ticker.of(TICK1, AX, NAME1);
 
@@ -43,4 +43,3 @@ public class TickerCompareToTest extends CompareToTheory {
   public static final Ticker tickBAA = Ticker.of(TICK2, AX, NAME1);
 
 }
-

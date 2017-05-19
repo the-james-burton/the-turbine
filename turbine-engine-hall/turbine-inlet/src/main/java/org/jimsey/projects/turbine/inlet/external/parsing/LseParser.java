@@ -22,8 +22,8 @@
  */
 package org.jimsey.projects.turbine.inlet.external.parsing;
 
+import static io.vavr.Predicates.*;
 import static java.lang.String.*;
-import static javaslang.Predicates.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -54,12 +54,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
-import javaslang.Function1;
-import javaslang.Tuple;
-import javaslang.Tuple2;
-import javaslang.collection.List;
-import javaslang.collection.Stream;
-import javaslang.control.Try;
+import io.vavr.Function1;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
+import io.vavr.control.Try;
 
 @Component
 @ManagedResource

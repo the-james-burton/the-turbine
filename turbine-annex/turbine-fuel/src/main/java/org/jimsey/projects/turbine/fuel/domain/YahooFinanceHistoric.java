@@ -31,7 +31,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 /**
  *  NOTE: javadoc quirk: replace &amp; with just an ampersand to make the link work...

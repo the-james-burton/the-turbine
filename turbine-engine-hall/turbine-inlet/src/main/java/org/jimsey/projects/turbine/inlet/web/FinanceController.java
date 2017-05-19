@@ -44,9 +44,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javaslang.collection.CharSeq;
-import javaslang.collection.List;
-import javaslang.collection.Stream;
+import io.vavr.collection.CharSeq;
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 
 /**
  * http://finance.yahoo.com/d/quotes.csv?f=nxohgav&amp;s=BHP.AX+BLT.L+AAPL

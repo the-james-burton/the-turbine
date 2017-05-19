@@ -25,8 +25,8 @@ package org.jimsey.projects.turbine.fuel.constants;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
-import javaslang.collection.HashSet;
-import javaslang.collection.Set;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.Set;
 
 public class TurbineFuelConstants {
 

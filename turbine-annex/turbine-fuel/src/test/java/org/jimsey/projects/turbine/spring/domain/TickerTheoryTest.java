@@ -27,7 +27,7 @@ import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inspector.junit.ObjectTheories;
 import org.junit.experimental.theories.DataPoint;
 
-import javaslang.collection.CharSeq;
+import io.vavr.collection.CharSeq;
 
 public class TickerTheoryTest extends ObjectTheories {
 

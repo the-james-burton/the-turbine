@@ -40,10 +40,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javaslang.Function0;
-import javaslang.Function2;
-import javaslang.collection.HashSet;
-import javaslang.collection.Set;
+import io.vavr.Function0;
+import io.vavr.Function2;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.Set;
 
 @Service
 public class TickerManager {

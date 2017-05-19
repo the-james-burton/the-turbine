@@ -28,12 +28,12 @@ import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.springframework.stereotype.Service;
 
-import javaslang.Function1;
-import javaslang.collection.CharSeq;
-import javaslang.collection.HashSet;
-import javaslang.collection.List;
-import javaslang.collection.Set;
-import javaslang.control.Option;
+import io.vavr.Function1;
+import io.vavr.collection.CharSeq;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.List;
+import io.vavr.collection.Set;
+import io.vavr.control.Option;
 
 /**
  * 

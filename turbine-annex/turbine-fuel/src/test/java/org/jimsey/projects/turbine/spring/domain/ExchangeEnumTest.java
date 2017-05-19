@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.junit.Test;
 
-import javaslang.collection.CharSeq;
+import io.vavr.collection.CharSeq;
 
 public class ExchangeEnumTest {
 

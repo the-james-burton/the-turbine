@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import javaslang.Function1;
+import io.vavr.Function1;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.TopicProcessor;
 

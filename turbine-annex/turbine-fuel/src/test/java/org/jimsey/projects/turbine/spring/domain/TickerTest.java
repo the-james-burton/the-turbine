@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javaslang.collection.CharSeq;
+import io.vavr.collection.CharSeq;
 
 public class TickerTest {
 

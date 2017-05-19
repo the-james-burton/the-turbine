@@ -34,7 +34,7 @@ import org.mockito.InjectMocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javaslang.collection.HashSet;
+import io.vavr.collection.HashSet;
 
 public class TickerManagerTest {
 
@@ -46,11 +46,11 @@ public class TickerManagerTest {
   private final Ticker ABC_L = Ticker.of("ABC.L");
   private final Ticker DEF_L = Ticker.of("DEF.L");
 
-//  private StockFactory stockFactory = new StockFactory() {
-//      public Stock createStock(Ticker ticker) {
-//        return Stock.of(ticker, new ArrayList<>(), new ArrayList<>());
-//    };
-//  };
+  // private StockFactory stockFactory = new StockFactory() {
+  // public Stock createStock(Ticker ticker) {
+  // return Stock.of(ticker, new ArrayList<>(), new ArrayList<>());
+  // };
+  // };
 
   @Before
   public void setup() {
@@ -60,7 +60,7 @@ public class TickerManagerTest {
   public void testAddTick() {
     logger.info("given an empty TickerManager");
     tickerManager = new TickerManager();
-//    tickerManager.setStockFactory(stockFactory);
+    // tickerManager.setStockFactory(stockFactory);
     logger.info("then it should be emtpy...");
     assertThat(tickerManager.getTickers()).isEmpty();
 
@@ -75,7 +75,7 @@ public class TickerManagerTest {
     logger.info("and getTickers() should be equal to a set containing ticker ABC.L...");
     assertThat(tickerManager.getTickers()).isEqualTo(HashSet.of(ABC_L));
 
-    logger.info("when adding ticker ABC.L again");    
+    logger.info("when adding ticker ABC.L again");
     tickerManager.findOrCreateStock(ABC_L);
     logger.info("then getTickers() should still contain ticker ABC.L...");
     assertThat(tickerManager.getTickers()).contains(ABC_L);
@@ -96,5 +96,5 @@ public class TickerManagerTest {
     assertThat(tickerManager.getTickers()).isEqualTo(HashSet.of(ABC_L, DEF_L));
 
   }
-  
+
 }

@@ -24,9 +24,9 @@ package org.jimsey.projects.turbine.fuel.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javaslang.collection.CharSeq;
-import javaslang.collection.Stream;
-import javaslang.control.Option;
+import io.vavr.collection.CharSeq;
+import io.vavr.collection.Stream;
+import io.vavr.control.Option;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ExchangeEnum {

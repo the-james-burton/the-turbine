@@ -41,18 +41,18 @@
     </dependency>
 
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang</artifactId>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang-pure</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>io.vavr</groupId> -->
+<!--       <artifactId>vavr-pure</artifactId> -->
+<!--     </dependency> -->
 
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang-jackson</artifactId>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr-jackson</artifactId>
     </dependency>
 
     <dependency>
@@ -98,8 +98,8 @@
     </dependency>
 
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang-test</artifactId>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr-test</artifactId>
       <scope>test</scope>
     </dependency>
 

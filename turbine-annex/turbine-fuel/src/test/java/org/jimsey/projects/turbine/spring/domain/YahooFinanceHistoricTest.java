@@ -39,9 +39,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javaslang.Function1;
-import javaslang.collection.List;
-import javaslang.collection.Stream;
+import io.vavr.Function1;
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 
 public class YahooFinanceHistoricTest {
 

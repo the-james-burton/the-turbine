@@ -38,7 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 
-import javaslang.control.Try;
+import io.vavr.control.Try;
 
 public abstract class BaseDownloader {
 

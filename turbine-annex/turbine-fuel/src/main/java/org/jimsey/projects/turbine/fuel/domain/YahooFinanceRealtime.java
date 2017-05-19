@@ -25,8 +25,8 @@ package org.jimsey.projects.turbine.fuel.domain;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import javaslang.collection.List;
-import javaslang.collection.Stream;
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 
 /**
  * NOTE: javadoc quirk: replace &amp; with just an ampersand to make the link work...
