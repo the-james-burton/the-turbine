@@ -22,6 +22,7 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,17 +38,13 @@ import eu.verdelhan.ta4j.indicators.trackers.bollinger.BollingerBandsUpperIndica
 public class BollingerBands extends BaseIndicator {
 
   private final SMAIndicator smaIndicator;
-
   private final StandardDeviationIndicator standardDeviationIndicator;
-
   private final BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator;
-
   private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator;
-
   private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
 
   public BollingerBands(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, BollingerBands.class.getSimpleName(), indicator);
+    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
     smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);

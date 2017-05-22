@@ -22,40 +22,33 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.oscillators.AroonDownIndicator;
-import eu.verdelhan.ta4j.indicators.oscillators.AroonUpIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.AccelerationDecelerationIndicator;
 
 /**
- * http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:aroon_oscillator
- *
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "AroonOscillator", isOverlay = false)
-public class AroonOscillator extends BaseIndicator {
+@EnableTurbineIndicator(name = "AccelerationDeceleration", isOverlay = false)
+public class AccelerationDeceleration extends BaseIndicator {
 
-  private final AroonUpIndicator aroonUpIndicator;
+  private final AccelerationDecelerationIndicator accelerationDeceleration;
 
-  private final AroonDownIndicator aroonDownIndicator;
-
-  public AroonOscillator(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(25, series, AroonOscillator.class.getSimpleName(), indicator);
+  public AccelerationDeceleration(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    aroonUpIndicator = new AroonUpIndicator(series, timeFrame);
-    aroonDownIndicator = new AroonDownIndicator(series, timeFrame);
+    accelerationDeceleration = new AccelerationDecelerationIndicator(series);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    double aroonUp = aroonUpIndicator.getValue(series.getEnd()).toDouble();
-    double aroonDown = aroonDownIndicator.getValue(series.getEnd()).toDouble();
-    values.put("aroonOscillator", aroonUp - aroonDown);
+    values.put("accelerationDeceleration", accelerationDeceleration.getValue(series.getEnd()).toDouble());
     return values;
   }
 

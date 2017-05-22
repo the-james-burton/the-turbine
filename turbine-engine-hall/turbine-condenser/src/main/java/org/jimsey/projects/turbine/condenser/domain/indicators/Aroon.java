@@ -27,25 +27,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.verdelhan.ta4j.TimeSeries;
+import eu.verdelhan.ta4j.indicators.oscillators.AroonDownIndicator;
+import eu.verdelhan.ta4j.indicators.oscillators.AroonUpIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
-@EnableTurbineIndicator(name = "SMA12", isOverlay = true)
-public class SMA12 extends BaseIndicator {
+/**
+ * http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:aroon_oscillator
+ *
+ * @author the-james-burton
+ */
+@EnableTurbineIndicator(name = "Aroon", isOverlay = false)
+public class Aroon extends BaseIndicator {
 
-  private final SMAIndicator smaIndicator;
+  private final AroonUpIndicator aroonUpIndicator;
 
-  public SMA12(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  private final AroonDownIndicator aroonDownIndicator;
+
+  public Aroon(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    this.smaIndicator = new SMAIndicator(indicator, this.timeFrame);
+    aroonUpIndicator = new AroonUpIndicator(series, timeFrame);
+    aroonDownIndicator = new AroonDownIndicator(series, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put(String.format("sma%s", this.timeFrame), smaIndicator.getValue(series.getEnd()).toDouble());
+    double aroonUp = aroonUpIndicator.getValue(series.getEnd()).toDouble();
+    double aroonDown = aroonDownIndicator.getValue(series.getEnd()).toDouble();
+    values.put("aroon", aroonUp - aroonDown);
     return values;
   }
 
