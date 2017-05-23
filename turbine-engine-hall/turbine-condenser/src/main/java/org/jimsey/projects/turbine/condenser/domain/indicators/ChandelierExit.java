@@ -32,11 +32,9 @@ import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitLongIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitShortIndicator;
 
 /**
- * http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:aroon_oscillator
- *
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "Aroon", isOverlay = true)
+@EnableTurbineIndicator(name = "ChandelierExit", isOverlay = true)
 public class ChandelierExit extends BaseIndicator {
 
   private final ChandelierExitLongIndicator chandelierExitLong;
