@@ -48,7 +48,7 @@ public class HullMA18 extends BaseIndicator {
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("hullMA18", hullMA.getValue(series.getEnd()).toDouble());
+    values.put(String.format("hullMA%s", this.timeFrame), hullMA.getValue(series.getEnd()).toDouble());
     return values;
   }
 
