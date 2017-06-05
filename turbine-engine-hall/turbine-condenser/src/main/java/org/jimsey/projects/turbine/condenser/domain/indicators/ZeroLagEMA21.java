@@ -28,26 +28,26 @@ import java.util.Map;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.WMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ZLEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "WMA30", isOverlay = false)
-public class WMA30 extends BaseIndicator {
+@EnableTurbineIndicator(name = "ZeroLagEMA21", isOverlay = false)
+public class ZeroLagEMA21 extends BaseIndicator {
 
-  private final WMAIndicator wma30;
+  private final ZLEMAIndicator zeroLagEMA21;
 
-  public WMA30(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(9, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public ZeroLagEMA21(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    wma30 = new WMAIndicator(indicator, timeFrame);
+    zeroLagEMA21 = new ZLEMAIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("wma30", wma30.getValue(series.getEnd()).toDouble());
+    values.put("zeroLagEMA21", zeroLagEMA21.getValue(series.getEnd()).toDouble());
     return values;
   }
 
