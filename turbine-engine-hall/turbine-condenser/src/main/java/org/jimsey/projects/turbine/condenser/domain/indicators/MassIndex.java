@@ -28,27 +28,26 @@ import java.util.Map;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.WilliamsRIndicator;
+import eu.verdelhan.ta4j.indicators.volatility.MassIndexIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "WilliamsR", isOverlay = false)
-public class WilliamsR extends BaseIndicator {
+@EnableTurbineIndicator(name = "MassIndex25", isOverlay = false)
+public class MassIndex extends BaseIndicator {
 
-  private final WilliamsRIndicator williamsR;
+  private final MassIndexIndicator massIndex25;
 
-  public WilliamsR(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(15, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public MassIndex(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // can take a pre-existing min/max indicator if we had one...
-    williamsR = new WilliamsRIndicator(series, timeFrame);
+    massIndex25 = new MassIndexIndicator(series, 9, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("williamsR", williamsR.getValue(series.getEnd()).toDouble());
+    values.put("massIndex25", massIndex25.getValue(series.getEnd()).toDouble());
     return values;
   }
 
