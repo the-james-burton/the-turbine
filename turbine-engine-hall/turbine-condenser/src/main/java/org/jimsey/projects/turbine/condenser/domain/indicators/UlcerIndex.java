@@ -28,26 +28,26 @@ import java.util.Map;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.WMAIndicator;
+import eu.verdelhan.ta4j.indicators.volatility.UlcerIndexIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "WMA30", isOverlay = false)
-public class WMA30 extends BaseIndicator {
+@EnableTurbineIndicator(name = "UlcerIndex14", isOverlay = false)
+public class UlcerIndex extends BaseIndicator {
 
-  private final WMAIndicator wma30;
+  private final UlcerIndexIndicator ulcerIndex14;
 
-  public WMA30(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(30, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public UlcerIndex(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    wma30 = new WMAIndicator(indicator, timeFrame);
+    ulcerIndex14 = new UlcerIndexIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("wma30", wma30.getValue(series.getEnd()).toDouble());
+    values.put("ulcerIndex14", ulcerIndex14.getValue(series.getEnd()).toDouble());
     return values;
   }
 
