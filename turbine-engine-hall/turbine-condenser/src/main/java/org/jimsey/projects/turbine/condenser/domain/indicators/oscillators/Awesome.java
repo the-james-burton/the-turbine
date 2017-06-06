@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.oscillators.DPOIndicator;
+import eu.verdelhan.ta4j.indicators.oscillators.AwesomeOscillatorIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "DetrendedPrice", isOverlay = false)
-public class DetrendedPrice extends BaseIndicator {
+@EnableTurbineIndicator(name = "Awesome", isOverlay = false)
+public class Awesome extends BaseIndicator {
 
-  private final DPOIndicator detrendedPrice;
+  private final AwesomeOscillatorIndicator awesome;
 
-  public DetrendedPrice(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public Awesome(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(5, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    detrendedPrice = new DPOIndicator(indicator, timeFrame);
+    awesome = new AwesomeOscillatorIndicator(indicator);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("detrendedPrice", detrendedPrice.getValue(series.getEnd()).toDouble());
+    values.put("awesome", awesome.getValue(series.getEnd()).toDouble());
     return values;
   }
 

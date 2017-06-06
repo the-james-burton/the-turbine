@@ -20,11 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.CCIIndicator;

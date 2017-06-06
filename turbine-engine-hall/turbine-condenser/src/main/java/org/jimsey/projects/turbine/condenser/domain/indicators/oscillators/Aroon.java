@@ -20,36 +20,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorDIndicator;
-import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorKIndicator;
+import eu.verdelhan.ta4j.indicators.oscillators.AroonDownIndicator;
+import eu.verdelhan.ta4j.indicators.oscillators.AroonUpIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
-@EnableTurbineIndicator(name = "KeltnerChannels", isOverlay = true)
-public class Stochastic extends BaseIndicator {
+/**
+ * http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:aroon_oscillator
+ *
+ * @author the-james-burton
+ */
+@EnableTurbineIndicator(name = "Aroon", isOverlay = false)
+public class Aroon extends BaseIndicator {
 
-  private final StochasticOscillatorKIndicator stochasticK;
-  private final StochasticOscillatorDIndicator stochasticD;
+  private final AroonUpIndicator aroonUpIndicator;
 
-  public Stochastic(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  private final AroonDownIndicator aroonDownIndicator;
+
+  public Aroon(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    stochasticK = new StochasticOscillatorKIndicator(series, timeFrame);
-    stochasticD = new StochasticOscillatorDIndicator(stochasticK);
+    aroonUpIndicator = new AroonUpIndicator(series, timeFrame);
+    aroonDownIndicator = new AroonDownIndicator(series, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("stochasticK", stochasticK.getValue(series.getEnd()).toDouble());
-    values.put("stochasticD", stochasticD.getValue(series.getEnd()).toDouble());
+    double aroonUp = aroonUpIndicator.getValue(series.getEnd()).toDouble();
+    double aroonDown = aroonDownIndicator.getValue(series.getEnd()).toDouble();
+    values.put("aroon", aroonUp - aroonDown);
     return values;
   }
 

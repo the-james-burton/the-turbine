@@ -20,35 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.oscillators.CMOIndicator;
+import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorDIndicator;
+import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorKIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
-/**
- * @author the-james-burton
- */
-@EnableTurbineIndicator(name = "ChandeMomentum", isOverlay = false)
-public class ChandeMomentum extends BaseIndicator {
+@EnableTurbineIndicator(name = "KeltnerChannels", isOverlay = true)
+public class Stochastic extends BaseIndicator {
 
-  private final CMOIndicator chandeMomentum;
+  private final StochasticOscillatorKIndicator stochasticK;
+  private final StochasticOscillatorDIndicator stochasticD;
 
-  public ChandeMomentum(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public Stochastic(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    chandeMomentum = new CMOIndicator(indicator, timeFrame);
+    stochasticK = new StochasticOscillatorKIndicator(series, timeFrame);
+    stochasticD = new StochasticOscillatorDIndicator(stochasticK);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("chandeMomentum", chandeMomentum.getValue(series.getEnd()).toDouble());
+    values.put("stochasticK", stochasticK.getValue(series.getEnd()).toDouble());
+    values.put("stochasticD", stochasticD.getValue(series.getEnd()).toDouble());
     return values;
   }
 
