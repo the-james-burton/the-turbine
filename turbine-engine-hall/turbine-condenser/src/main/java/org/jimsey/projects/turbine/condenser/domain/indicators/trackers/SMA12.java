@@ -20,40 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitLongIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitShortIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
-/**
- * @author the-james-burton
- */
-@EnableTurbineIndicator(name = "ChandelierExit", isOverlay = true)
-public class ChandelierExit extends BaseIndicator {
+@EnableTurbineIndicator(name = "SMA12", isOverlay = true)
+public class SMA12 extends BaseIndicator {
 
-  private final ChandelierExitLongIndicator chandelierExitLong;
+  private final SMAIndicator sma;
 
-  private final ChandelierExitShortIndicator chandelierExitShort;
-
-  public ChandelierExit(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(22, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public SMA12(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    chandelierExitLong = new ChandelierExitLongIndicator(series);
-    chandelierExitShort = new ChandelierExitShortIndicator(series);
+    this.sma = new SMAIndicator(indicator, this.timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("chandelierExitLong", chandelierExitLong.getValue(series.getEnd()).toDouble());
-    values.put("chandelierExitShort", chandelierExitShort.getValue(series.getEnd()).toDouble());
+    values.put(String.format("sma%s", this.timeFrame), sma.getValue(series.getEnd()).toDouble());
     return values;
   }
 

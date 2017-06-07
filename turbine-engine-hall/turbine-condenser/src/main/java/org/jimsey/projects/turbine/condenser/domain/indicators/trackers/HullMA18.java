@@ -20,34 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.ZLEMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.HMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "ZeroLagEMA21", isOverlay = false)
-public class ZeroLagEMA21 extends BaseIndicator {
+@EnableTurbineIndicator(name = "HullMA18", isOverlay = true)
+public class HullMA18 extends BaseIndicator {
 
-  private final ZLEMAIndicator zeroLagEMA21;
+  private final HMAIndicator hullMA;
 
-  public ZeroLagEMA21(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public HullMA18(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(18, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    zeroLagEMA21 = new ZLEMAIndicator(indicator, timeFrame);
+    // setup the indicator...
+    hullMA = new HMAIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("zeroLagEMA21", zeroLagEMA21.getValue(series.getEnd()).toDouble());
+    values.put(String.format("hullMA%s", this.timeFrame), hullMA.getValue(series.getEnd()).toDouble());
     return values;
   }
 

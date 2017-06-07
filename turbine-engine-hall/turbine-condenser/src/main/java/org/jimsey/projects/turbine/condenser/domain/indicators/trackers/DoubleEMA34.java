@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.MACDIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.DoubleEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "MACD", isOverlay = true)
-public class MACD extends BaseIndicator {
+@EnableTurbineIndicator(name = "DoubleEMA34", isOverlay = true)
+public class DoubleEMA34 extends BaseIndicator {
 
-  private final MACDIndicator macd;
+  private final DoubleEMAIndicator doubleEMA;
 
-  public MACD(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public DoubleEMA34(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(34, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup the indicator...
-    macd = new MACDIndicator(indicator, timeFrame, 26);
+    doubleEMA = new DoubleEMAIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("macd", macd.getValue(series.getEnd()).toDouble());
+    values.put(String.format("doubleEMA%s", this.timeFrame), doubleEMA.getValue(series.getEnd()).toDouble());
     return values;
   }
 

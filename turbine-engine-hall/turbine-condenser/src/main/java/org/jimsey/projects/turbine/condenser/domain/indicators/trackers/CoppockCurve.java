@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.DoubleEMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.CoppockCurveIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "DoubleEMA34", isOverlay = true)
-public class DoubleEMA34 extends BaseIndicator {
+@EnableTurbineIndicator(name = "CoppockCurve", isOverlay = false)
+public class CoppockCurve extends BaseIndicator {
 
-  private final DoubleEMAIndicator doubleEMA;
+  private final CoppockCurveIndicator coppockCurve;
 
-  public DoubleEMA34(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(34, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public CoppockCurve(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // setup the indicator...
-    doubleEMA = new DoubleEMAIndicator(indicator, timeFrame);
+    // the original setting is 14, 11, 10 but 20, 10, 10 may be better for daily...
+    coppockCurve = new CoppockCurveIndicator(indicator, 20, 10, 10);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put(String.format("doubleEMA%s", this.timeFrame), doubleEMA.getValue(series.getEnd()).toDouble());
+    values.put("coppockCurve", coppockCurve.getValue(series.getEnd()).toDouble());
     return values;
   }
 

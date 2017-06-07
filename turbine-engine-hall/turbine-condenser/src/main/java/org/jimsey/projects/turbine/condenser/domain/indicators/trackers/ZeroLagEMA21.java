@@ -20,34 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.TripleEMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ZLEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "TripleEMA", isOverlay = false)
-public class TripleEMA extends BaseIndicator {
+@EnableTurbineIndicator(name = "ZeroLagEMA21", isOverlay = false)
+public class ZeroLagEMA21 extends BaseIndicator {
 
-  private final TripleEMAIndicator tripleEMA;
+  private final ZLEMAIndicator zeroLagEMA;
 
-  public TripleEMA(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(15, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public ZeroLagEMA21(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    tripleEMA = new TripleEMAIndicator(indicator, timeFrame);
+    zeroLagEMA = new ZLEMAIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("tripleEMA", tripleEMA.getValue(series.getEnd()).toDouble());
+    values.put(String.format("zeroLagEMA%s", this.timeFrame), zeroLagEMA.getValue(series.getEnd()).toDouble());
     return values;
   }
 

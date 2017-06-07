@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.lang.invoke.MethodHandles;
 
-import org.jimsey.projects.turbine.condenser.domain.indicators.BollingerBands;
+import org.jimsey.projects.turbine.condenser.domain.indicators.trackers.BollingerBands;
 import org.jimsey.projects.turbine.condenser.domain.strategies.SMAStrategy;
 import org.junit.Before;
 import org.junit.Test;

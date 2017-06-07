@@ -34,7 +34,7 @@ import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorDIndicator;
 import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorKIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
-@EnableTurbineIndicator(name = "KeltnerChannels", isOverlay = true)
+@EnableTurbineIndicator(name = "Stochastic", isOverlay = false)
 public class Stochastic extends BaseIndicator {
 
   private final StochasticOscillatorKIndicator stochasticK;

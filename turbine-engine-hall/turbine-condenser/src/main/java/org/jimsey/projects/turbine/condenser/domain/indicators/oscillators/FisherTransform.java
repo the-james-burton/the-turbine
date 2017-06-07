@@ -39,19 +39,19 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 @EnableTurbineIndicator(name = "FisherTransform", isOverlay = false)
 public class FisherTransform extends BaseIndicator {
 
-  private final FisherIndicator fisherIndicator;
+  private final FisherIndicator fisherTransform;
 
   public FisherTransform(final TimeSeries series, final ClosePriceIndicator indicator) {
     super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    fisherIndicator = new FisherIndicator(indicator, timeFrame);
+    fisherTransform = new FisherIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("fisherIndicator", fisherIndicator.getValue(series.getEnd()).toDouble());
+    values.put("fisherTransform", fisherTransform.getValue(series.getEnd()).toDouble());
     return values;
   }
 

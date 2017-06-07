@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.ParabolicSarIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.WilliamsRIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "ParabolicSar", isOverlay = false)
-public class ParabolicSar extends BaseIndicator {
+@EnableTurbineIndicator(name = "WilliamsR", isOverlay = false)
+public class WilliamsR extends BaseIndicator {
 
-  private final ParabolicSarIndicator parabolicSar;
+  private final WilliamsRIndicator williamsR;
 
-  public ParabolicSar(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(1, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public WilliamsR(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(15, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // setup this indicator...
-    parabolicSar = new ParabolicSarIndicator(series, timeFrame);
+    // can take a pre-existing min/max indicator if we had one...
+    williamsR = new WilliamsRIndicator(series, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("parabolicSar", parabolicSar.getValue(series.getEnd()).toDouble());
+    values.put("williamsR", williamsR.getValue(series.getEnd()).toDouble());
     return values;
   }
 

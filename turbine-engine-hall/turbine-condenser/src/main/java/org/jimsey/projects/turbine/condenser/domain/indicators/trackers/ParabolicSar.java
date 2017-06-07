@@ -20,34 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.WMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ParabolicSarIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "WMA30", isOverlay = false)
-public class WMA30 extends BaseIndicator {
+@EnableTurbineIndicator(name = "ParabolicSar", isOverlay = true)
+public class ParabolicSar extends BaseIndicator {
 
-  private final WMAIndicator wma30;
+  private final ParabolicSarIndicator parabolicSar;
 
-  public WMA30(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(30, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public ParabolicSar(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(1, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    wma30 = new WMAIndicator(indicator, timeFrame);
+    // setup this indicator...
+    parabolicSar = new ParabolicSarIndicator(series, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("wma30", wma30.getValue(series.getEnd()).toDouble());
+    values.put("parabolicSar", parabolicSar.getValue(series.getEnd()).toDouble());
     return values;
   }
 

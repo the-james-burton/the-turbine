@@ -20,32 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.EMAIndicator;
 
-@EnableTurbineIndicator(name = "SMA12", isOverlay = true)
-public class SMA12 extends BaseIndicator {
+/**
+ * @author the-james-burton
+ */
+@EnableTurbineIndicator(name = "ema9", isOverlay = true)
+public class EMA9 extends BaseIndicator {
 
-  private final SMAIndicator smaIndicator;
+  private final EMAIndicator ema;
 
-  public SMA12(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public EMA9(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(9, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // setup this indicator...
-    this.smaIndicator = new SMAIndicator(indicator, this.timeFrame);
+    // setup the indicator...
+    ema = new EMAIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put(String.format("sma%s", this.timeFrame), smaIndicator.getValue(series.getEnd()).toDouble());
+    values.put(String.format("ema%s", this.timeFrame), ema.getValue(series.getEnd()).toDouble());
     return values;
   }
 

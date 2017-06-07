@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.statistics;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
+import eu.verdelhan.ta4j.indicators.statistics.StandardDeviationIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "RelativeStrength14", isOverlay = false)
-public class RelativeStrength14 extends BaseIndicator {
+@EnableTurbineIndicator(name = "StandardDeviation", isOverlay = false)
+public class StandardDeviation extends BaseIndicator {
 
-  private final RSIIndicator relativeStrength;
+  private final StandardDeviationIndicator standardDeviation;
 
-  public RelativeStrength14(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public StandardDeviation(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    relativeStrength = new RSIIndicator(indicator, timeFrame);
+    standardDeviation = new StandardDeviationIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put(String.format("relativeStrength%s", this.timeFrame), relativeStrength.getValue(series.getEnd()).toDouble());
+    values.put("standardDeviation", standardDeviation.getValue(series.getEnd()).toDouble());
     return values;
   }
 

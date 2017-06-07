@@ -20,35 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
+import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.AverageDirectionalMovementIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.TrailingStopLossIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "AverageDirectionalMovement", isOverlay = false)
-public class AverageDirectionalMovement extends BaseIndicator {
+@EnableTurbineIndicator(name = "TrailingStopLoss", isOverlay = false)
+public class TrailingStopLoss extends BaseIndicator {
 
-  private final AverageDirectionalMovementIndicator averageDirectionalMovement;
+  private final TrailingStopLossIndicator trailingStopLoss;
 
-  public AverageDirectionalMovement(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public TrailingStopLoss(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // setup this indicator...
-    averageDirectionalMovement = new AverageDirectionalMovementIndicator(series, timeFrame);
+    // TODO need to figure out if I can use a percentage based on first tick close...
+    trailingStopLoss = new TrailingStopLossIndicator(indicator, Decimal.valueOf(timeFrame));
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("averageDirectionalMovement", averageDirectionalMovement.getValue(series.getEnd()).toDouble());
+    values.put("trailingStopLoss", trailingStopLoss.getValue(series.getEnd()).toDouble());
     return values;
   }
 

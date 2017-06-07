@@ -20,34 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.volatility.UlcerIndexIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.TripleEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "UlcerIndex14", isOverlay = false)
-public class UlcerIndex extends BaseIndicator {
+@EnableTurbineIndicator(name = "TripleEMA15", isOverlay = false)
+public class TripleEMA15 extends BaseIndicator {
 
-  private final UlcerIndexIndicator ulcerIndex14;
+  private final TripleEMAIndicator tripleEMA;
 
-  public UlcerIndex(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public TripleEMA15(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(15, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    ulcerIndex14 = new UlcerIndexIndicator(indicator, timeFrame);
+    tripleEMA = new TripleEMAIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("ulcerIndex14", ulcerIndex14.getValue(series.getEnd()).toDouble());
+    values.put(String.format("tripleEMA%s", this.timeFrame), tripleEMA.getValue(series.getEnd()).toDouble());
     return values;
   }
 

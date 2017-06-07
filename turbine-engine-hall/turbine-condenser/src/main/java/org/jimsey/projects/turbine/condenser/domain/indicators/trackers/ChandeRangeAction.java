@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.WilliamsRIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.RAVIIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "WilliamsR", isOverlay = false)
-public class WilliamsR extends BaseIndicator {
+@EnableTurbineIndicator(name = "RandomWalkIndex", isOverlay = false)
+public class ChandeRangeAction extends BaseIndicator {
 
-  private final WilliamsRIndicator williamsR;
+  private final RAVIIndicator chandeRangeAction;
 
-  public WilliamsR(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(15, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public ChandeRangeAction(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(7, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // can take a pre-existing min/max indicator if we had one...
-    williamsR = new WilliamsRIndicator(series, timeFrame);
+    // setup this indicator...
+    chandeRangeAction = new RAVIIndicator(indicator, timeFrame, 65);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("williamsR", williamsR.getValue(series.getEnd()).toDouble());
+    values.put("chandeRangeAction", chandeRangeAction.getValue(series.getEnd()).toDouble());
     return values;
   }
 

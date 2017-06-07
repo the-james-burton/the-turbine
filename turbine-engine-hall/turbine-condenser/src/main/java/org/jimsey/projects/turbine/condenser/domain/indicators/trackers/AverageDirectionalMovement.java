@@ -20,34 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.volatility.MassIndexIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.AverageDirectionalMovementIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "MassIndex25", isOverlay = false)
-public class MassIndex extends BaseIndicator {
+@EnableTurbineIndicator(name = "AverageDirectionalMovement", isOverlay = true)
+public class AverageDirectionalMovement extends BaseIndicator {
 
-  private final MassIndexIndicator massIndex25;
+  private final AverageDirectionalMovementIndicator averageDirectionalMovement;
 
-  public MassIndex(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public AverageDirectionalMovement(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    massIndex25 = new MassIndexIndicator(series, 9, timeFrame);
+    // setup this indicator...
+    averageDirectionalMovement = new AverageDirectionalMovementIndicator(series, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("massIndex25", massIndex25.getValue(series.getEnd()).toDouble());
+    values.put("averageDirectionalMovement", averageDirectionalMovement.getValue(series.getEnd()).toDouble());
     return values;
   }
 

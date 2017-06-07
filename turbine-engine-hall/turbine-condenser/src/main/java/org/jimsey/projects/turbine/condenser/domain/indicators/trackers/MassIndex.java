@@ -20,41 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.verdelhan.ta4j.Decimal;
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.keltner.KeltnerChannelLowerIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.keltner.KeltnerChannelMiddleIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.keltner.KeltnerChannelUpperIndicator;
+import eu.verdelhan.ta4j.indicators.volatility.MassIndexIndicator;
 
-@EnableTurbineIndicator(name = "KeltnerChannels", isOverlay = true)
-public class KeltnerChannels extends BaseIndicator {
+/**
+ * @author the-james-burton
+ */
+@EnableTurbineIndicator(name = "MassIndex25", isOverlay = false)
+public class MassIndex extends BaseIndicator {
 
-  private final KeltnerChannelLowerIndicator keltnerChannelLower;
-  private final KeltnerChannelMiddleIndicator keltnerChannelMiddle;
-  private final KeltnerChannelUpperIndicator keltnerChannelUpper;
+  private final MassIndexIndicator massIndex;
 
-  public KeltnerChannels(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public MassIndex(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // setup this indicator...
-    keltnerChannelMiddle = new KeltnerChannelMiddleIndicator(series, timeFrame);
-    keltnerChannelUpper = new KeltnerChannelUpperIndicator(keltnerChannelMiddle, Decimal.TWO, timeFrame);
-    keltnerChannelLower = new KeltnerChannelLowerIndicator(keltnerChannelMiddle, Decimal.TWO, timeFrame);
+    massIndex = new MassIndexIndicator(series, 9, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("keltnerChannelLower", keltnerChannelLower.getValue(series.getEnd()).toDouble());
-    values.put("keltnerChannelMiddle", keltnerChannelMiddle.getValue(series.getEnd()).toDouble());
-    values.put("keltnerChannelUpper", keltnerChannelUpper.getValue(series.getEnd()).toDouble());
+    values.put(String.format("massIndex%s", this.timeFrame), massIndex.getValue(series.getEnd()).toDouble());
     return values;
   }
 

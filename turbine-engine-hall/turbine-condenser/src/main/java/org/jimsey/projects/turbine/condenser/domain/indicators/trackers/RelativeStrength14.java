@@ -20,39 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.statistics.StandardDeviationIndicator;
-import eu.verdelhan.ta4j.indicators.statistics.StandardErrorIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "Statistics", isOverlay = false)
-public class Statistics extends BaseIndicator {
+@EnableTurbineIndicator(name = "RelativeStrength14", isOverlay = false)
+public class RelativeStrength14 extends BaseIndicator {
 
-  private final StandardDeviationIndicator standardDeviation;
-  private final StandardErrorIndicator standardError;
+  private final RSIIndicator relativeStrength;
 
-  public Statistics(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public RelativeStrength14(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    standardDeviation = new StandardDeviationIndicator(indicator, timeFrame);
-    standardError = new StandardErrorIndicator(indicator, timeFrame);
+    relativeStrength = new RSIIndicator(indicator, timeFrame);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("standardDeviation", standardDeviation.getValue(series.getEnd()).toDouble());
-    values.put("standardError", standardError.getValue(series.getEnd()).toDouble());
+    values.put(String.format("relativeStrength%s", this.timeFrame), relativeStrength.getValue(series.getEnd()).toDouble());
     return values;
   }
 

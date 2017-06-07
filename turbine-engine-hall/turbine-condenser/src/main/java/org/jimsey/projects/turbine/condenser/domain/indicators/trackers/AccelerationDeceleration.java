@@ -20,35 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.RAVIIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.AccelerationDecelerationIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "RandomWalkIndex", isOverlay = true)
-public class ChandeRangeAction extends BaseIndicator {
+@EnableTurbineIndicator(name = "AccelerationDeceleration", isOverlay = true)
+public class AccelerationDeceleration extends BaseIndicator {
 
-  private final RAVIIndicator chandeRangeAction;
+  private final AccelerationDecelerationIndicator accelerationDeceleration;
 
-  public ChandeRangeAction(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(7, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public AccelerationDeceleration(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
     // setup this indicator...
-    chandeRangeAction = new RAVIIndicator(indicator, timeFrame, 65);
+    accelerationDeceleration = new AccelerationDecelerationIndicator(series);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("chandeRangeAction", chandeRangeAction.getValue(series.getEnd()).toDouble());
+    values.put("accelerationDeceleration", accelerationDeceleration.getValue(series.getEnd()).toDouble());
     return values;
   }
 

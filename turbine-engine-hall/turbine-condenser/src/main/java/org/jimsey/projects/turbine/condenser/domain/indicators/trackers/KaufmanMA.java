@@ -20,36 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.verdelhan.ta4j.Decimal;
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.TrailingStopLossIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.KAMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "TrailingStopLoss", isOverlay = false)
-public class TrailingStopLoss extends BaseIndicator {
+@EnableTurbineIndicator(name = "KaufmanMA", isOverlay = true)
+public class KaufmanMA extends BaseIndicator {
 
-  private final TrailingStopLossIndicator trailingStopLoss;
+  private final KAMAIndicator kaufmanMA;
 
-  public TrailingStopLoss(final TimeSeries series, final ClosePriceIndicator indicator) {
+  public KaufmanMA(final TimeSeries series, final ClosePriceIndicator indicator) {
     super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
 
-    // TODO need to figure out if I can use a percentage based on first tick close...
-    trailingStopLoss = new TrailingStopLossIndicator(indicator, Decimal.valueOf(timeFrame));
+    // setup the indicator...
+    kaufmanMA = new KAMAIndicator(indicator, 10, 2, 30);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("trailingStopLoss", trailingStopLoss.getValue(series.getEnd()).toDouble());
+    values.put("kaufmanMA", kaufmanMA.getValue(series.getEnd()).toDouble());
     return values;
   }
 

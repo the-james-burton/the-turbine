@@ -20,35 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+
+import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.HMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitLongIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitShortIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "HullMA18", isOverlay = true)
-public class HullMA18 extends BaseIndicator {
+@EnableTurbineIndicator(name = "ChandelierExit", isOverlay = true)
+public class ChandelierExit extends BaseIndicator {
 
-  private final HMAIndicator hullMA;
+  private final ChandelierExitLongIndicator chandelierExitLong;
 
-  public HullMA18(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(18, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  private final ChandelierExitShortIndicator chandelierExitShort;
 
-    // setup the indicator...
-    hullMA = new HMAIndicator(indicator, timeFrame);
+  public ChandelierExit(final TimeSeries series, final ClosePriceIndicator indicator) {
+    super(22, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+
+    // setup this indicator...
+    chandelierExitLong = new ChandelierExitLongIndicator(series, timeFrame, Decimal.THREE);
+    chandelierExitShort = new ChandelierExitShortIndicator(series, timeFrame, Decimal.THREE);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put(String.format("hullMA%s", this.timeFrame), hullMA.getValue(series.getEnd()).toDouble());
+    values.put("chandelierExitLong", chandelierExitLong.getValue(series.getEnd()).toDouble());
+    values.put("chandelierExitShort", chandelierExitShort.getValue(series.getEnd()).toDouble());
     return values;
   }
 
