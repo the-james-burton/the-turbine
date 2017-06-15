@@ -20,31 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators.volume;
+package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
 import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.volume.MVWAPIndicator;
-import eu.verdelhan.ta4j.indicators.volume.VWAPIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.DoubleEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-public class MovingVolumeWeightedAveragePrice extends BaseIndicator {
+public class DoubleEMA extends BaseIndicator {
 
-  public MovingVolumeWeightedAveragePrice(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+  public DoubleEMA(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
     super(instance, series, closePriceIndicator);
   }
 
   @Override
   protected void init() {
-    validateTwo();
-
-    // issue #36 - should reuse existing indicator!
-    indicator = new MVWAPIndicator(new VWAPIndicator(series, instance.getTimeframe1()), instance.getTimeframe2());
+    validateOne();
+    indicator = new DoubleEMAIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

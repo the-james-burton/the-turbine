@@ -22,37 +22,26 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.DoubleEMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.TripleEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "DoubleEMA34", isOverlay = true)
-public class DoubleEMA34 extends BaseIndicator {
+public class TripleEMA extends BaseIndicator {
 
-  private final DoubleEMAIndicator doubleEMA;
-
-  public DoubleEMA34(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(34, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup the indicator...
-    doubleEMA = new DoubleEMAIndicator(indicator, timeFrame);
+  public TripleEMA(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("doubleEMA%s", this.timeFrame), doubleEMA.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new TripleEMAIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

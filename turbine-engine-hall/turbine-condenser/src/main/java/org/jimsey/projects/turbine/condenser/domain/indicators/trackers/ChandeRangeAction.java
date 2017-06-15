@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.trackers.RAVIIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "RandomWalkIndex", isOverlay = false)
 public class ChandeRangeAction extends BaseIndicator {
 
-  private final RAVIIndicator chandeRangeAction;
-
-  public ChandeRangeAction(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(7, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    chandeRangeAction = new RAVIIndicator(indicator, timeFrame, 65);
+  public ChandeRangeAction(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("chandeRangeAction", chandeRangeAction.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateTwo();
+    indicator = new RAVIIndicator(closePriceIndicator, instance.getTimeframe1(), instance.getTimeframe2());
   }
 
 }

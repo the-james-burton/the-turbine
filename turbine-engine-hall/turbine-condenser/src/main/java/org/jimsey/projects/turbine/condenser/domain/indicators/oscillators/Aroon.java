@@ -22,12 +22,11 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.AroonDownIndicator;
@@ -39,27 +38,30 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
  *
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "Aroon", isOverlay = false)
 public class Aroon extends BaseIndicator {
 
-  private final AroonUpIndicator aroonUpIndicator;
+  private AroonUpIndicator aroonUp;
 
-  private final AroonDownIndicator aroonDownIndicator;
+  private AroonDownIndicator aroonDown;
 
-  public Aroon(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    aroonUpIndicator = new AroonUpIndicator(series, timeFrame);
-    aroonDownIndicator = new AroonDownIndicator(series, timeFrame);
+  public Aroon(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
+  protected void init() {
+    validateOne();
+    aroonUp = new AroonUpIndicator(series, instance.getTimeframe1());
+    aroonDown = new AroonDownIndicator(series, instance.getTimeframe1());
+  }
+
+  /** not using the default implementation */
+  @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    double aroonUp = aroonUpIndicator.getValue(series.getEnd()).toDouble();
-    double aroonDown = aroonDownIndicator.getValue(series.getEnd()).toDouble();
-    values.put("aroon", aroonUp - aroonDown);
+    double up = aroonUp.getValue(series.getEnd()).toDouble();
+    double down = aroonDown.getValue(series.getEnd()).toDouble();
+    values.put(instance.getName(), up - down);
     return values;
   }
 

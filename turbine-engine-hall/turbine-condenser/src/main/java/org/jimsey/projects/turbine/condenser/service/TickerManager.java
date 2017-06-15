@@ -30,7 +30,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.domain.Stock;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
@@ -62,7 +62,8 @@ public class TickerManager {
   @Autowired
   private ElasticsearchService elasticsearch;
 
-  private final List<EnableTurbineIndicator> turbineIndicators = new ArrayList<>();
+  // private final List<EnableTurbineIndicator> turbineIndicators = new ArrayList<>();
+  private final List<IndicatorInstance> turbineIndicators = new ArrayList<>();
 
   private final List<EnableTurbineStrategy> turbineStrategies = new ArrayList<>();
 
@@ -76,7 +77,8 @@ public class TickerManager {
 
   @PostConstruct
   public void init() {
-    turbineIndicators.addAll(turbineService.findIndicators());
+    // turbineIndicators.addAll(turbineService.findIndicators());
+    turbineIndicators.addAll(turbineService.getIndicatorInstances());
     turbineStrategies.addAll(turbineService.findStrategies());
 
     // environment.getActiveProfiles();

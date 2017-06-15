@@ -22,12 +22,11 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
@@ -36,28 +35,32 @@ import eu.verdelhan.ta4j.indicators.trackers.keltner.KeltnerChannelLowerIndicato
 import eu.verdelhan.ta4j.indicators.trackers.keltner.KeltnerChannelMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.keltner.KeltnerChannelUpperIndicator;
 
-@EnableTurbineIndicator(name = "KeltnerChannels", isOverlay = true)
 public class KeltnerChannels extends BaseIndicator {
 
-  private final KeltnerChannelLowerIndicator keltnerChannelLower;
-  private final KeltnerChannelMiddleIndicator keltnerChannelMiddle;
-  private final KeltnerChannelUpperIndicator keltnerChannelUpper;
+  private KeltnerChannelLowerIndicator keltnerChannelLower;
+  private KeltnerChannelMiddleIndicator keltnerChannelMiddle;
+  private KeltnerChannelUpperIndicator keltnerChannelUpper;
 
-  public KeltnerChannels(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public KeltnerChannels(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
+  }
 
-    // setup this indicator...
-    keltnerChannelMiddle = new KeltnerChannelMiddleIndicator(series, timeFrame);
-    keltnerChannelUpper = new KeltnerChannelUpperIndicator(keltnerChannelMiddle, Decimal.TWO, timeFrame);
-    keltnerChannelLower = new KeltnerChannelLowerIndicator(keltnerChannelMiddle, Decimal.TWO, timeFrame);
+  @Override
+  protected void init() {
+    validateThree();
+    keltnerChannelMiddle = new KeltnerChannelMiddleIndicator(series, instance.getTimeframe1());
+    keltnerChannelUpper = new KeltnerChannelUpperIndicator(
+        keltnerChannelMiddle, Decimal.valueOf(instance.getTimeframe2()), instance.getTimeframe3());
+    keltnerChannelLower = new KeltnerChannelLowerIndicator(
+        keltnerChannelMiddle, Decimal.valueOf(instance.getTimeframe2()), instance.getTimeframe3());
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("keltnerChannelLower", keltnerChannelLower.getValue(series.getEnd()).toDouble());
-    values.put("keltnerChannelMiddle", keltnerChannelMiddle.getValue(series.getEnd()).toDouble());
-    values.put("keltnerChannelUpper", keltnerChannelUpper.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("keltnerChannelLower"), keltnerChannelLower.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("keltnerChannelMiddle"), keltnerChannelMiddle.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("keltnerChannelUpper"), keltnerChannelUpper.getValue(series.getEnd()).toDouble());
     return values;
   }
 

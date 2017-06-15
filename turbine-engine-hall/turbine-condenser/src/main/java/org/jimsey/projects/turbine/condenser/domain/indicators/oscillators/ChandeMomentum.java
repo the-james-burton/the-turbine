@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.CMOIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "ChandeMomentum", isOverlay = false)
 public class ChandeMomentum extends BaseIndicator {
 
-  private final CMOIndicator chandeMomentum;
-
-  public ChandeMomentum(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    chandeMomentum = new CMOIndicator(indicator, timeFrame);
+  public ChandeMomentum(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("chandeMomentum", chandeMomentum.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new CMOIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

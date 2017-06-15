@@ -23,42 +23,98 @@
 package org.jimsey.projects.turbine.condenser.domain.indicators;
 
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.jimsey.projects.turbine.fuel.domain.IndicatorJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
+import eu.verdelhan.ta4j.indicators.CachedIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
 public abstract class BaseIndicator implements TurbineIndicator {
 
   protected static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected final int timeFrame;
+  protected final IndicatorInstance instance;
 
   protected final TimeSeries series;
 
-  private final String name;
-
   protected final ClosePriceIndicator closePriceIndicator;
 
+  /** most indicators have just one indicator... **/
+  protected CachedIndicator<Decimal> indicator;
+
+  // sacrifice finals for redundant subclass constructor...
+  // public BaseIndicator() {
+  // }
+
   public BaseIndicator(
-      final int timeframe,
+      final IndicatorInstance instance,
       final TimeSeries series,
-      final String name,
       final ClosePriceIndicator closePriceIndicator) {
-    this.timeFrame = timeframe;
+    this.instance = instance;
     this.series = series;
-    this.name = name;
     this.closePriceIndicator = closePriceIndicator;
+    init();
   }
 
-  protected abstract Map<String, Double> computeValues();
+  /** @return the calculation results - default implementation useful in most cases... */
+  protected Map<String, Double> computeValues() {
+    logger.info("computeValues:{}", instance.getName());
+    Map<String, Double> values = new HashMap<>();
+    double value = 0;
+    try {
+      value = indicator.getValue(series.getEnd()).toDouble();
+    } catch (Exception e) {
+      logger.warn("computeValues had a problem:{}, {}",
+          instance.getName(), e.getMessage());
+    }
+    values.put(instance.getName(), value);
+    return values;
+  }
 
-  public IndicatorJson run(TickJson tick) {
+  /** setup this indicator as required */
+  protected abstract void init();
+
+  /** to be used by the implementing classes */
+  protected void setIndicator(CachedIndicator<Decimal> indicator) {
+    this.indicator = indicator;
+  }
+
+  /** to be used by the implementing classes to verify setup */
+  protected void validateNone() {
+    Validate.validState(instance.getTimeframe1() == null, "%s: timeframe1 must be null", instance.getName());
+    Validate.validState(instance.getTimeframe2() == null, "%s: timeframe2 must be null", instance.getName());
+    Validate.validState(instance.getTimeframe3() == null, "%s: timeframe3 must be null", instance.getName());
+  }
+
+  /** to be used by the implementing classes to verify setup */
+  protected void validateOne() {
+    Validate.notNull(instance.getTimeframe1(), "%s: timeframe1 must not be null", instance.getName());
+    Validate.validState(instance.getTimeframe2() == null, "%s: timeframe2 must be null", instance.getName());
+    Validate.validState(instance.getTimeframe3() == null, "%s: timeframe3 must be null", instance.getName());
+  }
+
+  /** to be used by the implementing classes to verify setup */
+  protected void validateTwo() {
+    Validate.notNull(instance.getTimeframe1(), "%s: timeframe1 must not be null", instance.getName());
+    Validate.notNull(instance.getTimeframe2(), "%s: timeframe2 must not be null", instance.getName());
+    Validate.validState(instance.getTimeframe3() == null, "%s: timeframe3 must be null", instance.getName());
+  }
+
+  protected void validateThree() {
+    Validate.notNull(instance.getTimeframe1(), "%s: timeframe1 must not be null", instance.getName());
+    Validate.notNull(instance.getTimeframe2(), "%s: timeframe2 must not be null", instance.getName());
+    Validate.notNull(instance.getTimeframe3(), "%s: timeframe3 must not be null", instance.getName());
+  }
+
+  public IndicatorJson run(final TickJson tick) {
 
     // wait for the series to be populated one the first tick if need be...
     // this is a pragmatic rather than elegant solution
@@ -74,8 +130,12 @@ public abstract class BaseIndicator implements TurbineIndicator {
         tick.getClose(),
         computeValues(),
         tick.getTickerAsObject(),
-        name,
+        instance.getName(),
         tick.getTimestamp());
-  };
+  }
+
+  public IndicatorInstance getInstance() {
+    return instance;
+  }
 
 }

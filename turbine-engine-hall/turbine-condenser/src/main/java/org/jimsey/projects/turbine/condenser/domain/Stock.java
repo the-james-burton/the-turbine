@@ -34,7 +34,7 @@ import javax.validation.constraints.NotNull;
 
 import org.jimsey.projects.turbine.condenser.component.InfrastructureProperties;
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 import org.jimsey.projects.turbine.condenser.domain.indicators.TurbineIndicator;
 import org.jimsey.projects.turbine.condenser.domain.strategies.BaseStrategy;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
@@ -86,7 +86,8 @@ public class Stock {
 
   public Stock(
       final Ticker ticker,
-      final List<EnableTurbineIndicator> turbineIndicators,
+      // final List<EnableTurbineIndicator> turbineIndicators,
+      final List<IndicatorInstance> turbineIndicators,
       final List<EnableTurbineStrategy> turbineStrategies) {
     this.ticker = ticker;
     this.series = new TimeSeries(ticker.getRicAsString(), new ArrayList<Tick>());
@@ -96,24 +97,32 @@ public class Stock {
 
   public static Stock of(
       final Ticker ticker,
-      final List<EnableTurbineIndicator> turbineIndicators,
+      // final List<EnableTurbineIndicator> turbineIndicators,
+      final List<IndicatorInstance> turbineIndicators,
       final List<EnableTurbineStrategy> turbineStrategies) {
     return new Stock(ticker, turbineIndicators, turbineStrategies);
   }
 
   // @PostConstruct
   public void init(
-      final List<EnableTurbineIndicator> turbineIndicators,
+      // final List<EnableTurbineIndicator> turbineIndicators,
+      final List<IndicatorInstance> turbineIndicators,
       final List<EnableTurbineStrategy> turbineStrategies) {
-    turbineIndicators.stream().forEach(i -> {
-      String className = String.format("%s.%s", EnableTurbineIndicator.class.getPackage().getName(), i.name());
-      BaseIndicator indicator = (BaseIndicator) instantiate(className);
-      indicators.add(indicator);
-    });
+    // turbineIndicators.stream().forEach(i -> {
+    // String className = String.format("%s.%s", EnableTurbineIndicator.class.getPackage().getName(), i.name());
+    // BaseIndicator indicator = (BaseIndicator) instantiate(className);
+    // indicators.add(indicator);
+    // });
+
+    // convert instances to real indicators...
+    turbineIndicators.stream()
+        .map(instance -> instantiateIndicator(instance))
+        .filter(indicator -> indicator != null)
+        .forEach(indicator -> indicators.add(indicator));
 
     turbineStrategies.stream().forEach(i -> {
       String className = String.format("%s.%s", EnableTurbineStrategy.class.getPackage().getName(), i.name());
-      BaseStrategy strategy = (BaseStrategy) instantiate(className);
+      BaseStrategy strategy = (BaseStrategy) instantiateStrategy(className);
       strategies.add(strategy);
     });
 
@@ -127,7 +136,24 @@ public class Stock {
         .build();
   }
 
-  private Object instantiate(String name) {
+  private BaseIndicator instantiateIndicator(IndicatorInstance instance) {
+    BaseIndicator result = null;
+    try {
+      Constructor<?> indicatorConstructor = Class.forName(instance.getClassname()).getConstructor(
+          IndicatorInstance.class,
+          TimeSeries.class,
+          ClosePriceIndicator.class);
+      result = (BaseIndicator) indicatorConstructor.newInstance(instance, series, closePriceIndicator);
+      logger.info("instantiated [{}]: {}", getTicker(), result.getInstance().getName());
+    } catch (Exception e) {
+      // TODO exceptions from the constructor in are missing in this exception!
+      logger.info("could not instantiate {} for [{}]: {}",
+          instance.getClassname(), getTicker(), e.getMessage());
+    }
+    return result;
+  }
+
+  private Object instantiateStrategy(String name) {
     Object result = null;
     try {
       Constructor<?> indicatorConstructor = Class.forName(name).getConstructor(
@@ -143,7 +169,7 @@ public class Stock {
   }
 
   public void receiveTick(TickJson tick) {
-    logger.debug("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
+    logger.info("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
     try {
       series.addTick(tick);
     } catch (IllegalArgumentException e) {

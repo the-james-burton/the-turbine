@@ -22,37 +22,26 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.EMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ROCIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "ema9", isOverlay = true)
-public class EMA9 extends BaseIndicator {
+public class RateOfChange extends BaseIndicator {
 
-  private final EMAIndicator ema;
-
-  public EMA9(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(9, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup the indicator...
-    ema = new EMAIndicator(indicator, timeFrame);
+  public RateOfChange(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("ema%s", this.timeFrame), ema.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new ROCIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

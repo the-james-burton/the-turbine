@@ -22,13 +22,13 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
+import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.statistics.StandardDeviationIndicator;
@@ -37,35 +37,39 @@ import eu.verdelhan.ta4j.indicators.trackers.bollinger.BollingerBandsLowerIndica
 import eu.verdelhan.ta4j.indicators.trackers.bollinger.BollingerBandsMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollinger.BollingerBandsUpperIndicator;
 
-@EnableTurbineIndicator(name = "BollingerBands", isOverlay = true)
 public class BollingerBands extends BaseIndicator {
 
-  private final SMAIndicator smaIndicator;
-  private final StandardDeviationIndicator standardDeviationIndicator;
-  private final BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator;
-  private final BollingerBandsLowerIndicator bollingerBandsLowerIndicator;
-  private final BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
+  private SMAIndicator smaIndicator;
+  private StandardDeviationIndicator standardDeviationIndicator;
+  private BollingerBandsMiddleIndicator bollingerBandsMiddleIndicator;
+  private BollingerBandsLowerIndicator bollingerBandsLowerIndicator;
+  private BollingerBandsUpperIndicator bollingerBandsUpperIndicator;
 
-  public BollingerBands(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public BollingerBands(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
+  }
 
-    // setup this indicator...
-    smaIndicator = new SMAIndicator(closePriceIndicator, timeFrame);
-    standardDeviationIndicator = new StandardDeviationIndicator(smaIndicator, timeFrame);
+  @Override
+  protected void init() {
+    validateTwo();
+    smaIndicator = new SMAIndicator(closePriceIndicator, instance.getTimeframe1());
+    standardDeviationIndicator = new StandardDeviationIndicator(smaIndicator, instance.getTimeframe1());
     bollingerBandsMiddleIndicator = new BollingerBandsMiddleIndicator(
         smaIndicator);
     bollingerBandsLowerIndicator = new BollingerBandsLowerIndicator(
-        bollingerBandsMiddleIndicator, standardDeviationIndicator);
+        bollingerBandsMiddleIndicator, standardDeviationIndicator, Decimal.valueOf(instance.getTimeframe2()));
     bollingerBandsUpperIndicator = new BollingerBandsUpperIndicator(
-        bollingerBandsMiddleIndicator, standardDeviationIndicator);
+        bollingerBandsMiddleIndicator, standardDeviationIndicator, Decimal.valueOf(instance.getTimeframe2()));
 
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("bollingerBandsLowerIndicator", bollingerBandsLowerIndicator.getValue(series.getEnd()).toDouble());
-    values.put("bollingerBandsUpperIndicator", bollingerBandsUpperIndicator.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("bollingerBandsLowerIndicator"),
+        bollingerBandsLowerIndicator.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("bollingerBandsUpperIndicator"),
+        bollingerBandsUpperIndicator.getValue(series.getEnd()).toDouble());
     return values;
   }
 

@@ -22,36 +22,23 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.ZLEMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 
-/**
- * @author the-james-burton
- */
-@EnableTurbineIndicator(name = "ZeroLagEMA21", isOverlay = false)
-public class ZeroLagEMA21 extends BaseIndicator {
+public class SMA extends BaseIndicator {
 
-  private final ZLEMAIndicator zeroLagEMA;
-
-  public ZeroLagEMA21(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    zeroLagEMA = new ZLEMAIndicator(indicator, timeFrame);
+  public SMA(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("zeroLagEMA%s", this.timeFrame), zeroLagEMA.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new SMAIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

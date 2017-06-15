@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.inlet.external.domain.LseCompany;
@@ -112,7 +113,9 @@ public class LseParser {
         .filter(s -> isIn("AIM", "UK Main Market").test(s.getLseMarket()))
         .filter(s -> StringUtils.startsWith(s.getSecurityName(), "ORD GBP"))
         .filter(s -> isIn("GBX", "GBP").test(s.getTradingCurrency()))
-        .map(s -> Ticker.of(s.getTidm(), ExchangeEnum.LSE, s.getCompanyName()));
+        .map(s -> Ticker.of(s.getTidm(), ExchangeEnum.LSE, s.getCompanyName()))
+        // TODO temporary filter to limit the number of tickers...
+        .filter(t -> TurbineFuelConstants.PRESET_TICKERS.contains(t));
 
     elasticsearch.deleteTickersIndex();
     // elasticsearch.indexTicker(tickers.head());

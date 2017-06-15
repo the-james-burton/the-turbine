@@ -22,36 +22,26 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.volatility.UlcerIndexIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.HMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "UlcerIndex14", isOverlay = false)
-public class UlcerIndex14 extends BaseIndicator {
+public class HullMA extends BaseIndicator {
 
-  private final UlcerIndexIndicator ulcerIndex;
-
-  public UlcerIndex14(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    ulcerIndex = new UlcerIndexIndicator(indicator, timeFrame);
+  public HullMA(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("ulcerIndex%s", this.timeFrame), ulcerIndex.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new HMAIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

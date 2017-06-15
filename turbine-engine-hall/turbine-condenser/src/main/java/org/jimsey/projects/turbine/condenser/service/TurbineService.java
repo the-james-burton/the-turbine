@@ -22,7 +22,12 @@
  */
 package org.jimsey.projects.turbine.condenser.service;
 
+import static java.util.stream.Collectors.*;
+
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,7 +35,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorClientDefinition;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 import org.jimsey.projects.turbine.condenser.domain.strategies.EnableTurbineStrategy;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
@@ -38,11 +44,14 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 
 @Service
 public class TurbineService {
@@ -51,18 +60,30 @@ public class TurbineService {
 
   private static ObjectMapper json = new ObjectMapper();
 
+  public List<IndicatorInstance> indicatorInstances;
+
   @Autowired
   @NotNull
   private TickerManager tickerManager;
+
+  @Autowired
+  private ResourceLoader resource;
 
   // @Autowired
   // @NotNull
   // private IndicatorRepository indicatorRepository;
 
   @PostConstruct
-  public void init() {
+  public void init() throws IOException {
+    URL url = Resources.getResource("indicator.instances.txt");
+    String instancesTxt = Resources.toString(url, StandardCharsets.UTF_8);
+    TypeReference<List<IndicatorInstance>> listOfInstances = new TypeReference<List<IndicatorInstance>>() {
+    };
+    indicatorInstances = json.readValue(instancesTxt, listOfInstances);
+
     logger.info("TurbineService: initialised");
-    logger.info("found indicators : {}", listIndicators().toString());
+    // logger.info("found indicators : {}", listIndicators().toString());
+    logger.info("loaded indicator instances: {}", indicatorInstances);
     logger.info("found strategies : {}", listStrategies().toString());
   }
 
@@ -80,13 +101,13 @@ public class TurbineService {
         .collect(Collectors.toList());
   }
 
-  public List<EnableTurbineIndicator> findIndicators() {
-    Reflections reflections = new Reflections(EnableTurbineIndicator.class.getPackage().getName());
-    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
-    return classes.stream()
-        .map(c -> c.getDeclaredAnnotation(EnableTurbineIndicator.class))
-        .collect(Collectors.toList());
-  }
+  // public List<EnableTurbineIndicator> findIndicators() {
+  // Reflections reflections = new Reflections(EnableTurbineIndicator.class.getPackage().getName());
+  // Set<Class<?>> classes = reflections.getTypesAnnotatedWith(EnableTurbineIndicator.class);
+  // return classes.stream()
+  // .map(c -> c.getDeclaredAnnotation(EnableTurbineIndicator.class))
+  // .collect(Collectors.toList());
+  // }
 
   public String listStocks(String exchange) {
 
@@ -121,12 +142,24 @@ public class TurbineService {
     try {
       result = json.writeValueAsString(new Object() {
         @JsonProperty("indicators")
-        List<EnableTurbineIndicator> indicatorz = findIndicators();
+        List<IndicatorClientDefinition> indicatorz = indicatorInstances.stream().map(i -> i.getClientIndicator()).collect(toList());
       });
     } catch (JsonProcessingException e) {
       logger.error(e.getMessage(), e);
     }
     return result;
+  }
+
+  public List<IndicatorInstance> getIndicatorInstances() {
+    return indicatorInstances;
+  }
+
+  public ResourceLoader getResource() {
+    return resource;
+  }
+
+  public void setResource(ResourceLoader resource) {
+    this.resource = resource;
   }
 
 }

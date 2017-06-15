@@ -22,12 +22,11 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -37,37 +36,40 @@ import eu.verdelhan.ta4j.indicators.trackers.ichimoku.IchimokuSenkouSpanAIndicat
 import eu.verdelhan.ta4j.indicators.trackers.ichimoku.IchimokuSenkouSpanBIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.ichimoku.IchimokuTenkanSenIndicator;
 
-@EnableTurbineIndicator(name = "IchimokuClouds", isOverlay = true)
 public class IchimokuClouds extends BaseIndicator {
 
-  private final IchimokuChikouSpanIndicator ichimokuChikouSpan;
-  private final IchimokuKijunSenIndicator ichimokuKijunSen;
-  private final IchimokuSenkouSpanAIndicator ichimokuSenkouSpanA;
-  private final IchimokuSenkouSpanBIndicator ichimokuSenkouSpanB;
-  private final IchimokuTenkanSenIndicator ichimokuTenkanSen;
+  private IchimokuChikouSpanIndicator ichimokuChikouSpan;
+  private IchimokuKijunSenIndicator ichimokuKijunSen;
+  private IchimokuSenkouSpanAIndicator ichimokuSenkouSpanA;
+  private IchimokuSenkouSpanBIndicator ichimokuSenkouSpanB;
+  private IchimokuTenkanSenIndicator ichimokuTenkanSen;
 
-  public IchimokuClouds(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public IchimokuClouds(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
+  }
+
+  @Override
+  protected void init() {
+    validateThree();
 
     // NOTE that this indicator suffers a bug in AbstractIchimokuLineIndicator.calculate()
     // it is already fixed in the repo, so will be fixed when Ta4J is next released
 
-    // setup this indicator...
-    ichimokuKijunSen = new IchimokuKijunSenIndicator(series);
+    ichimokuTenkanSen = new IchimokuTenkanSenIndicator(series, instance.getTimeframe1()); // 9
+    ichimokuKijunSen = new IchimokuKijunSenIndicator(series, instance.getTimeframe2()); // 26
     ichimokuChikouSpan = new IchimokuChikouSpanIndicator(series);
-    ichimokuTenkanSen = new IchimokuTenkanSenIndicator(series);
     ichimokuSenkouSpanA = new IchimokuSenkouSpanAIndicator(series, ichimokuTenkanSen, ichimokuKijunSen);
-    ichimokuSenkouSpanB = new IchimokuSenkouSpanBIndicator(series);
+    ichimokuSenkouSpanB = new IchimokuSenkouSpanBIndicator(series, instance.getTimeframe3()); // 56
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("ichimokuChikouSpan", ichimokuChikouSpan.getValue(series.getEnd()).toDouble());
-    values.put("ichimokuKijunSen", ichimokuKijunSen.getValue(series.getEnd()).toDouble());
-    values.put("ichimokuTenkanSen", ichimokuTenkanSen.getValue(series.getEnd()).toDouble());
-    values.put("ichimokuSenkouSpanA", ichimokuSenkouSpanA.getValue(series.getEnd()).toDouble());
-    values.put("ichimokuSenkouSpanB", ichimokuSenkouSpanB.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("ichimokuChikouSpan"), ichimokuChikouSpan.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("ichimokuKijunSen"), ichimokuKijunSen.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("ichimokuTenkanSen"), ichimokuTenkanSen.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("ichimokuSenkouSpanA"), ichimokuSenkouSpanA.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("ichimokuSenkouSpanB"), ichimokuSenkouSpanB.getValue(series.getEnd()).toDouble());
     return values;
   }
 

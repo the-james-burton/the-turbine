@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.AwesomeOscillatorIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "Awesome", isOverlay = false)
 public class Awesome extends BaseIndicator {
 
-  private final AwesomeOscillatorIndicator awesome;
-
-  public Awesome(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(0, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    awesome = new AwesomeOscillatorIndicator(indicator);
+  public Awesome(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("awesome", awesome.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateNone();
+    indicator = new AwesomeOscillatorIndicator(closePriceIndicator);
   }
 
 }

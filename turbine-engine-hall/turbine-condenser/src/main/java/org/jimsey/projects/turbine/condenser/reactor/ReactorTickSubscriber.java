@@ -30,7 +30,6 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
 import io.vavr.collection.Stream;
-import io.vavr.control.Try;
 import reactor.core.publisher.TopicProcessor;
 
 /**
@@ -70,9 +69,10 @@ public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
       tickerManager.findOrCreateStock(tick.getTickerAsObject()).receiveTick(tick);
 
       // TODO still need this?
-      Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
+      // Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
 
       Stream.ofAll(stock.getIndicators())
+          .peek(indicator -> logger.info("indicator:{},run:{}", indicator, stock.getTicker().toString()))
           .map(indicator -> indicator.run(tick))
           .forEach(indicatorJson -> indicators.onNext(indicatorJson));
 
@@ -80,9 +80,9 @@ public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
           .map(strategy -> strategy.run(tick))
           .forEach(strategyJson -> strategies.onNext(strategyJson));
 
-    } catch (Throwable t) {
-      logger.error("unable to receive tick:{}", t.getMessage());
-      t.printStackTrace();
+    } catch (Exception e) {
+      logger.error("unable to receive tick:{}", e.getMessage());
+      e.printStackTrace();
     }
 
     super.onNext(tick);

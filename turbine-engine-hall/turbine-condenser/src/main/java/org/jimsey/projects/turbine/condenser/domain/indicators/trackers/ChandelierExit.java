@@ -22,12 +22,11 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
@@ -38,26 +37,30 @@ import eu.verdelhan.ta4j.indicators.trackers.ChandelierExitShortIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "ChandelierExit", isOverlay = true)
 public class ChandelierExit extends BaseIndicator {
 
-  private final ChandelierExitLongIndicator chandelierExitLong;
+  private ChandelierExitLongIndicator chandelierExitLong;
 
-  private final ChandelierExitShortIndicator chandelierExitShort;
+  private ChandelierExitShortIndicator chandelierExitShort;
 
-  public ChandelierExit(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(22, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public ChandelierExit(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
+  }
 
-    // setup this indicator...
-    chandelierExitLong = new ChandelierExitLongIndicator(series, timeFrame, Decimal.THREE);
-    chandelierExitShort = new ChandelierExitShortIndicator(series, timeFrame, Decimal.THREE);
+  @Override
+  protected void init() {
+    validateTwo();
+    chandelierExitLong = new ChandelierExitLongIndicator(
+        series, instance.getTimeframe1(), Decimal.valueOf(instance.getTimeframe2()));
+    chandelierExitShort = new ChandelierExitShortIndicator(
+        series, instance.getTimeframe1(), Decimal.valueOf(instance.getTimeframe2()));
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("chandelierExitLong", chandelierExitLong.getValue(series.getEnd()).toDouble());
-    values.put("chandelierExitShort", chandelierExitShort.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("chandelierExitLong"), chandelierExitLong.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("chandelierExitShort"), chandelierExitShort.getValue(series.getEnd()).toDouble());
     return values;
   }
 

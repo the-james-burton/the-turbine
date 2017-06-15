@@ -22,37 +22,38 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorDIndicator;
 import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorKIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
-@EnableTurbineIndicator(name = "Stochastic", isOverlay = false)
 public class Stochastic extends BaseIndicator {
 
-  private final StochasticOscillatorKIndicator stochasticK;
-  private final StochasticOscillatorDIndicator stochasticD;
+  private StochasticOscillatorKIndicator stochasticK;
+  private StochasticOscillatorDIndicator stochasticD;
 
-  public Stochastic(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(14, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
+  public Stochastic(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
+  }
 
-    // setup this indicator...
-    stochasticK = new StochasticOscillatorKIndicator(series, timeFrame);
+  @Override
+  protected void init() {
+    validateOne();
+    stochasticK = new StochasticOscillatorKIndicator(series, instance.getTimeframe1());
     stochasticD = new StochasticOscillatorDIndicator(stochasticK);
   }
 
   @Override
   public Map<String, Double> computeValues() {
     Map<String, Double> values = new HashMap<>();
-    values.put("stochasticK", stochasticK.getValue(series.getEnd()).toDouble());
-    values.put("stochasticD", stochasticD.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("stochasticK"), stochasticK.getValue(series.getEnd()).toDouble());
+    values.put(instance.generateName("stochasticD"), stochasticD.getValue(series.getEnd()).toDouble());
     return values;
   }
 

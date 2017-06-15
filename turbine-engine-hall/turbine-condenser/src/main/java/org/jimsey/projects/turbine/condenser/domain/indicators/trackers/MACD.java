@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,15 @@ import eu.verdelhan.ta4j.indicators.trackers.MACDIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "MACD", isOverlay = true)
 public class MACD extends BaseIndicator {
-
-  private final MACDIndicator macd;
-
-  public MACD(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup the indicator...
-    macd = new MACDIndicator(indicator, timeFrame, 26);
+  public MACD(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("macd", macd.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateTwo();
+    indicator = new MACDIndicator(closePriceIndicator, instance.getTimeframe1(), instance.getTimeframe2());
   }
 
 }

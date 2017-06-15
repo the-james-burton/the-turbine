@@ -24,6 +24,7 @@ package org.jimsey.projects.turbine.condenser.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 import org.jimsey.projects.turbine.condenser.domain.indicators.trackers.BollingerBands;
@@ -35,9 +36,13 @@ import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class TurbineServiceTest {
 
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static ObjectMapper json = new ObjectMapper();
 
   @InjectMocks
   private TurbineService turbineService;
@@ -46,8 +51,9 @@ public class TurbineServiceTest {
   private Ping ping;
 
   @Before
-  public void setup() {
+  public void setup() throws IOException {
     turbineService = new TurbineService();
+    turbineService.init();
   }
 
   // @Test
@@ -62,6 +68,8 @@ public class TurbineServiceTest {
     String indicators = turbineService.listIndicators();
     logger.info("{}", indicators);
     assertThat(indicators).contains(BollingerBands.class.getSimpleName());
+    IndicatorClientDefinitions definitions = json.readValue(indicators, IndicatorClientDefinitions.class);
+    assertThat(definitions.getIndicators().size()).isGreaterThan(0);
   }
 
   @Test

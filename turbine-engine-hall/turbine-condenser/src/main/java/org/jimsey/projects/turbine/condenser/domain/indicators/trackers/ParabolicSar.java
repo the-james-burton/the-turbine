@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.trackers.ParabolicSarIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "ParabolicSar", isOverlay = true)
 public class ParabolicSar extends BaseIndicator {
 
-  private final ParabolicSarIndicator parabolicSar;
-
-  public ParabolicSar(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(1, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    parabolicSar = new ParabolicSarIndicator(series, timeFrame);
+  public ParabolicSar(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("parabolicSar", parabolicSar.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new ParabolicSarIndicator(series, instance.getTimeframe1());
   }
 
 }

@@ -22,36 +22,26 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.WMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.DirectionalMovementIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "WMA30", isOverlay = false)
-public class WMA30 extends BaseIndicator {
+public class DirectionalMovement extends BaseIndicator {
 
-  private final WMAIndicator wma;
-
-  public WMA30(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(30, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    wma = new WMAIndicator(indicator, timeFrame);
+  public DirectionalMovement(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("wma%s", this.timeFrame), wma.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new DirectionalMovementIndicator(series, instance.getTimeframe1());
   }
 
 }

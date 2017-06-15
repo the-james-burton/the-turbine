@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.PPOIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "PercentagePrice", isOverlay = false)
 public class PercentagePrice extends BaseIndicator {
 
-  private final PPOIndicator percentagePrice;
-
-  public PercentagePrice(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    percentagePrice = new PPOIndicator(indicator, timeFrame, timeFrame * 2);
+  public PercentagePrice(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("percentagePrice", percentagePrice.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateTwo();
+    indicator = new PPOIndicator(closePriceIndicator, instance.getTimeframe1(), instance.getTimeframe2());
   }
 
 }

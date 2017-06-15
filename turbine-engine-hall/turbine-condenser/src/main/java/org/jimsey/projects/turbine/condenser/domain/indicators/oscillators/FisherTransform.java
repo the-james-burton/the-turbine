@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.oscillators;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.FisherIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "FisherTransform", isOverlay = false)
 public class FisherTransform extends BaseIndicator {
 
-  private final FisherIndicator fisherTransform;
-
-  public FisherTransform(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    fisherTransform = new FisherIndicator(indicator, timeFrame);
+  public FisherTransform(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("fisherTransform", fisherTransform.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new FisherIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

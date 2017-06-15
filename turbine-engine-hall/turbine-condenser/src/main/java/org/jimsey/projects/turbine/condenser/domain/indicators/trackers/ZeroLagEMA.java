@@ -22,37 +22,26 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.ROCIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.ZLEMAIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "RateOfChange12", isOverlay = false)
-public class RateOfChange12 extends BaseIndicator {
+public class ZeroLagEMA extends BaseIndicator {
 
-  private final ROCIndicator rateOfChange;
-
-  public RateOfChange12(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    rateOfChange = new ROCIndicator(indicator, timeFrame);
+  public ZeroLagEMA(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("rateOfChange%s", this.timeFrame), rateOfChange.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new ZLEMAIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

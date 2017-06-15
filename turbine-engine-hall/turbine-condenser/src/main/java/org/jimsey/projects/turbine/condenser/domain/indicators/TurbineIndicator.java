@@ -27,6 +27,6 @@ import org.jimsey.projects.turbine.fuel.domain.TickJson;
 
 public interface TurbineIndicator {
 
-  IndicatorJson run(TickJson tick);
+  IndicatorJson run(final TickJson tick);
 
 }

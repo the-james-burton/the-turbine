@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.statistics;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.statistics.StandardDeviationIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "StandardDeviation", isOverlay = false)
 public class StandardDeviation extends BaseIndicator {
 
-  private final StandardDeviationIndicator standardDeviation;
-
-  public StandardDeviation(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(20, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    standardDeviation = new StandardDeviationIndicator(indicator, timeFrame);
+  public StandardDeviation(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("standardDeviation", standardDeviation.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new StandardDeviationIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

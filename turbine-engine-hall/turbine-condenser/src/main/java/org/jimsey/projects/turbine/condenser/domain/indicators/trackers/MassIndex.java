@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,22 +32,16 @@ import eu.verdelhan.ta4j.indicators.volatility.MassIndexIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "MassIndex25", isOverlay = false)
 public class MassIndex extends BaseIndicator {
 
-  private final MassIndexIndicator massIndex;
-
-  public MassIndex(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(25, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    massIndex = new MassIndexIndicator(series, 9, timeFrame);
+  public MassIndex(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("massIndex%s", this.timeFrame), massIndex.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateTwo();
+    indicator = new MassIndexIndicator(series, instance.getTimeframe1(), instance.getTimeframe2());
   }
 
 }

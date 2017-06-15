@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,17 @@ import eu.verdelhan.ta4j.indicators.trackers.KAMAIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "KaufmanMA", isOverlay = true)
 public class KaufmanMA extends BaseIndicator {
 
-  private final KAMAIndicator kaufmanMA;
-
-  public KaufmanMA(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup the indicator...
-    kaufmanMA = new KAMAIndicator(indicator, 10, 2, 30);
+  public KaufmanMA(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("kaufmanMA", kaufmanMA.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateThree();
+    indicator = new KAMAIndicator(closePriceIndicator,
+        instance.getTimeframe1(), instance.getTimeframe2(), instance.getTimeframe3());
   }
 
 }

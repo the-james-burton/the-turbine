@@ -74,41 +74,41 @@ public class LseSecurity implements Comparable<LseSecurity> {
   // Double: row.getCell(7).getNumericCellValue(),
   // Boolean: convertToBoolean.apply(row.getCell(8).getStringCellValue())))
 
-  public final LocalDate securityStartDate;
+  private final LocalDate securityStartDate;
 
-  public final String companyName;
+  private final String companyName;
 
-  public final String countryOfIncorporation;
+  private final String countryOfIncorporation;
 
-  public final String lseMarket;
+  private final String lseMarket;
 
-  public final String fcaListingCategory;
+  private final String fcaListingCategory;
 
-  public final String isin;
+  private final String isin;
 
-  public final String securityName;
+  private final String securityName;
 
-  public final String tidm;
+  private final String tidm;
 
-  public final Double mktCap;
+  private final Double mktCap;
 
-  public final Long sharesInIssue;
+  private final Long sharesInIssue;
 
-  public final String industry;
+  private final String industry;
 
-  public final String supersector;
+  private final String supersector;
 
-  public final String sector;
+  private final String sector;
 
-  public final String subsector;
+  private final String subsector;
 
-  public final Integer group;
+  private final Integer group;
 
-  public final String marketSegmentCode;
+  private final String marketSegmentCode;
 
-  public final String marketSectorCode;
+  private final String marketSectorCode;
 
-  public final String tradingCurrency;
+  private final String tradingCurrency;
 
   private final OffsetDateTime timestamp = OffsetDateTime.now();
 

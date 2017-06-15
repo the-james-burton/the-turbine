@@ -22,37 +22,26 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.HMAIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
 
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "HullMA18", isOverlay = true)
-public class HullMA18 extends BaseIndicator {
+public class RelativeStrength extends BaseIndicator {
 
-  private final HMAIndicator hullMA;
-
-  public HullMA18(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(18, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup the indicator...
-    hullMA = new HMAIndicator(indicator, timeFrame);
+  public RelativeStrength(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("hullMA%s", this.timeFrame), hullMA.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new RSIIndicator(closePriceIndicator, instance.getTimeframe1());
   }
 
 }

@@ -20,30 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators;
+package org.jimsey.projects.turbine.condenser.service;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.List;
+
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorClientDefinition;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Indicates a class is a technical indicator suitable for use by the client.
- *
- * @author the-james-burton
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface EnableTurbineIndicator {
+public class IndicatorClientDefinitions {
+  private List<IndicatorClientDefinition> indicators;
 
-  @JsonProperty
-  String name();
+  @JsonProperty("indicators")
+  public List<IndicatorClientDefinition> getIndicators() {
+    return indicators;
+  }
 
-  @JsonProperty
-  boolean isOverlay();
+  @JsonProperty("indicators")
+  public void setIndicators(List<IndicatorClientDefinition> indicators) {
+    this.indicators = indicators;
+  }
 
 }

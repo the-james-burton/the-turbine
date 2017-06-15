@@ -20,36 +20,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
+package org.jimsey.projects.turbine.condenser.domain.indicators;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
 
-import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+/**
+ * used to generate JSON to send to atacama
+ *
+ * @author the-james-burton
+ */
+public class IndicatorClientDefinition implements Serializable {
 
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
+  private String name;
 
-@EnableTurbineIndicator(name = "SMA12", isOverlay = true)
-public class SMA12 extends BaseIndicator {
+  /** true if the indicator is an overlay with the same Y-axis */
+  private boolean overlay;
 
-  private final SMAIndicator sma;
-
-  public SMA12(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(12, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    this.sma = new SMAIndicator(indicator, this.timeFrame);
+  public String getName() {
+    return name;
   }
 
-  @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put(String.format("sma%s", this.timeFrame), sma.getValue(series.getEnd()).toDouble());
-    return values;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public boolean isOverlay() {
+    return overlay;
+  }
+
+  public void setOverlay(boolean overlay) {
+    this.overlay = overlay;
   }
 
 }

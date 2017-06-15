@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,18 @@ import eu.verdelhan.ta4j.indicators.trackers.CoppockCurveIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "CoppockCurve", isOverlay = false)
 public class CoppockCurve extends BaseIndicator {
 
-  private final CoppockCurveIndicator coppockCurve;
-
-  public CoppockCurve(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // the original setting is 14, 11, 10 but 20, 10, 10 may be better for daily...
-    coppockCurve = new CoppockCurveIndicator(indicator, 20, 10, 10);
+  public CoppockCurve(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("coppockCurve", coppockCurve.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateThree();
+    // the original setting is 14, 11, 10 but 20, 10, 10 may be better for daily...
+    indicator = new CoppockCurveIndicator(closePriceIndicator,
+        instance.getTimeframe1(), instance.getTimeframe2(), instance.getTimeframe3());
   }
 
 }

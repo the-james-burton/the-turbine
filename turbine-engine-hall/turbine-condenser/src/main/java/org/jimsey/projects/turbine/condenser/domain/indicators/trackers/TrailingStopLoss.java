@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
@@ -37,23 +33,17 @@ import eu.verdelhan.ta4j.indicators.trackers.TrailingStopLossIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "TrailingStopLoss", isOverlay = false)
 public class TrailingStopLoss extends BaseIndicator {
-
-  private final TrailingStopLossIndicator trailingStopLoss;
-
-  public TrailingStopLoss(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(10, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // TODO need to figure out if I can use a percentage based on first tick close...
-    trailingStopLoss = new TrailingStopLossIndicator(indicator, Decimal.valueOf(timeFrame));
+  public TrailingStopLoss(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("trailingStopLoss", trailingStopLoss.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+
+    // TODO need to figure out if I can use a percentage based on first tick close...
+    indicator = new TrailingStopLossIndicator(closePriceIndicator, Decimal.valueOf(instance.getTimeframe1()));
   }
 
 }

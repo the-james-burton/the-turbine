@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.trackers;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,23 +32,16 @@ import eu.verdelhan.ta4j.indicators.trackers.AverageDirectionalMovementIndicator
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "AverageDirectionalMovement", isOverlay = true)
 public class AverageDirectionalMovement extends BaseIndicator {
 
-  private final AverageDirectionalMovementIndicator averageDirectionalMovement;
-
-  public AverageDirectionalMovement(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(21, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    // setup this indicator...
-    averageDirectionalMovement = new AverageDirectionalMovementIndicator(series, timeFrame);
+  public AverageDirectionalMovement(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("averageDirectionalMovement", averageDirectionalMovement.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateOne();
+    indicator = new AverageDirectionalMovementIndicator(series, instance.getTimeframe1());
   }
 
 }

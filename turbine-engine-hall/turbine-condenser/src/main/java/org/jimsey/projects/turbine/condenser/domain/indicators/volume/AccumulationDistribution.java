@@ -22,12 +22,8 @@
  */
 package org.jimsey.projects.turbine.condenser.domain.indicators.volume;
 
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jimsey.projects.turbine.condenser.domain.indicators.BaseIndicator;
-import org.jimsey.projects.turbine.condenser.domain.indicators.EnableTurbineIndicator;
+import org.jimsey.projects.turbine.condenser.domain.indicators.IndicatorInstance;
 
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -36,22 +32,16 @@ import eu.verdelhan.ta4j.indicators.volume.AccumulationDistributionIndicator;
 /**
  * @author the-james-burton
  */
-@EnableTurbineIndicator(name = "AccumulationDistributionIndex", isOverlay = false)
 public class AccumulationDistribution extends BaseIndicator {
 
-  private final AccumulationDistributionIndicator accumulationDistribution;
-
-  public AccumulationDistribution(final TimeSeries series, final ClosePriceIndicator indicator) {
-    super(0, series, MethodHandles.lookup().lookupClass().getSimpleName(), indicator);
-
-    accumulationDistribution = new AccumulationDistributionIndicator(series);
+  public AccumulationDistribution(IndicatorInstance instance, TimeSeries series, ClosePriceIndicator closePriceIndicator) {
+    super(instance, series, closePriceIndicator);
   }
 
   @Override
-  public Map<String, Double> computeValues() {
-    Map<String, Double> values = new HashMap<>();
-    values.put("accumulationDistribution", accumulationDistribution.getValue(series.getEnd()).toDouble());
-    return values;
+  protected void init() {
+    validateNone();
+    indicator = new AccumulationDistributionIndicator(series);
   }
 
 }
