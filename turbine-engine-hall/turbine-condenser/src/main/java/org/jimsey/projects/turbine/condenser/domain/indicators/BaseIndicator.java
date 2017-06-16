@@ -66,7 +66,7 @@ public abstract class BaseIndicator implements TurbineIndicator {
 
   /** @return the calculation results - default implementation useful in most cases... */
   protected Map<String, Double> computeValues() {
-    logger.info("computeValues:{}", instance.getName());
+    logger.debug("computeValues:{}", instance.getName());
     Map<String, Double> values = new HashMap<>();
     double value = 0;
     try {
