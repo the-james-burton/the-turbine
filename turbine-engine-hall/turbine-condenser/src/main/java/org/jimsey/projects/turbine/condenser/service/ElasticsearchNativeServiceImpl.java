@@ -131,7 +131,7 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
    */
   @Override
   public String indexTick(TickJson tick) {
-    logger.info("indexTick:{}", tick.toString());
+    logger.debug("indexTick:{}", tick.toString());
     IndexResponse response = elasticsearch
         .prepareIndex(indexForTicks, typeForTicks)
         .setSource(tick.toString())
@@ -141,7 +141,7 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
 
   @Override
   public String indexIndicator(IndicatorJson indicator) {
-    logger.info("indexIndicator:{}", indicator.toString());
+    logger.debug("indexIndicator:{}", indicator.toString());
     IndexResponse response = elasticsearch
         .prepareIndex(indexForIndicators, typeForIndicators)
         .setSource(indicator.toString())
@@ -151,7 +151,7 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
 
   @Override
   public String indexStrategy(StrategyJson strategy) {
-    logger.info("indexStrategy:{}", strategy.toString());
+    logger.debug("indexStrategy:{}", strategy.toString());
     IndexResponse response = elasticsearch
         .prepareIndex(indexForStrategies, typeForStrategies)
         .setSource(strategy.toString())
