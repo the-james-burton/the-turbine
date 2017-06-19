@@ -29,8 +29,6 @@ import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.jimsey.projects.turbine.fuel.domain.DomainObjectGenerator;
-import org.jimsey.projects.turbine.fuel.domain.RandomDomainObjectGenerator;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 import org.jimsey.projects.turbine.fuel.domain.YahooFinanceHistoric;
@@ -42,6 +40,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 
 public class TickProducer implements Comparable<TickProducer> {
@@ -49,8 +48,6 @@ public class TickProducer implements Comparable<TickProducer> {
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Ticker ticker;
-
-  private final DomainObjectGenerator rdog;
 
   private final String realtimeUrl;
 
@@ -67,7 +64,6 @@ public class TickProducer implements Comparable<TickProducer> {
     this.ticker = ticker;
     this.realtimeUrl = realtimeUrl;
     this.historicUrl = historicUrl;
-    this.rdog = new RandomDomainObjectGenerator(ticker);
     logger.info("");
   }
 
@@ -75,11 +71,8 @@ public class TickProducer implements Comparable<TickProducer> {
     return new TickProducer(rest, ticker, realtimeUrl, historicUrl);
   }
 
-  // TODO issue #20 use turbine-inlet
-  public TickJson createTick() {
-    fetchTickFromYahooFinanceRealtime();
-    TickJson tick = rdog.newTick();
-    return tick;
+  public Option<TickJson> createTick() {
+    return Option.of(fetchTickFromYahooFinanceRealtime());
   }
 
   public TickJson fetchTickFromYahooFinanceRealtime() {
@@ -96,7 +89,7 @@ public class TickProducer implements Comparable<TickProducer> {
           return null;
         });
     logger.info("yfr:{}", yfr);
-    return null;
+    return yfr.getTick();
   }
 
   public List<TickJson> fetchTicksFromYahooFinanceHistoric() {

@@ -24,7 +24,7 @@ package org.jimsey.projects.turbine.furnace;
 
 public class TurbineFurnaceConstants {
 
-  public static final long PRODUCER_PERIOD = 2000;
+  public static final long PRODUCER_PERIOD = 5000;
   // public static final long PRODUCER_PERIOD = Long.MAX_VALUE;
 
   public static final String HEADER_FOR_OBJECT_TYPE = "objectType";

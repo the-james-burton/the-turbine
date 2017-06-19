@@ -33,6 +33,7 @@ import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.ExchangeEnum;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
+import org.jimsey.projects.turbine.furnace.TurbineFurnaceConstants;
 import org.jimsey.projects.turbine.furnace.amqp.AmqpPublisher;
 import org.jimsey.projects.turbine.furnace.component.InfrastructureProperties;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -107,30 +109,31 @@ public class ProducerManager {
 
     // create realtime simulations of watches and/or tickers from elasticsearch...
     tickersAll
-        // .filter(t -> false)
         // restrict to only preset tickers for now...
         .filter(tick -> TurbineFuelConstants.PRESET_TICKERS.contains(tick))
-        .forEach(tick -> findOrCreateTickProducer(tick));
+        .map(tick -> findOrCreateTickProducer(tick))
+        .forEach(producer -> producers = producers.add(producer));
 
     // do some historic population...
     producers
         .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric())
         .peek(tick -> logger.info(tick.toString()))
         .forEach(tick -> publishTick(tick));
-
   }
 
-  // @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
+  @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
   public void produceTicks() {
     producers
-        .map(producer -> producer.createTick())
+        // don't do any realtime ticks for now...
+        .filter(t -> false)
+        .flatMap(producer -> producer.createTick())
         .forEach(tick -> publishTick(tick));
   }
 
   public void produceTick(Ticker ticker) {
     producers
         .filter(producer -> ticker.equals(producer.getTicker()))
-        .map(producer -> producer.createTick())
+        .flatMap(producer -> producer.createTick())
         .forEach(tick -> publishTick(tick));
   }
 
