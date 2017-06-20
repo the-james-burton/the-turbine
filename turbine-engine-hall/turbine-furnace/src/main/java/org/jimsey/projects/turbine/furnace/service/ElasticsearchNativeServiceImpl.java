@@ -22,10 +22,47 @@
  */
 package org.jimsey.projects.turbine.furnace.service;
 
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.sort.SortOrder;
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.service.BaseElasticsearchNativeServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import io.vavr.control.Option;
 
 @Service
 public class ElasticsearchNativeServiceImpl extends BaseElasticsearchNativeServiceImpl implements ElasticsearchService {
+
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Override
+  public Option<TickJson> findMostRecentTick(String ric) {
+    QueryBuilder queryBuilder = matchQuery("ric", ric);
+    List<TickJson> results = null;
+    try {
+      SearchResponse response = elasticsearch
+          .prepareSearch(properties.getElasticsearchIndexForTicks())
+          .setQuery(queryBuilder)
+          .setTypes(properties.getElasticsearchTypeForTicks())
+          .setSize(1)
+          .addSort("date", SortOrder.DESC)
+          .get();
+      results = extractResults(response, TickJson.class);
+    } catch (ElasticsearchException e) {
+      logger.error("unable to query elasticsearch 'findMostRecentTick': {}:{}", e.getMessage(), ric);
+      e.printStackTrace();
+    }
+    return results.isEmpty() ? Option.none() : Option.of(results.get(0));
+
+  }
 
 }

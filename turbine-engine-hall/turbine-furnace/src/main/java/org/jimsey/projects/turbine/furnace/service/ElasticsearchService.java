@@ -22,8 +22,13 @@
  */
 package org.jimsey.projects.turbine.furnace.service;
 
+import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.service.BaseElasticsearchService;
 
+import io.vavr.control.Option;
+
 public interface ElasticsearchService extends BaseElasticsearchService {
+
+  Option<TickJson> findMostRecentTick(String ric);
 
 }

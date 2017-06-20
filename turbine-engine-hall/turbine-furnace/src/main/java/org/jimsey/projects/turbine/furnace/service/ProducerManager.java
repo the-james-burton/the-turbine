@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import io.vavr.Function0;
+import io.vavr.Tuple;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
 import io.vavr.collection.SortedSet;
@@ -114,11 +115,16 @@ public class ProducerManager {
         .map(tick -> findOrCreateTickProducer(tick))
         .forEach(producer -> producers = producers.add(producer));
 
+    // find the most recent tick in ES for each ticker...
+    tickersAll
+        .map(ticker -> Tuple.of(ticker, elasticsearch.findMostRecentTick(ticker.getRic().toString())))
+        .forEach(tick -> logger.info("mostRecent:{}", tick.toString()));
+
     // do some historic population...
-    producers
-        .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric())
-        .peek(tick -> logger.info(tick.toString()))
-        .forEach(tick -> publishTick(tick));
+    // producers
+    // .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric())
+    // .peek(tick -> logger.info(tick.toString()))
+    // .forEach(tick -> publishTick(tick));
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)

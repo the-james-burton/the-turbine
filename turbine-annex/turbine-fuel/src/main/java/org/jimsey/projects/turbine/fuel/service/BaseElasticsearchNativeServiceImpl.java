@@ -56,9 +56,9 @@ public class BaseElasticsearchNativeServiceImpl implements BaseElasticsearchServ
   private final int size = 5000;
 
   @Resource
-  private BaseInfrastructureProperties properties;
+  protected BaseInfrastructureProperties properties;
 
-  private TransportClient elasticsearch;
+  protected TransportClient elasticsearch;
 
   private static ObjectMapper json = new ObjectMapper();
 
@@ -107,7 +107,7 @@ public class BaseElasticsearchNativeServiceImpl implements BaseElasticsearchServ
     return results;
   }
 
-  private <T> List<T> extractResults(SearchResponse response, Class<T> t) {
+  protected <T> List<T> extractResults(SearchResponse response, Class<T> t) {
     List<T> results = new ArrayList<>();
     try {
       for (SearchHit hit : response.getHits().getHits()) {

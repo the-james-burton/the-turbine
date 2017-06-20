@@ -51,4 +51,5 @@ public interface ElasticsearchService {
   List<IndicatorJson> findIndicatorsByRicAndNameAndDateGreaterThan(String ticker, String name, Long date);
 
   List<Ticker> findTickersByExchange(ExchangeEnum exchange);
+
 }

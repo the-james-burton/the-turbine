@@ -94,7 +94,7 @@ public class TickerManager {
       tickers = HashSet.ofAll(tickersFromEs);
     }
     stocks = tickers.map(t -> Stock.of(t, turbineIndicators, turbineStrategies));
-    tickers.forEach(t -> logger.info("{}", t.toString()));
+    tickers.forEach(t -> logger.info("ticker:{}", t.toString()));
   }
 
   Function2<Ticker, Function0<Stock>, Stock> findStockForTickerOrElse = (ticker, supplier) -> stocks
