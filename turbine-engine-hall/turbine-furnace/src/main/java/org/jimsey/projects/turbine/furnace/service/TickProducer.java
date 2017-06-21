@@ -25,7 +25,9 @@ package org.jimsey.projects.turbine.furnace.service;
 import static java.lang.String.*;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -67,7 +69,8 @@ public class TickProducer implements Comparable<TickProducer> {
     logger.info("");
   }
 
-  public static TickProducer of(RestTemplate rest, Ticker ticker, String realtimeUrl, String historicUrl) {
+  public static TickProducer of(
+      RestTemplate rest, Ticker ticker, String realtimeUrl, String historicUrl) {
     return new TickProducer(rest, ticker, realtimeUrl, historicUrl);
   }
 
@@ -76,7 +79,7 @@ public class TickProducer implements Comparable<TickProducer> {
   }
 
   public TickJson fetchTickFromYahooFinanceRealtime() {
-    String url = realtimeUrl + ticker.getRicAsString();
+    String url = String.format(realtimeUrl, ticker.getRicAsString());
     ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
         .getOrElse(() -> new ResponseEntity<String>(
             format("turbine inlet service for yahoo realtime expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
@@ -92,8 +95,8 @@ public class TickProducer implements Comparable<TickProducer> {
     return yfr.getTick();
   }
 
-  public List<TickJson> fetchTicksFromYahooFinanceHistoric() {
-    String url = historicUrl + ticker.getRicAsString();
+  public List<TickJson> fetchTicksFromYahooFinanceHistoric(LocalDate date) {
+    String url = String.format(historicUrl, ticker.getRicAsString(), date.format(DateTimeFormatter.ISO_DATE));
     ResponseEntity<String> response = Try.of(() -> rest.getForEntity(url, String.class))
         .getOrElse(() -> new ResponseEntity<String>(
             format("turbine inlet service for yahoo historic expected at %s", url), HttpStatus.I_AM_A_TEAPOT));
@@ -102,7 +105,7 @@ public class TickProducer implements Comparable<TickProducer> {
     YahooFinanceHistoric yfh = Try.of(() -> YahooFinanceHistoric.of(response.toString(), ticker))
         .getOrElse(YahooFinanceHistoric.of(List.empty()));
     logger.info("yfr:{}", yfh);
-    // need to reverse the order to get them processed correctly...
+    // need to reverse the list to get them processed closer to their time order...
     return yfh.getTicks().reverse();
   }
 

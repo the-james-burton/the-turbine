@@ -24,6 +24,9 @@ package org.jimsey.projects.turbine.furnace.service;
 
 import static java.lang.String.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -48,11 +51,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import io.vavr.Function0;
-import io.vavr.Tuple;
+import io.vavr.Function1;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
 import io.vavr.collection.SortedSet;
 import io.vavr.collection.TreeSet;
+import io.vavr.control.Option;
 
 @Service
 @ConfigurationProperties(prefix = "producer")
@@ -80,6 +84,8 @@ public class ProducerManager {
   private Function0<Set<Ticker>> tickerCache = Function0.of(tickers).memoized();
 
   private final RestTemplate rest;
+
+  private static final LocalDate defaultDateFrom = LocalDate.now().minusDays(100);
 
   public ProducerManager(RestTemplateBuilder restTemplateBuilder) {
     logger.info("received a RestTemplateBuilder:{}", restTemplateBuilder);
@@ -115,16 +121,11 @@ public class ProducerManager {
         .map(tick -> findOrCreateTickProducer(tick))
         .forEach(producer -> producers = producers.add(producer));
 
-    // find the most recent tick in ES for each ticker...
-    tickersAll
-        .map(ticker -> Tuple.of(ticker, elasticsearch.findMostRecentTick(ticker.getRic().toString())))
-        .forEach(tick -> logger.info("mostRecent:{}", tick.toString()));
-
-    // do some historic population...
-    // producers
-    // .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric())
-    // .peek(tick -> logger.info(tick.toString()))
-    // .forEach(tick -> publishTick(tick));
+    // find the most recent tick in ES for each ticker
+    // and do some historic population...
+    producers
+        .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric(whenToStartHistoric(producer.getTicker())))
+        .forEach(tick -> publishTick(tick));
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)
@@ -172,6 +173,16 @@ public class ProducerManager {
     producers = producers.add(producer);
     tickerCache = Function0.of(tickers).memoized();
     return producer;
+  }
+
+  private static Function1<Long, LocalDate> longDateToLocalDate = date -> Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault())
+      .toLocalDate();
+
+  private LocalDate whenToStartHistoric(Ticker ticker) {
+    Option<TickJson> mostRecentTick = elasticsearch.findMostRecentTick(ticker.getRicAsString());
+    LocalDate dateFrom = mostRecentTick.isDefined() ? longDateToLocalDate.apply(mostRecentTick.get().getDate()).plusDays(1)
+        : defaultDateFrom;
+    return dateFrom;
   }
 
   @ManagedOperation

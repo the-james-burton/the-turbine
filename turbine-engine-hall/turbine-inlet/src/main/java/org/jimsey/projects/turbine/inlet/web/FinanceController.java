@@ -23,7 +23,11 @@
 package org.jimsey.projects.turbine.inlet.web;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 import javax.validation.constraints.NotNull;
 
@@ -36,6 +40,8 @@ import org.jimsey.projects.turbine.inlet.domain.DogKennel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -112,10 +118,13 @@ public class FinanceController {
    * @param tickersString a ticker with extension, e.g. ABC.L
    * @return a CSV string with header row of Date,Open,High,Low,Close,Volume,Adj Close
    */
-  @RequestMapping("/yahoo/historic/{ticker:.+}")
-  public ResponseEntity<String> yahooFinanceHistoric(@PathVariable @NotNull String ticker) {
+  @RequestMapping("/yahoo/historic/{ticker:.+}/{date}")
+  public ResponseEntity<String> yahooFinanceHistoric(
+      @PathVariable @NotNull String ticker,
+      @PathVariable @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
     logger.info("yahooFinanceHistoricDirect({})", ticker);
-    CharSeq results = doTicksYahooFinanceHistoric(kennel.parseTickersString.apply(ticker).head());
+    CharSeq results = doTicksYahooFinanceHistoric(
+        kennel.parseTickersString.apply(ticker).head(), date);
 
     // create the return type required by this mock API...
     HttpHeaders headers = new HttpHeaders();
@@ -129,10 +138,13 @@ public class FinanceController {
    * @param tickersString a ticker with extension, e.g. ABC.L
    * @return a CSV string with header row of Date,Open,High,Low,Close,Volume,Adj Close
    */
-  @RequestMapping("/yahoo/historic/direct/{ticker:.+}")
-  public ResponseEntity<String> yahooFinanceHistoricDirect(@PathVariable @NotNull String ticker) {
-    logger.info("yahooFinanceHistoricDirect({})", ticker);
-    CharSeq results = doTicksYahooFinanceHistoric(kennel.parseTickersString.apply(ticker).head());
+  @RequestMapping("/yahoo/historic/direct/{ticker:.+}/{date}")
+  public ResponseEntity<String> yahooFinanceHistoricDirect(
+      @PathVariable @NotNull String ticker,
+      @PathVariable @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
+    logger.info("yahooFinanceHistoricDirect({},{})", ticker, date.toString());
+    CharSeq results = doTicksYahooFinanceHistoric(
+        kennel.parseTickersString.apply(ticker).head(), date);
 
     // create the return type required by this mock API...
     HttpHeaders headers = new HttpHeaders();
@@ -143,8 +155,8 @@ public class FinanceController {
   /*
    * generate a complete response string for a yahoo finance realtime reply
    */
-  private CharSeq doTicksYahooFinanceHistoric(final Ticker ticker) {
-    logger.info("ticker:{}", ticker.toString());
+  private CharSeq doTicksYahooFinanceHistoric(final Ticker ticker, final LocalDate date) {
+    logger.info("doTicksYahooFinanceHistoric:{},{}", ticker.toString(), date);
 
     // is ticker new?
     List<Ticker> missing = kennel.findMissingTickers.apply(kennel.dogs, List.of(ticker));
@@ -153,14 +165,15 @@ public class FinanceController {
     // get the dogs for the requested tickers...
     DomainObjectGenerator myDog = kennel.findMyDog.apply(kennel.dogs, ticker).get();
 
-    logger.info("manager:{}", kennel.dogs.toJavaList());
-    logger.info("dogs:{}", myDog.toString());
-    logger.info("missing:{}", missing.toJavaList());
+    logger.debug("manager:{}", kennel.dogs.toJavaList());
+    logger.debug("dogs:{}", myDog.toString());
+    logger.debug("missing:{}", missing.toJavaList());
 
     // generate a historic series of TickJson...
-    int daysAgo = 100;
-    OffsetDateTime startDate = OffsetDateTime.now().minusDays(daysAgo).withHour(0).withMinute(0).withSecond(0);
-    List<TickJson> ticks = Stream.range(1, daysAgo + 1)
+
+    // OffsetDateTime startDate = OffsetDateTime.now().minusDays(daysAgo).withHour(0).withMinute(0).withSecond(0);
+    OffsetDateTime startDate = OffsetDateTime.of(date, LocalTime.MIDNIGHT, ZoneOffset.UTC);
+    List<TickJson> ticks = Stream.range(0, ChronoUnit.DAYS.between(startDate, OffsetDateTime.now()))
         .map(x -> myDog.newTick(startDate.plusDays(x)))
         .reverse()
         .toList();
