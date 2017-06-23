@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 import io.vavr.Function0;
 import io.vavr.Function2;
+import io.vavr.Tuple;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
 
@@ -95,6 +96,13 @@ public class TickerManager {
     }
     stocks = tickers.map(t -> Stock.of(t, turbineIndicators, turbineStrategies));
     tickers.forEach(t -> logger.info("ticker:{}", t.toString()));
+
+    // recover the history...
+    stocks
+        .map(stock -> Tuple.of(stock, elasticsearch.findTicksByRic(stock.getTicker().getRicAsString())))
+        .filter(tuple -> tuple._2 != null)
+        .forEach(tuple -> tuple._1.recoverTicks(tuple._2));
+
   }
 
   Function2<Ticker, Function0<Stock>, Stock> findStockForTickerOrElse = (ticker, supplier) -> stocks

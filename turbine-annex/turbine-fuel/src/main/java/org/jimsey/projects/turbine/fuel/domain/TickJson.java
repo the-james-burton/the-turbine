@@ -74,7 +74,7 @@ public class TickJson extends Tick implements Serializable, Comparable<TickJson>
 
   private Ticker ticker;
 
-  private final Comparator<TickJson> comparator = Comparator
+  public static final Comparator<TickJson> comparator = Comparator
       .comparing((TickJson t) -> t.getDate())
       .thenComparing(t -> t.getTickerAsObject());
 

@@ -168,6 +168,16 @@ public class Stock {
     return result;
   }
 
+  public void recoverTicks(List<TickJson> ticks) {
+    if (ticks == null) {
+      logger.warn("ticker: {}, recoverTicks: no ticks to recover");
+      return;
+    }
+    logger.info("ticker: {}, recoverTicks: {}", getTicker(), ticks.size());
+    ticks.sort(TickJson.comparator);
+    ticks.forEach(tick -> series.addTick(tick));
+  }
+
   public void receiveTick(TickJson tick) {
     logger.info("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
     try {
