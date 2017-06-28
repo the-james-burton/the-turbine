@@ -125,7 +125,11 @@ public class ProducerManager {
     // and do some historic population...
     producers
         .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric(whenToStartHistoric(producer.getTicker())))
+        // TODO parallelising this doesn't appear to work, the RabbitTemplate seems to give up maybe it gets locked somehow...
+        // .toJavaStream().parallel()
+        // .forEach(tick -> logger.info("historic parallel:{}", tick));
         .forEach(tick -> publishTick(tick));
+    logger.info(" ===> HISTORY RECOVERED");
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)

@@ -96,8 +96,8 @@ public class ReactorManager {
     logger.info(" ** ReactorManager init();");
 
     msgs = TopicProcessor.create("msgs");
-    tickBuffer = TopicProcessor.create("ticks");
-    tickCompute = TopicProcessor.create("ticks2");
+    tickBuffer = TopicProcessor.create("tickBuffer");
+    tickCompute = TopicProcessor.create("tickCompute");
     indicators = TopicProcessor.create("indicators");
     strategies = TopicProcessor.create("strategies");
 
@@ -115,16 +115,21 @@ public class ReactorManager {
 
     tickBuffer
         // .subscribe(new ReactorTickSubscriber("tickSubscriber"));
-        .doOnNext(tick -> logger.debug(" reactor ticks -> tick:{}", tick))
+        .doOnNext(tick -> logger.debug(" reactor tickBuffer -> tick:{}", tick))
         .buffer(ofSeconds(2))
         .flatMap(l -> Flux.fromIterable(l).sort())
         .subscribe(tickCompute);
 
     tickCompute
-        .doOnNext(tick -> logger.debug(" reactor ticks2 -> tick:{}", tick))
-        .doOnNext(tick -> elasticsearch.indexTick(tick))
-        .doOnNext(tick -> websocket.convertAndSend(websocketForTicks.apply(tick), tick.toString()))
+        .doOnNext(tick -> logger.debug(" reactor tickCompute -> tick:{}", tick))
         .subscribe(tickSubscriber);
+
+    tickCompute
+        .bufferTimeout(10, ofSeconds(1))
+        .subscribe(ticks -> elasticsearch.indexTicks(ticks));
+
+    tickCompute
+        .subscribe(tick -> websocket.convertAndSend(websocketForTicks.apply(tick), tick.toString()));
 
     // --------------------------
     // alternative flow grouping by ticker, but doesn't work :(
@@ -142,16 +147,24 @@ public class ReactorManager {
         .parallel()
         .runOn(Schedulers.parallel())
         .doOnNext(indicator -> logger.debug(" reactor indicators -> indicator:{}", indicator))
-        .doOnNext(indicator -> elasticsearch.indexIndicator(indicator))
+        // .doOnNext(indicator -> elasticsearch.indexIndicator(indicator))
         .subscribe(
             indicator -> websocket.convertAndSend(websocketForIndicators.apply(indicator), indicator.toString()));
+
+    indicators
+        .bufferTimeout(10, ofSeconds(1))
+        .subscribe(indicators -> elasticsearch.indexIndicators(indicators));
 
     strategies
         .parallel()
         .runOn(Schedulers.parallel())
         .doOnNext(strategy -> logger.debug(" reactor strategies -> strategy:{}", strategy))
-        .doOnNext(strategy -> elasticsearch.indexStrategy(strategy))
+        // .doOnNext(strategy -> elasticsearch.indexStrategy(strategy))
         .subscribe(strategy -> websocket.convertAndSend(websocketForStrategies.apply(strategy), strategy.toString()));
+
+    strategies
+        .bufferTimeout(10, ofSeconds(1))
+        .subscribe(strategies -> elasticsearch.indexStrategies(strategies));
 
   }
 

@@ -33,6 +33,7 @@ import org.jimsey.projects.turbine.condenser.TurbineCondenserConstants;
 import org.jimsey.projects.turbine.condenser.exceptions.TurbineException;
 import org.jimsey.projects.turbine.condenser.service.ElasticsearchService;
 import org.jimsey.projects.turbine.condenser.service.Ping;
+import org.jimsey.projects.turbine.fuel.constants.TurbineFuelConstants;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
+
+import io.vavr.control.Option;
 
 @RestController
 // @EnableAutoConfiguration
@@ -66,12 +69,13 @@ public class TickController {
 
   @PostConstruct
   public void init() throws Exception {
-    long sod = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli();
+    long sod = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant().toEpochMilli();
     long now = OffsetDateTime.now().toInstant().toEpochMilli();
     logger.info("right now date value is {}", now);
     logger.info("this mornings date value is {}", sod);
-    String ticks = getTicks("ABC.L");
-    logger.info("*** getTicks(ABC.L) : [{}]", ticks);
+    String ric = TurbineFuelConstants.tickerA.getRicAsString();
+    Option<String> ticks = Option.of(getTicks(ric));
+    logger.info("*** getTicks({}) : [{}]", ric, ticks.getOrElse("").split("timestamp").length - 1);
     // logger.info("this mornings getTicksAfter(ABC) : [{}]", getTicksAfter("ABC", sod));
   }
 
@@ -84,7 +88,7 @@ public class TickController {
   @RequestMapping("/{ric}")
   public String getTicks(
       @PathVariable String ric) {
-    logger.info("getTicks({}, {})", ric);
+    logger.info("getTicks({})", ric);
     List<TickJson> ticks = elasticsearch.findTicksByRic(ric);
     if (ticks == null) {
       return null;

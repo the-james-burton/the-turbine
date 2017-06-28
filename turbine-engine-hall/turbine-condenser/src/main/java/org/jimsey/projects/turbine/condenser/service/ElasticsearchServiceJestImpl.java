@@ -185,4 +185,22 @@ public class ElasticsearchServiceJestImpl implements ElasticsearchService {
     return null;
   }
 
+  @Override
+  public String indexTicks(List<TickJson> tick) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String indexIndicators(List<IndicatorJson> indicators) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String indexStrategies(List<StrategyJson> strategies) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

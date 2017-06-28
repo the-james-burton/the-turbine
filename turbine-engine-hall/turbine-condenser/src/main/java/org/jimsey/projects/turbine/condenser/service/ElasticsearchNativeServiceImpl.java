@@ -33,7 +33,10 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.Validate;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -139,6 +142,25 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
     return response.toString();
   }
 
+  /**
+   * put the given ticks into elasticsearch
+   * @param ticks the ticks to be saved
+   * @return the toString() of the response from elasticsearch client
+   */
+  @Override
+  public String indexTicks(List<TickJson> ticks) {
+    Validate.notNull(ticks);
+    logger.info("indexTicks:{}", ticks.size());
+    BulkRequestBuilder bulk = elasticsearch.prepareBulk();
+
+    ticks.forEach(tick -> bulk.add(elasticsearch
+        .prepareIndex(indexForTicks, typeForTicks)
+        .setSource(tick.toString())));
+
+    BulkResponse response = bulk.get();
+    return response.toString();
+  }
+
   @Override
   public String indexIndicator(IndicatorJson indicator) {
     logger.debug("indexIndicator:{}", indicator.toString());
@@ -150,12 +172,40 @@ public class ElasticsearchNativeServiceImpl implements ElasticsearchService {
   }
 
   @Override
+  public String indexIndicators(List<IndicatorJson> indicators) {
+    Validate.notNull(indicators);
+    logger.info("indexIndicators:{}", indicators.size());
+    BulkRequestBuilder bulk = elasticsearch.prepareBulk();
+
+    indicators.forEach(indicator -> bulk.add(elasticsearch
+        .prepareIndex(indexForIndicators, typeForIndicators)
+        .setSource(indicator.toString())));
+
+    BulkResponse response = bulk.get();
+    return response.toString();
+  }
+
+  @Override
   public String indexStrategy(StrategyJson strategy) {
     logger.debug("indexStrategy:{}", strategy.toString());
     IndexResponse response = elasticsearch
         .prepareIndex(indexForStrategies, typeForStrategies)
         .setSource(strategy.toString())
         .get();
+    return response.toString();
+  }
+
+  @Override
+  public String indexStrategies(List<StrategyJson> strategies) {
+    Validate.notNull(strategies);
+    logger.info("indexStrategies:{}", strategies.size());
+    BulkRequestBuilder bulk = elasticsearch.prepareBulk();
+
+    strategies.forEach(strategy -> bulk.add(elasticsearch
+        .prepareIndex(indexForStrategies, typeForStrategies)
+        .setSource(strategy.toString())));
+
+    BulkResponse response = bulk.get();
     return response.toString();
   }
 

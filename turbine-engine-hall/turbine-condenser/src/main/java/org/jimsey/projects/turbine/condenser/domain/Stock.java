@@ -131,9 +131,11 @@ public class Stock {
         .expireAfterWrite(10, TimeUnit.SECONDS)
         .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) -> {
           v.countDown();
-          logger.info("cache expired: [ticker:{}, timestamp:{}]", ticker.getRic(), k.toString());
+          logger.debug("cache expired: [ticker:{}, timestamp:{}]", ticker.getRic(), k.toString());
         })
         .build();
+
+    logger.info("stock prepared:{}", ticker.getRicAsString());
   }
 
   private BaseIndicator instantiateIndicator(IndicatorInstance instance) {
@@ -144,10 +146,10 @@ public class Stock {
           TimeSeries.class,
           ClosePriceIndicator.class);
       result = (BaseIndicator) indicatorConstructor.newInstance(instance, series, closePriceIndicator);
-      logger.info("instantiated [{}]: {}", getTicker(), result.getInstance().getName());
+      logger.debug("instantiated [{}]: {}", getTicker(), result.getInstance().getName());
     } catch (Exception e) {
       // TODO exceptions from the constructor in are missing in this exception!
-      logger.info("could not instantiate {} for [{}]: {}",
+      logger.warn("could not instantiate {} for [{}]: {}",
           instance.getClassname(), getTicker(), e.getMessage());
     }
     return result;
@@ -160,9 +162,9 @@ public class Stock {
           TimeSeries.class,
           ClosePriceIndicator.class);
       result = indicatorConstructor.newInstance(series, closePriceIndicator);
-      logger.info("instantiated [{}]: {}", getTicker(), result.getClass().getName());
+      logger.debug("instantiated [{}]: {}", getTicker(), result.getClass().getName());
     } catch (Exception e) {
-      logger.info("could not instantiate {} for [{}]: {}",
+      logger.warn("could not instantiate {} for [{}]: {}",
           name, getTicker(), e.getMessage());
     }
     return result;

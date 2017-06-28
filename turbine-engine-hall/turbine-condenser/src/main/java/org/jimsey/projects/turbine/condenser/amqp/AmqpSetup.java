@@ -36,7 +36,6 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -58,7 +57,7 @@ public class AmqpSetup extends BaseConfiguration {
 
   private String exchangeTicksName, queueTicksName;
 
-  private ConnectionFactory connectionFactory = new CachingConnectionFactory();
+  private CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
 
   @Autowired
   private AmqpAdmin rabbit;

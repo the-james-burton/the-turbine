@@ -61,7 +61,7 @@ public class ElasticsearchNativeServiceImpl extends BaseElasticsearchNativeServi
       logger.error("unable to query elasticsearch 'findMostRecentTick': {}:{}", e.getMessage(), ric);
       e.printStackTrace();
     }
-    return results.isEmpty() ? Option.none() : Option.of(results.get(0));
+    return results == null || results.isEmpty() ? Option.none() : Option.of(results.get(0));
 
   }
 

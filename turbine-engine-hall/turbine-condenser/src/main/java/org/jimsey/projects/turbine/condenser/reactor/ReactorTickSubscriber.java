@@ -29,6 +29,7 @@ import org.jimsey.projects.turbine.fuel.domain.StrategyJson;
 import org.jimsey.projects.turbine.fuel.domain.TickJson;
 import org.jimsey.projects.turbine.fuel.domain.Ticker;
 
+import io.vavr.control.Try;
 import reactor.core.publisher.TopicProcessor;
 
 /**
@@ -68,7 +69,7 @@ public class ReactorTickSubscriber extends BaseSubscriber<TickJson> {
       tickerManager.findOrCreateStock(tick.getTickerAsObject()).receiveTick(tick);
 
       // TODO still need this?
-      // Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
+      Try.run(() -> stock.awaitTick(tick.getTimestampAsObject()).await());
 
       stock.getIndicators().parallelStream()
           // .peek(indicator -> logger.info("indicator:{},run:{}", indicator, stock.getTicker().toString()))

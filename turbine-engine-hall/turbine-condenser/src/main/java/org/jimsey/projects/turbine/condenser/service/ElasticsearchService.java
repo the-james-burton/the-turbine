@@ -34,9 +34,15 @@ public interface ElasticsearchService {
 
   String indexTick(TickJson tick);
 
+  String indexTicks(List<TickJson> tick);
+
   String indexIndicator(IndicatorJson indicator);
 
+  String indexIndicators(List<IndicatorJson> indicators);
+
   String indexStrategy(StrategyJson strategy);
+
+  String indexStrategies(List<StrategyJson> strategies);
 
   String findTicks();
 

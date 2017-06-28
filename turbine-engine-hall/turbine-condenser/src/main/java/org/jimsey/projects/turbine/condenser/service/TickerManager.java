@@ -45,6 +45,7 @@ import io.vavr.Function2;
 import io.vavr.Tuple;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
+import io.vavr.control.Option;
 
 @Service
 public class TickerManager {
@@ -95,12 +96,15 @@ public class TickerManager {
       tickers = HashSet.ofAll(tickersFromEs);
     }
     stocks = tickers.map(t -> Stock.of(t, turbineIndicators, turbineStrategies));
-    tickers.forEach(t -> logger.info("ticker:{}", t.toString()));
+    List<String> rics = tickers.map(ticker -> ticker.getRicAsString()).toJavaList();
+    logger.info("setting up for {} tickers : {}", rics.size(), rics);
 
     // recover the history...
     stocks
-        .map(stock -> Tuple.of(stock, elasticsearch.findTicksByRic(stock.getTicker().getRicAsString())))
-        .filter(tuple -> tuple._2 != null)
+        .map(stock -> Tuple.of(stock,
+            Option.of(elasticsearch.findTicksByRic(stock.getTicker().getRicAsString())).getOrElse(new ArrayList<>())))
+        .peek(tuple -> logger.info("recovering:{}:{}", tuple._1, tuple._2.size()))
+        .filter(tuple -> !tuple._2.isEmpty())
         .forEach(tuple -> tuple._1.recoverTicks(tuple._2));
 
   }
