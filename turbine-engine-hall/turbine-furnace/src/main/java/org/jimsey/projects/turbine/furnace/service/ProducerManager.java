@@ -120,16 +120,20 @@ public class ProducerManager {
         .filter(tick -> TurbineFuelConstants.PRESET_TICKERS.contains(tick))
         .map(tick -> findOrCreateTickProducer(tick))
         .forEach(producer -> producers = producers.add(producer));
+  }
 
+  /** do this only after spring initialization is complete, to avoid deadlock in spring RabbitMQ code **/
+  public void populate() {
     // find the most recent tick in ES for each ticker
     // and do some historic population...
     producers
         .flatMap(producer -> producer.fetchTicksFromYahooFinanceHistoric(whenToStartHistoric(producer.getTicker())))
         // TODO parallelising this doesn't appear to work, the RabbitTemplate seems to give up maybe it gets locked somehow...
-        // .toJavaStream().parallel()
+        .toJavaStream().parallel()
         // .forEach(tick -> logger.info("historic parallel:{}", tick));
         .forEach(tick -> publishTick(tick));
     logger.info(" ===> HISTORY RECOVERED");
+
   }
 
   @Scheduled(fixedDelay = TurbineFurnaceConstants.PRODUCER_PERIOD)

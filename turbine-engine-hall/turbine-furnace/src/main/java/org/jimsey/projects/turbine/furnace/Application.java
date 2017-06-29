@@ -24,6 +24,7 @@ package org.jimsey.projects.turbine.furnace;
 
 import javax.validation.constraints.NotNull;
 
+import org.jimsey.projects.turbine.furnace.service.ProducerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class Application {
 
   public static void main(final String... args) {
     ConfigurableApplicationContext spring = SpringApplication.run(Application.class, args);
+    ProducerManager producerManager = spring.getBean(ProducerManager.class);
+    producerManager.populate();
   }
 
   // @Bean
