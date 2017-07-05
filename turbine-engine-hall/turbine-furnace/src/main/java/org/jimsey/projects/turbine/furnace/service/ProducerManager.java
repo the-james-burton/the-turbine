@@ -85,7 +85,7 @@ public class ProducerManager {
 
   private final RestTemplate rest;
 
-  private static final LocalDate defaultDateFrom = LocalDate.now().minusDays(100);
+  private static final LocalDate defaultDateFrom = LocalDate.now().minusDays(20);
 
   public ProducerManager(RestTemplateBuilder restTemplateBuilder) {
     logger.info("received a RestTemplateBuilder:{}", restTemplateBuilder);

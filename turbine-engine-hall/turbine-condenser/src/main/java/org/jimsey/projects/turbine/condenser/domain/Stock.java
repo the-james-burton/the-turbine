@@ -24,11 +24,9 @@ package org.jimsey.projects.turbine.condenser.domain;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.validation.constraints.NotNull;
 
@@ -46,14 +44,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.RemovalCause;
-
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import io.vavr.collection.Stream;
+import io.vavr.control.Try;
 
 @ConfigurationProperties(prefix = "consumer")
 public class Stock {
@@ -82,7 +77,10 @@ public class Stock {
   // TODO periodically clean this up...
   // private Map<OffsetDateTime, CountDownLatch> ticksReceived = new ConcurrentHashMap<>();
 
-  private Cache<OffsetDateTime, CountDownLatch> ticksReceived;
+  // private Cache<OffsetDateTime, CountDownLatch> ticksReceived;
+
+  /** only one in flight operation per stock **/
+  private ReentrantLock lock = new ReentrantLock();
 
   public Stock(
       final Ticker ticker,
@@ -92,7 +90,8 @@ public class Stock {
     this.ticker = ticker;
     this.series = new TimeSeries(ticker.getRicAsString(), new ArrayList<Tick>());
     this.closePriceIndicator = new ClosePriceIndicator(series);
-    init(turbineIndicators, turbineStrategies);
+    lock.lock();
+    Try.run(() -> prepare(turbineIndicators, turbineStrategies)).andFinally(() -> lock.unlock());
   }
 
   public static Stock of(
@@ -103,16 +102,9 @@ public class Stock {
     return new Stock(ticker, turbineIndicators, turbineStrategies);
   }
 
-  // @PostConstruct
-  public void init(
-      // final List<EnableTurbineIndicator> turbineIndicators,
+  private void prepare(
       final List<IndicatorInstance> turbineIndicators,
       final List<EnableTurbineStrategy> turbineStrategies) {
-    // turbineIndicators.stream().forEach(i -> {
-    // String className = String.format("%s.%s", EnableTurbineIndicator.class.getPackage().getName(), i.name());
-    // BaseIndicator indicator = (BaseIndicator) instantiate(className);
-    // indicators.add(indicator);
-    // });
 
     // convert instances to real indicators...
     turbineIndicators.stream()
@@ -127,15 +119,16 @@ public class Stock {
     });
 
     // initialise the cache...
-    ticksReceived = Caffeine.newBuilder()
-        .expireAfterWrite(10, TimeUnit.SECONDS)
-        .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) -> {
-          v.countDown();
-          logger.debug("cache expired: [ticker:{}, timestamp:{}]", ticker.getRic(), k.toString());
-        })
-        .build();
+    // ticksReceived = Caffeine.newBuilder()
+    // .expireAfterWrite(60, TimeUnit.SECONDS)
+    // .removalListener((OffsetDateTime k, CountDownLatch v, RemovalCause c) -> {
+    // v.countDown();
+    // logger.debug("cache expired: [ticker:{}, timestamp:{}]", ticker.getRic(), k.toString());
+    // })
+    // .build();
 
     logger.info("stock prepared:{}", ticker.getRicAsString());
+
   }
 
   private BaseIndicator instantiateIndicator(IndicatorInstance instance) {
@@ -181,7 +174,15 @@ public class Stock {
   }
 
   public void receiveTick(TickJson tick) {
-    logger.info("ticker: {}, receiveTick: {}", getTicker(), tick.getTimestamp());
+    if (series.getTickCount() > 0) {
+      logger.info("series timestamp:{}, receiveTick: {}",
+          series.getLastTick().getBeginTime(), tick.getTimestamp());
+    }
+    lock.lock();
+    Try.run(() -> processTick(tick)).andFinally(() -> lock.unlock());
+  }
+
+  private void processTick(TickJson tick) {
     try {
       series.addTick(tick);
     } catch (IllegalArgumentException e) {
@@ -190,7 +191,7 @@ public class Stock {
       series = rebuildTimeSeriesWithAddTick(series, tick);
       logger.warn("successfully rebuild series:{}", series.getName());
     }
-    addOrGetLatch(tick.getTimestampAsObject()).countDown();
+    // addOrGetLatch(tick.getTimestampAsObject()).countDown();
   }
 
   /**
@@ -210,10 +211,10 @@ public class Stock {
     return new TimeSeries(series.getName(), sortedTicks);
   }
 
-  private CountDownLatch addOrGetLatch(OffsetDateTime timestamp) {
-    // return ticksReceived.computeIfAbsent(timestamp, (key) -> new CountDownLatch(1));
-    return ticksReceived.get(timestamp, (key) -> new CountDownLatch(1));
-  }
+  // private CountDownLatch addOrGetLatch(OffsetDateTime timestamp) {
+  // // return ticksReceived.computeIfAbsent(timestamp, (key) -> new CountDownLatch(1));
+  // return ticksReceived.get(timestamp, (key) -> new CountDownLatch(1));
+  // }
 
   public List<TurbineIndicator> getIndicators() {
     return indicators;
@@ -227,8 +228,8 @@ public class Stock {
     return ticker;
   }
 
-  public CountDownLatch awaitTick(OffsetDateTime timestamp) {
-    return addOrGetLatch(timestamp);
-  }
+  // public CountDownLatch awaitTick(OffsetDateTime timestamp) {
+  // return addOrGetLatch(timestamp);
+  // }
 
 }

@@ -114,6 +114,8 @@ public abstract class BaseIndicator implements TurbineIndicator {
     Validate.notNull(instance.getTimeframe3(), "%s: timeframe3 must not be null", instance.getName());
   }
 
+  // private static AtomicInteger indicatorCount = new AtomicInteger();
+
   public IndicatorJson run(final TickJson tick) {
 
     // wait for the series to be populated one the first tick if need be...
@@ -124,6 +126,9 @@ public abstract class BaseIndicator implements TurbineIndicator {
     // logger.info("waiting for empty series : {}", tick.getTicker());
     // Try.run(() -> TimeUnit.MILLISECONDS.sleep(100));
     // }
+
+    // this count is 16000 when parallel... nothing lost here!
+    // logger.info(" *-> indicatorCount:{}", indicatorCount.incrementAndGet());
 
     return new IndicatorJson(
         tick.getTimestampAsObject(),
